@@ -7,7 +7,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, onDisconnect, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 /* FIREBASE CONFIG */
 const firebaseConfig = {
@@ -43,7 +43,7 @@ window.loginUser = () => {
   loadUsers();
 }
 
-/* LOAD USERS + ACTIVE COUNT */
+/* LOAD USERS + ACTIVE COUNT + GROUPS */
 function loadUsers(){
   const usersRef = ref(db,"users");
   const list = document.getElementById("users");
@@ -54,9 +54,9 @@ function loadUsers(){
     snap.forEach(u=>{
       if(u.key!==me){
         let div = document.createElement("div");
-        div.className="user";
+        div.className = "user " + (u.val().online ? "online":"offline");
         div.id = "user-"+u.key;
-        div.innerText = u.key + (u.val().online?" (online)":" (offline)");
+        div.innerHTML = `<span class="status"></span>${u.key}` + (unread[u.key]?` • ${unread[u.key]}`:"");
         div.onclick = ()=>openChat(u.key);
         list.appendChild(div);
       }
@@ -64,18 +64,44 @@ function loadUsers(){
     });
     activeCountDiv.innerText = `Active Users: ${activeCount}`;
   });
+  loadGroups();
+}
+
+/* GROUP CHAT LIST */
+function loadGroups(){
+  const groupsRef = ref(db,"groups");
+  const list = document.getElementById("users");
+  onValue(groupsRef, snap=>{
+    snap.forEach(g=>{
+      let div = document.createElement("div");
+      div.className = "user group";
+      div.id = "group-"+g.key;
+      div.innerHTML = `<i class="fa fa-users"></i> ${g.key}` + (unread[g.key]?` • ${unread[g.key]}`:"");
+      div.onclick = ()=>openChat(g.key,true);
+      list.appendChild(div);
+    });
+  });
+}
+
+/* CREATE GROUP */
+window.createGroup = ()=>{
+  const name = prompt("Enter Group Name");
+  if(!name) return;
+  const groupRef = ref(db,"groups/"+name);
+  set(groupRef,{createdBy:me});
+  alert(`Group ${name} created!`);
 }
 
 /* OPEN CHAT */
-window.openChat = (u) => {
+window.openChat = (u,isGroup=false) => {
   current = u;
-  document.getElementById("chatUser").innerText = u;
+  document.getElementById("chatUser").innerText = u + (isGroup?" (Group)":"");
 
   if(unread[u]) unread[u]=0;
-  const userDiv = document.getElementById("user-"+u);
-  if(userDiv) userDiv.innerText = u + " (online)";
+  const div = document.getElementById((isGroup?"group-":"user-")+u);
+  if(div) div.innerHTML = div.innerText.replace(/ • \d+/,"");
 
-  const chatRef = ref(db,"chats/"+[me,u].sort().join("_"));
+  const chatRef = ref(db,isGroup?"groupChats/"+u:"chats/"+[me,u].sort().join("_"));
   const msgsDiv = document.getElementById("messages");
 
   onValue(chatRef, snap=>{
@@ -99,20 +125,20 @@ window.openChat = (u) => {
 
 /* SEND MESSAGE */
 window.sendMsg = ()=>{
-  if(!current) return alert("Select a user");
+  if(!current) return alert("Select a user or group");
   let text = document.getElementById("msg").value.trim();
   if(!text) return;
-  const chatRef = ref(db,"chats/"+[me,current].sort().join("_"));
+  const chatRef = ref(db,current.startsWith("group")?"groupChats/"+current:"chats/"+[me,current].sort().join("_"));
   push(chatRef,{from:me,text,time:Date.now(),seen:false});
   document.getElementById("msg").value="";
 }
 
 /* SEND IMAGE */
 window.sendImage = ()=>{
-  if(!current) return alert("Select a user");
+  if(!current) return alert("Select a user or group");
   const url = prompt("Enter image URL (free image, e.g., Unsplash)");
   if(!url) return;
-  const chatRef = ref(db,"chats/"+[me,current].sort().join("_"));
+  const chatRef = ref(db,current.startsWith("group")?"groupChats/"+current:"chats/"+[me,current].sort().join("_"));
   push(chatRef,{from:me,image:url,time:Date.now()});
 }
 
@@ -135,27 +161,6 @@ onValue(typingIndicator, snap=>{
   }
   document.getElementById("status").innerText = status;
 });
-
-/* UNREAD MESSAGE INDICATOR */
-function monitorUnread(){
-  const usersRef = ref(db,"users");
-  onValue(ref(db,"chats"), snap=>{
-    snap.forEach(chatSnap=>{
-      const chatName = chatSnap.key.split("_");
-      chatSnap.forEach(msgSnap=>{
-        const data = msgSnap.val();
-        if(data.from!==me && (!current || current!==chatName.find(n=>n!==me))){
-          const otherUser = chatName.find(n=>n!==me);
-          if(!unread[otherUser]) unread[otherUser]=0;
-          unread[otherUser]++;
-          const div = document.getElementById("user-"+otherUser);
-          if(div) div.innerText = otherUser + " (online) • "+unread[otherUser];
-        }
-      });
-    });
-  });
-}
-monitorUnread();
 
 /* DARK MODE */
 window.toggleTheme = ()=>document.body.classList.toggle("dark");
@@ -192,11 +197,14 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
 .section p{margin:5px auto;max-width:300px;font-size:14px}
 .app{display:flex;flex-direction:column;height:calc(100vh - 260px);overflow:hidden}
 .sidebar{display:flex;overflow-x:auto;padding:8px;background:var(--card)}
-.user{padding:6px 12px;margin:0 5px;background:#00000010;border-radius:20px;cursor:pointer;white-space:nowrap;font-size:14px}
+.user{padding:6px 12px;margin:0 5px;background:#00000010;border-radius:20px;cursor:pointer;white-space:nowrap;font-size:14px;display:flex;align-items:center;gap:6px}
+.user .status{width:8px;height:8px;border-radius:50%;display:inline-block}
+.user.online .status{background:#25D366}
+.user.offline .status{background:#8696a0}
 .activeCount{padding:5px;font-size:12px;color:var(--muted)}
-.chat{flex:1;display:flex;flex-direction:column;background:var(--bg)}
+.chat{flex:1;display:flex;flex-direction:column;background:var(--bg);min-height:0}
 .chat-header{height:45px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid #00000015;font-weight:bold;font-size:14px}
-.messages{flex:1;padding:8px;overflow-y:auto;background:linear-gradient(180deg,#00000005,transparent)}
+.messages{flex:1;padding:8px;overflow-y:auto;background:linear-gradient(180deg,#00000005,transparent);min-height:0}
 .msg{max-width:75%;padding:8px 10px;border-radius:12px;margin-bottom:5px;font-size:13px;line-height:1.3;box-shadow:0 1px 2px rgba(0,0,0,0.1)}
 .me{background:#dcf8c6;margin-left:auto;border-bottom-right-radius:4px}
 .other{background:#fff;border-bottom-left-radius:4px}
@@ -223,12 +231,13 @@ body.dark .user{color:white}
 
 <div class="section">
 <h2>About</h2>
-<p>Professional live chat website with full features including active users, images, typing indicator, unread messages, mobile-friendly layout.</p>
+<p>Professional live chat website with private and group chats, active users, images, typing indicator, unread messages, mobile-friendly layout.</p>
 </div>
 
 <div class="section">
 <h2>Features</h2>
-<p>Real-time chat, Dark/Light mode, mobile-first UX, hero slider, active users, dashboard welcome message, unread indicators.</p>
+<p>Real-time chat, group chat, Dark/Light mode, mobile-first UX, hero slider, active users, dashboard welcome message, unread indicators.</p>
+<button onclick="createGroup()">Create Group</button>
 </div>
 
 <div class="login" id="login">
@@ -242,12 +251,12 @@ body.dark .user{color:white}
 <div class="app" id="app" style="display:none">
   <div class="activeCount" id="activeCount">Active Users: 0</div>
   <div class="sidebar" id="users">
-    <!-- Users list -->
+    <!-- Users list and groups -->
   </div>
 
   <div class="chat">
     <div class="chat-header">
-      <div id="chatUser">Select User</div>
+      <div id="chatUser">Select User/Group</div>
       <small id="status"></small>
       <i class="fa fa-moon" onclick="toggleTheme()"></i>
     </div>
