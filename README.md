@@ -2,10 +2,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Modern Live Chat</title>
+<title>Modern Pro Live Chat</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
@@ -130,7 +129,6 @@ onValue(typingIndicator, snap=>{
 
 /* DARK MODE */
 window.toggleTheme = ()=>document.body.classList.toggle("dark");
-
 </script>
 
 <style>
@@ -142,8 +140,6 @@ body.dark{
 }
 body{margin:0;height:100vh;font-family:system-ui;background:var(--bg);color:var(--text)}
 .app{display:flex;height:100vh;overflow:hidden}
-
-/* SIDEBAR */
 .sidebar{width:100%;max-width:360px;background:var(--card);display:flex;flex-direction:column}
 .sidebar header{height:56px;padding:0 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #00000015}
 .user-list{flex:1;overflow:auto}
@@ -153,8 +149,6 @@ body{margin:0;height:100vh;font-family:system-ui;background:var(--bg);color:var(
 .avatar img{width:100%;height:100%;object-fit:cover}
 .user-info b{font-size:15px}
 .user-info small{font-size:12px;color:var(--muted)}
-
-/* CHAT */
 .chat{flex:1;display:flex;flex-direction:column}
 .chat-header{height:56px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid #00000015}
 .messages{flex:1;padding:14px;overflow-y:auto;background:linear-gradient(180deg,#00000005,transparent)}
@@ -166,18 +160,12 @@ body{margin:0;height:100vh;font-family:system-ui;background:var(--bg);color:var(
 .input input{flex:1;padding:12px 14px;border-radius:22px;border:1px solid #00000020;font-size:15px}
 .input button{width:46px;height:46px;border-radius:50%;background:var(--primary);border:none;color:white;font-size:18px}
 .input .fa-image{background:#ff5e57;padding:10px;border-radius:50%;color:white;cursor:pointer}
-
-/* LOGIN */
 .login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center}
 .login-box{background:var(--card);padding:30px;border-radius:10px;width:300px;text-align:center}
 .login-box input{width:100%;padding:10px;margin-top:10px}
-
-/* DARK MODE FIX */
 body.dark .other{background:#1f2c34}
 body.dark .me{background:#005c4b;color:white}
 body.dark input{background:#111b21;color:white}
-
-/* MOBILE */
 @media(max-width:768px){
 .sidebar{max-width:100px}
 .user-info{display:none}
