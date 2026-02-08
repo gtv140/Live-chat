@@ -7,7 +7,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 /* FIREBASE CONFIG */
 const firebaseConfig = {
@@ -110,12 +110,15 @@ window.openChat = (u,isGroup=false) => {
       const data = m.val();
       const div = document.createElement("div");
       div.className = data.from===me?"msg me":"msg other";
+      div.dataset.key = m.key; // key for delete
       if(data.image){
         div.innerHTML = `<b>${data.from}</b><p><img src="${data.image}" style="max-width:150px;border-radius:8px"/></p>
-        <small>${new Date(data.time).toLocaleTimeString()}</small>`;
+        <small>${new Date(data.time).toLocaleTimeString()}</small>
+        ${data.from===me?'<button onclick="deleteMessage(\''+m.key+'\')">🗑️</button>':""}`;
       } else {
         div.innerHTML = `<b>${data.from}</b><p>${data.text}</p>
-        <small>${new Date(data.time).toLocaleTimeString()}</small>`;
+        <small>${new Date(data.time).toLocaleTimeString()}</small>
+        ${data.from===me?'<button onclick="deleteMessage(\''+m.key+'\')">🗑️</button>':""}`;
       }
       msgsDiv.appendChild(div);
     });
@@ -140,6 +143,26 @@ window.sendImage = ()=>{
   if(!url) return;
   const chatRef = ref(db,current.startsWith("group")?"groupChats/"+current:"chats/"+[me,current].sort().join("_"));
   push(chatRef,{from:me,image:url,time:Date.now()});
+}
+
+/* DELETE MESSAGE */
+window.deleteMessage = (key)=>{
+  const chatRef = ref(db,current.startsWith("group")?"groupChats/"+current:"chats/"+[me,current].sort().join("_")+"/"+key);
+  remove(chatRef);
+}
+
+/* CLEAR CHAT */
+window.clearChat = ()=>{
+  if(!current) return;
+  const chatRef = ref(db,current.startsWith("group")?"groupChats/"+current:"chats/"+[me,current].sort().join("_"));
+  if(confirm("Are you sure you want to clear chat?")) remove(chatRef);
+}
+
+/* DELETE GROUP */
+window.deleteGroup = ()=>{
+  if(!current || !current.startsWith("group")) return alert("Select a group");
+  const groupRef = ref(db,"groups/"+current);
+  if(confirm("Are you sure you want to delete this group?")) remove(groupRef);
 }
 
 /* TYPING INDICATOR */
@@ -205,10 +228,11 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
 .chat{flex:1;display:flex;flex-direction:column;background:var(--bg);min-height:0}
 .chat-header{height:45px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid #00000015;font-weight:bold;font-size:14px}
 .messages{flex:1;padding:8px;overflow-y:auto;background:linear-gradient(180deg,#00000005,transparent);min-height:0}
-.msg{max-width:75%;padding:8px 10px;border-radius:12px;margin-bottom:5px;font-size:13px;line-height:1.3;box-shadow:0 1px 2px rgba(0,0,0,0.1)}
+.msg{max-width:75%;padding:8px 10px;border-radius:12px;margin-bottom:5px;font-size:13px;line-height:1.3;box-shadow:0 1px 2px rgba(0,0,0,0.1);position:relative}
 .me{background:#dcf8c6;margin-left:auto;border-bottom-right-radius:4px}
 .other{background:#fff;border-bottom-left-radius:4px}
 .msg small{font-size:10px;color:var(--muted)}
+.msg button{position:absolute;top:4px;right:4px;background:transparent;border:none;color:red;cursor:pointer;font-size:12px}
 .input{padding:5px;display:flex;gap:5px;background:var(--card);position:sticky;bottom:0}
 .input input{flex:1;padding:8px 10px;border-radius:22px;border:1px solid #00000020;font-size:13px}
 .input button{width:36px;height:36px;border-radius:50%;background:var(--primary);border:none;color:white;font-size:16px}
@@ -236,7 +260,7 @@ body.dark .user{color:white}
 
 <div class="section">
 <h2>Features</h2>
-<p>Real-time chat, group chat, Dark/Light mode, mobile-first UX, hero slider, active users, dashboard welcome message, unread indicators.</p>
+<p>Real-time chat, group chat, Dark/Light mode, mobile-first UX, hero slider, active users, dashboard welcome message, unread indicators, clear chat & delete options.</p>
 <button onclick="createGroup()">Create Group</button>
 </div>
 
@@ -258,7 +282,11 @@ body.dark .user{color:white}
     <div class="chat-header">
       <div id="chatUser">Select User/Group</div>
       <small id="status"></small>
-      <i class="fa fa-moon" onclick="toggleTheme()"></i>
+      <div>
+        <button onclick="clearChat()">Clear Chat</button>
+        <button onclick="deleteGroup()">Delete Group</button>
+        <i class="fa fa-moon" onclick="toggleTheme()"></i>
+      </div>
     </div>
     <div class="messages" id="messages"></div>
     <div class="input">
