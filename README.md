@@ -140,15 +140,15 @@ body.dark{
 --bg:#0b141a;--card:#111b21;--primary:#25D366;--text:#e9edef;--muted:#8696a0;
 }
 body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
-.header{height:200px;background:url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover;display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;text-shadow:1px 1px 5px #000}
-.nav{display:flex;justify-content:center;gap:20px;padding:12px;background:var(--card);border-bottom:1px solid #00000020}
+.header{height:220px;background:url('https://images.unsplash.com/photo-1557682261-1b0b0a3ef16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover;display:flex;align-items:center;justify-content:center;color:white;font-size:2.2rem;font-weight:bold;text-shadow:1px 1px 5px #000}
+.nav{display:flex;justify-content:center;gap:20px;padding:14px;background:var(--card);border-bottom:1px solid #00000020;position:sticky;top:0;z-index:100}
 .nav a{color:var(--text);text-decoration:none;font-weight:bold}
 .section{padding:30px;text-align:center}
 .section h2{margin-bottom:12px}
-.section p{max-width:600px;margin:auto}
-.app{display:flex;height:calc(100vh - 262px);overflow:hidden}
-.sidebar{width:100%;max-width:360px;background:var(--card);display:flex;flex-direction:column}
-.sidebar header{height:56px;padding:0 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #00000015}
+.section p{max-width:700px;margin:auto}
+.app{display:flex;height:calc(100vh - 284px);overflow:hidden}
+.sidebar{width:100%;max-width:300px;background:var(--card);display:flex;flex-direction:column;border-right:1px solid #00000010}
+.sidebar header{height:60px;padding:0 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #00000015;font-weight:bold}
 .user-list{flex:1;overflow:auto}
 .user{padding:12px 14px;display:flex;gap:12px;align-items:center;cursor:pointer;border-radius:8px}
 .user:hover{background:#00000010}
@@ -156,8 +156,8 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
 .avatar img{width:100%;height:100%;object-fit:cover}
 .user-info b{font-size:15px}
 .user-info small{font-size:12px;color:var(--muted)}
-.chat{flex:1;display:flex;flex-direction:column}
-.chat-header{height:56px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid #00000015}
+.chat{flex:1;display:flex;flex-direction:column;background:var(--bg)}
+.chat-header{height:60px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid #00000015;font-weight:bold}
 .messages{flex:1;padding:14px;overflow-y:auto;background:linear-gradient(180deg,#00000005,transparent)}
 .msg{max-width:78%;padding:10px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;line-height:1.4;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
 .me{background:#dcf8c6;margin-left:auto;border-bottom-right-radius:4px}
@@ -168,14 +168,16 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
 .input button{width:46px;height:46px;border-radius:50%;background:var(--primary);border:none;color:white;font-size:18px}
 .input .fa-image{background:#ff5e57;padding:10px;border-radius:50%;color:white;cursor:pointer}
 .login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center}
-.login-box{background:var(--card);padding:30px;border-radius:10px;width:300px;text-align:center}
-.login-box input{width:100%;padding:10px;margin-top:10px}
+.login-box{background:var(--card);padding:30px;border-radius:10px;width:320px;text-align:center}
+.login-box input{width:100%;padding:12px;margin-top:10px;font-size:15px}
 body.dark .other{background:#1f2c34}
 body.dark .me{background:#005c4b;color:white}
 body.dark input{background:#111b21;color:white}
 @media(max-width:768px){
-.sidebar{max-width:100px}
+.sidebar{max-width:90px}
 .user-info{display:none}
+.chat-header{font-size:14px}
+.input input{font-size:14px;padding:10px}
 }
 </style>
 
@@ -191,17 +193,17 @@ body.dark input{background:#111b21;color:white}
 
 <div class="section" id="about">
 <h2>About</h2>
-<p>Professional live chat website with full features including avatars, emojis, file sharing, typing indicators, and more.</p>
+<p>Professional live chat website with full features including avatars, emojis, file sharing, typing indicators, and more. Modern responsive design for desktop and mobile.</p>
 </div>
 
 <div class="section" id="features">
 <h2>Features</h2>
-<p>Real-time chat, Dark/Light mode, Mobile-friendly layout, profile avatars, images, emoji picker, notifications, seen/read indicators.</p>
+<p>Real-time chat, Dark/Light mode, Mobile-friendly layout, profile avatars, images, emoji picker, notifications, seen/read indicators, typing status.</p>
 </div>
 
 <div class="section" id="faq">
 <h2>FAQ</h2>
-<p>Ask questions and connect with users instantly. Fully mobile-friendly, dark/light mode supported.</p>
+<p>Ask questions and connect with users instantly. Fully mobile-friendly, dark/light mode supported, modern UI/UX layout.</p>
 </div>
 
 <div class="section" id="terms">
@@ -209,7 +211,7 @@ body.dark input{background:#111b21;color:white}
 <p>All user data is stored securely in Firebase. Chat responsibly and follow our guidelines.</p>
 </div>
 
-<div class="section" id="chat" style="height:calc(100vh - 262px);padding:0">
+<div class="section" id="chat" style="height:calc(100vh - 284px);padding:0">
 <div class="login" id="login">
   <div class="login-box">
     <h3>Enter Username</h3>
