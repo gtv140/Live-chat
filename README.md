@@ -2,13 +2,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modern Pro Live Chat</title>
+<title>Pro Live Chat</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
+/* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
   authDomain: "live-chat-b810c.firebaseapp.com",
@@ -32,7 +33,7 @@ window.loginUser = () => {
   document.getElementById("app").style.display = "flex";
 
   const userRef = ref(db,"users/"+me);
-  set(userRef,{online:true, lastLogin: Date.now(), avatar:"https://i.pravatar.cc/50?u="+me});
+  set(userRef,{online:true,lastLogin:Date.now(),avatar:"https://i.pravatar.cc/50?u="+me});
   onDisconnect(userRef).set({online:false});
 
   const chatRef = ref(db,"chats/welcome_"+me);
@@ -138,8 +139,11 @@ window.toggleTheme = ()=>document.body.classList.toggle("dark");
 body.dark{
 --bg:#0b141a;--card:#111b21;--primary:#25D366;--text:#e9edef;--muted:#8696a0;
 }
-body{margin:0;height:100vh;font-family:system-ui;background:var(--bg);color:var(--text)}
-.app{display:flex;height:100vh;overflow:hidden}
+body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
+.header{height:200px;background:url('https://images.unsplash.com/photo-1612832021125-1f0cbb92f2f1?auto=format&fit=crop&w=1600&q=80') center/cover;display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;text-shadow:1px 1px 5px #000}
+.nav{display:flex;justify-content:center;gap:20px;padding:12px;background:var(--card);border-bottom:1px solid #00000020}
+.nav a{color:var(--text);text-decoration:none;font-weight:bold}
+.app{display:flex;height:calc(100vh - 262px);overflow:hidden}
 .sidebar{width:100%;max-width:360px;background:var(--card);display:flex;flex-direction:column}
 .sidebar header{height:56px;padding:0 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #00000015}
 .user-list{flex:1;overflow:auto}
@@ -170,9 +174,36 @@ body.dark input{background:#111b21;color:white}
 .sidebar{max-width:100px}
 .user-info{display:none}
 }
+.section{padding:30px;text-align:center}
+.section h2{margin-bottom:12px}
+.section p{max-width:600px;margin:auto}
 </style>
 
 <body>
+<div class="header">Live Chat Pro</div>
+<div class="nav">
+<a href="#about">About</a>
+<a href="#faq">FAQ</a>
+<a href="#terms">Terms</a>
+<a href="#chat">Chat</a>
+</div>
+
+<div class="section" id="about">
+<h2>About</h2>
+<p>Modern live chat website with full features including avatars, emojis, file sharing, typing indicators, and more.</p>
+</div>
+
+<div class="section" id="faq">
+<h2>FAQ</h2>
+<p>Ask questions and connect with users instantly. Fully mobile-friendly, dark/light mode supported.</p>
+</div>
+
+<div class="section" id="terms">
+<h2>Terms & Privacy</h2>
+<p>All user data is stored securely in Firebase. Chat responsibly and follow our guidelines.</p>
+</div>
+
+<div class="section" id="chat" style="height:calc(100vh - 262px);padding:0">
 <div class="login" id="login">
   <div class="login-box">
     <h3>Enter Username</h3>
@@ -202,6 +233,7 @@ body.dark input{background:#111b21;color:white}
       <i class="fa fa-image" onclick="sendImage()"></i>
     </div>
   </div>
+</div>
 </div>
 </body>
 </html>
