@@ -29,7 +29,7 @@ body{font-family:'Roboto',sans-serif;background:#0f0f0f;color:#eee;height:100vh;
 
 /* Chat Area */
 .chat-area{flex:1;display:flex;flex-direction:column;background:#0d0d0d;}
-.chat-header{height:60px;border-bottom:1px solid #222;display:flex;align-items:center;padding:0 20px;font-weight:500;color:#0ff;}
+.chat-header{height:60px;border-bottom:1px solid #222;display:flex;align-items:center;padding:0 20px;font-weight:500;color:#0ff;justify-content:space-between;}
 .chat-messages{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;}
 .message{
   max-width:70%;padding:10px 14px;border-radius:20px;word-wrap:break-word;position:relative;
@@ -45,6 +45,13 @@ body{font-family:'Roboto',sans-serif;background:#0f0f0f;color:#eee;height:100vh;
 .chat-input button{background:#0ff;color:#000;padding:10px 20px;border-radius:20px;font-weight:700;cursor:pointer;transition:0.2s;}
 .chat-input button:hover{transform:scale(1.05);}
 
+/* Dashboard */
+.dashboard{padding:20px;background:#111;border-bottom:1px solid #222;}
+.dashboard h3{color:#0ff;margin-bottom:10px;}
+.dashboard p{margin-bottom:10px;color:#aaa;}
+.dashboard button{padding:8px 15px;border-radius:20px;background:#0ff;color:#000;border:none;cursor:pointer;font-weight:500;}
+.dashboard button:hover{opacity:0.85;}
+
 /* Scrollbar */
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-thumb{background:#0ff;border-radius:3px;}
@@ -52,7 +59,7 @@ body{font-family:'Roboto',sans-serif;background:#0f0f0f;color:#eee;height:100vh;
 
 /* Login */
 #login-screen{text-align:center;margin-top:100px;}
-#login-screen input{width:200px;margin-bottom:10px;}
+#login-screen input{width:200px;margin-bottom:10px;padding:10px;border-radius:20px;border:1px solid #0ff;background:#1a1a1a;color:#eee;}
 #login-screen button{padding:10px 20px;border-radius:20px;background:#0ff;color:#000;font-weight:700;}
 #login-screen button:hover{opacity:0.85;}
 
@@ -90,17 +97,30 @@ function login(){
   currentUser=username;
   document.getElementById("login-screen").style.display="none";
   document.getElementById("app-screen").style.display="flex";
+  loadDashboard();
   db.ref("active_users/"+currentUser).set({online:true});
   db.ref("active_users/"+currentUser).onDisconnect().remove();
   loadActiveUsers();
 }
 
-// ---- Load Users ----
+// ---- Dashboard ----
+function loadDashboard(){
+  document.getElementById("dashboard").innerHTML=`
+    <h3>Welcome, ${currentUser}!</h3>
+    <p>LiveConnect is a modern chat platform connecting users in real-time. Share messages, stay connected, and enjoy a smooth experience.</p>
+    <p><strong>About Us:</strong> We provide a safe, secure, and responsive platform for chatting with friends and colleagues. Your privacy is our priority.</p>
+    <p><strong>Contact/Support:</strong> Email: support@liveconnect.com | Phone: +92 300 1234567</p>
+  `;
+}
+
+// ---- Load Active Users ----
 function loadActiveUsers(){
   db.ref("active_users").on("value",snap=>{
     const usersList = document.getElementById("users-list");
+    const activeCount = document.getElementById("active-count");
     usersList.innerHTML="";
     const users = snap.val()||{};
+    activeCount.textContent = Object.keys(users).length;
     for(let user in users){
       if(user!==currentUser){
         const div=document.createElement("div");
@@ -118,6 +138,7 @@ function openPrivateChat(user){
   chatId=getChatId(currentUser,user);
   isPrivateChat=true;
   document.getElementById("messages-container").innerHTML="";
+  document.getElementById("chat-header-name").textContent=user;
   loadChat(chatId);
 }
 
@@ -159,8 +180,8 @@ function sendMessage(){
   db.ref("typing/"+chatId+"/"+currentUser).remove();
 }
 </script>
-</head>
 
+</head>
 <body>
 
 <!-- Login -->
@@ -172,23 +193,29 @@ function sendMessage(){
 
 <!-- App -->
 <div id="app-screen" style="display:none;flex:1;flex-direction:column;">
+
 <div class="navbar"><h2>LiveConnect</h2></div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard"></div>
+
 <div class="main-container">
-<div class="sidebar">
-<h3>Active Users</h3>
-<div id="users-list"></div>
-</div>
-<div class="chat-area">
-<div class="chat-header">Chat</div>
-<div class="chat-messages" id="messages-container"></div>
-<div class="typing-indicator" id="typing-indicator"></div>
-<div class="chat-input">
-<input type="text" id="message-input" placeholder="Type a message...">
-<button onclick="sendMessage()">Send</button>
-</div>
-</div>
-</div>
+  <div class="sidebar">
+    <h3>Active Users (<span id="active-count">0</span>)</h3>
+    <div id="users-list"></div>
+  </div>
+
+  <div class="chat-area">
+    <div class="chat-header">Chat with <span id="chat-header-name">-</span></div>
+    <div class="chat-messages" id="messages-container"></div>
+    <div class="typing-indicator" id="typing-indicator"></div>
+    <div class="chat-input">
+      <input type="text" id="message-input" placeholder="Type a message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
 </div>
 
+</div>
 </body>
 </html>
