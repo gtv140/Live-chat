@@ -2,20 +2,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LiveConnect - Connect, Chat & Share</title>
+<title>LiveConnect - Full Social App</title>
 <style>
-/* ----- Global ----- */
 body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:#f0f2f5;color:#111;}
 button{cursor:pointer;border:none;outline:none;}
-h2,h3,h4{margin:0;padding:0;}
 input{border:1px solid #ccc;border-radius:5px;padding:8px;width:100%;box-sizing:border-box;}
+h2,h3,h4{margin:0;padding:0;}
 
-/* ----- Login ----- */
+/* ---- Login ---- */
 #login-screen{text-align:center;margin-top:80px;}
 #login-screen input{width:250px;margin-bottom:10px;}
 #login-screen button{background:#1877f2;color:#fff;padding:10px 20px;border-radius:8px;font-weight:bold;}
 
-/* ----- App Layout ----- */
+/* ---- App Layout ---- */
 #app-screen{display:none;height:100vh;display:flex;flex-direction:row;}
 .sidebar{width:250px;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;height:100vh;overflow-y:auto;}
 .sidebar h3{text-align:center;padding:15px;background:#f7f7f7;border-bottom:1px solid #ddd;font-weight:bold;}
@@ -23,13 +22,13 @@ input{border:1px solid #ccc;border-radius:5px;padding:8px;width:100%;box-sizing:
 .user.online::after{content:"•";color:green;font-weight:bold;margin-left:5px;}
 .user-avatar{width:30px;height:30px;border-radius:50%;margin-right:10px;object-fit:cover;}
 
-/* ----- Top Nav ----- */
+/* ---- Top Nav ---- */
 .top-nav{width:100%;height:50px;background:#1877f2;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 15px;box-sizing:border-box;}
 .top-nav h2{font-size:20px;font-weight:bold;}
 .top-nav .nav-right{display:flex;align-items:center;gap:10px;}
 .top-nav .nav-right button{background:#fff;color:#1877f2;padding:5px 10px;border-radius:5px;font-weight:bold;}
 
-/* ----- Chat Area ----- */
+/* ---- Chat Area ---- */
 .chat-area{flex:2;display:flex;flex-direction:column;height:100vh;background:#e5ddd5;}
 .chat-header{padding:10px 15px;background:#f7f7f7;border-bottom:1px solid #ddd;font-weight:bold;display:flex;justify-content:space-between;align-items:center;}
 #messages-container{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:8px;}
@@ -42,7 +41,7 @@ input{border:1px solid #ccc;border-radius:5px;padding:8px;width:100%;box-sizing:
 .chat-input input{flex:1;padding:10px;border-radius:20px;border:1px solid #ccc;margin-right:5px;}
 .chat-input button{background:#1877f2;color:#fff;padding:8px 15px;border-radius:20px;font-weight:bold;}
 
-/* ----- Feed Area ----- */
+/* ---- Feed Area ---- */
 .feed-area{flex:2;background:#f0f2f5;height:100vh;overflow-y:auto;padding:10px;}
 .post-card{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.1);margin-bottom:15px;padding:12px;transition:transform 0.2s;animation:fadeIn 0.3s;}
 .post-card:hover{transform:scale(1.01);}
@@ -53,14 +52,19 @@ input{border:1px solid #ccc;border-radius:5px;padding:8px;width:100%;box-sizing:
 .post-input input{flex:1;border-radius:20px;padding:10px;border:1px solid #ccc;}
 .post-input button{background:#1877f2;color:#fff;padding:10px 15px;border-radius:20px;font-weight:bold;}
 
-/* ----- About / Footer ----- */
+/* ---- Stories ---- */
+.stories-container{display:flex;gap:10px;overflow-x:auto;padding:10px 0;margin-bottom:10px;}
+.story{width:60px;height:60px;border-radius:50%;border:2px solid #1877f2;overflow:hidden;cursor:pointer;flex-shrink:0;}
+.story img{width:100%;height:100%;object-fit:cover;}
+
+/* ---- About / Footer ---- */
 .about-section{background:#1877f2;color:#fff;padding:15px;text-align:center;font-size:14px;}
 .about-section a{color:#fff;text-decoration:underline;margin:0 5px;}
 
-/* ----- Animations ----- */
+/* ---- Animations ---- */
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
 
-/* ----- Responsive ----- */
+/* ---- Responsive ---- */
 @media(max-width:900px){#app-screen{flex-direction:column;height:auto;} .sidebar, .chat-area, .feed-area{width:100%;height:auto;}}
 </style>
 
@@ -70,6 +74,7 @@ input{border:1px solid #ccc;border-radius:5px;padding:8px;width:100%;box-sizing:
 </head>
 <body>
 
+<!-- Login -->
 <div id="login-screen">
 <h2>Welcome to LiveConnect</h2>
 <input type="text" id="username" placeholder="Enter Your Name">
@@ -77,7 +82,9 @@ input{border:1px solid #ccc;border-radius:5px;padding:8px;width:100%;box-sizing:
 <button onclick="login()">Login</button>
 </div>
 
+<!-- App -->
 <div id="app-screen">
+
 <!-- Sidebar -->
 <div class="sidebar">
 <h3>Active Users</h3>
@@ -92,6 +99,7 @@ input{border:1px solid #ccc;border-radius:5px;padding:8px;width:100%;box-sizing:
 <button onclick="toggleDarkMode()">Dark Mode</button>
 </div>
 </div>
+
 <div class="chat-header" id="chat-header">Select a user to chat</div>
 <div id="messages-container"></div>
 <div class="typing-indicator" id="typing-indicator"></div>
@@ -106,6 +114,9 @@ input{border:1px solid #ccc;border-radius:5px;padding:8px;width:100%;box-sizing:
 
 <!-- Feed Area -->
 <div class="feed-area">
+<!-- Stories -->
+<div class="stories-container" id="stories-container"></div>
+
 <h3>LiveConnect Feed</h3>
 <div class="post-input">
 <input type="text" id="post-input" placeholder="What's on your mind?">
@@ -114,6 +125,7 @@ input{border:1px solid #ccc;border-radius:5px;padding:8px;width:100%;box-sizing:
 <button onclick="document.getElementById('post-media').click()">Media</button>
 </div>
 <div id="feed-container"></div>
+
 <div class="about-section">
 LiveConnect is a modern social platform to chat, share posts, media, and connect with friends in real time. <br>
 <a href="#">About</a> | <a href="#">Terms</a> | <a href="#">Privacy</a> | <a href="#">Contact</a>
@@ -140,9 +152,7 @@ let currentUser="";
 let activeChatUser="";
 
 // Dark Mode
-function toggleDarkMode(){
-document.body.classList.toggle("dark-mode");
-}
+function toggleDarkMode(){document.body.classList.toggle("dark-mode");}
 
 // Login
 function login(){
@@ -155,6 +165,7 @@ document.getElementById("app-screen").style.display="flex";
 db.ref("active_users/"+currentUser).set({online:true});
 db.ref("active_users/"+currentUser).onDisconnect().remove();
 
+// Users List
 db.ref("active_users").on("value",snap=>{
   const usersList=document.getElementById("users-list");
   usersList.innerHTML="";
@@ -168,6 +179,14 @@ db.ref("active_users").on("value",snap=>{
       div.onclick=()=>selectUser(user);
     }
   }
+});
+
+// Load Stories
+db.ref("stories").on("child_added",snap=>{
+  const story=document.createElement("div"); story.className="story";
+  const img=document.createElement("img"); img.src=snap.val().url;
+  story.appendChild(img);
+  document.getElementById("stories-container").appendChild(story);
 });
 }
 
@@ -237,13 +256,13 @@ if(file){
   const storageRef=storage.ref("feed_media/"+Date.now()+"_"+file.name);
   storageRef.put(file).then(snap=>{
     snap.ref.getDownloadURL().then(url=>{
-      postRef.set({user:currentUser,text:text,url:url,mediaType:file.type,timestamp:Date.now()});
+      postRef.set({user:currentUser,text:text,url:url,mediaType:file.type,timestamp:Date.now(),likes:0,comments:[]});
       document.getElementById("post-input").value="";
       document.getElementById("post-media").value="";
     });
   });
 } else {
-  postRef.set({user:currentUser,text:text,timestamp:Date.now()});
+  postRef.set({user:currentUser,text:text,timestamp:Date.now(),likes:0,comments:[]});
   document.getElementById("post-input").value="";
 }
 }
@@ -254,7 +273,9 @@ const data=snap.val();
 const feedContainer=document.getElementById("feed-container");
 const postDiv=document.createElement("div");
 postDiv.className="post-card";
-postDiv.innerHTML=`<h4>${data.user}</h4><p>${data.text||""}</p>`;
+postDiv.innerHTML=`<h4>${data.user}</h4><p>${data.text||""}</p>
+<button onclick="likePost('${snap.key}')">❤️ ${data.likes||0}</button>
+<button onclick="commentPost('${snap.key}')">💬 ${data.comments?data.comments.length:0}</button>`;
 if(data.url){
   if(data.mediaType.startsWith("image")){
     const img=document.createElement("img"); img.src=data.url; postDiv.appendChild(img);
@@ -264,6 +285,15 @@ if(data.url){
 }
 feedContainer.prepend(postDiv);
 });
+
+// Likes & Comments
+function likePost(key){
+db.ref("feed/"+key+"/likes").transaction(current=> (current||0)+1);
+}
+function commentPost(key){
+const c=prompt("Enter your comment:");
+if(c) db.ref("feed/"+key+"/comments").push({user:currentUser,text:c,timestamp:Date.now()});
+}
 
 // Disconnect
 window.addEventListener("beforeunload",()=>{
