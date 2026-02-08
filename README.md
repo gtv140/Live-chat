@@ -3,160 +3,188 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LiveConnect</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body, html{margin:0;padding:0;font-family:'Roboto',sans-serif;background:#f0f0f0;color:#000;height:100vh;}
-button{cursor:pointer;border:none;outline:none;border-radius:8px;transition:0.3s;}
-button:hover{opacity:0.8;}
-input,textarea{border:1px solid #ccc;border-radius:8px;padding:8px;width:100%;box-sizing:border-box;}
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:#075e54;color:#fff;}
-.navbar h2{margin:0;font-size:20px;}
-.navbar .dark-mode-btn{background:#25d366;color:#000;padding:5px 10px;border-radius:5px;}
-.container{display:flex;height:calc(100vh - 50px);}
-.sidebar{width:250px;background:#ededed;border-right:1px solid #ccc;display:flex;flex-direction:column;}
-.sidebar h3{text-align:center;padding:10px 0;border-bottom:1px solid #ccc;margin:0;}
-.sidebar .users-list,.sidebar .groups-list{flex:1;overflow-y:auto;}
-.sidebar .user-item{padding:10px;cursor:pointer;border-bottom:1px solid #ddd;display:flex;justify-content:space-between;align-items:center;}
-.sidebar .user-item:hover{background:#ccc;}
-.chat-area{flex:1;display:flex;flex-direction:column;justify-content:flex-end;position:relative;background:#e5ddd5;}
-.chat-messages{flex:1;padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
-.message{max-width:70%;padding:8px 12px;border-radius:18px;word-wrap:break-word;position:relative;}
-.message.self{align-self:flex-end;background:#dcf8c6;}
-.message.other{align-self:flex-start;background:#fff;}
-.timestamp{font-size:10px;color:#555;margin-top:4px;text-align:right;}
-.chat-input{display:flex;padding:10px;gap:5px;border-top:1px solid #ccc;}
-.chat-input input{flex:1;border-radius:20px;padding:8px;}
-.chat-input button{background:#075e54;color:#fff;padding:8px 12px;border-radius:20px;font-weight:bold;}
-#login-screen{display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;}
-#login-screen input{margin-bottom:10px;padding:10px;width:250px;}
-#login-screen button{padding:8px 20px;background:#075e54;color:#fff;}
-.dark-mode{background:#121212;color:#eee;}
-.dark-mode .sidebar{background:#1f1f1f;border-right:1px solid #333;}
-.dark-mode .sidebar .user-item{border-bottom:1px solid #333;color:#eee;}
-.dark-mode .chat-area{background:#222;}
-.dark-mode .chat-input input{background:#333;color:#eee;border:1px solid #0ff;}
-.dark-mode .chat-input button{background:#0ff;color:#000;}
+  /* Reset & fonts */
+  body,html{margin:0;padding:0;font-family:'Segoe UI',Roboto,sans-serif;background:#f2f2f2;color:#111;overflow:hidden;}
+  button,input{outline:none;border:none;}
+  button{cursor:pointer;border-radius:8px;transition:0.3s;}
+  button:hover{opacity:0.85;}
+  input{padding:8px;border-radius:20px;border:1px solid #ccc;width:100%;box-sizing:border-box;}
+
+  /* Dark mode */
+  body.dark{background:#111;color:#eee;}
+  body.dark input{background:#222;color:#eee;border:1px solid #555;}
+  body.dark .sidebar,.dark .chat-container,.dark .navbar{background:#1f1f1f;color:#eee;}
+
+  /* Navbar */
+  .navbar{height:60px;background:#0d6efd;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 15px;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+  .navbar h2{margin:0;font-size:20px;}
+  .navbar button{background:#fff;color:#0d6efd;font-weight:bold;padding:6px 12px;}
+
+  /* Layout */
+  .main{display:flex;height:calc(100vh - 60px);}
+  .sidebar{width:260px;background:#fff;border-right:1px solid #ccc;display:flex;flex-direction:column;overflow-y:auto;}
+  .sidebar h3{margin:10px;padding:0;text-align:center;}
+  .user{padding:10px 15px;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .user:hover{background:#f1f1f1;}
+  .user.online::after{content:"●";color:green;margin-left:5px;font-size:12px;}
+
+  .chat-container{flex:1;display:flex;flex-direction:column;}
+  .chat-header{padding:10px;border-bottom:1px solid #ccc;font-weight:bold;}
+  .chat-messages{flex:1;padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;background:#f9f9f9;}
+  .message{max-width:70%;padding:8px 12px;border-radius:18px;word-wrap:break-word;}
+  .message.self{align-self:flex-end;background:#0d6efd;color:#fff;}
+  .message.other{align-self:flex-start;background:#eee;color:#111;}
+  .timestamp{font-size:10px;color:#888;margin-top:2px;text-align:right;}
+  .typing{font-size:12px;color:#555;margin:4px 0;}
+
+  .chat-input{display:flex;gap:5px;padding:10px;border-top:1px solid #ccc;}
+  .chat-input input{flex:1;border-radius:20px;padding:8px;}
+  .chat-input button{background:#0d6efd;color:#fff;padding:6px 12px;border-radius:20px;}
+
+  /* Login Screen */
+  #login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0d6efd;color:#fff;}
+  #login-screen input{width:250px;margin:10px 0;}
+
+  /* Dashboard */
+  .dashboard{padding:15px;border-bottom:1px solid #ccc;background:#f1f1f1;}
+  .dashboard.dark{background:#222;color:#eee;}
+  .dashboard h3{margin:5px 0;}
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 </head>
 <body>
+
+<!-- Login Screen -->
 <div id="login-screen">
-<h2>LiveConnect</h2>
-<input type="text" id="username" placeholder="Enter Your Name">
-<button onclick="login()">Enter</button>
+  <h2>Welcome to LiveConnect</h2>
+  <input type="text" id="username" placeholder="Enter your username">
+  <button onclick="login()">Enter</button>
 </div>
-<div id="app-screen" style="display:none;height:100vh;flex-direction:column;">
-<div class="navbar">
-<h2>LiveConnect</h2>
-<button class="dark-mode-btn" onclick="toggleDarkMode()">Dark/Light</button>
-</div>
-<div class="container">
-<div class="sidebar">
-<h3>Active Users (<span id="active-count">0</span>)</h3>
-<div class="users-list" id="users-list"></div>
-</div>
-<div class="chat-area">
-<div class="chat-messages" id="messages-container"></div>
-<div class="chat-input">
-<input type="text" id="message-input" placeholder="Type a message...">
-<button onclick="sendMessage()">Send</button>
-<input type="file" id="media-input" style="display:none">
-<button onclick="document.getElementById('media-input').click()">Media</button>
-<audio id="notify-sound" src="https://www.myinstants.com/media/sounds/facebook_messenger.mp3" preload="auto"></audio>
-</div>
-</div>
-</div>
-</div>
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-  authDomain: "live-chat-b810c.firebaseapp.com",
-  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
-  projectId: "live-chat-b810c",
-  storageBucket: "live-chat-b810c.appspot.com",
-  messagingSenderId: "555058795334",
-  appId: "1:555058795334:web:f668887409800c32970b47"
-};
-firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
-const storage=firebase.storage();
-let currentUser="",chatId="",typingTimeout;
 
-// Login
-function login(){
-currentUser=document.getElementById("username").value.trim();
-if(!currentUser){alert("Enter username");return;}
-document.getElementById("login-screen").style.display="none";
-document.getElementById("app-screen").style.display="flex";
-db.ref("active_users/"+currentUser).set(true);
-db.ref("active_users/"+currentUser).onDisconnect().remove();
-loadUsers();
-}
+<!-- Main App -->
+<div id="app" style="display:none;flex-direction:column;height:100vh;">
+  <div class="navbar">
+    <h2>LiveConnect</h2>
+    <div>
+      <button onclick="toggleDark()">Dark/Light</button>
+    </div>
+  </div>
 
-// Load Active Users
-function loadUsers(){
-db.ref("active_users").on("value",snap=>{
-const users=snap.val()||{};
-const usersList=document.getElementById("users-list");
-usersList.innerHTML="";
-let count=0;
-for(let user in users){
-if(user!==currentUser){
-count++;
-const div=document.createElement("div");
-div.textContent=user;
-div.className="user-item";
-div.onclick=()=>openChat(user);
-usersList.appendChild(div);
-}}
-document.getElementById("active-count").textContent=count;
-});
-}
+  <div class="dashboard" id="dashboard">
+    <h3 id="welcome"></h3>
+    <p>Connect with friends in realtime. Contact support at <a href="mailto:support@liveconnect.com">support@liveconnect.com</a></p>
+  </div>
 
-// Open Chat
-function openChat(user){
-chatId=[currentUser,user].sort().join("_");
-document.getElementById("messages-container").innerHTML="";
-loadChat(chatId,user);
-}
+  <div class="main">
+    <div class="sidebar">
+      <h3>Active Users (<span id="active-count">0</span>)</h3>
+      <div id="users-list"></div>
+    </div>
 
-// Load Chat
-function loadChat(id,user){
-const msgContainer=document.getElementById("messages-container");
-db.ref("chat/"+id).on("child_added",snap=>{
-const msg=snap.val();
-const div=document.createElement("div");
-div.className="message "+(msg.user===currentUser?"self":"other");
-div.innerHTML=`<strong>${msg.user}</strong>: ${msg.text || ""}${msg.media?`<br>${msg.media.endsWith('.mp4')?'<video controls src="'+msg.media+'"></video>':'<img src="'+msg.media+'">':''}<div class="timestamp">${new Date(msg.time).toLocaleTimeString()}</div>`;
-msgContainer.appendChild(div); msgContainer.scrollTop=msgContainer.scrollHeight;
-if(msg.user!==currentUser)document.getElementById("notify-sound").play();
-});
-document.getElementById("message-input").oninput=()=>{
-db.ref("typing/"+id+"/"+currentUser).set(true);
-clearTimeout(typingTimeout);
-typingTimeout=setTimeout(()=>{db.ref("typing/"+id+"/"+currentUser).remove();},2000);
-};
-document.getElementById("media-input").onchange=function(e){
-const file=e.target.files[0]; if(!file) return;
-const storageRef=storage.ref('chat_media/'+Date.now()+'_'+file.name);
-storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>sendMessage(url)));
-};
-}
+    <div class="chat-container">
+      <div class="chat-header" id="chat-with">Select a user to chat</div>
+      <div class="chat-messages" id="messages"></div>
+      <div class="typing" id="typing"></div>
+      <div class="chat-input">
+        <input type="text" id="msg-input" placeholder="Type a message...">
+        <button onclick="sendMsg()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-// Send Message
-function sendMessage(mediaUrl=null){
-const text=document.getElementById("message-input").value.trim();
-if(!text && !mediaUrl) return;
-const msg={user:currentUser,text:text,media:mediaUrl||"",time:Date.now()};
-db.ref("chat/"+chatId).push(msg);
-document.getElementById("message-input").value="";
-db.ref("typing/"+chatId+"/"+currentUser).remove();
-}
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue, push, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-// Dark Mode Toggle
-function toggleDarkMode(){document.body.classList.toggle("dark-mode");}
+  const firebaseConfig = {
+    apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+    authDomain: "live-chat-b810c.firebaseapp.com",
+    databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
+    projectId: "live-chat-b810c",
+    storageBucket: "live-chat-b810c.appspot.com",
+    messagingSenderId: "555058795334",
+    appId: "1:555058795334:web:f668887409800c32970b47"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  let currentUser="", chatUser="", chatId="";
+  let typingTimeout;
+
+  function login(){
+    const uname = document.getElementById("username").value.trim();
+    if(!uname){alert("Enter username"); return;}
+    currentUser = uname;
+    document.getElementById("login-screen").style.display="none";
+    document.getElementById("app").style.display="flex";
+    document.getElementById("welcome").innerText = `Welcome, ${currentUser}`;
+
+    const userRef = ref(db, 'active_users/' + currentUser);
+    set(userRef, {online:true});
+    onDisconnect(userRef).remove();
+
+    loadUsers();
+  }
+
+  function toggleDark(){document.body.classList.toggle("dark");document.querySelector(".dashboard").classList.toggle("dark");}
+
+  function loadUsers(){
+    const usersList = document.getElementById("users-list");
+    const activeCount = document.getElementById("active-count");
+    const usersRef = ref(db, 'active_users/');
+    onValue(usersRef, snapshot=>{
+      usersList.innerHTML="";
+      const users = snapshot.val() || {};
+      let count=0;
+      for(let user in users){
+        if(user!==currentUser){
+          count++;
+          const div = document.createElement("div");
+          div.className="user online";
+          div.textContent=user;
+          div.onclick=()=>openChat(user);
+          usersList.appendChild(div);
+        }
+      }
+      activeCount.innerText = count;
+    });
+  }
+
+  function getChatId(u1,u2){return [u1,u2].sort().join("_");}
+
+  function openChat(user){
+    chatUser = user;
+    chatId = getChatId(currentUser,user);
+    document.getElementById("chat-with").innerText = "Chat with " + user;
+    document.getElementById("messages").innerHTML="";
+    const chatRef = ref(db,'chats/'+chatId);
+    onValue(chatRef,snap=>{
+      const msgs = snap.val()||{};
+      const messagesDiv = document.getElementById("messages");
+      messagesDiv.innerHTML="";
+      Object.values(msgs).forEach(m=>{
+        const div = document.createElement("div");
+        div.className = m.user===currentUser?"message self":"message other";
+        div.innerHTML=`<strong>${m.user}</strong>: ${m.text}<div class="timestamp">${new Date(m.time).toLocaleTimeString()}</div>`;
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+    });
+  }
+
+  function sendMsg(){
+    const input = document.getElementById("msg-input");
+    const text = input.value.trim();
+    if(!text || !chatId) return;
+    const chatRef = ref(db,'chats/'+chatId);
+    const newMsgRef = push(chatRef);
+    set(newMsgRef,{user:currentUser,text:text,time:Date.now()});
+    input.value="";
+  }
 </script>
+
 </body>
 </html>
