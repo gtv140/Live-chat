@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Live Chat</title>
+<title>WebHub Live Chat</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <script type="module">
@@ -143,6 +143,9 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
 .header{height:200px;background:url('https://images.unsplash.com/photo-1612832021125-1f0cbb92f2f1?auto=format&fit=crop&w=1600&q=80') center/cover;display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;text-shadow:1px 1px 5px #000}
 .nav{display:flex;justify-content:center;gap:20px;padding:12px;background:var(--card);border-bottom:1px solid #00000020}
 .nav a{color:var(--text);text-decoration:none;font-weight:bold}
+.section{padding:30px;text-align:center}
+.section h2{margin-bottom:12px}
+.section p{max-width:600px;margin:auto}
 .app{display:flex;height:calc(100vh - 262px);overflow:hidden}
 .sidebar{width:100%;max-width:360px;background:var(--card);display:flex;flex-direction:column}
 .sidebar header{height:56px;padding:0 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #00000015}
@@ -174,15 +177,13 @@ body.dark input{background:#111b21;color:white}
 .sidebar{max-width:100px}
 .user-info{display:none}
 }
-.section{padding:30px;text-align:center}
-.section h2{margin-bottom:12px}
-.section p{max-width:600px;margin:auto}
 </style>
 
 <body>
-<div class="header">Live Chat Pro</div>
+<div class="header">WebHub Live Chat</div>
 <div class="nav">
 <a href="#about">About</a>
+<a href="#features">Features</a>
 <a href="#faq">FAQ</a>
 <a href="#terms">Terms</a>
 <a href="#chat">Chat</a>
@@ -190,7 +191,12 @@ body.dark input{background:#111b21;color:white}
 
 <div class="section" id="about">
 <h2>About</h2>
-<p>Modern live chat website with full features including avatars, emojis, file sharing, typing indicators, and more.</p>
+<p>Professional live chat website with full features including avatars, emojis, file sharing, typing indicators, and more.</p>
+</div>
+
+<div class="section" id="features">
+<h2>Features</h2>
+<p>Real-time chat, Dark/Light mode, Mobile-friendly layout, profile avatars, images, emoji picker, notifications, seen/read indicators.</p>
 </div>
 
 <div class="section" id="faq">
