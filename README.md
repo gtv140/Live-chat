@@ -21,9 +21,12 @@ input,textarea{border:1px solid #555;border-radius:8px;padding:8px;width:100%;bo
 .content-area{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:10px;}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
-.post-card{background:#1c1c1c;border-radius:12px;margin-bottom:15px;padding:12px;box-shadow:0 0 5px #0ff;position:relative;}
+.post-card{background:#1c1c1c;border-radius:12px;margin-bottom:15px;padding:12px;box-shadow:0 0 8px #0ff;position:relative;transition:0.3s;}
+.post-card:hover{box-shadow:0 0 12px #0ff;}
 .post-card img,.post-card video{max-width:100%;border-radius:8px;margin-top:8px;}
-.post-card button.delete-btn{position:absolute;top:10px;right:10px;background:#ff0055;color:#000;padding:4px 8px;border-radius:8px;font-size:12px;}
+.post-card .post-actions{display:flex;gap:10px;margin-top:8px;}
+.post-card .post-actions button{background:#333;color:#eee;padding:4px 8px;border-radius:8px;font-size:14px;}
+.post-card .post-actions button.delete-btn{background:#ff0055;color:#000;}
 .post-input{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
 .post-input input{flex:1;min-width:150px;border-radius:20px;padding:8px;border:1px solid #0ff;background:#1c1c1c;color:#eee;}
 .chat-container{flex:1;display:flex;flex-direction:column;border-top:1px solid #333;display:none;}
@@ -244,10 +247,13 @@ if(file){
 function loadFeedPost(snap){
 const data=snap.val(); const feedContainer=document.getElementById("feed-container");
 const postDiv=document.createElement("div"); postDiv.className="post-card";
-postDiv.innerHTML=`<h4>${data.user}</h4><p>${data.text||""}</p>
-<button class="delete-btn" onclick="deletePost('${snap.key}')">Delete</button>
+let deleteBtnHTML="";
+if(data.user===currentUser) deleteBtnHTML=`<button class="delete-btn" onclick="deletePost('${snap.key}')">🗑️</button>`;
+postDiv.innerHTML=`<h4>${data.user}</h4><p>${data.text||""}</p>${deleteBtnHTML}
+<div class="post-actions">
 <button onclick="likePost('${snap.key}')">❤️ ${data.likes||0}</button>
-<button onclick="commentPost('${snap.key}')">💬 ${data.comments?Object.keys(data.comments).length:0}</button>`;
+<button onclick="commentPost('${snap.key}')">💬 ${data.comments?Object.keys(data.comments).length:0}</button>
+</div>`;
 if(data.url){
   if(data.mediaType.startsWith("image")){
     const img=document.createElement("img"); img.src=data.url; postDiv.appendChild(img);
