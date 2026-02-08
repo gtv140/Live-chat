@@ -1,13 +1,181 @@
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Chat</title>
 
-<!-- Firebase -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+  --bg:#f0f2f5;
+  --card:#ffffff;
+  --primary:#25D366;
+  --text:#111;
+  --muted:#667781;
+}
+body.dark{
+  --bg:#0b141a;
+  --card:#111b21;
+  --primary:#25D366;
+  --text:#e9edef;
+  --muted:#8696a0;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
+body{background:var(--bg);color:var(--text);height:100vh}
+
+.app{display:flex;height:100vh}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:320px;
+  background:var(--card);
+  border-right:1px solid #ddd;
+  display:flex;
+  flex-direction:column;
+}
+.sidebar header{
+  padding:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.user-list{flex:1;overflow:auto}
+.user{
+  padding:12px;
+  display:flex;
+  gap:10px;
+  cursor:pointer;
+}
+.user:hover{background:#00000010}
+.avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--primary);
+  color:white;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:bold;
+}
+.user-info{flex:1}
+.user-info small{color:var(--muted)}
+.badge{
+  background:red;color:white;
+  font-size:11px;padding:2px 6px;border-radius:10px;
+}
+
+/* ===== CHAT ===== */
+.chat{flex:1;display:flex;flex-direction:column}
+.chat-header{
+  padding:12px;
+  background:var(--card);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.messages{
+  flex:1;
+  padding:15px;
+  overflow:auto;
+  background:var(--bg);
+}
+.msg{
+  max-width:70%;
+  margin-bottom:8px;
+  padding:8px 10px;
+  border-radius:10px;
+  font-size:14px;
+}
+.me{background:#dcf8c6;margin-left:auto}
+.other{background:var(--card)}
+.msg small{font-size:11px;color:var(--muted)}
+.typing{font-size:12px;color:var(--muted);margin:5px}
+
+/* ===== INPUT ===== */
+.input{
+  display:flex;
+  padding:10px;
+  background:var(--card);
+}
+.input input{
+  flex:1;
+  padding:10px;
+  border-radius:20px;
+  border:1px solid #ccc;
+}
+.input button{
+  margin-left:8px;
+  background:var(--primary);
+  border:none;
+  color:white;
+  padding:10px 16px;
+  border-radius:50%;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+  .sidebar{width:100px}
+  .user-info, .badge{display:none}
+}
+
+/* ===== LOGIN ===== */
+.login{
+  position:fixed;
+  inset:0;
+  background:var(--bg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.login-box{
+  background:var(--card);
+  padding:30px;
+  border-radius:10px;
+  width:300px;
+}
+.login-box input{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+<div class="login" id="login">
+  <div class="login-box">
+    <h3>Enter Username</h3>
+    <input id="username" placeholder="Your name">
+    <button onclick="login()">Start</button>
+  </div>
+</div>
+
+<div class="app" id="app" style="display:none">
+  <div class="sidebar">
+    <header>
+      <b>Chats</b>
+      <i class="fa fa-moon" onclick="toggleTheme()"></i>
+    </header>
+    <div class="user-list" id="users"></div>
+  </div>
+
+  <div class="chat">
+    <div class="chat-header">
+      <div id="chatUser">Select user</div>
+      <small id="status"></small>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="typing" id="typing"></div>
+    <div class="input">
+      <input id="msg" placeholder="Message">
+      <button onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, onDisconnect, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, push, onValue, set, onDisconnect } 
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -22,214 +190,66 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let username = localStorage.getItem("username");
-let currentChat = "global";
-let unread = 0;
+let me="", current="";
 
-/* ---------- LOGIN ---------- */
-window.login = () => {
-  const name = document.getElementById("username").value.trim();
-  if(!name) return alert("Enter username");
-  username = name;
-  localStorage.setItem("username", name);
-
-  set(ref(db, "users/"+name), {
-    online: true,
-    lastSeen: Date.now()
-  });
-
-  onDisconnect(ref(db,"users/"+name)).update({
-    online:false,
-    lastSeen:Date.now()
-  });
-
-  document.getElementById("login").style.display="none";
-  document.getElementById("app").style.display="flex";
+window.login=()=>{
+  me=username.value.trim();
+  if(!me) return;
+  login.style.display="none";
+  appDiv.style.display="flex";
+  set(ref(db,"users/"+me),{online:true});
+  onDisconnect(ref(db,"users/"+me)).set({online:false});
 };
 
-/* ---------- USERS ---------- */
-onValue(ref(db,"users"), snap=>{
-  const list = document.getElementById("users");
-  list.innerHTML="";
+const appDiv=document.getElementById("app");
+
+onValue(ref(db,"users"),snap=>{
+  users.innerHTML="";
   snap.forEach(u=>{
-    const data=u.val();
-    const div=document.createElement("div");
-    div.className="user";
-    div.innerHTML=`
-      <span class="avatar">${u.key[0].toUpperCase()}</span>
-      <div>
-        <b>${u.key}</b>
-        <small>${data.online?"Online":"Last seen"}</small>
+    if(u.key!==me){
+      users.innerHTML+=`
+      <div class="user" onclick="openChat('${u.key}')">
+        <div class="avatar">${u.key[0]}</div>
+        <div class="user-info">
+          <b>${u.key}</b><br>
+          <small>${u.val().online?"online":"offline"}</small>
+        </div>
       </div>`;
-    list.appendChild(div);
+    }
   });
 });
 
-/* ---------- MESSAGES ---------- */
-window.sendMessage=()=>{
-  const text=document.getElementById("msg").value.trim();
-  if(!text) return;
-  push(ref(db,"chats/"+currentChat),{
-    user:username,
-    text,
-    time:Date.now()
+window.openChat=(u)=>{
+  current=u;
+  chatUser.innerText=u;
+  onValue(ref(db,"chats/"+me+"_"+u),snap=>{
+    messages.innerHTML="";
+    snap.forEach(m=>{
+      let d=m.val();
+      messages.innerHTML+=`
+      <div class="msg ${d.from===me?"me":"other"}">
+        ${d.text}<br><small>${d.time}</small>
+      </div>`;
+    });
+    messages.scrollTop=messages.scrollHeight;
   });
-  document.getElementById("msg").value="";
 };
 
-onValue(ref(db,"chats/"+currentChat),snap=>{
-  const box=document.getElementById("messages");
-  box.innerHTML="";
-  snap.forEach(m=>{
-    const msg=m.val();
-    const div=document.createElement("div");
-    div.className= msg.user===username?"me":"other";
-    div.innerHTML=`<b>${msg.user}</b><p>${msg.text}</p>`;
-    box.appendChild(div);
-  });
-  box.scrollTop=box.scrollHeight;
-});
+window.sendMsg=()=>{
+  if(!msg.value||!current) return;
+  const data={
+    from:me,
+    text:msg.value,
+    time:new Date().toLocaleTimeString()
+  };
+  push(ref(db,"chats/"+me+"_"+current),data);
+  push(ref(db,"chats/"+current+"_"+me),data);
+  msg.value="";
+};
 
-/* ---------- THEME ---------- */
 window.toggleTheme=()=>{
   document.body.classList.toggle("dark");
 };
 </script>
-
-<style>
-:root{
-  --bg:#f5f5f5;
-  --card:#fff;
-  --text:#111;
-  --me:#dcf8c6;
-  --other:#fff;
-}
-body.dark{
-  --bg:#0f172a;
-  --card:#020617;
-  --text:#f8fafc;
-  --me:#14532d;
-  --other:#1e293b;
-}
-body{
-  margin:0;
-  font-family:system-ui;
-  background:var(--bg);
-  color:var(--text);
-}
-#login{
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.login-box{
-  background:var(--card);
-  padding:20px;
-  width:90%;
-  max-width:320px;
-  border-radius:12px;
-}
-#app{
-  display:none;
-  height:100vh;
-}
-.sidebar{
-  width:30%;
-  background:var(--card);
-  overflow:auto;
-}
-.chat{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-}
-header{
-  padding:10px;
-  background:var(--card);
-  display:flex;
-  justify-content:space-between;
-}
-#messages{
-  flex:1;
-  overflow:auto;
-  padding:10px;
-}
-.me, .other{
-  max-width:75%;
-  margin-bottom:10px;
-  padding:8px;
-  border-radius:10px;
-}
-.me{background:var(--me);margin-left:auto}
-.other{background:var(--other)}
-.input{
-  display:flex;
-  padding:10px;
-  background:var(--card);
-}
-input{
-  flex:1;
-  padding:10px;
-  border-radius:20px;
-  border:1px solid #ccc;
-}
-button{
-  margin-left:5px;
-  padding:10px 15px;
-  border-radius:50%;
-  border:none;
-  background:#22c55e;
-  color:#fff;
-}
-.user{
-  display:flex;
-  gap:10px;
-  padding:10px;
-  border-bottom:1px solid #ddd;
-}
-.avatar{
-  background:#22c55e;
-  color:#fff;
-  width:35px;
-  height:35px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-@media(max-width:768px){
-  .sidebar{width:40%}
-}
-</style>
-</head>
-
-<body>
-<div id="login">
-  <div class="login-box">
-    <h3>Live Chat</h3>
-    <input id="username" placeholder="Enter username"/>
-    <button onclick="login()">Enter</button>
-  </div>
-</div>
-
-<div id="app">
-  <div class="sidebar">
-    <h4 style="padding:10px">Active Users</h4>
-    <div id="users"></div>
-  </div>
-
-  <div class="chat">
-    <header>
-      <b>Global Chat</b>
-      <button onclick="toggleTheme()">🌓</button>
-    </header>
-    <div id="messages"></div>
-    <div class="input">
-      <input id="msg" placeholder="Type message"/>
-      <button onclick="sendMessage()">➤</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
