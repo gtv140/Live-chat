@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WebHub Live Chat</title>
+<title>Live Connect</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <script type="module">
@@ -180,7 +180,7 @@ body.dark input{background:#111b21;color:white}
 </style>
 
 <body>
-<div class="header">WebHub Live Chat</div>
+<div class="header">Live Connect</div>
 <div class="nav">
 <a href="#about">About</a>
 <a href="#features">Features</a>
@@ -221,7 +221,7 @@ body.dark input{background:#111b21;color:white}
 <div class="app" id="app" style="display:none">
   <div class="sidebar">
     <header>
-      <b>Live Chat</b>
+      <b>Live Connect</b>
       <i class="fa fa-moon" onclick="toggleTheme()"></i>
     </header>
     <div class="user-list" id="users"></div>
