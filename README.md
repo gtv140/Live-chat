@@ -104,7 +104,7 @@ if(!username){alert("Enter name");return;}
 currentUser=username;
 document.getElementById("login-screen").style.display="none";
 document.getElementById("app-screen").style.display="block";
-db.ref("active_users/"+currentUser).set(true);
+db.ref("active_users/"+currentUser).set({online:true});
 db.ref("active_users/"+currentUser).onDisconnect().remove();
 loadActiveUsers();
 }
