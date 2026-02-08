@@ -7,7 +7,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, onDisconnect, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 /* FIREBASE CONFIG */
 const firebaseConfig = {
@@ -24,6 +24,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 let me="", current="";
+const unread = {};
 
 /* LOGIN */
 window.loginUser = () => {
@@ -54,6 +55,7 @@ function loadUsers(){
       if(u.key!==me){
         let div = document.createElement("div");
         div.className="user";
+        div.id = "user-"+u.key;
         div.innerText = u.key + (u.val().online?" (online)":" (offline)");
         div.onclick = ()=>openChat(u.key);
         list.appendChild(div);
@@ -68,6 +70,10 @@ function loadUsers(){
 window.openChat = (u) => {
   current = u;
   document.getElementById("chatUser").innerText = u;
+
+  if(unread[u]) unread[u]=0;
+  const userDiv = document.getElementById("user-"+u);
+  if(userDiv) userDiv.innerText = u + " (online)";
 
   const chatRef = ref(db,"chats/"+[me,u].sort().join("_"));
   const msgsDiv = document.getElementById("messages");
@@ -130,6 +136,27 @@ onValue(typingIndicator, snap=>{
   document.getElementById("status").innerText = status;
 });
 
+/* UNREAD MESSAGE INDICATOR */
+function monitorUnread(){
+  const usersRef = ref(db,"users");
+  onValue(ref(db,"chats"), snap=>{
+    snap.forEach(chatSnap=>{
+      const chatName = chatSnap.key.split("_");
+      chatSnap.forEach(msgSnap=>{
+        const data = msgSnap.val();
+        if(data.from!==me && (!current || current!==chatName.find(n=>n!==me))){
+          const otherUser = chatName.find(n=>n!==me);
+          if(!unread[otherUser]) unread[otherUser]=0;
+          unread[otherUser]++;
+          const div = document.getElementById("user-"+otherUser);
+          if(div) div.innerText = otherUser + " (online) • "+unread[otherUser];
+        }
+      });
+    });
+  });
+}
+monitorUnread();
+
 /* DARK MODE */
 window.toggleTheme = ()=>document.body.classList.toggle("dark");
 
@@ -181,6 +208,7 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
 body.dark .other{background:#1f2c34;color:white}
 body.dark .me{background:#005c4b;color:white}
 body.dark input{background:#111b21;color:white}
+body.dark .user{color:white}
 .login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
 .login-box{background:var(--card);padding:20px;border-radius:10px;width:90%;max-width:320px;text-align:center}
 .login-box input{width:100%;padding:10px;margin-top:10px;font-size:14px}
@@ -195,12 +223,12 @@ body.dark input{background:#111b21;color:white}
 
 <div class="section">
 <h2>About</h2>
-<p>Professional live chat website with full features including active users, images, typing indicator, mobile-friendly layout.</p>
+<p>Professional live chat website with full features including active users, images, typing indicator, unread messages, mobile-friendly layout.</p>
 </div>
 
 <div class="section">
 <h2>Features</h2>
-<p>Real-time chat, Dark/Light mode, mobile-first UX, hero slider, active users, dashboard welcome message.</p>
+<p>Real-time chat, Dark/Light mode, mobile-first UX, hero slider, active users, dashboard welcome message, unread indicators.</p>
 </div>
 
 <div class="login" id="login">
@@ -231,5 +259,3 @@ body.dark input{background:#111b21;color:white}
     </div>
   </div>
 </div>
-</body>
-</html>
