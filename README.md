@@ -2,13 +2,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Chat - Final</title>
+<title>Live Chat - WhatsApp Style</title>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
   authDomain: "live-chat-b810c.firebaseapp.com",
@@ -22,29 +21,24 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let me = "";
-let current = "";
+let me="", current="";
 
-/* ---------- LOGIN ---------- */
-function loginUser() {
-  const input = document.getElementById("username");
-  me = input.value.trim();
-  if (!me) return alert("Enter a username");
-  
+/* LOGIN */
+window.loginUser = () => {
+  me = document.getElementById("username").value.trim();
+  if(!me) return alert("Enter username");
   document.getElementById("login").style.display = "none";
   document.getElementById("app").style.display = "flex";
 
-  // Set online status
   const userRef = ref(db,"users/"+me);
   set(userRef,{online:true});
   onDisconnect(userRef).set({online:false});
-  
+
   loadUsers();
 }
-window.loginUser = loginUser;
 
-/* ---------- USERS ---------- */
-function loadUsers() {
+/* LOAD USERS */
+function loadUsers(){
   const usersRef = ref(db,"users");
   const list = document.getElementById("users");
   onValue(usersRef, snap=>{
@@ -52,7 +46,7 @@ function loadUsers() {
     snap.forEach(u=>{
       if(u.key!==me){
         let div = document.createElement("div");
-        div.className = "user";
+        div.className="user";
         div.innerHTML = `<div class="avatar">${u.key[0]}</div>
         <div class="user-info"><b>${u.key}</b><br><small>${u.val().online?"Online":"Offline"}</small></div>`;
         div.onclick = ()=>openChat(u.key);
@@ -62,45 +56,38 @@ function loadUsers() {
   });
 }
 
-/* ---------- CHAT ---------- */
-function openChat(u) {
+/* OPEN CHAT */
+window.openChat = (u) => {
   current = u;
   document.getElementById("chatUser").innerText = u;
   const chatRef = ref(db,"chats/"+[me,u].sort().join("_"));
-  const messagesDiv = document.getElementById("messages");
+  const msgsDiv = document.getElementById("messages");
   onValue(chatRef, snap=>{
-    messagesDiv.innerHTML = "";
+    msgsDiv.innerHTML = "";
     snap.forEach(m=>{
       const data = m.val();
       const div = document.createElement("div");
       div.className = data.from===me?"msg me":"msg other";
       div.innerHTML = `<b>${data.from}</b><p>${data.text}</p><small>${new Date(data.time).toLocaleTimeString()}</small>`;
-      messagesDiv.appendChild(div);
+      msgsDiv.appendChild(div);
     });
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    msgsDiv.scrollTop = msgsDiv.scrollHeight;
   });
 }
-window.openChat = openChat;
 
-/* ---------- SEND MESSAGE ---------- */
-function sendMsg() {
+/* SEND MESSAGE */
+window.sendMsg = ()=>{
   if(!current) return alert("Select a user");
-  const msgInput = document.getElementById("msg");
-  const text = msgInput.value.trim();
+  let text = document.getElementById("msg").value.trim();
   if(!text) return;
   const chatRef = ref(db,"chats/"+[me,current].sort().join("_"));
-  push(chatRef,{
-    from:me,
-    text,
-    time:Date.now()
-  });
-  msgInput.value = "";
+  push(chatRef,{from:me,text,time:Date.now()});
+  document.getElementById("msg").value="";
 }
-window.sendMsg = sendMsg;
 
-/* ---------- DARK MODE ---------- */
-function toggleTheme(){document.body.classList.toggle("dark")}
-window.toggleTheme = toggleTheme;
+/* DARK MODE */
+window.toggleTheme = ()=>document.body.classList.toggle("dark");
+
 </script>
 
 <style>
@@ -144,6 +131,12 @@ body{margin:0;height:100vh;font-family:system-ui;background:var(--bg);color:var(
 body.dark .other{background:#1f2c34}
 body.dark .me{background:#005c4b;color:white}
 body.dark input{background:#111b21;color:white}
+
+/* MOBILE */
+@media(max-width:768px){
+.sidebar{max-width:100px}
+.user-info, .badge{display:none}
+}
 </style>
 
 <body>
