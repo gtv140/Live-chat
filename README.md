@@ -3,33 +3,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LiveConnect</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-body {margin:0;font-family:'Segoe UI',Roboto,sans-serif;background:#f0f2f5;color:#111;transition:0.3s;}
-.dark-mode body {background:#121212;color:#eee;}
+body{margin:0;font-family:'Segoe UI',sans-serif;background:#e5ddd5;color:#111;transition:0.3s;}
+.dark-mode body{background:#121212;color:#eee;}
 button{cursor:pointer;border:none;outline:none;border-radius:8px;transition:0.3s;}
 button:hover{opacity:0.8;}
-input,textarea{border:1px solid #ccc;border-radius:8px;padding:8px;width:100%;box-sizing:border-box;background:#fff;color:#111;}
-.dark-mode input,.dark-mode textarea{background:#1f1f1f;color:#eee;border:1px solid #555;}
-a{text-decoration:none;color:#0d6efd;}
-
-/* Navbar */
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:#0d6efd;color:#fff;}
-.dark-mode .navbar{background:#0a4c8c;}
-.navbar h2{margin:0;}
-.tabs{display:flex;gap:10px;}
-.tabs button{padding:6px 12px;background:#fff;color:#0d6efd;}
-.dark-mode .tabs button{background:#1f1f1f;color:#0d6efd;}
-.tabs button.active{background:#0b5ed7;color:#fff;}
-.navbar .right{display:flex;align-items:center;gap:10px;}
-.navbar .toggle-theme{padding:5px 10px;background:#fff;color:#0d6efd;}
-.dark-mode .toggle-theme{background:#1f1f1f;color:#0d6efd;}
-
-/* Layout */
-.container{display:flex;height:calc(100vh - 50px);}
-.sidebar{width:250px;background:#e4e6eb;border-right:1px solid #ccc;overflow-y:auto;display:flex;flex-direction:column;}
-.dark-mode .sidebar{background:#1e1e1e;border-color:#333;}
-.sidebar h3{padding:10px;margin:0;border-bottom:1px solid #ccc;}
+input{border:1px solid #ccc;border-radius:20px;padding:8px;flex:1;}
+.dark-mode input{background:#1f1f1f;color:#eee;border:1px solid #555;}
+.container{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:250px;background:#f0f0f0;flex-shrink:0;display:flex;flex-direction:column;}
+.dark-mode .sidebar{background:#1e1e1e;}
+.sidebar h3{margin:0;padding:10px;border-bottom:1px solid #ccc;}
 .dark-mode .sidebar h3{border-color:#333;}
 .user{padding:10px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ccc;cursor:pointer;}
 .dark-mode .user{border-color:#333;}
@@ -44,44 +28,35 @@ a{text-decoration:none;color:#0d6efd;}
 .message.other{align-self:flex-start;background:#e4e6eb;color:#111;}
 .dark-mode .message.other{background:#2a2a2a;color:#eee;}
 .timestamp{font-size:10px;color:#555;margin-top:2px;text-align:right;}
+.read-tick{font-size:12px;color:#0d6efd;margin-left:4px;}
 .chat-input{display:flex;padding:10px;gap:5px;border-top:1px solid #ccc;}
 .dark-mode .chat-input{border-color:#333;}
-.chat-input input{flex:1;border-radius:20px;padding:8px;border:1px solid #ccc;}
-.dark-mode .chat-input input{border-color:#555;background:#1f1f1f;color:#eee;}
 .chat-input button{padding:6px 12px;background:#0d6efd;color:#fff;border-radius:20px;}
-
-/* Profile & Info */
 .profile{display:flex;align-items:center;gap:10px;}
 .profile img{width:40px;height:40px;border-radius:50%;}
 .welcome{padding:10px;font-size:14px;color:#555;}
 .dark-mode .welcome{color:#aaa;}
-
-/* Responsive */
-@media(max-width:900px){.container{flex-direction:column;}.sidebar{width:100%;height:auto;}}
+.emoji-picker{position:absolute;bottom:60px;right:20px;background:#fff;border:1px solid #ccc;padding:5px;border-radius:10px;display:none;flex-wrap:wrap;gap:5px;max-width:200px;}
+.dark-mode .emoji-picker{background:#1f1f1f;border:1px solid #555;}
+.emoji-picker span{cursor:pointer;font-size:20px;}
+@media(max-width:768px){.container{flex-direction:column;}.sidebar{width:100%;height:200px;overflow-x:auto;}}
 </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<div class="navbar">
-<h2>LiveConnect</h2>
-<div class="right">
-<button class="toggle-theme" onclick="toggleTheme()">Dark/Light</button>
-</div>
-</div>
-
-<!-- Main Layout -->
 <div class="welcome" id="welcome"></div>
+
 <div class="container">
 <div class="sidebar">
-<h3>Active Users <span id="user-count">0</span></h3>
-<div id="users-list"></div>
+<h3>Active Users (<span id="user-count">0</span>)</h3>
+<div id="users-list" style="overflow-y:auto;flex:1"></div>
 <h3>About Company</h3>
 <div style="padding:10px;font-size:13px;">
-<p>LiveConnect is a modern chat platform to connect with friends in realtime. Enjoy private chats, profile pics, and a smooth WhatsApp-like experience.</p>
+<p>LiveConnect is a modern realtime chat platform. Connect, chat, and enjoy a smooth WhatsApp-like experience with profile pics, emojis, typing indicators, and read receipts.</p>
 </div>
 <h3>Contact Support</h3>
 <div style="padding:10px;font-size:13px;"><p>Email: support@liveconnect.com</p></div>
+<button onclick="toggleTheme()">Dark/Light Mode</button>
 </div>
 
 <div class="content">
@@ -98,6 +73,10 @@ a{text-decoration:none;color:#0d6efd;}
 <div class="chat-input">
 <input type="text" id="message-input" placeholder="Type a message...">
 <button onclick="sendMessage()">Send</button>
+<button onclick="toggleEmojiPicker()">😊</button>
+<div class="emoji-picker" id="emoji-picker">
+<span>😀</span><span>😂</span><span>😍</span><span>👍</span><span>🙏</span><span>💯</span>
+</div>
 </div>
 </div>
 </div>
@@ -124,12 +103,11 @@ document.getElementById('welcome').innerHTML = `Welcome, <strong>${currentUser}<
 db.ref("active_users/"+currentUser).set({online:true});
 db.ref("active_users/"+currentUser).onDisconnect().remove();
 
-// Load active users
 function loadUsers(){
   db.ref("active_users").on("value", snap=>{
     const users = snap.val() || {};
     const ul = document.getElementById('users-list');
-    ul.innerHTML = "";
+    ul.innerHTML="";
     let count=0;
     for(let u in users){
       if(u!==currentUser){
@@ -146,7 +124,6 @@ function loadUsers(){
 }
 loadUsers();
 
-// Chat
 let chatId = "";
 let typingTimeout;
 
@@ -165,9 +142,14 @@ db.ref("chat/"+chatId).on("child_added", snap=>{
   if([msg.user,msg.to].includes(currentUser)){
     const div = document.createElement('div');
     div.className = "message "+(msg.user===currentUser?"self":"other");
-    div.textContent = msg.text;
+    div.innerHTML = msg.text + (msg.read?'<span class="read-tick">✓✓</span>':'');
+    const ts = document.createElement('div');
+    ts.className="timestamp";
+    ts.textContent = new Date(msg.time).toLocaleTimeString();
+    div.appendChild(ts);
     msgContainer.appendChild(div);
     msgContainer.scrollTop = msgContainer.scrollHeight;
+    if(msg.to===currentUser) db.ref("chat/"+chatId+"/"+snap.key).update({read:true});
   }
 });
 
@@ -186,14 +168,21 @@ typingTimeout = setTimeout(()=>db.ref("typing/"+chatId+"/"+currentUser).remove()
 
 function sendMessage(){
 const text = document.getElementById('message-input').value.trim();
-if(!text) return;
-db.ref("chat/"+chatId).push({user:currentUser,to:chatId.replace(currentUser+"_","").replace("_"+currentUser,""),text:text,time:Date.now()});
+if(!text || !chatId) return;
+db.ref("chat/"+chatId).push({user:currentUser,to:chatId.replace(currentUser+"_","").replace("_"+currentUser,""),text:text,time:Date.now(),read:false});
 document.getElementById('message-input').value="";
 db.ref("typing/"+chatId+"/"+currentUser).remove();
 }
 
-// Theme
 function toggleTheme(){document.body.classList.toggle("dark-mode");}
+
+function toggleEmojiPicker(){
+const picker = document.getElementById('emoji-picker');
+picker.style.display = picker.style.display==="flex"?"none":"flex";
+picker.querySelectorAll('span').forEach(emoji=>{
+emoji.onclick = ()=>{document.getElementById('message-input').value+=emoji.textContent;}
+});
+}
 </script>
 
 </body>
