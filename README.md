@@ -1,3 +1,4 @@
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -73,6 +74,7 @@ a{text-decoration:none;color:#0ff;}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 </head>
 <body>
+
 <!-- Login -->
 <div id="login-screen" style="text-align:center;margin-top:50px;">
 <h2>Welcome to LiveConnect</h2>
@@ -152,7 +154,9 @@ a{text-decoration:none;color:#0ff;}
 <div class="about-section">
 LiveConnect - Connect & Share | <a href="#">About</a> | <a href="#">Terms</a> | <a href="#">Privacy</a>
 </div>
-</div><script>
+</div>
+
+<script>
 // Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -286,6 +290,9 @@ const storageRef=storage.ref('chat_media/'+Date.now()+'_'+file.name);
 storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>sendMessage(url)));
 };
 
+}
+
+// ---- Send Message ----
 function sendMessage(mediaUrl=null){
 const text=document.getElementById("message-input").value.trim();
 if(!text && !mediaUrl) return;
@@ -294,7 +301,7 @@ document.getElementById("message-input").value="";
 db.ref("typing/"+chatId+"/"+currentUser).remove();
 }
 
-// ---- Posts & Comments ----
+// ---- Posts ----
 function loadFeed(){
 db.ref("feed").on("child_added",snap=>{
 const post=snap.val();
@@ -335,187 +342,129 @@ fileInput.value="";
 postRef.set({user:currentUser,text:text,likes:0,time:Date.now(),comments:{}});
 }
 document.getElementById("post-input").value="";
-}<script>
-// Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-  authDomain: "live-chat-b810c.firebaseapp.com",
-  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
-  projectId: "live-chat-b810c",
-  storageBucket: "live-chat-b810c.appspot.com",
-  messagingSenderId: "555058795334",
-  appId: "1:555058795334:web:f668887409800c32970b47"
-};
-firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
-const storage=firebase.storage();
-
-let currentUser="",chatId="",typingTimeout;
-
-// ---- Login ----
-function login(){
-const username=document.getElementById("username").value.trim();
-if(!username){alert("Enter username");return;}
-currentUser=username;
-document.getElementById("login-screen").style.display="none";
-document.getElementById("app-screen").style.display="flex";
-db.ref("active_users/"+currentUser).set({online:true});
-db.ref("active_users/"+currentUser).onDisconnect().remove();
-loadActiveUsers();loadGroups();loadFeed();
+}// ---- Toggle Comment Box ----
+function toggleCommentBox(key){
+  const box=document.getElementById("comment-box-"+key);
+  box.style.display=(box.style.display==="none")?"flex":"none";
 }
 
-// ---- Tabs ----
-function switchTab(tab){
-const tabs=["home","posts","videos","settings","privacy"];
-tabs.forEach(t=>{
-document.getElementById(t).style.display=(t===tab)?"block":"none";
-document.querySelectorAll(".tabs button").forEach(b=>{
-if(b.textContent.toLowerCase()===tab) b.classList.add("active"); else b.classList.remove("active");
-});
-});
+// ---- Add Comment / Reply ----
+function addComment(postId,parentId=null){
+  const input=document.getElementById(parentId?`reply-input-${parentId}`:`comment-input-${postId}`);
+  const text=input.value.trim();
+  if(!text) return;
+  const commentRef=parentId?db.ref(`feed/${postId}/comments/${parentId}/replies`).push():db.ref(`feed/${postId}/comments`).push();
+  commentRef.set({user:currentUser,text:text,time:Date.now(),replies:{}});
+  input.value="";
 }
 
-// ---- Chat Toggle ----
-function toggleChat(){
-const chat=document.getElementById("chat-container");
-chat.style.display=(chat.style.display==="flex")?"none":"flex";
-document.getElementById("users-sidebar").style.display=(chat.style.display==="flex")?"block":"none";
+// ---- Load Comments Recursively ----
+function loadComments(postId){
+  db.ref(`feed/${postId}/comments`).on("value",snap=>{
+    const container=document.getElementById("comments-"+postId);
+    container.innerHTML="";
+    const comments=snap.val()||{};
+    for(let cid in comments){
+      container.appendChild(renderComment(postId,cid,comments[cid]));
+    }
+  });
 }
 
-// ---- Dark Mode ----
-function toggleDarkMode(){document.body.classList.toggle("dark-mode");}
-
-// ---- Active Users ----
-function loadActiveUsers(){
-db.ref("active_users").on("value",snap=>{
-const usersList=document.getElementById("users-list");
-usersList.innerHTML="";
-const users=snap.val()||{};
-for(let user in users){
-if(user!==currentUser){
-const div=document.createElement("div");
-div.textContent=user; div.className="user online"; div.onclick=()=>openPrivateChat(user);
-usersList.appendChild(div);
-}
-}
-});
-}
-
-// ---- Groups ----
-function loadGroups(){
-db.ref("groups").on("value",snap=>{
-const groupsList=document.getElementById("groups-list");
-groupsList.innerHTML="";
-const groups=snap.val()||{};
-for(let gid in groups){
-const g=groups[gid];
-const div=document.createElement("div");
-div.textContent=g.name; div.className="user";
-div.onclick=()=>openGroupChat(gid);
-groupsList.appendChild(div);
-}
-});
+function renderComment(postId,cid,comment){
+  const div=document.createElement("div");
+  div.className="comment";
+  div.innerHTML=`<strong>${comment.user}</strong>: ${comment.text} <span class="reply" onclick="toggleReplyBox('${cid}')">Reply</span>
+    ${comment.user===currentUser?'<button class="delete-btn" onclick="deleteComment(\''+postId+'\',\''+cid+'\')">Delete</button>':''}
+    <div class="comment-input reply-box" id="reply-box-${cid}" style="display:none;">
+      <input type="text" placeholder="Write a reply..." id="reply-input-${cid}">
+      <button onclick="addComment('${postId}','${cid}')">Post</button>
+    </div>`;
+  
+  // Load replies
+  if(comment.replies){
+    for(let rid in comment.replies){
+      const reply=document.createElement("div");
+      reply.className="comment reply";
+      reply.innerHTML=`<strong>${comment.replies[rid].user}</strong>: ${comment.replies[rid].text}
+      ${comment.replies[rid].user===currentUser?'<button class="delete-btn" onclick="deleteReply(\''+postId+'\',\''+cid+'\',\''+rid+'\')">Delete</button>':''}`;
+      div.appendChild(reply);
+    }
+  }
+  return div;
 }
 
-function createGroup(){
-const gname=prompt("Enter group name:");
-if(!gname) return;
-const groupRef=db.ref("groups").push();
-groupRef.set({name:gname,creator:currentUser,members:{[currentUser]:true}});
+function toggleReplyBox(cid){
+  const box=document.getElementById("reply-box-"+cid);
+  box.style.display=(box.style.display==="none")?"flex":"none";
 }
 
-// ---- Chat ----
-function getChatId(user1,user2){return [user1,user2].sort().join("_");}
+// ---- Delete Post / Comment / Reply ----
+function deletePost(postId){db.ref("feed/"+postId).remove();}
+function deleteComment(postId,cid){db.ref(`feed/${postId}/comments/${cid}`).remove();}
+function deleteReply(postId,cid,rid){db.ref(`feed/${postId}/comments/${cid}/replies/${rid}`).remove();}
 
-function openPrivateChat(user){
-chatId=getChatId(currentUser,user);
-document.getElementById("messages-container").innerHTML="";
-loadChat(chatId);
+// ---- Like Post ----
+function likePost(postId){
+  const likeRef=db.ref(`feed/${postId}/likes/${currentUser}`);
+  likeRef.once("value").then(snap=>{
+    if(snap.exists()){likeRef.remove();}else{likeRef.set(true);}
+  });
 }
 
-function openGroupChat(gid){
-chatId="group_"+gid;
-document.getElementById("messages-container").innerHTML="";
-loadChat(chatId);
+// ---- Group Chat Functions ----
+function joinGroup(gid){
+  db.ref(`groups/${gid}/members/${currentUser}`).set(true);
 }
 
-function loadChat(chatId){
-const msgContainer=document.getElementById("messages-container");
-const typingIndicator=document.getElementById("typing-indicator");
-db.ref("chat/"+chatId).on("child_added",snap=>{
-const msg=snap.val();
-const div=document.createElement("div");
-div.className="message "+(msg.user===currentUser?"self":"other");
-div.innerHTML=`<strong>${msg.user}</strong>: ${msg.text}${msg.media?`<br><${msg.media.endsWith('.mp4')?'video controls':'img'} src="${msg.media}" style="max-width:200px;">`:''}<div class="timestamp">${new Date(msg.time).toLocaleTimeString()}</div>`;
-msgContainer.appendChild(div);
-msgContainer.scrollTop=msgContainer.scrollHeight;
-document.getElementById("notify-sound").play();
-});
-db.ref("typing/"+chatId).on("value",snap=>{
-const data=snap.val()||{};
-let typingUsers=Object.keys(data).filter(u=>u!==currentUser);
-typingIndicator.textContent=typingUsers.length>0?typingUsers.join(", ")+" is typing...":"";
-});
-document.getElementById("message-input").oninput=()=>{
-db.ref("typing/"+chatId+"/"+currentUser).set(true);
-clearTimeout(typingTimeout);
-typingTimeout=setTimeout(()=>{db.ref("typing/"+chatId+"/"+currentUser).remove();},2000);
-};
-document.getElementById("send-btn").onclick=sendMessage;
-document.getElementById("media-input").onchange=function(e){
-const file=e.target.files[0];
-if(!file) return;
-const storageRef=storage.ref('chat_media/'+Date.now()+'_'+file.name);
-storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>sendMessage(url)));
-};
-
-function sendMessage(mediaUrl=null){
-const text=document.getElementById("message-input").value.trim();
-if(!text && !mediaUrl) return;
-db.ref("chat/"+chatId).push({user:currentUser,text:text,media:mediaUrl||"",time:Date.now()});
-document.getElementById("message-input").value="";
-db.ref("typing/"+chatId+"/"+currentUser).remove();
+function leaveGroup(gid){
+  db.ref(`groups/${gid}/members/${currentUser}`).remove();
 }
 
-// ---- Posts & Comments ----
-function loadFeed(){
-db.ref("feed").on("child_added",snap=>{
-const post=snap.val();
-const container=document.getElementById("feed-container");
-const div=document.createElement("div");
-div.className="post-card";
-div.id="post-"+snap.key;
-div.innerHTML=`<strong>${post.user}</strong>: ${post.text}${post.media?`<br><${post.media.endsWith('.mp4')?'video controls':'img'} src="${post.media}" style="max-width:200px;">`:''}
-<div class="post-actions">
-<button onclick="likePost('${snap.key}')">Like</button>
-<button onclick="toggleCommentBox('${snap.key}')">Comment</button>
-${post.user===currentUser?'<button class="delete-btn" onclick="deletePost(\''+snap.key+'\')">Delete</button>':''}
-</div>
-<div class="comment-section" id="comments-${snap.key}"></div>
-<div class="comment-input" id="comment-box-${snap.key}" style="display:none;">
-<input type="text" placeholder="Write a comment..." id="comment-input-${snap.key}">
-<button onclick="addComment('${snap.key}')">Post</button>
-</div>`;
-container.prepend(div);
-loadComments(snap.key);
-});
-
+function deleteGroup(gid){
+  db.ref(`groups/${gid}`).remove();
 }
 
-function createPost(){
-const text=document.getElementById("post-input").value.trim();
-const fileInput=document.getElementById("post-media");
-if(!text && !fileInput.files[0]) return alert("Type something or select media!");
-const postRef=db.ref("feed").push();
-if(fileInput.files[0]){
-const file=fileInput.files[0];
-const storageRef=storage.ref('post_media/'+Date.now()+'_'+file.name);
-storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>{
-postRef.set({user:currentUser,text:text,media:url,likes:0,time:Date.now(),comments:{}});
-fileInput.value="";
-}));
-}else{
-postRef.set({user:currentUser,text:text,likes:0,time:Date.now(),comments:{}});
+// ---- Notifications ----
+function updateNotifications(){
+  let count=0;
+  db.ref("feed").on("value",snap=>{
+    const posts=snap.val()||{};
+    for(let pid in posts){
+      if(posts[pid].comments){
+        for(let cid in posts[pid].comments){
+          if(posts[pid].comments[cid].user!==currentUser) count++;
+          if(posts[pid].comments[cid].replies){
+            count+=Object.keys(posts[pid].comments[cid].replies).filter(rid=>posts[pid].comments[cid].replies[rid].user!==currentUser).length;
+          }
+        }
+      }
+      if(posts[pid].likes){
+        count+=Object.keys(posts[pid].likes).filter(u=>u!==currentUser).length;
+      }
+    }
+    document.getElementById("notif-count").textContent=count;
+  });
 }
-document.getElementById("post-input").value="";
+
+// ---- Initialize ----
+setInterval(updateNotifications,3000); // update every 3 sec
+
+// ---- Videos Tab Example ----
+function loadVideos(){
+  db.ref("feed").on("value",snap=>{
+    const videosContainer=document.getElementById("videos-container");
+    videosContainer.innerHTML="";
+    const feed=snap.val()||{};
+    for(let pid in feed){
+      if(feed[pid].media && feed[pid].media.endsWith(".mp4")){
+        const div=document.createElement("div");
+        div.className="post-card";
+        div.innerHTML=`<strong>${feed[pid].user}</strong>: ${feed[pid].text}<br>
+        <video src="${feed[pid].media}" controls style="max-width:100%;"></video>`;
+        videosContainer.prepend(div);
+      }
+    }
+  });
 }
+
+loadVideos();
