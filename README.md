@@ -4,67 +4,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LiveConnect</title>
 <style>
-/* ----- Clean Dark Theme ----- */
-body{
-  margin:0;
-  font-family:'Segoe UI',Roboto,Arial,sans-serif;
-  background:#121212;
-  color:#eee;
-  overflow-x:hidden;
-}
+body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:#121212;color:#eee;overflow-x:hidden;}
 button{cursor:pointer;border:none;outline:none;border-radius:8px;}
 input,textarea{border:1px solid #555;border-radius:8px;padding:8px;width:100%;box-sizing:border-box;background:#1c1c1c;color:#eee;}
-
-/* ----- Navbar ----- */
-.navbar{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:10px 15px;background:#1f1f1f;border-bottom:1px solid #333;flex-wrap:wrap;
-}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:#1f1f1f;border-bottom:1px solid #333;flex-wrap:wrap;}
 .navbar h2{color:#0ff;}
 .navbar .tabs{display:flex;gap:5px;flex-wrap:wrap;}
 .navbar .tabs button{padding:6px 12px;background:#333;color:#eee;}
 .navbar .tabs button.active{background:#0ff;color:#000;}
 .navbar .chat-icon{font-size:22px;color:#0ff;cursor:pointer;}
-
-/* ----- Main Container ----- */
 .main-container{display:flex;flex-direction:row;height:calc(100vh - 60px);}
 .sidebar{width:220px;background:#1f1f1f;border-right:1px solid #333;overflow-y:auto;display:none;}
 .sidebar h3{text-align:center;padding:15px;border-bottom:1px solid #333;color:#0ff;}
 .user{padding:12px 15px;cursor:pointer;border-bottom:1px solid #333;display:flex;align-items:center;justify-content:space-between;}
 .user.online::after{content:"•";color:#0ff;font-weight:bold;margin-left:5px;}
-
-/* ----- Content Area ----- */
 .content-area{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:10px;}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
-
-/* ----- Posts ----- */
-.post-card{background:#1c1c1c;border-radius:12px;margin-bottom:15px;padding:12px;box-shadow:0 0 5px #0ff;}
-.post-card img, .post-card video{max-width:100%;border-radius:8px;margin-top:8px;}
+.post-card{background:#1c1c1c;border-radius:12px;margin-bottom:15px;padding:12px;box-shadow:0 0 5px #0ff;position:relative;}
+.post-card img,.post-card video{max-width:100%;border-radius:8px;margin-top:8px;}
+.post-card button.delete-btn{position:absolute;top:10px;right:10px;background:#ff0055;color:#000;padding:4px 8px;border-radius:8px;font-size:12px;}
 .post-input{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
 .post-input input{flex:1;min-width:150px;border-radius:20px;padding:8px;border:1px solid #0ff;background:#1c1c1c;color:#eee;}
-
-/* ----- Chat ----- */
 .chat-container{flex:1;display:flex;flex-direction:column;border-top:1px solid #333;display:none;}
 .chat-messages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:5px;}
-.message{max-width:70%;padding:8px 12px;border-radius:18px;word-wrap:break-word;box-shadow:0 0 3px #0ff;}
+.message{max-width:70%;padding:8px 12px;border-radius:18px;word-wrap:break-word;box-shadow:0 0 3px #0ff;position:relative;}
 .message.self{align-self:flex-end;background:#0ff;color:#000;}
 .message.other{align-self:flex-start;background:#333;color:#eee;}
 .timestamp{font-size:10px;color:#aaa;margin-top:4px;text-align:right;}
 .chat-input{display:flex;padding:10px;border-top:1px solid #333;gap:5px;flex-wrap:wrap;}
 .chat-input input{flex:1;min-width:150px;padding:8px;border-radius:20px;border:1px solid #0ff;background:#1c1c1c;color:#eee;}
 .chat-input button{background:#0ff;color:#000;padding:6px 12px;font-weight:bold;}
-
-/* ----- About/Footer ----- */
 .about-section{background:#1f1f1f;color:#aaa;padding:15px;text-align:center;font-size:14px;margin-top:10px;border-top:1px solid #333;}
 .about-section a{color:#0ff;text-decoration:underline;margin:0 5px;}
-
-/* ----- Responsive ----- */
-@media(max-width:900px){
-  .main-container{flex-direction:column;height:auto;}
-  .sidebar{width:100%;height:auto;}
-  .post-input,.chat-input{flex-direction:column;}
-}
+@media(max-width:900px){.main-container{flex-direction:column;height:auto;}.sidebar{width:100%;height:auto;}.post-input,.chat-input{flex-direction:column;}}
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -272,6 +245,7 @@ function loadFeedPost(snap){
 const data=snap.val(); const feedContainer=document.getElementById("feed-container");
 const postDiv=document.createElement("div"); postDiv.className="post-card";
 postDiv.innerHTML=`<h4>${data.user}</h4><p>${data.text||""}</p>
+<button class="delete-btn" onclick="deletePost('${snap.key}')">Delete</button>
 <button onclick="likePost('${snap.key}')">❤️ ${data.likes||0}</button>
 <button onclick="commentPost('${snap.key}')">💬 ${data.comments?Object.keys(data.comments).length:0}</button>`;
 if(data.url){
@@ -280,6 +254,13 @@ if(data.url){
   } else { const vid=document.createElement("video"); vid.src=data.url; vid.controls=true; postDiv.appendChild(vid); }
 }
 feedContainer.prepend(postDiv);
+}
+
+// Delete Post
+function deletePost(key){
+if(confirm("Are you sure you want to delete this post?")){
+  db.ref("feed/"+key).remove();
+}
 }
 
 // Likes & Comments
