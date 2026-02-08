@@ -42,21 +42,25 @@ window.loginUser = () => {
   loadUsers();
 }
 
-/* LOAD USERS */
+/* LOAD USERS + ACTIVE COUNT */
 function loadUsers(){
   const usersRef = ref(db,"users");
   const list = document.getElementById("users");
+  const activeCountDiv = document.getElementById("activeCount");
   onValue(usersRef, snap=>{
     list.innerHTML = "";
+    let activeCount = 0;
     snap.forEach(u=>{
       if(u.key!==me){
         let div = document.createElement("div");
         div.className="user";
-        div.innerHTML = `<b>${u.key}</b>`;
+        div.innerText = u.key + (u.val().online?" (online)":" (offline)");
         div.onclick = ()=>openChat(u.key);
         list.appendChild(div);
       }
+      if(u.val().online) activeCount++;
     });
+    activeCountDiv.innerText = `Active Users: ${activeCount}`;
   });
 }
 
@@ -128,6 +132,22 @@ onValue(typingIndicator, snap=>{
 
 /* DARK MODE */
 window.toggleTheme = ()=>document.body.classList.toggle("dark");
+
+/* HERO SLIDER */
+let heroIndex = 0;
+const slides = [
+  {img:"https://images.unsplash.com/photo-1603415526960-faa0b7a6d1f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",text:"Connect instantly with friends"},
+  {img:"https://images.unsplash.com/photo-1533777324565-a040eb52fdb8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",text:"Share your moments"},
+  {img:"https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",text:"Chat anytime, anywhere"}
+];
+function showSlide(){
+  const hero = document.getElementById("hero");
+  hero.style.backgroundImage = `url('${slides[heroIndex].img}')`;
+  document.getElementById("heroText").innerText = slides[heroIndex].text;
+  heroIndex = (heroIndex+1)%slides.length;
+}
+setInterval(showSlide,4000);
+window.onload = showSlide;
 </script>
 
 <style>
@@ -138,21 +158,26 @@ body.dark{
 --bg:#0b141a;--card:#111b21;--primary:#25D366;--text:#e9edef;--muted:#8696a0;
 }
 body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
-.header{height:150px;background:url('https://images.unsplash.com/photo-1557682261-1b0b0a3ef16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover;display:flex;align-items:center;justify-content:center;color:white;font-size:1.8rem;font-weight:bold;text-shadow:1px 1px 5px #000}
-.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
-.sidebar{display:flex;flex-direction:row;overflow-x:auto;background:var(--card);border-bottom:1px solid #00000015;padding:5px}
-.user{padding:8px 12px;margin:0 5px;background:#00000010;border-radius:20px;cursor:pointer;white-space:nowrap}
+.header{height:60px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:white;font-size:1.8rem;font-weight:bold;position:sticky;top:0;z-index:100}
+.hero{height:200px;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:white;font-size:1.4rem;font-weight:bold;text-shadow:1px 1px 6px #000}
+.section{padding:15px;text-align:center}
+.section h2{margin-bottom:10px}
+.section p{margin:5px auto;max-width:300px;font-size:14px}
+.app{display:flex;flex-direction:column;height:calc(100vh - 260px);overflow:hidden}
+.sidebar{display:flex;overflow-x:auto;padding:8px;background:var(--card)}
+.user{padding:6px 12px;margin:0 5px;background:#00000010;border-radius:20px;cursor:pointer;white-space:nowrap;font-size:14px}
+.activeCount{padding:5px;font-size:12px;color:var(--muted)}
 .chat{flex:1;display:flex;flex-direction:column;background:var(--bg)}
-.chat-header{height:50px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid #00000015;font-weight:bold}
-.messages{flex:1;padding:10px;overflow-y:auto;background:linear-gradient(180deg,#00000005,transparent)}
-.msg{max-width:75%;padding:8px 12px;border-radius:14px;margin-bottom:6px;font-size:14px;line-height:1.4;box-shadow:0 1px 2px rgba(0,0,0,0.1)}
+.chat-header{height:45px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid #00000015;font-weight:bold;font-size:14px}
+.messages{flex:1;padding:8px;overflow-y:auto;background:linear-gradient(180deg,#00000005,transparent)}
+.msg{max-width:75%;padding:8px 10px;border-radius:12px;margin-bottom:5px;font-size:13px;line-height:1.3;box-shadow:0 1px 2px rgba(0,0,0,0.1)}
 .me{background:#dcf8c6;margin-left:auto;border-bottom-right-radius:4px}
 .other{background:#fff;border-bottom-left-radius:4px}
-.msg small{font-size:11px;color:var(--muted)}
-.input{padding:6px;display:flex;gap:6px;background:var(--card);position:sticky;bottom:0}
-.input input{flex:1;padding:10px 12px;border-radius:22px;border:1px solid #00000020;font-size:14px}
-.input button{width:40px;height:40px;border-radius:50%;background:var(--primary);border:none;color:white;font-size:16px}
-.input .fa-image{background:#ff5e57;padding:8px;border-radius:50%;color:white;cursor:pointer}
+.msg small{font-size:10px;color:var(--muted)}
+.input{padding:5px;display:flex;gap:5px;background:var(--card);position:sticky;bottom:0}
+.input input{flex:1;padding:8px 10px;border-radius:22px;border:1px solid #00000020;font-size:13px}
+.input button{width:36px;height:36px;border-radius:50%;background:var(--primary);border:none;color:white;font-size:16px}
+.input .fa-image{background:#ff5e57;padding:6px;border-radius:50%;color:white;cursor:pointer}
 body.dark .other{background:#1f2c34;color:white}
 body.dark .me{background:#005c4b;color:white}
 body.dark input{background:#111b21;color:white}
@@ -164,6 +189,20 @@ body.dark input{background:#111b21;color:white}
 <body>
 <div class="header">Live Connect</div>
 
+<div class="hero" id="hero">
+  <div id="heroText">Welcome to Live Connect</div>
+</div>
+
+<div class="section">
+<h2>About</h2>
+<p>Professional live chat website with full features including active users, images, typing indicator, mobile-friendly layout.</p>
+</div>
+
+<div class="section">
+<h2>Features</h2>
+<p>Real-time chat, Dark/Light mode, mobile-first UX, hero slider, active users, dashboard welcome message.</p>
+</div>
+
 <div class="login" id="login">
   <div class="login-box">
     <h3>Enter Your Name</h3>
@@ -173,8 +212,9 @@ body.dark input{background:#111b21;color:white}
 </div>
 
 <div class="app" id="app" style="display:none">
+  <div class="activeCount" id="activeCount">Active Users: 0</div>
   <div class="sidebar" id="users">
-    <!-- Users will be loaded here as full names -->
+    <!-- Users list -->
   </div>
 
   <div class="chat">
