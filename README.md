@@ -2,11 +2,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Chat - WhatsApp Style</title>
+<title>Pro Live Chat</title>
 
+<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, onDisconnect, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -23,7 +24,7 @@ const db = getDatabase(app);
 
 let me="", current="";
 
-/* LOGIN */
+/* ---------- LOGIN ---------- */
 window.loginUser = () => {
   me = document.getElementById("username").value.trim();
   if(!me) return alert("Enter username");
@@ -31,13 +32,18 @@ window.loginUser = () => {
   document.getElementById("app").style.display = "flex";
 
   const userRef = ref(db,"users/"+me);
-  set(userRef,{online:true});
-  onDisconnect(userRef).set({online:false});
+  set(userRef,{online:true, lastLogin: Date.now()});
 
+  onDisconnect(userRef).update({online:false});
+
+  // Welcome new user
+  const chatRef = ref(db,"chats/welcome_"+me);
+  push(chatRef,{from:"System",text:`Welcome ${me}! Start chatting.`,time:Date.now()});
+  
   loadUsers();
 }
 
-/* LOAD USERS */
+/* ---------- LOAD USERS ---------- */
 function loadUsers(){
   const usersRef = ref(db,"users");
   const list = document.getElementById("users");
@@ -56,12 +62,14 @@ function loadUsers(){
   });
 }
 
-/* OPEN CHAT */
+/* ---------- OPEN CHAT ---------- */
 window.openChat = (u) => {
   current = u;
   document.getElementById("chatUser").innerText = u;
+
   const chatRef = ref(db,"chats/"+[me,u].sort().join("_"));
   const msgsDiv = document.getElementById("messages");
+
   onValue(chatRef, snap=>{
     msgsDiv.innerHTML = "";
     snap.forEach(m=>{
@@ -75,17 +83,37 @@ window.openChat = (u) => {
   });
 }
 
-/* SEND MESSAGE */
+/* ---------- SEND MESSAGE ---------- */
 window.sendMsg = ()=>{
   if(!current) return alert("Select a user");
   let text = document.getElementById("msg").value.trim();
   if(!text) return;
   const chatRef = ref(db,"chats/"+[me,current].sort().join("_"));
-  push(chatRef,{from:me,text,time:Date.now()});
+  push(chatRef,{from:me,text,time:Date.now(),seen:false});
   document.getElementById("msg").value="";
 }
 
-/* DARK MODE */
+/* ---------- TYPING INDICATOR ---------- */
+let typingTimeout;
+document.getElementById("msg")?.addEventListener("input", ()=>{
+  if(!current) return;
+  const typingRef = ref(db,"typing/"+current+"/"+me);
+  set(typingRef,true);
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(()=>{ set(typingRef,false); },2000);
+});
+const typingIndicator = ref(db,"typing");
+onValue(typingIndicator, snap=>{
+  let status = "";
+  if(current && snap.hasChild(current)){
+    snap.child(current).forEach(t=>{
+      if(t.key!==me && t.val()) status = `${t.key} is typing...`;
+    });
+  }
+  document.getElementById("status").innerText = status;
+});
+
+/* ---------- DARK MODE ---------- */
 window.toggleTheme = ()=>document.body.classList.toggle("dark");
 
 </script>
@@ -135,7 +163,7 @@ body.dark input{background:#111b21;color:white}
 /* MOBILE */
 @media(max-width:768px){
 .sidebar{max-width:100px}
-.user-info, .badge{display:none}
+.user-info{display:none}
 }
 </style>
 
