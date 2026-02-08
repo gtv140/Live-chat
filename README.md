@@ -3,6 +3,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pro Live Chat</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <!-- Firebase -->
 <script type="module">
@@ -35,7 +36,6 @@ window.loginUser = () => {
   set(userRef,{online:true, lastLogin: Date.now()});
   onDisconnect(userRef).set({online:false});
 
-  // Welcome new user
   const chatRef = ref(db,"chats/welcome_"+me);
   push(chatRef,{from:"System",text:`Welcome ${me}! Start chatting.`,time:Date.now()});
 
