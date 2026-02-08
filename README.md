@@ -23,8 +23,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let me="", current="";
+let me="", current="", currentIsGroup=false;
 const unread = {};
+const groupCreators = {};
 
 /* LOGIN */
 window.loginUser = () => {
@@ -52,15 +53,17 @@ function loadUsers(){
     list.innerHTML = "";
     let activeCount = 0;
     snap.forEach(u=>{
-      if(u.key!==me){
-        let div = document.createElement("div");
-        div.className = "user " + (u.val().online ? "online":"offline");
-        div.id = "user-"+u.key;
-        div.innerHTML = `<span class="status"></span>${u.key}` + (unread[u.key]?` • ${unread[u.key]}`:"");
-        div.onclick = ()=>openChat(u.key);
-        list.appendChild(div);
+      if(u.val().online){
+        if(u.key!==me){
+          let div = document.createElement("div");
+          div.className = "user online";
+          div.id = "user-"+u.key;
+          div.innerHTML = `<span class="status"></span>${u.key}` + (unread[u.key]?` • ${unread[u.key]}`:"");
+          div.onclick = ()=>openChat(u.key,false);
+          list.appendChild(div);
+        }
+        activeCount++;
       }
-      if(u.val().online) activeCount++;
     });
     activeCountDiv.innerText = `Active Users: ${activeCount}`;
   });
@@ -73,6 +76,8 @@ function loadGroups(){
   const list = document.getElementById("users");
   onValue(groupsRef, snap=>{
     snap.forEach(g=>{
+      const gdata = g.val();
+      groupCreators[g.key] = gdata.createdBy;
       let div = document.createElement("div");
       div.className = "user group";
       div.id = "group-"+g.key;
@@ -95,6 +100,7 @@ window.createGroup = ()=>{
 /* OPEN CHAT */
 window.openChat = (u,isGroup=false) => {
   current = u;
+  currentIsGroup = isGroup;
   document.getElementById("chatUser").innerText = u + (isGroup?" (Group)":"");
 
   if(unread[u]) unread[u]=0;
@@ -110,7 +116,7 @@ window.openChat = (u,isGroup=false) => {
       const data = m.val();
       const div = document.createElement("div");
       div.className = data.from===me?"msg me":"msg other";
-      div.dataset.key = m.key; // key for delete
+      div.dataset.key = m.key;
       if(data.image){
         div.innerHTML = `<b>${data.from}</b><p><img src="${data.image}" style="max-width:150px;border-radius:8px"/></p>
         <small>${new Date(data.time).toLocaleTimeString()}</small>
@@ -131,7 +137,9 @@ window.sendMsg = ()=>{
   if(!current) return alert("Select a user or group");
   let text = document.getElementById("msg").value.trim();
   if(!text) return;
-  const chatRef = ref(db,current.startsWith("group")?"groupChats/"+current:"chats/"+[me,current].sort().join("_"));
+
+  const chatPath = currentIsGroup?"groupChats/"+current:"chats/"+[me,current].sort().join("_");
+  const chatRef = ref(db,chatPath);
   push(chatRef,{from:me,text,time:Date.now(),seen:false});
   document.getElementById("msg").value="";
 }
@@ -141,26 +149,29 @@ window.sendImage = ()=>{
   if(!current) return alert("Select a user or group");
   const url = prompt("Enter image URL (free image, e.g., Unsplash)");
   if(!url) return;
-  const chatRef = ref(db,current.startsWith("group")?"groupChats/"+current:"chats/"+[me,current].sort().join("_"));
+  const chatPath = currentIsGroup?"groupChats/"+current:"chats/"+[me,current].sort().join("_");
+  const chatRef = ref(db,chatPath);
   push(chatRef,{from:me,image:url,time:Date.now()});
 }
 
 /* DELETE MESSAGE */
 window.deleteMessage = (key)=>{
-  const chatRef = ref(db,current.startsWith("group")?"groupChats/"+current:"chats/"+[me,current].sort().join("_")+"/"+key);
+  const chatPath = currentIsGroup?"groupChats/"+current:"chats/"+[me,current].sort().join("_")+"/"+key;
+  const chatRef = ref(db,chatPath);
   remove(chatRef);
 }
 
 /* CLEAR CHAT */
 window.clearChat = ()=>{
   if(!current) return;
-  const chatRef = ref(db,current.startsWith("group")?"groupChats/"+current:"chats/"+[me,current].sort().join("_"));
-  if(confirm("Are you sure you want to clear chat?")) remove(chatRef);
+  const chatPath = currentIsGroup?"groupChats/"+current:"chats/"+[me,current].sort().join("_");
+  if(confirm("Are you sure you want to clear chat?")) remove(ref(db,chatPath));
 }
 
 /* DELETE GROUP */
 window.deleteGroup = ()=>{
-  if(!current || !current.startsWith("group")) return alert("Select a group");
+  if(!current || !currentIsGroup) return alert("Select a group");
+  if(groupCreators[current]!==me) return alert("Only creator can delete this group!");
   const groupRef = ref(db,"groups/"+current);
   if(confirm("Are you sure you want to delete this group?")) remove(groupRef);
 }
@@ -223,7 +234,6 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
 .user{padding:6px 12px;margin:0 5px;background:#00000010;border-radius:20px;cursor:pointer;white-space:nowrap;font-size:14px;display:flex;align-items:center;gap:6px}
 .user .status{width:8px;height:8px;border-radius:50%;display:inline-block}
 .user.online .status{background:#25D366}
-.user.offline .status{background:#8696a0}
 .activeCount{padding:5px;font-size:12px;color:var(--muted)}
 .chat{flex:1;display:flex;flex-direction:column;background:var(--bg);min-height:0}
 .chat-header{height:45px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid #00000015;font-weight:bold;font-size:14px}
@@ -275,7 +285,7 @@ body.dark .user{color:white}
 <div class="app" id="app" style="display:none">
   <div class="activeCount" id="activeCount">Active Users: 0</div>
   <div class="sidebar" id="users">
-    <!-- Users list and groups -->
+    <!-- Active users & groups -->
   </div>
 
   <div class="chat">
