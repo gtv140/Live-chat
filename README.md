@@ -4,12 +4,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LiveConnect</title>
 <style>
-/* Basic Reset & Body */
 body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:#121212;color:#eee;overflow-x:hidden;}
 button{cursor:pointer;border:none;outline:none;border-radius:8px;}
 input,textarea{border:1px solid #555;border-radius:8px;padding:8px;width:100%;box-sizing:border-box;background:#1c1c1c;color:#eee;}
 a{text-decoration:none;color:#0ff;}
-/* Navbar */
 .navbar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:#1f1f1f;border-bottom:1px solid #333;flex-wrap:wrap;}
 .navbar h2{color:#0ff;}
 .navbar .tabs{display:flex;gap:5px;flex-wrap:wrap;}
@@ -18,7 +16,6 @@ a{text-decoration:none;color:#0ff;}
 .navbar .chat-icon{font-size:22px;color:#0ff;cursor:pointer;}
 .navbar .notification{font-size:22px;color:#0ff;cursor:pointer;position:relative;}
 .navbar .notification span{position:absolute;top:-5px;right:-5px;background:red;color:#fff;border-radius:50%;padding:2px 5px;font-size:12px;}
-/* Main Layout */
 .main-container{display:flex;flex-direction:row;height:calc(100vh - 60px);}
 .sidebar{width:220px;background:#1f1f1f;border-right:1px solid #333;overflow-y:auto;display:none;}
 .sidebar h3{text-align:center;padding:15px;border-bottom:1px solid #333;color:#0ff;}
@@ -27,7 +24,6 @@ a{text-decoration:none;color:#0ff;}
 .content-area{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:10px;}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
-/* Posts */
 .post-card{background:#1c1c1c;border-radius:12px;margin-bottom:15px;padding:12px;box-shadow:0 0 8px #0ff;position:relative;transition:0.3s;}
 .post-card:hover{box-shadow:0 0 12px #0ff;}
 .post-card img,.post-card video{max-width:100%;border-radius:8px;margin-top:8px;}
@@ -40,7 +36,6 @@ a{text-decoration:none;color:#0ff;}
 .comment .reply-box{display:none;margin-top:4px;}
 .post-input{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
 .post-input input{flex:1;min-width:150px;border-radius:20px;padding:8px;border:1px solid #0ff;background:#1c1c1c;color:#eee;}
-/* Chat */
 .chat-container{flex:1;display:flex;flex-direction:column;border-top:1px solid #333;display:none;}
 .chat-messages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:5px;}
 .message{max-width:70%;padding:8px 12px;border-radius:18px;word-wrap:break-word;box-shadow:0 0 3px #0ff;position:relative;}
@@ -123,7 +118,7 @@ a{text-decoration:none;color:#0ff;}
 <!-- Privacy Tab -->
 <div id="privacy" class="tab-panel">
 <h3>Privacy & About</h3>
-<p>LiveConnect is a modern platform to chat, share posts and media, and connect with friends.</p>
+<p>LiveConnect is a modern platform to chat, share posts, and connect with friends.</p>
 </div>
 
 <!-- Chat -->
@@ -173,6 +168,7 @@ db.ref("active_users/"+currentUser).set({online:true});
 db.ref("active_users/"+currentUser).onDisconnect().remove();
 loadActiveUsers();
 loadFeed();
+loadChat();
 }
 
 // Tabs
@@ -229,6 +225,27 @@ container.prepend(div);
 });
 }
 
+// Chat load
+function loadChat(){
+const msgContainer=document.getElementById("messages-container");
+db.ref("chat").on("child_added",snap=>{
+const msg=snap.val();
+const div=document.createElement("div");
+div.className="message "+(msg.user===currentUser?"self":"other");
+div.innerHTML=`<strong>${msg.user}</strong>: ${msg.text}<div class="timestamp">${new Date(msg.time).toLocaleTimeString()}</div>`;
+msgContainer.appendChild(div);
+msgContainer.scrollTop=msgContainer.scrollHeight;
+});
+document.getElementById("send-btn").onclick=sendMessage;
+}
+
+function sendMessage(){
+const text=document.getElementById("message-input").value.trim();
+if(!text) return;
+db.ref("chat").push({user:currentUser,text:text,time:Date.now()});
+document.getElementById("message-input").value="";
+}
+
 // Create Post
 function createPost(){
 const text=document.getElementById("post-input").value.trim();
@@ -245,7 +262,3 @@ function deletePost(key){db.ref("feed/"+key).remove();}
 
 // Disconnect
 window.addEventListener("beforeunload",()=>{ if(currentUser) db.ref("active_users/"+currentUser).remove(); });
-</script>
-
-</body>
-</html>
