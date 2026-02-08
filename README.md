@@ -31,17 +31,18 @@ a{text-decoration:none;color:#0ff;}
 .neon-btn:hover{box-shadow:0 0 20px #f0f,0 0 30px #0ff;transform:scale(1.05);}
 
 /* ---- Login Screen ---- */
-#login-screen{text-align:center;margin-top:80px;}
-#login-screen input{width:250px;margin-bottom:10px;}
-#login-screen button{width:120px;}
+#login-screen{text-align:center;margin-top:50px;}
+#login-screen input{width:80%;max-width:250px;margin-bottom:10px;}
+#login-screen button{width:50%;max-width:120px;}
 
 /* ---- Navbar ---- */
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:#111;border-bottom:1px solid #222;box-shadow:0 0 10px #0ff;}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:#111;border-bottom:1px solid #222;box-shadow:0 0 10px #0ff;flex-wrap:wrap;}
 .navbar h2{color:#ff0055;letter-spacing:2px;text-shadow:0 0 5px #ff0055,0 0 10px #0ff;}
-.navbar .tabs button{margin-left:5px;}
+.navbar .tabs{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
+.navbar .tabs button{flex:1;min-width:70px;}
 
 /* ---- Main Container ---- */
-.main-container{display:flex;flex:1;overflow:hidden;height:calc(100vh - 50px);}
+.main-container{display:flex;flex:1;overflow:hidden;height:calc(100vh - 100px);flex-direction:row;}
 .sidebar{width:220px;background:#111;border-right:1px solid #222;overflow-y:auto;box-shadow:0 0 10px #ff0055;}
 .sidebar h3{text-align:center;padding:15px;border-bottom:1px solid #222;color:#0ff;}
 .user{padding:12px 15px;cursor:pointer;border-bottom:1px solid #222;display:flex;align-items:center;justify-content:space-between;}
@@ -58,18 +59,18 @@ a{text-decoration:none;color:#0ff;}
 .post-card{background:#111;border-radius:12px;box-shadow:0 0 10px #0ff;margin-bottom:15px;padding:12px;transition:0.3s;}
 .post-card:hover{box-shadow:0 0 20px #ff0055;}
 .post-card img,.post-card video{max-width:100%;border-radius:12px;margin-top:8px;}
-.post-input{display:flex;gap:5px;margin-bottom:10px;}
-.post-input input{flex:1;border-radius:20px;padding:10px;border:1px solid #0ff;background:#111;color:#fff;}
+.post-input{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
+.post-input input{flex:1;min-width:150px;border-radius:20px;padding:10px;border:1px solid #0ff;background:#111;color:#fff;}
 
 /* ---- Chat ---- */
-.chat-container{flex:1;display:flex;flex-direction:column;border-top:1px solid #222;}
+.chat-container{flex:1;display:flex;flex-direction:column;border-top:1px solid #222;margin-top:10px;}
 .chat-messages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:5px;}
 .message{max-width:70%;padding:8px 12px;border-radius:18px;word-wrap:break-word;box-shadow:0 0 5px #0ff;}
 .message.self{align-self:flex-end;background:#ff0055;color:#000;box-shadow:0 0 10px #ff0055;}
 .message.other{align-self:flex-start;background:#0ff;color:#000;box-shadow:0 0 10px #0ff;}
 .timestamp{font-size:10px;color:#aaa;margin-top:4px;text-align:right;}
-.chat-input{display:flex;padding:10px;border-top:1px solid #222;gap:5px;}
-.chat-input input{flex:1;padding:10px;border-radius:20px;border:1px solid #0ff;background:#111;color:#fff;}
+.chat-input{display:flex;padding:10px;border-top:1px solid #222;gap:5px;flex-wrap:wrap;}
+.chat-input input{flex:1;min-width:150px;padding:10px;border-radius:20px;border:1px solid #0ff;background:#111;color:#fff;}
 .chat-input button{background:#ff0055;color:#000;padding:8px 15px;border-radius:20px;font-weight:bold;box-shadow:0 0 10px #ff0055;}
 
 /* ---- Footer ---- */
@@ -77,7 +78,12 @@ a{text-decoration:none;color:#0ff;}
 .about-section a{color:#ff0055;text-decoration:underline;margin:0 5px;}
 
 /* ---- Responsive ---- */
-@media(max-width:900px){.main-container{flex-direction:column;} .sidebar{width:100%;height:auto;}}
+@media(max-width:900px){
+  .main-container{flex-direction:column;height:auto;}
+  .sidebar{width:100%;height:auto;}
+  .navbar .tabs{justify-content:center;}
+  .post-input, .chat-input{flex-direction:column;}
+}
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -95,7 +101,7 @@ a{text-decoration:none;color:#0ff;}
 </div>
 
 <!-- App -->
-<div id="app-screen">
+<div id="app-screen" style="display:none;flex-direction:column;">
 <div class="navbar">
 <h2>LiveConnect</h2>
 <div class="tabs">
