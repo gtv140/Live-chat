@@ -69,13 +69,175 @@ a{text-decoration:none;color:#0ff;}
 }
 </style>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getDatabase, ref, set, push, onValue, remove, onDisconnect, transaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+  authDomain: "live-chat-b810c.firebaseapp.com",
+  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
+  projectId: "live-chat-b810c",
+  storageBucket: "live-chat-b810c.appspot.com",
+  messagingSenderId: "555058795334",
+  appId: "1:555058795334:web:f668887409800c32970b47"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase();
+const storage = getStorage();
+
+let currentUser="", chatId="", typingTimeout="", isPrivateChat=true, isGroupChat=false;
+
+// ---- Login ----
+function login(){
+  const username=document.getElementById("username").value.trim();
+  if(!username){alert("Enter username"); return;}
+  currentUser=username;
+  document.getElementById("login-screen").style.display="none";
+  document.getElementById("app-screen").style.display="flex";
+  set(ref(db,"active_users/"+currentUser),{online:true});
+  onDisconnect(ref(db,"active_users/"+currentUser)).remove();
+  loadActiveUsers(); loadGroups(); loadFeed();
+}
+
+// ---- Tabs ----
+function switchTab(tab){
+  const tabs=["home","posts","videos","settings","privacy"];
+  tabs.forEach(t=>{
+    document.getElementById(t).style.display=(t===tab)?"block":"none";
+    document.querySelectorAll(".tabs button").forEach(b=>{
+      if(b.textContent.toLowerCase()===tab) b.classList.add("active"); else b.classList.remove("active");
+    });
+  });
+}
+
+// ---- Chat Toggle ----
+function toggleChat(){
+  const chat=document.getElementById("chat-container");
+  chat.style.display=(chat.style.display==="flex")?"none":"flex";
+  document.getElementById("users-sidebar").style.display=(chat.style.display==="flex")?"block":"none";
+}
+
+// ---- Dark Mode ----
+function toggleDarkMode(){ document.body.classList.toggle("dark-mode"); }
+
+// ---- Active Users ----
+function loadActiveUsers(){
+  const usersRef = ref(db,"active_users");
+  onValue(usersRef,(snap)=>{
+    const usersList=document.getElementById("users-list");
+    usersList.innerHTML="";
+    const users = snap.val()||{};
+    Object.keys(users).forEach(user=>{
+      if(user!==currentUser){
+        const div=document.createElement("div");
+        div.textContent=user; div.className="user online"; div.onclick=()=>openPrivateChat(user);
+        usersList.appendChild(div);
+      }
+    });
+  });
+}
+
+// ---- Groups ----
+function loadGroups(){
+  const groupsRef = ref(db,"groups");
+  onValue(groupsRef,(snap)=>{
+    const groupsList=document.getElementById("groups-list");
+    groupsList.innerHTML="";
+    const groups = snap.val()||{};
+    Object.keys(groups).forEach(gid=>{
+      const g=groups[gid];
+      const div=document.createElement("div");
+      div.textContent=g.name; div.className="user";
+      div.onclick=()=>openGroupChat(gid);
+      groupsList.appendChild(div);
+    });
+  });
+}
+
+function createGroup(){
+  const gname=prompt("Enter group name:");
+  if(!gname) return;
+  const groupRef=push(ref(db,"groups"));
+  set(groupRef,{name:gname,creator:currentUser,members:{[currentUser]:true}});
+}
+
+// ---- Private Chat ----
+function getChatId(user1,user2){ return [user1,user2].sort().join("_"); }
+
+function openPrivateChat(user){
+  chatId=getChatId(currentUser,user);
+  isPrivateChat=true; isGroupChat=false;
+  document.getElementById("messages-container").innerHTML="";
+  loadChat(chatId,true,false);
+}
+
+function openGroupChat(gid){
+  chatId="group_"+gid;
+  isPrivateChat=false; isGroupChat=true;
+  document.getElementById("messages-container").innerHTML="";
+  loadChat(chatId,false,true);
+}
+
+// ---- Load Chat ----
+function loadChat(id,privateChat=true,groupChat=false){
+  isPrivateChat=privateChat; isGroupChat=groupChat;
+  const msgContainer=document.getElementById("messages-container");
+  const typingIndicator=document.getElementById("typing-indicator");
+
+  const chatRef = ref(db,"chat/"+id);
+  onValue(chatRef,(snap)=>{
+    msgContainer.innerHTML="";
+    const msgs = snap.val()||{};
+    Object.values(msgs).forEach(msg=>{
+      if(isPrivateChat && !( [msg.user,msg.to].includes(currentUser) )) return;
+      const div=document.createElement("div");
+      div.className="message "+(msg.user===currentUser?"self":"other");
+      div.innerHTML=`<strong>${msg.user}</strong>: ${msg.text || ""}${msg.media?`<br>${msg.media.endsWith('.mp4')?'<video controls src="'+msg.media+'"></video>':'<img src="'+msg.media+'">':''}<div class="timestamp">${new Date(msg.time).toLocaleTimeString()}</div>`;
+      msgContainer.appendChild(div);
+    });
+    msgContainer.scrollTop=msgContainer.scrollHeight;
+  });
+
+  // Typing indicator
+  const typingRef = ref(db,"typing/"+id);
+  onValue(typingRef,(snap)=>{
+    const data=snap.val()||{};
+    const typingUsers=Object.keys(data).filter(u=>u!==currentUser);
+    typingIndicator.textContent=typingUsers.length>0?typingUsers.join(", ")+" is typing...":"";
+  });
+
+  document.getElementById("message-input").oninput=()=>{
+    set(ref(db,"typing/"+id+"/"+currentUser),true);
+    clearTimeout(typingTimeout);
+    typingTimeout=setTimeout(()=>{ remove(ref(db,"typing/"+id+"/"+currentUser)); },2000);
+  };
+
+  document.getElementById("send-btn").onclick=()=>sendMessage();
+  document.getElementById("media-input").onchange=function(e){
+    const file=e.target.files[0]; if(!file) return;
+    const storageRef=sRef(storage,(isGroupChat?'group_media':'chat_media')+'/'+Date.now()+'_'+file.name);
+    uploadBytes(storageRef,file).then(snap=>getDownloadURL(snap.ref).then(url=>sendMessage(url)));
+  };
+}
+
+// ---- Send Message ----
+function sendMessage(mediaUrl=null){
+  const text=document.getElementById("message-input").value.trim();
+  if(!text && !mediaUrl) return;
+  let msgData={user:currentUser,text:text,media:mediaUrl||"",time:Date.now()};
+  if(isPrivateChat){ msgData.to=chatId.replace(currentUser+"_","").replace("_"+currentUser,""); }
+  const chatRef=push(ref(db,"chat/"+chatId));
+  set(chatRef,msgData);
+  document.getElementById("message-input").value="";
+  remove(ref(db,"typing/"+chatId+"/"+currentUser));
+}
+</script>
 
 </head>
 <body>
-
 <!-- Login -->
 <div id="login-screen" style="text-align:center;margin-top:50px;">
 <h2>Welcome to LiveConnect</h2>
@@ -119,26 +281,6 @@ a{text-decoration:none;color:#0ff;}
 <div id="feed-container"></div>
 </div>
 
-<div id="posts" class="tab-panel">
-<h3>Your Posts</h3>
-<div id="my-posts-container"></div>
-</div>
-
-<div id="videos" class="tab-panel">
-<h3>Videos</h3>
-<div id="videos-container"></div>
-</div>
-
-<div id="settings" class="tab-panel">
-<h3>Settings</h3>
-<button onclick="toggleDarkMode()">Toggle Dark Mode</button>
-</div>
-
-<div id="privacy" class="tab-panel">
-<h3>Privacy & About</h3>
-<p>LiveConnect is a modern platform to chat, create posts, media, groups, and connect with friends in realtime. Enjoy a premium neon look, mobile-friendly layout, and all features fully functional.</p>
-</div>
-
 <div class="chat-container" id="chat-container">
 <div class="chat-messages" id="messages-container"></div>
 <div class="typing-indicator" id="typing-indicator"></div>
@@ -156,266 +298,5 @@ a{text-decoration:none;color:#0ff;}
 LiveConnect - Connect & Share | <a href="#">About</a> | <a href="#">Terms</a> | <a href="#">Privacy</a>
 </div>
 </div>
-
-<script>
-// Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-  authDomain: "live-chat-b810c.firebaseapp.com",
-  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
-  projectId: "live-chat-b810c",
-  storageBucket: "live-chat-b810c.appspot.com",
-  messagingSenderId: "555058795334",
-  appId: "1:555058795334:web:f668887409800c32970b47"
-};
-firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
-const storage=firebase.storage();
-
-let currentUser="",chatId="",typingTimeout,isPrivateChat=true,isGroupChat=false;
-
-// ---- Login ----
-function login(){
-const username=document.getElementById("username").value.trim();
-if(!username){alert("Enter username");return;}
-currentUser=username;
-document.getElementById("login-screen").style.display="none";
-document.getElementById("app-screen").style.display="flex";
-db.ref("active_users/"+currentUser).set({online:true});
-db.ref("active_users/"+currentUser).onDisconnect().remove();
-loadActiveUsers();loadGroups();loadFeed();
-}
-
-// ---- Tabs ----
-function switchTab(tab){
-const tabs=["home","posts","videos","settings","privacy"];
-tabs.forEach(t=>{
-document.getElementById(t).style.display=(t===tab)?"block":"none";
-document.querySelectorAll(".tabs button").forEach(b=>{
-if(b.textContent.toLowerCase()===tab) b.classList.add("active"); else b.classList.remove("active");
-});
-});
-}
-
-// ---- Chat Toggle ----
-function toggleChat(){
-const chat=document.getElementById("chat-container");
-chat.style.display=(chat.style.display==="flex")?"none":"flex";
-document.getElementById("users-sidebar").style.display=(chat.style.display==="flex")?"block":"none";
-}
-
-// ---- Dark Mode ----
-function toggleDarkMode(){document.body.classList.toggle("dark-mode");}
-
-// ---- Active Users ----
-function loadActiveUsers(){
-db.ref("active_users").on("value",snap=>{
-const usersList=document.getElementById("users-list");
-usersList.innerHTML="";
-const users=snap.val()||{};
-for(let user in users){
-if(user!==currentUser){
-const div=document.createElement("div");
-div.textContent=user; div.className="user online"; div.onclick=()=>openPrivateChat(user);
-usersList.appendChild(div);
-}
-}
-});
-}
-
-// ---- Groups ----
-function loadGroups(){
-db.ref("groups").on("value",snap=>{
-const groupsList=document.getElementById("groups-list");
-groupsList.innerHTML="";
-const groups=snap.val()||{};
-for(let gid in groups){
-const g=groups[gid];
-const div=document.createElement("div");
-div.textContent=g.name; div.className="user";
-div.onclick=()=>openGroupChat(gid);
-groupsList.appendChild(div);
-}
-});
-}
-
-function createGroup(){
-const gname=prompt("Enter group name:");
-if(!gname) return;
-const groupRef=db.ref("groups").push();
-groupRef.set({name:gname,creator:currentUser,members:{[currentUser]:true}});
-}
-
-// ---- Chat ----
-function getChatId(user1,user2){return [user1,user2].sort().join("_");}
-
-function openPrivateChat(user){
-chatId=getChatId(currentUser,user);
-isPrivateChat=true; isGroupChat=false;
-document.getElementById("messages-container").innerHTML="";
-loadChat(chatId,true,false);
-}
-
-function openGroupChat(gid){
-chatId="group_"+gid;
-isPrivateChat=false; isGroupChat=true;
-document.getElementById("messages-container").innerHTML="";
-loadChat(chatId,false,true);
-}
-
-// ---- Chat Loader ----
-function loadChat(id,privateChat=true,groupChat=false){
-isPrivateChat=privateChat; isGroupChat=groupChat;
-const msgContainer=document.getElementById("messages-container");
-const typingIndicator=document.getElementById("typing-indicator");
-
-db.ref("chat/"+id).on("child_added",snap=>{
-const msg=snap.val();
-if(isPrivateChat && !([msg.user,msg.to].includes(currentUser))) return;
-const div=document.createElement("div");
-div.className="message "+(msg.user===currentUser?"self":"other");
-div.innerHTML=`<strong>${msg.user}</strong>: ${msg.text || ""}${msg.media?`<br>${msg.media.endsWith('.mp4')?'<video controls src="'+msg.media+'"></video>':'<img src="'+msg.media+'">':''}<div class="timestamp">${new Date(msg.time).toLocaleTimeString()}</div>`;
-msgContainer.appendChild(div); msgContainer.scrollTop=msgContainer.scrollHeight;
-if(msg.user!==currentUser)document.getElementById("notify-sound").play();
-});
-
-db.ref("typing/"+id).on("value",snap=>{
-const data=snap.val()||{};
-const typingUsers=Object.keys(data).filter(u=>u!==currentUser);
-typingIndicator.textContent=typingUsers.length>0?typingUsers.join(", ")+" is typing...":"";
-});
-
-document.getElementById("message-input").oninput=()=>{
-db.ref("typing/"+id+"/"+currentUser).set(true);
-clearTimeout(typingTimeout);
-typingTimeout=setTimeout(()=>{db.ref("typing/"+id+"/"+currentUser).remove();},2000);
-};
-
-document.getElementById("send-btn").onclick=()=>sendMessage();
-document.getElementById("media-input").onchange=function(e){
-const file=e.target.files[0]; if(!file) return;
-const storageRef=storage.ref((isGroupChat?'group_media':'chat_media')+'/'+Date.now()+'_'+file.name);
-storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>sendMessage(url)));
-};
-}
-
-// ---- Send Message ----
-function sendMessage(mediaUrl=null){
-const text=document.getElementById("message-input").value.trim();
-if(!text && !mediaUrl) return;
-let msgData={user:currentUser,text:text,media:mediaUrl||"",time:Date.now()};
-if(isPrivateChat){msgData.to=chatId.replace(currentUser+"_","").replace("_"+currentUser,"");}
-db.ref("chat/"+chatId).push(msgData);
-document.getElementById("message-input").value="";
-db.ref("typing/"+chatId+"/"+currentUser).remove();
-}
-
-// ---- Posts & Comments ----
-function createPost(){
-const text=document.getElementById("post-input").value.trim();
-const fileInput=document.getElementById("post-media");
-if(!text && !fileInput.files[0]) return alert("Type something or select media!");
-const postRef=db.ref("feed").push();
-if(fileInput.files[0]){
-const file=fileInput.files[0];
-const storageRef=storage.ref('post_media/'+Date.now()+'_'+file.name);
-storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>{
-postRef.set({user:currentUser,text:text,media:url,likes:0,time:Date.now(),comments:{}});
-fileInput.value="";
-}));
-}else{
-postRef.set({user:currentUser,text:text,likes:0,time:Date.now(),comments:{}});
-}
-document.getElementById("post-input").value="";
-}
-
-function loadFeed(){
-db.ref("feed").on("value",snap=>{
-const feedContainer=document.getElementById("feed-container");
-feedContainer.innerHTML="";
-const posts=snap.val()||{};
-for(let pid in posts){feedContainer.appendChild(renderPost(pid,posts[pid]));}
-});
-
-function renderPost(pid,post){
-const div=document.createElement("div"); div.className="post-card"; div.id="post-"+pid;
-div.innerHTML=`<strong>${post.user}</strong>: ${post.text || ""}${post.media?`<br>${post.media.endsWith('.mp4')?'<video controls src="'+post.media+'"></video>':'<img src="'+post.media+'">':''}
-<div class="post-actions">
-<button onclick="likePost('${pid}')">Like (${post.likes||0})</button>
-<button onclick="toggleCommentBox('${pid}')">Comment</button>
-${post.user===currentUser?'<button class="delete-btn" onclick="deletePost(\''+pid+'\')">Delete</button>':''}
-</div>
-<div class="comment-section" id="comments-${pid}"></div>
-<div class="comment-input" id="comment-box-${pid}" style="display:none;">
-<input type="text" placeholder="Write a comment..." id="comment-input-${pid}">
-<button onclick="addComment('${pid}')">Post</button>
-</div>`;
-loadComments(pid);
-return div;
-}
-}
-
-function likePost(pid){db.ref("feed/"+pid+"/likes").transaction(likes=>(likes||0)+1);}
-function deletePost(pid){if(confirm("Are you sure to delete this post?")){db.ref("feed/"+pid).remove();}}
-
-function toggleCommentBox(pid){const box=document.getElementById("comment-box-"+pid);box.style.display=(box.style.display==="none")?"flex":"none";}
-function addComment(pid,parentId=null){
-const input=document.getElementById("comment-input-"+pid); const text= input.value.trim(); if(!text) return;
-let commentData = {
-  user: currentUser,
-  text: text,
-  time: Date.now(),
-  replies: {}
-};
-if(parentId){
-  db.ref(`feed/${pid}/comments/${parentId}/replies`).push(commentData);
-}else{
-  db.ref(`feed/${pid}/comments`).push(commentData);
-}
-input.value = "";
-}
-
-// ---- Load Comments ----
-function loadComments(pid){
-const commentsContainer = document.getElementById(`comments-${pid}`);
-db.ref(`feed/${pid}/comments`).on("value",snap=>{
-  commentsContainer.innerHTML = "";
-  const comments = snap.val() || {};
-  for(let cid in comments){
-    const c = comments[cid];
-    const div = document.createElement("div");
-    div.className = "comment";
-    div.innerHTML = `<strong>${c.user}</strong>: ${c.text} <div class="timestamp">${new Date(c.time).toLocaleTimeString()}</div>
-    <span class="reply" onclick="toggleReplyBox('${pid}','${cid}')">Reply</span>
-    <div class="reply-box" id="reply-box-${pid}-${cid}" style="display:none;">
-      <input type="text" id="reply-input-${pid}-${cid}" placeholder="Write a reply...">
-      <button onclick="addComment('${pid}','${cid}')">Post</button>
-    </div>`;
-    commentsContainer.appendChild(div);
-
-    // Load replies
-    const replies = c.replies || {};
-    for(let rid in replies){
-      const r = replies[rid];
-      const replyDiv = document.createElement("div");
-      replyDiv.className = "comment reply";
-      replyDiv.innerHTML = `<strong>${r.user}</strong>: ${r.text} <div class="timestamp">${new Date(r.time).toLocaleTimeString()}</div>`;
-      div.appendChild(replyDiv);
-    }
-  }
-});
-}
-
-// ---- Toggle Reply Box ----
-function toggleReplyBox(pid,cid){
-const box = document.getElementById(`reply-box-${pid}-${cid}`);
-box.style.display = (box.style.display==="none")?"flex":"none";
-}
-
-// ---- Initialize ----
-document.addEventListener("DOMContentLoaded",()=>{
-  document.getElementById("send-btn").addEventListener("click",sendMessage);
-});
-</script>
 </body>
 </html>
