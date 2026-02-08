@@ -2,20 +2,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LiveConnect Multi-User Chat</title>
-
+<title>LiveConnect Messenger</title>
 <style>
-body { font-family: Arial, sans-serif; background: #f5f7fb; padding: 20px; }
-.chat-container { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
-.stats { display: flex; justify-content: space-between; margin-bottom: 15px; }
-.stat-box { background: #e7f0ff; padding: 10px; border-radius: 6px; width: 48%; text-align: center; }
-.chat-box { height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 6px; background:#fafafa; }
-input { width: 70%; padding: 8px; }
-button { padding: 8px 12px; margin-left: 5px; }
-h1 { margin-bottom: 5px; text-align:center; }
-p { margin-top: 0; color: #555; text-align:center; }
-.message { margin-bottom:5px; padding:5px; border-radius:4px; background:#d9f0d9; }
-.user-message { background:#f0d9d9; text-align:right; }
+body { font-family: Arial, sans-serif; background:#f5f7fb; margin:0; padding:0;}
+#login-screen, #chat-screen { max-width:500px; margin:auto; padding:20px; }
+#login-screen { text-align:center; margin-top:50px; }
+#chat-screen { display:none; background:#fff; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+#users-list { border-right:1px solid #ccc; width:30%; float:left; height:400px; overflow-y:auto; }
+.user { padding:10px; border-bottom:1px solid #eee; cursor:pointer; }
+.user:hover { background:#f0f0f0; }
+#messages-container { width:70%; float:right; height:400px; overflow-y:auto; border-left:1px solid #ccc; padding:10px; }
+.message { margin:5px 0; padding:5px 10px; border-radius:10px; max-width:70%; }
+.message.self { background:#d9f0d9; margin-left:auto; text-align:right;}
+.message.other { background:#f0d9d9; margin-right:auto; text-align:left;}
+#message-input { width:80%; padding:8px; }
+#send-btn { padding:8px 12px; margin-left:5px; }
+.clearfix::after { content:""; clear:both; display:table; }
+h2 { margin:10px 0; text-align:center; }
 </style>
 
 <!-- Firebase -->
@@ -25,24 +28,22 @@ p { margin-top: 0; color: #555; text-align:center; }
 </head>
 <body>
 
-<div class="chat-container">
-  <h1>LiveConnect</h1>
-  <p>Manage real-time multi-user chats easily</p>
+<div id="login-screen">
+<h2>Enter Your Username</h2>
+<input type="text" id="username" placeholder="Your name">
+<button onclick="login()">Login</button>
+</div>
 
-  <!-- Stats -->
-  <div class="stats">
-    <div class="stat-box">Active Chats: <span id="active-chats">0</span></div>
-    <div class="stat-box">Waiting Users: <span id="waiting-users">0</span></div>
-  </div>
-
-  <!-- Chat Box -->
-  <div class="chat-box" id="chat-box"></div>
-
-  <!-- Message Input -->
-  <input type="text" id="message" placeholder="Type your message...">
-  <button onclick="sendMessage()">Send</button>
-  <button onclick="startChat()">Start Chat</button>
-  <button onclick="endChat()">End Chat</button>
+<div id="chat-screen">
+<h2>LiveConnect Messenger</h2>
+<div class="clearfix">
+<div id="users-list"></div>
+<div id="messages-container"></div>
+</div>
+<div style="margin-top:10px;">
+<input type="text" id="message-input" placeholder="Type a message...">
+<button id="send-btn">Send</button>
+</div>
 </div>
 
 <script>
@@ -61,67 +62,70 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// User identifier
-let currentUser = "User" + Math.floor(Math.random()*1000);
-let activeChatRef = null;
+let currentUser = "";
+let activeChatUser = "";
 
-// Send Message
-function sendMessage() {
-  const msgInput = document.getElementById("message");
-  const msg = msgInput.value.trim();
-  if(!msg || !activeChatRef) return;
-
-  db.ref(activeChatRef + "/messages").push({
-    user: currentUser,
-    message: msg,
-    timestamp: Date.now()
+// Login function
+function login() {
+  const usernameInput = document.getElementById("username").value.trim();
+  if(!usernameInput) return;
+  currentUser = usernameInput;
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("chat-screen").style.display = "block";
+  
+  // Add user to active users
+  db.ref("active_users/" + currentUser).set(true);
+  
+  // Load users
+  db.ref("active_users").on("value", snapshot=>{
+    const usersList = document.getElementById("users-list");
+    usersList.innerHTML = "";
+    const users = snapshot.val() || {};
+    for(let user in users){
+      if(user!==currentUser){
+        const div = document.createElement("div");
+        div.textContent = user;
+        div.className = "user";
+        div.onclick = ()=>selectUser(user);
+        usersList.appendChild(div);
+      }
+    }
   });
-  msgInput.value = "";
 }
 
-// Start Chat
-function startChat() {
-  activeChatRef = "chat_" + Date.now();
-  db.ref("active_chats/" + activeChatRef).set({
-    user: currentUser,
-    start: Date.now()
-  });
-  updateStats();
-}
-
-// End Chat
-function endChat() {
-  if(!activeChatRef) return;
-  db.ref("active_chats/" + activeChatRef).remove();
-  activeChatRef = null;
-  updateStats();
-}
-
-// Listen for all messages in all chats
-db.ref("active_chats").on("child_added", function(snapshot){
-  const chatId = snapshot.key;
-  db.ref("active_chats/" + chatId + "/messages").on("child_added", function(msgSnap){
-    const data = msgSnap.val();
-    const chatBox = document.getElementById("chat-box");
+// Select user to chat
+function selectUser(user){
+  activeChatUser = user;
+  document.getElementById("messages-container").innerHTML = "";
+  const chatRef = db.ref("private_chats/" + [currentUser,activeChatUser].sort().join("_"));
+  
+  // Listen for messages
+  chatRef.on("child_added", snapshot=>{
+    const data = snapshot.val();
     const msgDiv = document.createElement("div");
-    msgDiv.textContent = data.user + ": " + data.message;
-    msgDiv.className = data.user === currentUser ? "message user-message" : "message";
-    chatBox.appendChild(msgDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    msgDiv.textContent = data.user + ": " + data.message + " (" + new Date(data.timestamp).toLocaleTimeString() + ")";
+    msgDiv.className = "message " + (data.user===currentUser ? "self" : "other");
+    document.getElementById("messages-container").appendChild(msgDiv);
+    document.getElementById("messages-container").scrollTop = document.getElementById("messages-container").scrollHeight;
   });
-  updateStats();
-});
-
-db.ref("active_chats").on("child_removed", updateStats);
-
-// Update Stats
-function updateStats() {
-  db.ref("active_chats").once("value", function(snapshot){
-    const val = snapshot.val() || {};
-    document.getElementById("active-chats").textContent = Object.keys(val).length;
-    document.getElementById("waiting-users").textContent = Object.keys(val).length; // same for simplicity
-  });
+  
+  // Send button
+  document.getElementById("send-btn").onclick = ()=>{
+    const msg = document.getElementById("message-input").value.trim();
+    if(!msg) return;
+    chatRef.push({
+      user: currentUser,
+      message: msg,
+      timestamp: Date.now()
+    });
+    document.getElementById("message-input").value = "";
+  };
 }
+
+// Remove user on disconnect
+window.addEventListener("beforeunload", ()=>{
+  if(currentUser) db.ref("active_users/" + currentUser).remove();
+});
 </script>
 
 </body>
