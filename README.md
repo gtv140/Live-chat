@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Connect</title>
+<title>Live Connect - Mobile</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <script type="module">
@@ -33,7 +33,7 @@ window.loginUser = () => {
   document.getElementById("app").style.display = "flex";
 
   const userRef = ref(db,"users/"+me);
-  set(userRef,{online:true,lastLogin:Date.now(),avatar:`https://images.unsplash.com/photo-1603415526960-faa0b7a6d1f8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZmFjZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=50&q=50`});
+  set(userRef,{online:true,lastLogin:Date.now()});
   onDisconnect(userRef).set({online:false});
 
   const chatRef = ref(db,"chats/welcome_"+me);
@@ -52,9 +52,7 @@ function loadUsers(){
       if(u.key!==me){
         let div = document.createElement("div");
         div.className="user";
-        const avatar = u.val().avatar || `https://images.unsplash.com/photo-1603415526960-faa0b7a6d1f8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZmFjZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=50&q=50`;
-        div.innerHTML = `<div class="avatar"><img src="${avatar}" /></div>
-        <div class="user-info"><b>${u.key}</b><br><small>${u.val().online?"Online":"Offline"}</small></div>`;
+        div.innerHTML = `<b>${u.key}</b>`;
         div.onclick = ()=>openChat(u.key);
         list.appendChild(div);
       }
@@ -140,99 +138,50 @@ body.dark{
 --bg:#0b141a;--card:#111b21;--primary:#25D366;--text:#e9edef;--muted:#8696a0;
 }
 body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
-.header{height:220px;background:url('https://images.unsplash.com/photo-1557682261-1b0b0a3ef16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover;display:flex;align-items:center;justify-content:center;color:white;font-size:2.2rem;font-weight:bold;text-shadow:1px 1px 5px #000}
-.nav{display:flex;justify-content:center;gap:20px;padding:14px;background:var(--card);border-bottom:1px solid #00000020;position:sticky;top:0;z-index:100}
-.nav a{color:var(--text);text-decoration:none;font-weight:bold}
-.section{padding:30px;text-align:center}
-.section h2{margin-bottom:12px}
-.section p{max-width:700px;margin:auto}
-.app{display:flex;height:calc(100vh - 284px);overflow:hidden}
-.sidebar{width:100%;max-width:300px;background:var(--card);display:flex;flex-direction:column;border-right:1px solid #00000010}
-.sidebar header{height:60px;padding:0 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #00000015;font-weight:bold}
-.user-list{flex:1;overflow:auto}
-.user{padding:12px 14px;display:flex;gap:12px;align-items:center;cursor:pointer;border-radius:8px}
-.user:hover{background:#00000010}
-.avatar{width:44px;height:44px;border-radius:50%;overflow:hidden}
-.avatar img{width:100%;height:100%;object-fit:cover}
-.user-info b{font-size:15px}
-.user-info small{font-size:12px;color:var(--muted)}
+.header{height:150px;background:url('https://images.unsplash.com/photo-1557682261-1b0b0a3ef16b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover;display:flex;align-items:center;justify-content:center;color:white;font-size:1.8rem;font-weight:bold;text-shadow:1px 1px 5px #000}
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.sidebar{display:flex;flex-direction:row;overflow-x:auto;background:var(--card);border-bottom:1px solid #00000015;padding:5px}
+.user{padding:8px 12px;margin:0 5px;background:#00000010;border-radius:20px;cursor:pointer;white-space:nowrap}
 .chat{flex:1;display:flex;flex-direction:column;background:var(--bg)}
-.chat-header{height:60px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid #00000015;font-weight:bold}
-.messages{flex:1;padding:14px;overflow-y:auto;background:linear-gradient(180deg,#00000005,transparent)}
-.msg{max-width:78%;padding:10px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;line-height:1.4;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.chat-header{height:50px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid #00000015;font-weight:bold}
+.messages{flex:1;padding:10px;overflow-y:auto;background:linear-gradient(180deg,#00000005,transparent)}
+.msg{max-width:75%;padding:8px 12px;border-radius:14px;margin-bottom:6px;font-size:14px;line-height:1.4;box-shadow:0 1px 2px rgba(0,0,0,0.1)}
 .me{background:#dcf8c6;margin-left:auto;border-bottom-right-radius:4px}
-.other{background:var(--card);border-bottom-left-radius:4px}
+.other{background:#fff;border-bottom-left-radius:4px}
 .msg small{font-size:11px;color:var(--muted)}
-.input{padding:10px;display:flex;gap:8px;background:var(--card);position:sticky;bottom:0}
-.input input{flex:1;padding:12px 14px;border-radius:22px;border:1px solid #00000020;font-size:15px}
-.input button{width:46px;height:46px;border-radius:50%;background:var(--primary);border:none;color:white;font-size:18px}
-.input .fa-image{background:#ff5e57;padding:10px;border-radius:50%;color:white;cursor:pointer}
-.login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center}
-.login-box{background:var(--card);padding:30px;border-radius:10px;width:320px;text-align:center}
-.login-box input{width:100%;padding:12px;margin-top:10px;font-size:15px}
-body.dark .other{background:#1f2c34}
+.input{padding:6px;display:flex;gap:6px;background:var(--card);position:sticky;bottom:0}
+.input input{flex:1;padding:10px 12px;border-radius:22px;border:1px solid #00000020;font-size:14px}
+.input button{width:40px;height:40px;border-radius:50%;background:var(--primary);border:none;color:white;font-size:16px}
+.input .fa-image{background:#ff5e57;padding:8px;border-radius:50%;color:white;cursor:pointer}
+body.dark .other{background:#1f2c34;color:white}
 body.dark .me{background:#005c4b;color:white}
 body.dark input{background:#111b21;color:white}
-@media(max-width:768px){
-.sidebar{max-width:90px}
-.user-info{display:none}
-.chat-header{font-size:14px}
-.input input{font-size:14px;padding:10px}
-}
+.login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-box{background:var(--card);padding:20px;border-radius:10px;width:90%;max-width:320px;text-align:center}
+.login-box input{width:100%;padding:10px;margin-top:10px;font-size:14px}
 </style>
 
 <body>
 <div class="header">Live Connect</div>
-<div class="nav">
-<a href="#about">About</a>
-<a href="#features">Features</a>
-<a href="#faq">FAQ</a>
-<a href="#terms">Terms</a>
-<a href="#chat">Chat</a>
-</div>
 
-<div class="section" id="about">
-<h2>About</h2>
-<p>Professional live chat website with full features including avatars, emojis, file sharing, typing indicators, and more. Modern responsive design for desktop and mobile.</p>
-</div>
-
-<div class="section" id="features">
-<h2>Features</h2>
-<p>Real-time chat, Dark/Light mode, Mobile-friendly layout, profile avatars, images, emoji picker, notifications, seen/read indicators, typing status.</p>
-</div>
-
-<div class="section" id="faq">
-<h2>FAQ</h2>
-<p>Ask questions and connect with users instantly. Fully mobile-friendly, dark/light mode supported, modern UI/UX layout.</p>
-</div>
-
-<div class="section" id="terms">
-<h2>Terms & Privacy</h2>
-<p>All user data is stored securely in Firebase. Chat responsibly and follow our guidelines.</p>
-</div>
-
-<div class="section" id="chat" style="height:calc(100vh - 284px);padding:0">
 <div class="login" id="login">
   <div class="login-box">
-    <h3>Enter Username</h3>
-    <input id="username" placeholder="Your name"/>
-    <button onclick="loginUser()">Start</button>
+    <h3>Enter Your Name</h3>
+    <input id="username" placeholder="Full Name"/>
+    <button onclick="loginUser()">Start Chat</button>
   </div>
 </div>
 
 <div class="app" id="app" style="display:none">
-  <div class="sidebar">
-    <header>
-      <b>Live Connect</b>
-      <i class="fa fa-moon" onclick="toggleTheme()"></i>
-    </header>
-    <div class="user-list" id="users"></div>
+  <div class="sidebar" id="users">
+    <!-- Users will be loaded here as full names -->
   </div>
 
   <div class="chat">
     <div class="chat-header">
-      <div id="chatUser">Select user</div>
+      <div id="chatUser">Select User</div>
       <small id="status"></small>
+      <i class="fa fa-moon" onclick="toggleTheme()"></i>
     </div>
     <div class="messages" id="messages"></div>
     <div class="input">
@@ -241,7 +190,6 @@ body.dark input{background:#111b21;color:white}
       <i class="fa fa-image" onclick="sendImage()"></i>
     </div>
   </div>
-</div>
 </div>
 </body>
 </html>
