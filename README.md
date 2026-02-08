@@ -7,7 +7,7 @@
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, onDisconnect, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -24,7 +24,7 @@ const db = getDatabase(app);
 
 let me="", current="";
 
-/* ---------- LOGIN ---------- */
+/* LOGIN */
 window.loginUser = () => {
   me = document.getElementById("username").value.trim();
   if(!me) return alert("Enter username");
@@ -33,17 +33,16 @@ window.loginUser = () => {
 
   const userRef = ref(db,"users/"+me);
   set(userRef,{online:true, lastLogin: Date.now()});
-
-  onDisconnect(userRef).update({online:false});
+  onDisconnect(userRef).set({online:false});
 
   // Welcome new user
   const chatRef = ref(db,"chats/welcome_"+me);
   push(chatRef,{from:"System",text:`Welcome ${me}! Start chatting.`,time:Date.now()});
-  
+
   loadUsers();
 }
 
-/* ---------- LOAD USERS ---------- */
+/* LOAD USERS */
 function loadUsers(){
   const usersRef = ref(db,"users");
   const list = document.getElementById("users");
@@ -62,7 +61,7 @@ function loadUsers(){
   });
 }
 
-/* ---------- OPEN CHAT ---------- */
+/* OPEN CHAT */
 window.openChat = (u) => {
   current = u;
   document.getElementById("chatUser").innerText = u;
@@ -83,7 +82,7 @@ window.openChat = (u) => {
   });
 }
 
-/* ---------- SEND MESSAGE ---------- */
+/* SEND MESSAGE */
 window.sendMsg = ()=>{
   if(!current) return alert("Select a user");
   let text = document.getElementById("msg").value.trim();
@@ -93,7 +92,7 @@ window.sendMsg = ()=>{
   document.getElementById("msg").value="";
 }
 
-/* ---------- TYPING INDICATOR ---------- */
+/* TYPING INDICATOR */
 let typingTimeout;
 document.getElementById("msg")?.addEventListener("input", ()=>{
   if(!current) return;
@@ -113,7 +112,7 @@ onValue(typingIndicator, snap=>{
   document.getElementById("status").innerText = status;
 });
 
-/* ---------- DARK MODE ---------- */
+/* DARK MODE */
 window.toggleTheme = ()=>document.body.classList.toggle("dark");
 
 </script>
@@ -132,7 +131,7 @@ body{margin:0;height:100vh;font-family:system-ui;background:var(--bg);color:var(
 .sidebar{width:100%;max-width:360px;background:var(--card);display:flex;flex-direction:column}
 .sidebar header{height:56px;padding:0 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #00000015}
 .user-list{flex:1;overflow:auto}
-.user{padding:12px 14px;display:flex;gap:12px;align-items:center;cursor:pointer}
+.user{padding:12px 14px;display:flex;gap:12px;align-items:center;cursor:pointer;border-radius:8px}
 .user:hover{background:#00000010}
 .avatar{width:44px;height:44px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-weight:600}
 .user-info b{font-size:15px}
@@ -142,7 +141,7 @@ body{margin:0;height:100vh;font-family:system-ui;background:var(--bg);color:var(
 .chat{flex:1;display:flex;flex-direction:column}
 .chat-header{height:56px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid #00000015}
 .messages{flex:1;padding:14px;overflow-y:auto;background:linear-gradient(180deg,#00000005,transparent)}
-.msg{max-width:78%;padding:10px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;line-height:1.4}
+.msg{max-width:78%;padding:10px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;line-height:1.4;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
 .me{background:#dcf8c6;margin-left:auto;border-bottom-right-radius:4px}
 .other{background:var(--card);border-bottom-left-radius:4px}
 .msg small{font-size:11px;color:var(--muted)}
@@ -152,7 +151,7 @@ body{margin:0;height:100vh;font-family:system-ui;background:var(--bg);color:var(
 
 /* LOGIN */
 .login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center}
-.login-box{background:var(--card);padding:30px;border-radius:10px;width:300px}
+.login-box{background:var(--card);padding:30px;border-radius:10px;width:300px;text-align:center}
 .login-box input{width:100%;padding:10px;margin-top:10px}
 
 /* DARK MODE FIX */
@@ -179,7 +178,7 @@ body.dark input{background:#111b21;color:white}
 <div class="app" id="app" style="display:none">
   <div class="sidebar">
     <header>
-      <b>Chats</b>
+      <b>Live Chat</b>
       <i class="fa fa-moon" onclick="toggleTheme()"></i>
     </header>
     <div class="user-list" id="users"></div>
