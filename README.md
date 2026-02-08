@@ -72,6 +72,7 @@ a{text-decoration:none;color:#0ff;}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
 </head>
 <body>
 
@@ -251,220 +252,177 @@ function getChatId(user1,user2){return [user1,user2].sort().join("_");}
 function openPrivateChat(user){
 chatId=getChatId(currentUser,user);
 document.getElementById("messages-container").innerHTML="";
-loadChat(chatId);
+loadChat(chatId,true);
 }
 
 function openGroupChat(gid){
 chatId="group_"+gid;
 document.getElementById("messages-container").innerHTML="";
-loadChat(chatId);
-}
+loadChat(chatId,false,true);
+}<script>
+let isPrivateChat=true,isGroupChat=false;
 
-function loadChat(chatId){
-const msgContainer=document.getElementById("messages-container");
-const typingIndicator=document.getElementById("typing-indicator");
-db.ref("chat/"+chatId).on("child_added",snap=>{
-const msg=snap.val();
-const div=document.createElement("div");
-div.className="message "+(msg.user===currentUser?"self":"other");
-div.innerHTML=`<strong>${msg.user}</strong>: ${msg.text}${msg.media?`<br><${msg.media.endsWith('.mp4')?'video controls':'img'} src="${msg.media}" style="max-width:200px;">`:''}<div class="timestamp">${new Date(msg.time).toLocaleTimeString()}</div>`;
-msgContainer.appendChild(div);
-msgContainer.scrollTop=msgContainer.scrollHeight;
-document.getElementById("notify-sound").play();
-});
-db.ref("typing/"+chatId).on("value",snap=>{
-const data=snap.val()||{};
-let typingUsers=Object.keys(data).filter(u=>u!==currentUser);
-typingIndicator.textContent=typingUsers.length>0?typingUsers.join(", ")+" is typing...":"";
-});
-document.getElementById("message-input").oninput=()=>{
-db.ref("typing/"+chatId+"/"+currentUser).set(true);
-clearTimeout(typingTimeout);
-typingTimeout=setTimeout(()=>{db.ref("typing/"+chatId+"/"+currentUser).remove();},2000);
-};
-document.getElementById("send-btn").onclick=sendMessage;
-document.getElementById("media-input").onchange=function(e){
-const file=e.target.files[0];
-if(!file) return;
-const storageRef=storage.ref('chat_media/'+Date.now()+'_'+file.name);
-storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>sendMessage(url)));
-};
+// ---- Load Chat Messages ----
+function loadChat(id,privateChat=true,groupChat=false){
+  isPrivateChat=privateChat;
+  isGroupChat=groupChat;
+  const msgContainer=document.getElementById("messages-container");
+  const typingIndicator=document.getElementById("typing-indicator");
 
+  db.ref("chat/"+id).on("child_added",snap=>{
+    const msg=snap.val();
+    if(isPrivateChat && !([msg.user, msg.to].includes(currentUser))) return;
+    const div=document.createElement("div");
+    div.className="message "+(msg.user===currentUser?"self":"other");
+    div.innerHTML=`<strong>${msg.user}</strong>: ${msg.text || ""}${msg.media?`<br>${msg.media.endsWith('.mp4')?'<video controls src="'+msg.media+'"></video>':'<img src="'+msg.media+'">'}`
+    +`<div class="timestamp">${new Date(msg.time).toLocaleTimeString()}</div>`;
+    msgContainer.appendChild(div);
+    msgContainer.scrollTop=msgContainer.scrollHeight;
+    if(msg.user!==currentUser)document.getElementById("notify-sound").play();
+  });
+
+  db.ref("typing/"+id).on("value",snap=>{
+    const data=snap.val()||{};
+    const typingUsers=Object.keys(data).filter(u=>u!==currentUser);
+    typingIndicator.textContent=typingUsers.length>0?typingUsers.join(", ")+" is typing...":"";
+  });
+
+  document.getElementById("message-input").oninput=()=>{
+    db.ref("typing/"+id+"/"+currentUser).set(true);
+    clearTimeout(typingTimeout);
+    typingTimeout=setTimeout(()=>{db.ref("typing/"+id+"/"+currentUser).remove();},2000);
+  };
+
+  document.getElementById("send-btn").onclick=()=>sendMessage();
+  document.getElementById("media-input").onchange=function(e){
+    const file=e.target.files[0]; if(!file) return;
+    const storageRef=storage.ref((isGroupChat?'group_media':'chat_media')+'/'+Date.now()+'_'+file.name);
+    storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>sendMessage(url)));
+  };
 }
 
 // ---- Send Message ----
 function sendMessage(mediaUrl=null){
-const text=document.getElementById("message-input").value.trim();
-if(!text && !mediaUrl) return;
-db.ref("chat/"+chatId).push({user:currentUser,text:text,media:mediaUrl||"",time:Date.now()});
-document.getElementById("message-input").value="";
-db.ref("typing/"+chatId+"/"+currentUser).remove();
+  const text=document.getElementById("message-input").value.trim();
+  if(!text && !mediaUrl) return;
+  let msgData={user:currentUser,text:text,media:mediaUrl||"",time:Date.now()};
+  if(isPrivateChat){
+    msgData.to=chatId.replace(currentUser+"_","").replace("_"+currentUser,"");
+  }
+  db.ref("chat/"+chatId).push(msgData);
+  document.getElementById("message-input").value="";
+  db.ref("typing/"+chatId+"/"+currentUser).remove();
 }
 
 // ---- Posts ----
-function loadFeed(){
-db.ref("feed").on("child_added",snap=>{
-const post=snap.val();
-const container=document.getElementById("feed-container");
-const div=document.createElement("div");
-div.className="post-card";
-div.id="post-"+snap.key;
-div.innerHTML=`<strong>${post.user}</strong>: ${post.text}${post.media?`<br><${post.media.endsWith('.mp4')?'video controls':'img'} src="${post.media}" style="max-width:200px;">`:''}
-<div class="post-actions">
-<button onclick="likePost('${snap.key}')">Like</button>
-<button onclick="toggleCommentBox('${snap.key}')">Comment</button>
-${post.user===currentUser?'<button class="delete-btn" onclick="deletePost(\''+snap.key+'\')">Delete</button>':''}
-</div>
-<div class="comment-section" id="comments-${snap.key}"></div>
-<div class="comment-input" id="comment-box-${snap.key}" style="display:none;">
-<input type="text" placeholder="Write a comment..." id="comment-input-${snap.key}">
-<button onclick="addComment('${snap.key}')">Post</button>
-</div>`;
-container.prepend(div);
-loadComments(snap.key);
-});
-
-}
-
 function createPost(){
-const text=document.getElementById("post-input").value.trim();
-const fileInput=document.getElementById("post-media");
-if(!text && !fileInput.files[0]) return alert("Type something or select media!");
-const postRef=db.ref("feed").push();
-if(fileInput.files[0]){
-const file=fileInput.files[0];
-const storageRef=storage.ref('post_media/'+Date.now()+'_'+file.name);
-storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>{
-postRef.set({user:currentUser,text:text,media:url,likes:0,time:Date.now(),comments:{}});
-fileInput.value="";
-}));
-}else{
-postRef.set({user:currentUser,text:text,likes:0,time:Date.now(),comments:{}});
+  const text=document.getElementById("post-input").value.trim();
+  const fileInput=document.getElementById("post-media");
+  if(!text && !fileInput.files[0]) return alert("Type something or select media!");
+  const postRef=db.ref("feed").push();
+  if(fileInput.files[0]){
+    const file=fileInput.files[0];
+    const storageRef=storage.ref('post_media/'+Date.now()+'_'+file.name);
+    storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>{
+      postRef.set({user:currentUser,text:text,media:url,likes:0,time:Date.now(),comments:{}});
+      fileInput.value="";
+    }));
+  }else{
+    postRef.set({user:currentUser,text:text,likes:0,time:Date.now(),comments:{}});
+  }
+  document.getElementById("post-input").value="";
 }
-document.getElementById("post-input").value="";
-}// ---- Toggle Comment Box ----
-function toggleCommentBox(key){
-  const box=document.getElementById("comment-box-"+key);
+
+// ---- Load Feed ----
+function loadFeed(){
+  db.ref("feed").on("value",snap=>{
+    const feedContainer=document.getElementById("feed-container");
+    feedContainer.innerHTML="";
+    const posts=snap.val()||{};
+    for(let pid in posts){
+      feedContainer.appendChild(renderPost(pid,posts[pid]));
+    }
+  });
+}
+
+// ---- Render Post ----
+function renderPost(pid,post){
+  const div=document.createElement("div");
+  div.className="post-card"; div.id="post-"+pid;
+  div.innerHTML=`<strong>${post.user}</strong>: ${post.text || ""}${post.media?`<br>${post.media.endsWith('.mp4')?'<video controls src="'+post.media+'"></video>':'<img src="'+post.media+'">':''}
+  <div class="post-actions">
+  <button onclick="likePost('${pid}')">Like (${post.likes||0})</button>
+  <button onclick="toggleCommentBox('${pid}')">Comment</button>
+  ${post.user===currentUser?'<button class="delete-btn" onclick="deletePost(\''+pid+'\')">Delete</button>':''}
+  </div>
+  <div class="comment-section" id="comments-${pid}"></div>
+  <div class="comment-input" id="comment-box-${pid}" style="display:none;">
+  <input type="text" placeholder="Write a comment..." id="comment-input-${pid}">
+  <button onclick="addComment('${pid}')">Post</button>
+  </div>`;
+  loadComments(pid);
+  return div;
+}
+
+// ---- Like Post ----
+function likePost(pid){
+  const ref=db.ref("feed/"+pid+"/likes");
+  ref.transaction(likes=>(likes||0)+1);
+}
+
+// ---- Delete Post ----
+function deletePost(pid){
+  if(confirm("Are you sure to delete this post?")){
+    db.ref("feed/"+pid).remove();
+  }
+}
+
+// ---- Comments ----
+function toggleCommentBox(pid){
+  const box=document.getElementById("comment-box-"+pid);
   box.style.display=(box.style.display==="none")?"flex":"none";
 }
 
-// ---- Add Comment / Reply ----
-function addComment(postId,parentId=null){
-  const input=document.getElementById(parentId?`reply-input-${parentId}`:`comment-input-${postId}`);
+function addComment(pid,parentId=null){
+  const input=document.getElementById("comment-input-"+pid);
   const text=input.value.trim();
   if(!text) return;
-  const commentRef=parentId?db.ref(`feed/${postId}/comments/${parentId}/replies`).push():db.ref(`feed/${postId}/comments`).push();
+  const commentRef=parentId?db.ref(`feed/${pid}/comments/${parentId}/replies`).push():db.ref(`feed/${pid}/comments`).push();
   commentRef.set({user:currentUser,text:text,time:Date.now(),replies:{}});
   input.value="";
 }
 
-// ---- Load Comments Recursively ----
-function loadComments(postId){
-  db.ref(`feed/${postId}/comments`).on("value",snap=>{
-    const container=document.getElementById("comments-"+postId);
+// ---- Load Comments ----
+function loadComments(pid){
+  db.ref(`feed/${pid}/comments`).on("value",snap=>{
+    const container=document.getElementById("comments-"+pid);
     container.innerHTML="";
     const comments=snap.val()||{};
     for(let cid in comments){
-      container.appendChild(renderComment(postId,cid,comments[cid]));
+      container.appendChild(renderComment(pid,cid,comments[cid]));
     }
   });
 }
 
-function renderComment(postId,cid,comment){
-  const div=document.createElement("div");
-  div.className="comment";
-  div.innerHTML=`<strong>${comment.user}</strong>: ${comment.text} <span class="reply" onclick="toggleReplyBox('${cid}')">Reply</span>
-    ${comment.user===currentUser?'<button class="delete-btn" onclick="deleteComment(\''+postId+'\',\''+cid+'\')">Delete</button>':''}
-    <div class="comment-input reply-box" id="reply-box-${cid}" style="display:none;">
-      <input type="text" placeholder="Write a reply..." id="reply-input-${cid}">
-      <button onclick="addComment('${postId}','${cid}')">Post</button>
-    </div>`;
-  
-  // Load replies
-  if(comment.replies){
-    for(let rid in comment.replies){
-      const reply=document.createElement("div");
-      reply.className="comment reply";
-      reply.innerHTML=`<strong>${comment.replies[rid].user}</strong>: ${comment.replies[rid].text}
-      ${comment.replies[rid].user===currentUser?'<button class="delete-btn" onclick="deleteReply(\''+postId+'\',\''+cid+'\',\''+rid+'\')">Delete</button>':''}`;
-      div.appendChild(reply);
-    }
-  }
+function renderComment(pid,cid,comment){
+  const div=document.createElement("div"); div.className="comment";
+  div.innerHTML=`<strong>${comment.user}</strong>: ${comment.text} 
+  ${comment.user===currentUser?'<button class="delete-btn" onclick="deleteComment(\''+pid+'\',\''+cid+'\')">Delete</button>':''}
+  <span class="reply" onclick="replyComment('${pid}','${cid}')">Reply</span>`;
+  const replyBox=document.createElement("div"); replyBox.className="comment-input reply-box"; replyBox.id="reply-box-"+cid;
+  replyBox.style.display="none"; replyBox.innerHTML=`<input type="text" placeholder="Write a reply..." id="reply-input-${cid}"><button onclick="addComment('${pid}','${cid}')">Post</button>`;
+  div.appendChild(replyBox);
   return div;
 }
 
-function toggleReplyBox(cid){
+function replyComment(pid,cid){
   const box=document.getElementById("reply-box-"+cid);
   box.style.display=(box.style.display==="none")?"flex":"none";
 }
 
-// ---- Delete Post / Comment / Reply ----
-function deletePost(postId){db.ref("feed/"+postId).remove();}
-function deleteComment(postId,cid){db.ref(`feed/${postId}/comments/${cid}`).remove();}
-function deleteReply(postId,cid,rid){db.ref(`feed/${postId}/comments/${cid}/replies/${rid}`).remove();}
-
-// ---- Like Post ----
-function likePost(postId){
-  const likeRef=db.ref(`feed/${postId}/likes/${currentUser}`);
-  likeRef.once("value").then(snap=>{
-    if(snap.exists()){likeRef.remove();}else{likeRef.set(true);}
-  });
-}
-
-// ---- Group Chat Functions ----
-function joinGroup(gid){
-  db.ref(`groups/${gid}/members/${currentUser}`).set(true);
-}
-
-function leaveGroup(gid){
-  db.ref(`groups/${gid}/members/${currentUser}`).remove();
-}
-
-function deleteGroup(gid){
-  db.ref(`groups/${gid}`).remove();
+function deleteComment(pid,cid){
+  db.ref(`feed/${pid}/comments/${cid}`).remove();
 }
 
 // ---- Notifications ----
-function updateNotifications(){
-  let count=0;
-  db.ref("feed").on("value",snap=>{
-    const posts=snap.val()||{};
-    for(let pid in posts){
-      if(posts[pid].comments){
-        for(let cid in posts[pid].comments){
-          if(posts[pid].comments[cid].user!==currentUser) count++;
-          if(posts[pid].comments[cid].replies){
-            count+=Object.keys(posts[pid].comments[cid].replies).filter(rid=>posts[pid].comments[cid].replies[rid].user!==currentUser).length;
-          }
-        }
-      }
-      if(posts[pid].likes){
-        count+=Object.keys(posts[pid].likes).filter(u=>u!==currentUser).length;
-      }
-    }
-    document.getElementById("notif-count").textContent=count;
-  });
-}
-
-// ---- Initialize ----
-setInterval(updateNotifications,3000); // update every 3 sec
-
-// ---- Videos Tab Example ----
-function loadVideos(){
-  db.ref("feed").on("value",snap=>{
-    const videosContainer=document.getElementById("videos-container");
-    videosContainer.innerHTML="";
-    const feed=snap.val()||{};
-    for(let pid in feed){
-      if(feed[pid].media && feed[pid].media.endsWith(".mp4")){
-        const div=document.createElement("div");
-        div.className="post-card";
-        div.innerHTML=`<strong>${feed[pid].user}</strong>: ${feed[pid].text}<br>
-        <video src="${feed[pid].media}" controls style="max-width:100%;"></video>`;
-        videosContainer.prepend(div);
-      }
-    }
-  });
-}
-
-loadVideos();
+function toggleNotifications(){alert("Notifications placeholder");}
