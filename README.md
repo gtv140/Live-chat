@@ -4,6 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WebHub Live Chat</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
@@ -32,7 +33,7 @@ window.loginUser = () => {
   document.getElementById("app").style.display = "flex";
 
   const userRef = ref(db,"users/"+me);
-  set(userRef,{online:true,lastLogin:Date.now(),avatar:"images/avatar1.png"});
+  set(userRef,{online:true,lastLogin:Date.now(),avatar:"https://source.unsplash.com/50x50/?face&sig="+Math.floor(Math.random()*100)});
   onDisconnect(userRef).set({online:false});
 
   const chatRef = ref(db,"chats/welcome_"+me);
@@ -51,7 +52,7 @@ function loadUsers(){
       if(u.key!==me){
         let div = document.createElement("div");
         div.className="user";
-        const avatar = u.val().avatar || "images/avatar2.png";
+        const avatar = u.val().avatar || "https://source.unsplash.com/50x50/?face&sig="+Math.floor(Math.random()*100);
         div.innerHTML = `<div class="avatar"><img src="${avatar}" /></div>
         <div class="user-info"><b>${u.key}</b><br><small>${u.val().online?"Online":"Offline"}</small></div>`;
         div.onclick = ()=>openChat(u.key);
@@ -101,7 +102,7 @@ window.sendMsg = ()=>{
 /* SEND IMAGE */
 window.sendImage = ()=>{
   if(!current) return alert("Select a user");
-  const url = prompt("Enter image file path (local e.g., images/pic1.png)");
+  const url = prompt("Enter image URL (free image e.g., Unsplash)");
   if(!url) return;
   const chatRef = ref(db,"chats/"+[me,current].sort().join("_"));
   push(chatRef,{from:me,image:url,time:Date.now()});
@@ -139,7 +140,7 @@ body.dark{
 --bg:#0b141a;--card:#111b21;--primary:#25D366;--text:#e9edef;--muted:#8696a0;
 }
 body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
-.header{height:200px;background:url('images/banner.jpg') center/cover;display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;text-shadow:1px 1px 5px #000}
+.header{height:200px;background:url('https://source.unsplash.com/1600x400/?chat,technology') center/cover;display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;text-shadow:1px 1px 5px #000}
 .nav{display:flex;justify-content:center;gap:20px;padding:12px;background:var(--card);border-bottom:1px solid #00000020}
 .nav a{color:var(--text);text-decoration:none;font-weight:bold}
 .section{padding:30px;text-align:center}
