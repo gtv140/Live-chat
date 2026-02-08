@@ -4,44 +4,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LiveConnect</title>
 <style>
-/* ---- Animated Neon Background ---- */
+/* ----- Animated Neon Background ----- */
 body {
   margin:0;
   font-family:'Segoe UI',Roboto,Arial,sans-serif;
-  background: linear-gradient(270deg, #0a0a0a, #ff0055, #00ffff);
-  background-size: 600% 600%;
+  background: linear-gradient(270deg,#0a0a0a,#ff0055,#00ffff,#8000ff);
+  background-size: 800% 800%;
   animation: gradientBG 20s ease infinite;
-  color: #fff;
-  overflow-x: hidden;
+  color:#fff;
+  overflow-x:hidden;
 }
-@keyframes gradientBG {
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
+@keyframes gradientBG{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
 }
 
-/* ---- Global ---- */
+/* ----- Global ----- */
 button{cursor:pointer;border:none;outline:none;}
 input,textarea{border:1px solid #555;border-radius:8px;padding:8px;width:100%;box-sizing:border-box;background:#111;color:#fff;}
 h2,h3,h4{margin:0;padding:0;}
 a{text-decoration:none;color:#0ff;}
 
-/* ---- Neon Buttons ---- */
-.neon-btn{background:#0ff;color:#000;padding:8px 15px;border-radius:12px;font-weight:bold;box-shadow:0 0 10px #0ff,0 0 20px #0ff;transition:0.3s;}
-.neon-btn:hover{box-shadow:0 0 20px #f0f,0 0 30px #0ff;transform:scale(1.05);}
+/* ----- Neon Buttons ----- */
+.neon-btn{
+  background:#0ff;color:#000;padding:8px 15px;border-radius:12px;font-weight:bold;
+  box-shadow:0 0 10px #0ff,0 0 20px #0ff;transition:0.3s;
+}
+.neon-btn:hover{
+  box-shadow:0 0 20px #f0f,0 0 30px #0ff;transform:scale(1.05);
+}
 
-/* ---- Login Screen ---- */
+/* ----- Login Screen ----- */
 #login-screen{text-align:center;margin-top:50px;}
 #login-screen input{width:80%;max-width:250px;margin-bottom:10px;}
 #login-screen button{width:50%;max-width:120px;}
 
-/* ---- Navbar ---- */
+/* ----- Navbar ----- */
 .navbar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:#111;border-bottom:1px solid #222;box-shadow:0 0 10px #0ff;flex-wrap:wrap;}
 .navbar h2{color:#ff0055;letter-spacing:2px;text-shadow:0 0 5px #ff0055,0 0 10px #0ff;}
 .navbar .tabs{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
 .navbar .tabs button{flex:1;min-width:70px;}
+.navbar .chat-icon{
+  font-size:22px; color:#0ff; cursor:pointer;
+  text-shadow:0 0 5px #0ff,0 0 10px #ff0055;
+}
 
-/* ---- Main Container ---- */
+/* ----- Main Container ----- */
 .main-container{display:flex;flex:1;overflow:hidden;height:calc(100vh - 100px);flex-direction:row;}
 .sidebar{width:220px;background:#111;border-right:1px solid #222;overflow-y:auto;box-shadow:0 0 10px #ff0055;}
 .sidebar h3{text-align:center;padding:15px;border-bottom:1px solid #222;color:#0ff;}
@@ -49,21 +58,21 @@ a{text-decoration:none;color:#0ff;}
 .user.online::after{content:"•";color:#0ff;font-weight:bold;margin-left:5px;}
 .user-avatar{width:30px;height:30px;border-radius:50%;margin-right:10px;object-fit:cover;}
 
-/* ---- Content Area ---- */
+/* ----- Content Area ----- */
 .content-area{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:10px;}
 .stories-container{display:flex;gap:10px;overflow-x:auto;padding:10px 0;margin-bottom:10px;}
 .story{width:60px;height:60px;border-radius:50%;border:2px solid #0ff;overflow:hidden;cursor:pointer;flex-shrink:0;}
 .story img{width:100%;height:100%;object-fit:cover;}
 
-/* ---- Feed / Posts ---- */
+/* ----- Feed / Posts ----- */
 .post-card{background:#111;border-radius:12px;box-shadow:0 0 10px #0ff;margin-bottom:15px;padding:12px;transition:0.3s;}
 .post-card:hover{box-shadow:0 0 20px #ff0055;}
 .post-card img,.post-card video{max-width:100%;border-radius:12px;margin-top:8px;}
 .post-input{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
 .post-input input{flex:1;min-width:150px;border-radius:20px;padding:10px;border:1px solid #0ff;background:#111;color:#fff;}
 
-/* ---- Chat ---- */
-.chat-container{flex:1;display:flex;flex-direction:column;border-top:1px solid #222;margin-top:10px;}
+/* ----- Chat ----- */
+.chat-container{flex:1;display:flex;flex-direction:column;border-top:1px solid #222;margin-top:10px;display:none;}
 .chat-messages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:5px;}
 .message{max-width:70%;padding:8px 12px;border-radius:18px;word-wrap:break-word;box-shadow:0 0 5px #0ff;}
 .message.self{align-self:flex-end;background:#ff0055;color:#000;box-shadow:0 0 10px #ff0055;}
@@ -73,11 +82,11 @@ a{text-decoration:none;color:#0ff;}
 .chat-input input{flex:1;min-width:150px;padding:10px;border-radius:20px;border:1px solid #0ff;background:#111;color:#fff;}
 .chat-input button{background:#ff0055;color:#000;padding:8px 15px;border-radius:20px;font-weight:bold;box-shadow:0 0 10px #ff0055;}
 
-/* ---- Footer ---- */
+/* ----- Footer ----- */
 .about-section{background:#111;color:#0ff;padding:15px;text-align:center;font-size:14px;margin-top:10px;box-shadow:0 0 10px #0ff;}
 .about-section a{color:#ff0055;text-decoration:underline;margin:0 5px;}
 
-/* ---- Responsive ---- */
+/* ----- Responsive ----- */
 @media(max-width:900px){
   .main-container{flex-direction:column;height:auto;}
   .sidebar{width:100%;height:auto;}
@@ -110,6 +119,7 @@ a{text-decoration:none;color:#0ff;}
 <button class="neon-btn" onclick="switchTab('videos')">Videos</button>
 <button class="neon-btn" onclick="switchTab('settings')">Settings</button>
 <button class="neon-btn" onclick="switchTab('privacy')">Privacy</button>
+<button class="chat-icon" onclick="toggleChat()">💬</button>
 </div>
 </div>
 
@@ -153,7 +163,7 @@ a{text-decoration:none;color:#0ff;}
 <p>LiveConnect is a modern neon social platform to chat, share posts, media, and connect with friends in real time.</p>
 </div>
 
-<div class="chat-container">
+<div class="chat-container" id="chat-container">
 <div class="chat-messages" id="messages-container"></div>
 <div class="chat-input">
 <input type="text" id="message-input" placeholder="Type a message...">
@@ -163,6 +173,7 @@ a{text-decoration:none;color:#0ff;}
 <audio id="notify-sound" src="https://www.myinstants.com/media/sounds/facebook_messenger.mp3" preload="auto"></audio>
 </div>
 </div>
+
 </div>
 
 <div class="about-section">
@@ -215,6 +226,7 @@ db.ref("active_users").on("value",snap=>{
 db.ref("stories").on("child_added",snap=>{
   const story=document.createElement("div"); story.className="story";
   const img=document.createElement("img"); img.src=snap.val().url; story.appendChild(img);
+  story.onclick=()=>alert("Story popup animation coming soon!"); // placeholder
   document.getElementById("stories-container").appendChild(story);
 });
 
@@ -226,6 +238,12 @@ db.ref("feed").on("child_added",snap=>loadFeedPost(snap));
 function switchTab(tab){
 const tabs=["home-tab","posts-tab","videos-tab","settings-tab","privacy-tab"];
 tabs.forEach(t=>document.getElementById(t).style.display=(t===tab+"-tab")?"block":"none");
+}
+
+// Chat toggle
+function toggleChat(){
+const chat=document.getElementById("chat-container");
+chat.style.display=(chat.style.display==="flex")?"none":"flex";
 }
 
 // Chat
