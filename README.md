@@ -33,7 +33,7 @@ window.loginUser = () => {
   document.getElementById("app").style.display = "flex";
 
   const userRef = ref(db,"users/"+me);
-  set(userRef,{online:true, lastLogin: Date.now()});
+  set(userRef,{online:true, lastLogin: Date.now(), avatar:"https://i.pravatar.cc/50?u="+me});
   onDisconnect(userRef).set({online:false});
 
   const chatRef = ref(db,"chats/welcome_"+me);
@@ -52,7 +52,8 @@ function loadUsers(){
       if(u.key!==me){
         let div = document.createElement("div");
         div.className="user";
-        div.innerHTML = `<div class="avatar">${u.key[0]}</div>
+        const avatar = u.val().avatar || u.key[0];
+        div.innerHTML = `<div class="avatar"><img src="${avatar}" /></div>
         <div class="user-info"><b>${u.key}</b><br><small>${u.val().online?"Online":"Offline"}</small></div>`;
         div.onclick = ()=>openChat(u.key);
         list.appendChild(div);
@@ -75,7 +76,13 @@ window.openChat = (u) => {
       const data = m.val();
       const div = document.createElement("div");
       div.className = data.from===me?"msg me":"msg other";
-      div.innerHTML = `<b>${data.from}</b><p>${data.text}</p><small>${new Date(data.time).toLocaleTimeString()}</small>`;
+      if(data.image){
+        div.innerHTML = `<b>${data.from}</b><p><img src="${data.image}" style="max-width:150px;border-radius:8px"/></p>
+        <small>${new Date(data.time).toLocaleTimeString()}</small>`;
+      } else {
+        div.innerHTML = `<b>${data.from}</b><p>${data.text}</p>
+        <small>${new Date(data.time).toLocaleTimeString()}</small>`;
+      }
       msgsDiv.appendChild(div);
     });
     msgsDiv.scrollTop = msgsDiv.scrollHeight;
@@ -90,6 +97,15 @@ window.sendMsg = ()=>{
   const chatRef = ref(db,"chats/"+[me,current].sort().join("_"));
   push(chatRef,{from:me,text,time:Date.now(),seen:false});
   document.getElementById("msg").value="";
+}
+
+/* SEND IMAGE */
+window.sendImage = ()=>{
+  if(!current) return alert("Select a user");
+  const url = prompt("Enter image URL");
+  if(!url) return;
+  const chatRef = ref(db,"chats/"+[me,current].sort().join("_"));
+  push(chatRef,{from:me,image:url,time:Date.now()});
 }
 
 /* TYPING INDICATOR */
@@ -133,7 +149,8 @@ body{margin:0;height:100vh;font-family:system-ui;background:var(--bg);color:var(
 .user-list{flex:1;overflow:auto}
 .user{padding:12px 14px;display:flex;gap:12px;align-items:center;cursor:pointer;border-radius:8px}
 .user:hover{background:#00000010}
-.avatar{width:44px;height:44px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-weight:600}
+.avatar{width:44px;height:44px;border-radius:50%;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
 .user-info b{font-size:15px}
 .user-info small{font-size:12px;color:var(--muted)}
 
@@ -148,6 +165,7 @@ body{margin:0;height:100vh;font-family:system-ui;background:var(--bg);color:var(
 .input{padding:10px;display:flex;gap:8px;background:var(--card);position:sticky;bottom:0}
 .input input{flex:1;padding:12px 14px;border-radius:22px;border:1px solid #00000020;font-size:15px}
 .input button{width:46px;height:46px;border-radius:50%;background:var(--primary);border:none;color:white;font-size:18px}
+.input .fa-image{background:#ff5e57;padding:10px;border-radius:50%;color:white;cursor:pointer}
 
 /* LOGIN */
 .login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center}
@@ -193,6 +211,7 @@ body.dark input{background:#111b21;color:white}
     <div class="input">
       <input id="msg" placeholder="Type message"/>
       <button onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button>
+      <i class="fa fa-image" onclick="sendImage()"></i>
     </div>
   </div>
 </div>
