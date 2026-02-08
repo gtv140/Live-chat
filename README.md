@@ -4,39 +4,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LiveConnect</title>
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:#111;color:#eee;transition:0.3s;}
-.dark-mode{background:#111;color:#eee;}
+body{margin:0;font-family:Arial,sans-serif;transition:0.3s;background:#111;color:#eee;}
 .light-mode{background:#f5f5f5;color:#111;}
 button{cursor:pointer;border:none;padding:8px 12px;border-radius:8px;transition:0.2s;}
 button:hover{opacity:0.8;}
 input{padding:8px;border-radius:8px;border:1px solid #555;background:#1a1a1a;color:#eee;width:100%;box-sizing:border-box;}
 .light-mode input{background:#fff;color:#111;border:1px solid #ccc;}
-.navbar{display:flex;justify-content:space-between;padding:10px;background:#1f1f1f;align-items:center;}
+.navbar{display:flex;justify-content:space-between;padding:10px;background:#1f1f1f;align-items:center;flex-wrap:wrap;}
 .light-mode .navbar{background:#eee;color:#111;}
-.tabs button{margin-right:5px;background:#333;color:#eee;}
-.light-mode .tabs button{background:#ddd;color:#111;}
-.tabs button.active{background:#0ff;color:#000;}
-.chat-container{display:none;flex-direction:column;height:70vh;border:1px solid #333;margin-top:10px;overflow:hidden;}
+.dashboard{padding:15px;border-bottom:1px solid #333;margin-bottom:10px;}
+.light-mode .dashboard{border-color:#aaa;}
+.chat-container{display:none;flex-direction:column;height:60vh;border:1px solid #333;margin-top:10px;border-radius:12px;overflow:hidden;}
 .light-mode .chat-container{border:1px solid #aaa;}
-.chat-messages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:5px;}
-.message{max-width:70%;padding:8px 12px;border-radius:18px;word-wrap:break-word;}
+.chat-messages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:5px;background:#1a1a1a;}
+.light-mode .chat-messages{background:#eee;}
+.message{max-width:70%;padding:10px 14px;border-radius:20px;word-wrap:break-word;transition:0.2s;box-shadow:0 0 5px #0ff;}
 .message.self{align-self:flex-end;background:#0ff;color:#000;}
 .message.other{align-self:flex-start;background:#333;color:#eee;}
 .light-mode .message.other{background:#ddd;color:#111;}
-.chat-input{display:flex;padding:10px;gap:5px;}
-input[type="file"]{display:none;}
-.active-users{margin-top:10px;padding:10px;border:1px solid #333;border-radius:8px;max-height:200px;overflow-y:auto;}
-.light-mode .active-users{border:1px solid #aaa;}
-.user{padding:6px;cursor:pointer;border-bottom:1px solid #333;}
+.typing-indicator{font-size:12px;color:#0ff;margin:2px 10px;}
+.chat-input{display:flex;padding:10px;gap:5px;background:#222;}
+.light-mode .chat-input{background:#ddd;}
+.active-users{margin-top:10px;padding:10px;border:1px solid #333;border-radius:8px;max-height:200px;overflow-y:auto;background:#1f1f1f;}
+.light-mode .active-users{border:1px solid #aaa;background:#f5f5f5;}
+.user{padding:6px;cursor:pointer;border-bottom:1px solid #333;transition:0.2s;}
 .light-mode .user{border-bottom:1px solid #aaa;}
+.user:hover{background:#0ff;color:#000;border-radius:8px;}
+.light-mode .user:hover{background:#0ff;color:#000;border-radius:8px;}
+@media(max-width:600px){
+.chat-container{height:50vh;}
+}
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 </head>
 <body class="dark-mode">
 
 <div id="login-screen" style="text-align:center;margin-top:50px;">
-<h2>LiveConnect</h2>
+<h2>Welcome to LiveConnect</h2>
 <input type="text" id="username" placeholder="Enter your name"><br><br>
 <button onclick="login()">Login</button>
 </div>
@@ -51,7 +57,15 @@ input[type="file"]{display:none;}
 </div>
 </div>
 
+<div class="dashboard">
+<h3 id="welcome-msg">Welcome!</h3>
+<p>About LiveConnect: Connect with your friends in real-time using our modern chat platform. Neon-inspired design for a sleek experience.</p>
+<p>Contact Support: <a href="mailto:support@liveconnect.com" style="color:#0ff;">support@liveconnect.com</a></p>
+</div>
+
 <div class="active-users" id="users-list"></div>
+
+<div class="typing-indicator" id="typing-indicator"></div>
 
 <div class="chat-container" id="chat-container">
 <div class="chat-messages" id="messages-container"></div>
@@ -60,6 +74,7 @@ input[type="file"]{display:none;}
 <button onclick="sendMessage()">Send</button>
 <input type="file" id="media-input" onchange="sendMedia(event)">
 <button onclick="document.getElementById('media-input').click()">Media</button>
+<audio id="notify-sound" src="https://www.myinstants.com/media/sounds/facebook_messenger.mp3" preload="auto"></audio>
 </div>
 </div>
 </div>
@@ -76,36 +91,48 @@ appId: "1:555058795334:web:f668887409800c32970b47"
 };
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
-let currentUser="",chatId="global";
+let currentUser="",chatId="global",typingTimeout;
 
+// Login
 function login(){
 let u=document.getElementById("username").value.trim();
 if(!u){alert("Enter username");return;}
 currentUser=u;
 document.getElementById("login-screen").style.display="none";
 document.getElementById("app-screen").style.display="block";
+document.getElementById("welcome-msg").textContent="Welcome, "+currentUser+"!";
 db.ref("active_users/"+currentUser).set({online:true});
 db.ref("active_users/"+currentUser).onDisconnect().remove();
 loadActiveUsers();
 loadChat();
 }
 
+// Dark/Light
 function toggleDarkLight(){
 document.body.classList.toggle("light-mode");
 document.body.classList.toggle("dark-mode");
 }
 
+// Active Users
 function loadActiveUsers(){
 db.ref("active_users").on("value",snap=>{
 const users=snap.val()||{};
 const list=document.getElementById("users-list");
 list.innerHTML="";
 let count=0;
-for(let u in users){count++; const div=document.createElement("div"); div.textContent=u; div.className="user"; div.onclick=()=>openChat(u); list.appendChild(div);}
+for(let u in users){
+count++;
+const div=document.createElement("div");
+div.textContent=u;
+div.className="user";
+div.onclick=()=>openChat(u);
+list.appendChild(div);
+}
 document.getElementById("active-count").textContent="Active Users: "+count;
 });
 }
 
+// Open Chat
 function openChat(user){
 chatId=[currentUser,user].sort().join("_");
 document.getElementById("messages-container").innerHTML="";
@@ -113,8 +140,10 @@ document.getElementById("chat-container").style.display="flex";
 loadChat();
 }
 
+// Load Chat Messages
 function loadChat(){
 const msgContainer=document.getElementById("messages-container");
+const typingIndicator=document.getElementById("typing-indicator");
 db.ref("chat/"+chatId).on("child_added",snap=>{
 const m=snap.val();
 const div=document.createElement("div");
@@ -122,21 +151,37 @@ div.className="message "+(m.user===currentUser?"self":"other");
 div.textContent=m.user+": "+(m.text||"");
 msgContainer.appendChild(div);
 msgContainer.scrollTop=msgContainer.scrollHeight;
+if(m.user!==currentUser)document.getElementById("notify-sound").play();
+});
+document.getElementById("message-input").oninput=()=>{
+db.ref("typing/"+chatId+"/"+currentUser).set(true);
+clearTimeout(typingTimeout);
+typingTimeout=setTimeout(()=>{db.ref("typing/"+chatId+"/"+currentUser).remove();},1500);
+};
+db.ref("typing/"+chatId).on("value",snap=>{
+const t=snap.val()||{};
+const typingUsers=Object.keys(t).filter(u=>u!==currentUser);
+typingIndicator.textContent=typingUsers.length>0?typingUsers.join(", ")+" is typing...":"";
 });
 }
 
+// Send Message
 function sendMessage(){
 const text=document.getElementById("message-input").value.trim();
 if(!text) return;
 db.ref("chat/"+chatId).push({user:currentUser,text:text,time:Date.now()});
 document.getElementById("message-input").value="";
+db.ref("typing/"+chatId+"/"+currentUser).remove();
 }
 
+// Media Placeholder
 function sendMedia(e){
 const file=e.target.files[0];
 if(!file) return;
-alert("Media upload working, add Firebase Storage for full support");
+alert("Media upload ready. Add Firebase Storage for full upload.");
 }
+
+// Toggle Chat Window
 function toggleChat(){
 const chat=document.getElementById("chat-container");
 chat.style.display=(chat.style.display==="flex")?"none":"flex";
