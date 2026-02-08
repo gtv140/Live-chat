@@ -13,6 +13,8 @@ input,textarea{border:1px solid #555;border-radius:8px;padding:8px;width:100%;bo
 .navbar .tabs button{padding:6px 12px;background:#333;color:#eee;}
 .navbar .tabs button.active{background:#0ff;color:#000;}
 .navbar .chat-icon{font-size:22px;color:#0ff;cursor:pointer;}
+.navbar .notification{font-size:22px;color:#0ff;cursor:pointer;position:relative;}
+.navbar .notification span{position:absolute;top:-5px;right:-5px;background:red;color:#fff;border-radius:50%;padding:2px 5px;font-size:12px;}
 .main-container{display:flex;flex-direction:row;height:calc(100vh - 60px);}
 .sidebar{width:220px;background:#1f1f1f;border-right:1px solid #333;overflow-y:auto;display:none;}
 .sidebar h3{text-align:center;padding:15px;border-bottom:1px solid #333;color:#0ff;}
@@ -27,6 +29,10 @@ input,textarea{border:1px solid #555;border-radius:8px;padding:8px;width:100%;bo
 .post-card .post-actions{display:flex;gap:10px;margin-top:8px;}
 .post-card .post-actions button{background:#333;color:#eee;padding:4px 8px;border-radius:8px;font-size:14px;}
 .post-card .post-actions button.delete-btn{background:#ff0055;color:#000;}
+.comment-section{margin-top:8px;border-top:1px solid #333;padding-top:6px;}
+.comment{padding:4px 8px;background:#222;border-radius:8px;margin-bottom:4px;}
+.comment .reply{margin-left:12px;color:#0ff;font-size:12px;cursor:pointer;}
+.comment .reply-box{display:none;margin-top:4px;}
 .post-input{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
 .post-input input{flex:1;min-width:150px;border-radius:20px;padding:8px;border:1px solid #0ff;background:#1c1c1c;color:#eee;}
 .chat-container{flex:1;display:flex;flex-direction:column;border-top:1px solid #333;display:none;}
@@ -67,6 +73,7 @@ input,textarea{border:1px solid #555;border-radius:8px;padding:8px;width:100%;bo
 <button onclick="switchTab('settings')">Settings</button>
 <button onclick="switchTab('privacy')">Privacy</button>
 <button class="chat-icon" onclick="toggleChat()">💬</button>
+<div class="notification" onclick="toggleNotifications()">🔔<span id="notif-count">0</span></div>
 </div>
 </div>
 
@@ -148,6 +155,7 @@ const storage=firebase.storage();
 
 let currentUser="";
 let activeChatUser="";
+let notifications=[];
 
 // Login
 function login(){
@@ -170,8 +178,10 @@ db.ref("active_users").on("value",snap=>{
   }
 });
 
-// Feed
-db.ref("feed").on("child_added",snap=>loadFeedPost(snap));
+// Feed + notifications
+db.ref("feed").on("child_added",snap=>{
+  loadFeedPost(snap);
+});
 }
 
 // Tabs
@@ -180,7 +190,7 @@ const tabs=["home","posts","videos","settings","privacy"];
 tabs.forEach(t=>{
   document.getElementById(t).style.display=(t===tab)?"block":"none";
   document.querySelectorAll(".tabs button").forEach(b=>{
-    if(b.textContent.toLowerCase()===t) b.classList.add("active"); else b.classList.remove("active");
+    if(b.textContent.toLowerCase()===tab) b.classList.add("active"); else b.classList.remove("active");
   });
 });
 }
@@ -190,89 +200,6 @@ function toggleChat(){
 const chat=document.getElementById("chat-container");
 chat.style.display=(chat.style.display==="flex")?"none":"flex";
 document.getElementById("users-sidebar").style.display=(chat.style.display==="flex")?"block":"none";
-}
-
-// Chat
-function selectUser(user){
-activeChatUser=user;
-document.getElementById("messages-container").innerHTML="";
-const chatRef=db.ref("private_chats/"+[currentUser,activeChatUser].sort().join("_"));
-chatRef.on("child_added",snap=>{
-  const data=snap.val(); const msgDiv=document.createElement("div");
-  if(data.type==="media"){
-    const mediaEl=data.mediaType.startsWith("image")?document.createElement("img"):document.createElement("video");
-    mediaEl.src=data.url;if(data.mediaType.startsWith("video")) mediaEl.controls=true; mediaEl.style.maxWidth="70%"; msgDiv.appendChild(mediaEl);
-  } else { msgDiv.textContent=data.user+": "+data.message; }
-  msgDiv.className="message "+(data.user===currentUser?"self":"other");
-  const ts=document.createElement("div"); ts.className="timestamp"; ts.textContent=new Date(data.timestamp).toLocaleTimeString();
-  msgDiv.appendChild(ts); document.getElementById("messages-container").appendChild(msgDiv);
-  document.getElementById("messages-container").scrollTop=document.getElementById("messages-container").scrollHeight;
-  if(data.user!==currentUser) document.getElementById("notify-sound").play();
-});
-
-// Send
-document.getElementById("send-btn").onclick=()=>{
-  const msg=document.getElementById("message-input").value.trim(); if(!msg) return;
-  chatRef.push({user:currentUser,message:msg,timestamp:Date.now(),type:"text"});
-  document.getElementById("message-input").value="";
-};
-
-// Media
-document.getElementById("media-input").onchange=function(e){
-  const file=e.target.files[0]; if(!file) return;
-  const storageRef=storage.ref("media/"+Date.now()+"_"+file.name);
-  storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>chatRef.push({user:currentUser,mediaType:file.type,url:url,timestamp:Date.now(),type:"media"})));
-};
-}
-
-// Posts
-function createPost(){
-const text=document.getElementById("post-input").value.trim();
-const file=document.getElementById("post-media").files[0];
-const postRef=db.ref("feed").push();
-if(file){
-  const storageRef=storage.ref("feed_media/"+Date.now()+"_"+file.name);
-  storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>{
-    postRef.set({user:currentUser,text:text,url:url,mediaType:file.type,timestamp:Date.now(),likes:0,comments:[]});
-    document.getElementById("post-input").value="";
-    document.getElementById("post-media").value="";
-  }));
-} else {
-  postRef.set({user:currentUser,text:text,timestamp:Date.now(),likes:0,comments:[]});
-  document.getElementById("post-input").value="";
-}
-}
-
-// Load Feed
-function loadFeedPost(snap){
-const data=snap.val(); const feedContainer=document.getElementById("feed-container");
-const postDiv=document.createElement("div"); postDiv.className="post-card";
-let deleteBtnHTML="";
-if(data.user===currentUser) deleteBtnHTML=`<button class="delete-btn" onclick="deletePost('${snap.key}')">🗑️</button>`;
-postDiv.innerHTML=`<h4>${data.user}</h4><p>${data.text||""}</p>${deleteBtnHTML}
-<div class="post-actions">
-<button onclick="likePost('${snap.key}')">❤️ ${data.likes||0}</button>
-<button onclick="commentPost('${snap.key}')">💬 ${data.comments?Object.keys(data.comments).length:0}</button>
-</div>`;
-if(data.url){
-  if(data.mediaType.startsWith("image")){
-    const img=document.createElement("img"); img.src=data.url; postDiv.appendChild(img);
-  } else { const vid=document.createElement("video"); vid.src=data.url; vid.controls=true; postDiv.appendChild(vid); }
-}
-feedContainer.prepend(postDiv);
-}
-
-// Delete Post
-function deletePost(key){
-if(confirm("Are you sure you want to delete this post?")){
-  db.ref("feed/"+key).remove();
-}
-}
-
-// Likes & Comments
-function likePost(key){ db.ref("feed/"+key+"/likes").transaction(current=> (current||0)+1); }
-function commentPost(key){
-const c=prompt("Enter comment:"); if(c) db.ref("feed/"+key+"/comments").push({user:currentUser,text:c,timestamp:Date.now()});
 }
 
 // Dark Mode
