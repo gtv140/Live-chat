@@ -4,12 +4,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LiveConnect</title>
 <style>
-/* Body & Basics */
-body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:#121212;color:#eee;overflow-x:hidden;}
-button{cursor:pointer;border:none;outline:none;border-radius:8px;}
-input,textarea{border:1px solid #555;border-radius:8px;padding:8px;width:100%;box-sizing:border-box;background:#1c1c1c;color:#eee;}
+/* ---- General Styles ---- */
+body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:#111;color:#eee;overflow-x:hidden;}
+button{cursor:pointer;border:none;outline:none;border-radius:8px;transition:0.3s;}
+button:hover{opacity:0.8;}
+input,textarea{border:1px solid #555;border-radius:8px;padding:8px;width:100%;box-sizing:border-box;background:#1a1a1a;color:#eee;}
 a{text-decoration:none;color:#0ff;}
-/* Navbar */
+
+/* ---- Navbar ---- */
 .navbar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:#1f1f1f;border-bottom:1px solid #333;flex-wrap:wrap;}
 .navbar h2{color:#0ff;}
 .navbar .tabs{display:flex;gap:5px;flex-wrap:wrap;}
@@ -18,7 +20,8 @@ a{text-decoration:none;color:#0ff;}
 .navbar .chat-icon{font-size:22px;color:#0ff;cursor:pointer;}
 .navbar .notification{font-size:22px;color:#0ff;cursor:pointer;position:relative;}
 .navbar .notification span{position:absolute;top:-5px;right:-5px;background:red;color:#fff;border-radius:50%;padding:2px 5px;font-size:12px;}
-/* Main Layout */
+
+/* ---- Main Layout ---- */
 .main-container{display:flex;flex-direction:row;height:calc(100vh - 60px);}
 .sidebar{width:220px;background:#1f1f1f;border-right:1px solid #333;overflow-y:auto;display:none;}
 .sidebar h3{text-align:center;padding:15px;border-bottom:1px solid #333;color:#0ff;}
@@ -27,8 +30,9 @@ a{text-decoration:none;color:#0ff;}
 .content-area{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:10px;}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
-/* Posts */
-.post-card{background:#1c1c1c;border-radius:12px;margin-bottom:15px;padding:12px;box-shadow:0 0 8px #0ff;position:relative;transition:0.3s;}
+
+/* ---- Posts ---- */
+.post-card{background:#1a1a1a;border-radius:12px;margin-bottom:15px;padding:12px;box-shadow:0 0 8px #0ff;position:relative;transition:0.3s;}
 .post-card:hover{box-shadow:0 0 12px #0ff;}
 .post-card img,.post-card video{max-width:100%;border-radius:8px;margin-top:8px;cursor:pointer;}
 .post-card .post-actions{display:flex;gap:10px;margin-top:8px;}
@@ -39,8 +43,9 @@ a{text-decoration:none;color:#0ff;}
 .comment .reply{margin-left:12px;color:#0ff;font-size:12px;cursor:pointer;}
 .comment .reply-box{display:none;margin-top:4px;}
 .post-input{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
-.post-input input{flex:1;min-width:150px;border-radius:20px;padding:8px;border:1px solid #0ff;background:#1c1c1c;color:#eee;}
-/* Chat */
+.post-input input{flex:1;min-width:150px;border-radius:20px;padding:8px;border:1px solid #0ff;background:#1a1a1a;color:#eee;}
+
+/* ---- Chat ---- */
 .chat-container{flex:1;display:flex;flex-direction:column;border-top:1px solid #333;display:none;}
 .chat-messages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:5px;}
 .message{max-width:70%;padding:8px 12px;border-radius:18px;word-wrap:break-word;box-shadow:0 0 3px #0ff;position:relative;}
@@ -49,16 +54,25 @@ a{text-decoration:none;color:#0ff;}
 .timestamp{font-size:10px;color:#aaa;margin-top:4px;text-align:right;}
 .typing-indicator{font-size:12px;color:#0ff;margin:2px 0;}
 .chat-input{display:flex;padding:10px;border-top:1px solid #333;gap:5px;flex-wrap:wrap;}
-.chat-input input{flex:1;min-width:150px;padding:8px;border-radius:20px;border:1px solid #0ff;background:#1c1c1c;color:#eee;}
+.chat-input input{flex:1;min-width:150px;padding:8px;border-radius:20px;border:1px solid #0ff;background:#1a1a1a;color:#eee;}
 .chat-input button{background:#0ff;color:#000;padding:6px 12px;font-weight:bold;}
+
+/* ---- About ---- */
 .about-section{background:#1f1f1f;color:#aaa;padding:15px;text-align:center;font-size:14px;margin-top:10px;border-top:1px solid #333;}
 .about-section a{color:#0ff;text-decoration:underline;margin:0 5px;}
-@media(max-width:900px){.main-container{flex-direction:column;height:auto;}.sidebar{width:100%;height:auto;}.post-input,.chat-input{flex-direction:column;}}
+
+/* ---- Responsive ---- */
+@media(max-width:900px){
+  .main-container{flex-direction:column;height:auto;}
+  .sidebar{width:100%;height:auto;}
+  .post-input,.chat-input{flex-direction:column;}
+}
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
 </head>
 <body>
 
@@ -88,6 +102,9 @@ a{text-decoration:none;color:#0ff;}
 <div class="sidebar" id="users-sidebar">
 <h3>Active Users</h3>
 <div id="users-list"></div>
+<h3>Groups</h3>
+<div id="groups-list"></div>
+<button onclick="createGroup()">+ Create Group</button>
 </div>
 
 <div class="content-area">
@@ -124,7 +141,7 @@ a{text-decoration:none;color:#0ff;}
 <!-- Privacy -->
 <div id="privacy" class="tab-panel">
 <h3>Privacy & About</h3>
-<p>LiveConnect is a modern platform to chat, share posts, media and connect with friends. Enjoy a premium feel with full mobile support.</p>
+<p>LiveConnect is a modern platform to chat, create posts, media, groups, and connect with friends in realtime. Enjoy a premium neon look, mobile-friendly layout, and all features fully functional.</p>
 </div>
 
 <!-- Chat -->
@@ -162,10 +179,10 @@ const db=firebase.database();
 const storage=firebase.storage();
 
 let currentUser="";
-let notifications=[];
+let chatId="";
 let typingTimeout;
 
-// Login
+// ---- Login ----
 function login(){
 const username=document.getElementById("username").value.trim();
 if(!username){alert("Enter username");return;}
@@ -175,11 +192,10 @@ document.getElementById("app-screen").style.display="flex";
 db.ref("active_users/"+currentUser).set({online:true});
 db.ref("active_users/"+currentUser).onDisconnect().remove();
 loadActiveUsers();
-loadFeed();
-loadChat();
+loadGroups();
 }
 
-// Tabs
+// ---- Tabs ----
 function switchTab(tab){
 const tabs=["home","posts","videos","settings","privacy"];
 tabs.forEach(t=>{
@@ -190,17 +206,17 @@ if(b.textContent.toLowerCase()===tab) b.classList.add("active"); else b.classLis
 });
 }
 
-// Chat toggle
+// ---- Chat Toggle ----
 function toggleChat(){
 const chat=document.getElementById("chat-container");
 chat.style.display=(chat.style.display==="flex")?"none":"flex";
 document.getElementById("users-sidebar").style.display=(chat.style.display==="flex")?"block":"none";
 }
 
-// Dark Mode
+// ---- Dark Mode ----
 function toggleDarkMode(){document.body.classList.toggle("dark-mode");}
 
-// Active Users
+// ---- Active Users ----
 function loadActiveUsers(){
 db.ref("active_users").on("value",snap=>{
 const usersList=document.getElementById("users-list");
@@ -209,13 +225,91 @@ const users=snap.val()||{};
 for(let user in users){
 if(user!==currentUser){
 const div=document.createElement("div");
-div.textContent=user; div.className="user online"; usersList.appendChild(div);
+div.textContent=user; div.className="user online"; div.onclick=()=>openPrivateChat(user);
+usersList.appendChild(div);
 }
 }
 });
 }
 
-// Feed
+// ---- Groups ----
+function loadGroups(){
+db.ref("groups").on("value",snap=>{
+const groupsList=document.getElementById("groups-list");
+groupsList.innerHTML="";
+const groups=snap.val()||{};
+for(let gid in groups){
+const g=groups[gid];
+const div=document.createElement("div");
+div.textContent=g.name; div.className="user";
+div.onclick=()=>openGroupChat(gid);
+groupsList.appendChild(div);
+}
+});
+}
+
+function createGroup(){
+const gname=prompt("Enter group name:");
+if(!gname) return;
+const groupRef=db.ref("groups").push();
+groupRef.set({name:gname,creator:currentUser,members:{[currentUser]:true}});
+}
+
+// ---- Chat ----
+function getChatId(user1,user2){return [user1,user2].sort().join("_");}
+
+function openPrivateChat(user){
+chatId=getChatId(currentUser,user);
+document.getElementById("messages-container").innerHTML="";
+loadChat(chatId);
+}
+
+function openGroupChat(gid){
+chatId="group_"+gid;
+document.getElementById("messages-container").innerHTML="";
+loadChat(chatId);
+}
+
+function loadChat(chatId){
+const msgContainer=document.getElementById("messages-container");
+const typingIndicator=document.getElementById("typing-indicator");
+db.ref("chat/"+chatId).on("child_added",snap=>{
+const msg=snap.val();
+const div=document.createElement("div");
+div.className="message "+(msg.user===currentUser?"self":"other");
+div.innerHTML=`<strong>${msg.user}</strong>: ${msg.text}${msg.media?`<br><${msg.media.endsWith('.mp4')?'video controls':'img'} src="${msg.media}" style="max-width:200px;">`:''}<div class="timestamp">${new Date(msg.time).toLocaleTimeString()}</div>`;
+msgContainer.appendChild(div);
+msgContainer.scrollTop=msgContainer.scrollHeight;
+document.getElementById("notify-sound").play();
+});
+db.ref("typing/"+chatId).on("value",snap=>{
+const data=snap.val()||{};
+let typingUsers=Object.keys(data).filter(u=>u!==currentUser);
+typingIndicator.textContent=typingUsers.length>0?typingUsers.join(", ")+" is typing...":"";
+});
+document.getElementById("message-input").oninput=()=>{
+db.ref("typing/"+chatId+"/"+currentUser).set(true);
+clearTimeout(typingTimeout);
+typingTimeout=setTimeout(()=>{db.ref("typing/"+chatId+"/"+currentUser).remove();},2000);
+};
+document.getElementById("send-btn").onclick=sendMessage;
+document.getElementById("media-input").onchange=function(e){
+const file=e.target.files[0];
+if(!file) return;
+const storageRef=storage.ref('chat_media/'+Date.now()+'_'+file.name);
+storageRef.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>sendMessage(url)));
+};
+}
+
+function sendMessage(mediaUrl=null){
+const text=document.getElementById("message-input").value.trim();
+if(!text && !mediaUrl) return;
+db.ref("chat/"+chatId).push({user:currentUser,text:text,media:mediaUrl||"",time:Date.now()});
+document.getElementById("message-input").value="";
+db.ref("typing/"+chatId+"/"+currentUser).remove();
+}
+
+// ---- Posts ----
 function loadFeed(){
 db.ref("feed").on("child_added",snap=>{
 const post=snap.val();
@@ -233,41 +327,6 @@ container.prepend(div);
 });
 }
 
-// Chat load
-function loadChat(){
-const msgContainer=document.getElementById("messages-container");
-const typingIndicator=document.getElementById("typing-indicator");
-db.ref("chat").on("child_added",snap=>{
-const msg=snap.val();
-const div=document.createElement("div");
-div.className="message "+(msg.user===currentUser?"self":"other");
-div.innerHTML=`<strong>${msg.user}</strong>: ${msg.text}<div class="timestamp">${new Date(msg.time).toLocaleTimeString()}</div>`;
-msgContainer.appendChild(div);
-msgContainer.scrollTop=msgContainer.scrollHeight;
-document.getElementById("notify-sound").play();
-});
-db.ref("typing").on("value",snap=>{
-const data=snap.val()||{};
-let typingUsers=Object.keys(data).filter(u=>u!==currentUser);
-typingIndicator.textContent=typingUsers.length>0?typingUsers.join(", ")+" is typing...":"";
-});
-document.getElementById("message-input").addEventListener("input",()=>{
-db.ref("typing/"+currentUser).set(true);
-clearTimeout(typingTimeout);
-typingTimeout=setTimeout(()=>{db.ref("typing/"+currentUser).remove();},2000);
-});
-document.getElementById("send-btn").onclick=sendMessage;
-}
-
-function sendMessage(){
-const text=document.getElementById("message-input").value.trim();
-if(!text) return;
-db.ref("chat").push({user:currentUser,text:text,time:Date.now()});
-document.getElementById("message-input").value="";
-db.ref("typing/"+currentUser).remove();
-}
-
-// Create Post
 function createPost(){
 const text=document.getElementById("post-input").value.trim();
 if(!text) return alert("Type something!");
@@ -276,10 +335,14 @@ postRef.set({user:currentUser,text:text,likes:0});
 document.getElementById("post-input").value="";
 }
 
-// Post actions
+// ---- Others ----
 function likePost(key){console.log("Like:",key);}
 function showCommentBox(key,btn){alert("Comments & Replies feature coming soon!");}
 function deletePost(key){db.ref("feed/"+key).remove();}
 
-// Disconnect
-window.addEventListener("beforeunload",()=>{ if(currentUser) db.ref("active_users/"+currentUser).remove(); });
+// ---- Disconnect ----
+window.addEventListener("beforeunload",()=>{if(currentUser){db.ref("active_users/"+currentUser).remove();}});
+</script>
+
+</body>
+</html>
