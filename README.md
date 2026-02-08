@@ -1,177 +1,235 @@
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Live Chat</title>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getDatabase, ref, set, push, onValue, onDisconnect, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+  authDomain: "live-chat-b810c.firebaseapp.com",
+  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
+  projectId: "live-chat-b810c",
+  storageBucket: "live-chat-b810c.firebasestorage.app",
+  messagingSenderId: "555058795334",
+  appId: "1:555058795334:web:f668887409800c32970b47"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let username = localStorage.getItem("username");
+let currentChat = "global";
+let unread = 0;
+
+/* ---------- LOGIN ---------- */
+window.login = () => {
+  const name = document.getElementById("username").value.trim();
+  if(!name) return alert("Enter username");
+  username = name;
+  localStorage.setItem("username", name);
+
+  set(ref(db, "users/"+name), {
+    online: true,
+    lastSeen: Date.now()
+  });
+
+  onDisconnect(ref(db,"users/"+name)).update({
+    online:false,
+    lastSeen:Date.now()
+  });
+
+  document.getElementById("login").style.display="none";
+  document.getElementById("app").style.display="flex";
+};
+
+/* ---------- USERS ---------- */
+onValue(ref(db,"users"), snap=>{
+  const list = document.getElementById("users");
+  list.innerHTML="";
+  snap.forEach(u=>{
+    const data=u.val();
+    const div=document.createElement("div");
+    div.className="user";
+    div.innerHTML=`
+      <span class="avatar">${u.key[0].toUpperCase()}</span>
+      <div>
+        <b>${u.key}</b>
+        <small>${data.online?"Online":"Last seen"}</small>
+      </div>`;
+    list.appendChild(div);
+  });
+});
+
+/* ---------- MESSAGES ---------- */
+window.sendMessage=()=>{
+  const text=document.getElementById("msg").value.trim();
+  if(!text) return;
+  push(ref(db,"chats/"+currentChat),{
+    user:username,
+    text,
+    time:Date.now()
+  });
+  document.getElementById("msg").value="";
+};
+
+onValue(ref(db,"chats/"+currentChat),snap=>{
+  const box=document.getElementById("messages");
+  box.innerHTML="";
+  snap.forEach(m=>{
+    const msg=m.val();
+    const div=document.createElement("div");
+    div.className= msg.user===username?"me":"other";
+    div.innerHTML=`<b>${msg.user}</b><p>${msg.text}</p>`;
+    box.appendChild(div);
+  });
+  box.scrollTop=box.scrollHeight;
+});
+
+/* ---------- THEME ---------- */
+window.toggleTheme=()=>{
+  document.body.classList.toggle("dark");
+};
+</script>
 
 <style>
 :root{
---bg:#efeae2;--panel:#fff;--text:#111;
---me:#dcf8c6;--other:#fff;--accent:#008069
+  --bg:#f5f5f5;
+  --card:#fff;
+  --text:#111;
+  --me:#dcf8c6;
+  --other:#fff;
 }
 body.dark{
---bg:#0b141a;--panel:#111b21;--text:#e9edef;
---me:#005c4b;--other:#1f2c34
+  --bg:#0f172a;
+  --card:#020617;
+  --text:#f8fafc;
+  --me:#14532d;
+  --other:#1e293b;
 }
-*{box-sizing:border-box;font-family:system-ui}
-html,body{height:100%;margin:0;background:var(--bg);color:var(--text)}
-
-.app{height:100%;display:flex;flex-direction:column}
-
-/* HEADER */
-.top{
-height:56px;background:var(--panel);
-display:flex;align-items:center;
-justify-content:space-between;
-padding:0 14px;border-bottom:1px solid #ccc
+body{
+  margin:0;
+  font-family:system-ui;
+  background:var(--bg);
+  color:var(--text);
 }
-.title{font-weight:600}
-body.dark .top{border-color:#222}
-
-/* USERS */
-.users{
-display:flex;overflow-x:auto;
-background:var(--panel);
-border-bottom:1px solid #ccc
+#login{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.login-box{
+  background:var(--card);
+  padding:20px;
+  width:90%;
+  max-width:320px;
+  border-radius:12px;
+}
+#app{
+  display:none;
+  height:100vh;
+}
+.sidebar{
+  width:30%;
+  background:var(--card);
+  overflow:auto;
+}
+.chat{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+header{
+  padding:10px;
+  background:var(--card);
+  display:flex;
+  justify-content:space-between;
+}
+#messages{
+  flex:1;
+  overflow:auto;
+  padding:10px;
+}
+.me, .other{
+  max-width:75%;
+  margin-bottom:10px;
+  padding:8px;
+  border-radius:10px;
+}
+.me{background:var(--me);margin-left:auto}
+.other{background:var(--other)}
+.input{
+  display:flex;
+  padding:10px;
+  background:var(--card);
+}
+input{
+  flex:1;
+  padding:10px;
+  border-radius:20px;
+  border:1px solid #ccc;
+}
+button{
+  margin-left:5px;
+  padding:10px 15px;
+  border-radius:50%;
+  border:none;
+  background:#22c55e;
+  color:#fff;
 }
 .user{
-padding:10px 14px;cursor:pointer;
-display:flex;flex-direction:column;
-font-size:13px;min-width:110px
+  display:flex;
+  gap:10px;
+  padding:10px;
+  border-bottom:1px solid #ddd;
 }
-.user.active{background:#e9edef}
-body.dark .user.active{background:#1f2c34}
-.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;margin-bottom:4px}
-
-/* CHAT */
-.chat{
-flex:1;overflow-y:auto;
-padding:12px;display:flex;
-flex-direction:column;gap:6px
+.avatar{
+  background:#22c55e;
+  color:#fff;
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-.msg{
-max-width:78%;padding:8px 12px;
-border-radius:8px;font-size:14px;
-animation:fade .2s
+@media(max-width:768px){
+  .sidebar{width:40%}
 }
-@keyframes fade{from{opacity:0;transform:translateY(4px)}}
-.me{align-self:flex-end;background:var(--me)}
-.other{align-self:flex-start;background:var(--other)}
-.time{font-size:10px;opacity:.6;margin-top:2px}
-
-/* INPUT */
-.input{
-display:flex;gap:8px;
-padding:8px;background:var(--panel);
-padding-bottom:calc(8px + env(safe-area-inset-bottom))
-}
-.input input{
-flex:1;padding:10px 14px;
-border-radius:20px;border:1px solid #aaa;
-background:transparent;color:var(--text)
-}
-.input button{
-width:44px;border:none;
-border-radius:50%;
-background:var(--accent);
-color:#fff;font-size:18px
-}
-
-.typing{font-size:12px;padding:0 12px;opacity:.6}
 </style>
 </head>
 
 <body>
-<div class="app">
-  <div class="top">
-    <div class="title" id="title">Live Chat</div>
-    <button onclick="toggle()">🌙</button>
-  </div>
-
-  <div class="users" id="users"></div>
-
-  <div class="typing" id="typing"></div>
-
-  <div class="chat" id="chat"></div>
-
-  <div class="input">
-    <input id="text" placeholder="Type message…" oninput="typingOn()">
-    <button onclick="send()">➤</button>
+<div id="login">
+  <div class="login-box">
+    <h3>Live Chat</h3>
+    <input id="username" placeholder="Enter username"/>
+    <button onclick="login()">Enter</button>
   </div>
 </div>
 
-<script>
-firebase.initializeApp({
-apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-databaseURL:"https://live-chat-b810c-default-rtdb.firebaseio.com"
-});
-const db=firebase.database();
+<div id="app">
+  <div class="sidebar">
+    <h4 style="padding:10px">Active Users</h4>
+    <div id="users"></div>
+  </div>
 
-let me=prompt("Enter username");
-if(!me) location.reload();
-
-let current="global";
-db.ref("users/"+me).set({online:true});
-window.onbeforeunload=()=>db.ref("users/"+me).remove();
-
-/* USERS */
-db.ref("users").on("value",s=>{
-users.innerHTML="";
-Object.keys(s.val()||{}).forEach(u=>{
-let d=document.createElement("div");
-d.className="user"+(u==me?" active":"");
-d.innerHTML=`<div class="dot"></div>${u}`;
-d.onclick=()=>openChat(u);
-users.appendChild(d);
-});
-});
-
-/* CHAT */
-function openChat(u){
-current=[me,u].sort().join("_");
-title.innerText="Chat with "+u;
-chat.innerHTML="";
-db.ref("chats/"+current).off();
-db.ref("chats/"+current).on("child_added",s=>{
-let m=s.val();
-let d=document.createElement("div");
-d.className="msg "+(m.from==me?"me":"other");
-d.innerHTML=`${m.text}<div class="time">${new Date(m.time).toLocaleTimeString()}</div>`;
-chat.appendChild(d);
-chat.scrollTop=chat.scrollHeight;
-});
-}
-
-/* SEND */
-function send(){
-if(!text.value.trim())return;
-db.ref("chats/"+current).push({
-from:me,text:text.value,time:Date.now()
-});
-text.value="";
-typing.innerText="";
-}
-
-/* TYPING */
-let t;
-function typingOn(){
-db.ref("typing/"+current+"/"+me).set(true);
-clearTimeout(t);
-t=setTimeout(()=>db.ref("typing/"+current+"/"+me).remove(),800);
-}
-db.ref("typing").on("value",s=>{
-let v=s.val()||{};
-typing.innerText=Object.keys(v[current]||{})
-.filter(u=>u!==me).length?"Typing…":"";
-});
-
-/* THEME */
-function toggle(){
-document.body.classList.toggle("dark");
-}
-</script>
+  <div class="chat">
+    <header>
+      <b>Global Chat</b>
+      <button onclick="toggleTheme()">🌓</button>
+    </header>
+    <div id="messages"></div>
+    <div class="input">
+      <input id="msg" placeholder="Type message"/>
+      <button onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
