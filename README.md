@@ -63,6 +63,7 @@ img{max-width:100%;border-radius:8px;}
 <li>Mobile & Desktop Friendly</li>
 <li>Secure Firebase Backend</li>
 <li>Modern UX/UI</li>
+<li>Online Users Visible 🟢</li>
 </ul>
 </div>
 </div>
@@ -138,6 +139,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebas
 import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
   authDomain: "live-chat-b810c.firebaseapp.com",
@@ -174,14 +176,15 @@ window.login=()=>{
   showPage('home');
 };
 
-// Chat Users
+// Chat Users with Online Status
 onValue(ref(db,"users"), snap=>{
   const usersDiv=document.getElementById("users"); if(!usersDiv) return;
   usersDiv.innerHTML="";
   snap.forEach(u=>{
     if(u.key!==currentUser){
       const d=document.createElement("div");
-      d.className="user online"; d.textContent=u.val().name;
+      d.className="user "+(u.val().online?"online":"offline");
+      d.textContent=u.val().name;
       d.onclick=()=>openChat(u.key,false);
       usersDiv.appendChild(d);
     }
