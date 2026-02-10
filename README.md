@@ -8,34 +8,43 @@
 :root{--bg:#f0f2f5;--card:#fff;--pri:#25D366;--txt:#111;--muted:#6b7280;}
 body.dark{--bg:#121212;--card:#1e1e1e;--pri:#10b981;--txt:#fff;--muted:#9ca3af;}
 body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--txt);}
-header{height:56px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:20px;font-weight:700;position:sticky;top:0;z-index:1000;}
-.container{padding:12px;max-width:700px;margin:auto;padding-bottom:90px;}
+header{height:56px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:22px;font-weight:700;position:sticky;top:0;z-index:1000;}
+.container{padding:14px;max-width:700px;margin:auto;padding-bottom:100px;}
 .page{display:none;}.page.active{display:block;}
-.card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,0.08);}
-button{background:var(--pri);border:none;color:#fff;padding:12px;margin-top:6px;width:100%;border-radius:8px;font-size:16px;cursor:pointer;}
-input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;margin-bottom:8px;font-size:15px;}
-.user{padding:10px 14px;background:#e5e7eb;border-radius:20px;margin:4px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,0.08);}
+button{background:var(--pri);border:none;color:#fff;padding:14px;margin-top:8px;width:100%;border-radius:10px;font-size:18px;cursor:pointer;}
+input,textarea{width:100%;padding:14px;border-radius:10px;border:1px solid #ccc;margin-bottom:10px;font-size:16px;}
+.user{padding:12px 16px;background:#e5e7eb;border-radius:24px;margin:5px;display:inline-flex;align-items:center;gap:8px;font-size:16px;cursor:pointer;}
 .user::before{content:"🟢";}
-.list{display:flex;overflow-x:auto;padding:4px 0;}
-.msg{padding:10px;margin:6px 0;border-radius:12px;max-width:80%;}
+.list{display:flex;overflow-x:auto;padding:5px 0;}
+.msg{padding:12px;margin:8px 0;border-radius:14px;max-width:80%;font-size:16px;}
 .me{background:#dcfce7;margin-left:auto;}
 .other{background:var(--card);}
-.status-post{border-bottom:1px solid #ddd;padding:10px 0;}
-.status-post p{margin:6px 0;}
-.actions{display:flex;gap:14px;margin-top:6px;font-size:18px;cursor:pointer;}
-.bottom-nav{position:fixed;bottom:0;width:100%;background:var(--pri);display:flex;justify-content:space-around;align-items:center;height:72px;color:#fff;}
-.bottom-nav i{font-size:28px;cursor:pointer;}
+.status-post{border-bottom:1px solid #ddd;padding:12px 0;}
+.status-post p{margin:6px 0;font-size:15px;}
+.actions{display:flex;gap:16px;margin-top:8px;font-size:20px;cursor:pointer;}
+.bottom-nav{position:fixed;bottom:0;width:100%;background:var(--pri);display:flex;justify-content:space-around;align-items:center;height:80px;color:#fff;box-shadow:0 -2px 10px rgba(0,0,0,0.2);}
+.bottom-nav i{font-size:30px;cursor:pointer;}
 .active-nav{color:#fff;opacity:1;}
-.socials{display:flex;justify-content:center;gap:24px;margin-top:10px;}
-.socials i{font-size:26px;color:var(--pri);cursor:pointer;}
-.hero{position:relative;height:160px;border-radius:12px;overflow:hidden;margin-bottom:12px;text-align:center;color:#fff;}
+.socials{display:flex;justify-content:center;gap:28px;margin-top:14px;}
+.socials i{font-size:30px;color:var(--pri);cursor:pointer;}
+.hero{position:relative;height:180px;border-radius:14px;overflow:hidden;margin-bottom:14px;text-align:center;color:#fff;}
 .hero img{width:100%;height:100%;object-fit:cover;filter:brightness(0.6);}
 .hero-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
-.hero-content h1{font-size:26px;margin:6px 0;}
-.hero-content p{font-size:16px;margin:6px 0;}
-.feature-cards{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
-.feature-card{flex:1 1 140px;min-width:140px;text-align:center;background:var(--card);padding:12px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-@media(max-width:480px){.hero{height:120px;}.hero-content h1{font-size:20px;}.hero-content p{font-size:14px;}.feature-card{min-width:120px;padding:10px;}.bottom-nav i{font-size:26px;}}
+.hero-content h1{font-size:28px;margin:8px 0;}
+.hero-content p{font-size:18px;margin:6px 0;}
+.feature-cards{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.feature-card{flex:1 1 140px;min-width:140px;text-align:center;background:var(--card);padding:14px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+.feature-card i{font-size:28px;margin-bottom:6px;}
+@media(max-width:480px){
+.hero{height:140px;}.hero-content h1{font-size:22px;}.hero-content p{font-size:16px;}
+.feature-card{min-width:120px;padding:12px;}
+.bottom-nav i{font-size:28px;}
+button,input,textarea{font-size:16px;padding:12px;}
+.user{font-size:15px;padding:10px 14px;}
+.msg{font-size:15px;padding:10px;}
+.actions{font-size:18px;}
+}
 </style>
 </head>
 <body>
@@ -62,10 +71,10 @@ input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;m
     </div>
   </div>
   <div class="feature-cards">
-    <div class="feature-card"><i class="fa fa-comment fa-2x" style="color:#25D366;"></i><p>Real-Time Chat</p></div>
-    <div class="feature-card"><i class="fa fa-users fa-2x" style="color:#3b82f6;"></i><p>Online Users</p></div>
-    <div class="feature-card"><i class="fa fa-heart fa-2x" style="color:#ef4444;"></i><p>Status & Likes</p></div>
-    <div class="feature-card"><i class="fa fa-moon fa-2x" style="color:#facc15;"></i><p>Dark/Light Mode</p></div>
+    <div class="feature-card"><i class="fa fa-comment"></i><p>Real-Time Chat</p></div>
+    <div class="feature-card"><i class="fa fa-users"></i><p>Online Users</p></div>
+    <div class="feature-card"><i class="fa fa-heart"></i><p>Status & Likes</p></div>
+    <div class="feature-card"><i class="fa fa-moon"></i><p>Dark/Light Mode</p></div>
   </div>
   <div class="card">
     <h3>🟢 Online Users</h3>
@@ -77,7 +86,7 @@ input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;m
 <div id="chat" class="page card">
   <h3>💬 Chat</h3>
   <div id="chatUsers" class="list"></div>
-  <div id="chatBox" style="height:260px; overflow:auto;"></div>
+  <div id="chatBox" style="height:280px; overflow:auto;"></div>
   <input id="chatMsg" placeholder="Type a message...">
   <button onclick="sendChat()">Send</button>
 </div>
@@ -104,8 +113,8 @@ input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;m
 <!-- ABOUT -->
 <div id="about" class="page card">
   <h3>ℹ️ About Live Connect</h3>
-  <img src="https://images.unsplash.com/photo-1581091012184-1ff3f6d8e7b3?auto=format&fit=crop&w=800&q=60" style="margin-bottom:8px;border-radius:12px;">
-  <p>Live Connect is a **modern chat platform** where you can connect with friends and share your thoughts. Enjoy real-time messaging, group chats, status updates, and more. Fully mobile-friendly and secure.</p>
+  <img src="https://images.unsplash.com/photo-1581091012184-1ff3f6d8e7b3?auto=format&fit=crop&w=800&q=60" style="margin-bottom:8px;border-radius:14px;">
+  <p>Live Connect is a **modern chat platform** to connect with friends, share your thoughts, and keep up with online updates. Real-time chat, group messaging, status updates, and mobile-friendly design.</p>
   <div class="socials">
     <i class="fab fa-facebook" onclick="window.open('https://www.facebook.com/profile.php?id=100084218946114','_blank')"></i>
     <i class="fab fa-instagram" onclick="window.open('https://www.instagram.com/mr_nazim073','_blank')"></i>
@@ -116,7 +125,7 @@ input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;m
 <!-- CONTACT -->
 <div id="contact" class="page card">
   <h3>✉️ Contact Us</h3>
-  <p>Need help? Reach out to our support team:</p>
+  <p>Need help? Reach out anytime:</p>
   <p>Email: <b>webhub262@gmail.com</b></p>
 </div>
 
