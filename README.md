@@ -5,37 +5,26 @@
 <title>Live Connect 🚀</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{--bg:#f0f2f5;--card:#fff;--pri:#25D366;--text:#000;--sec:#10b981;}
-body.dark{--bg:#121212;--card:#1e1e1e;--pri:#10b981;--text:#fff;--sec:#3b82f6;}
+:root{--bg:#f0f2f5;--card:#fff;--pri:#25D366;--text:#000;}
+body.dark{--bg:#121212;--card:#1e1e1e;--pri:#10b981;--text:#fff;}
 body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);}
-header{height:50px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-weight:700;position:sticky;top:0;z-index:1000;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
-.container{padding:10px;max-width:480px;margin:auto;}
+header{height:50px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 10px;font-weight:700;position:sticky;top:0;z-index:1000;font-size:18px;}
+.container{padding:8px;max-width:480px;margin:auto;}
 .page{display:none;}
 .page.active{display:block;}
-.hero{position:relative;height:120px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--text);text-shadow:0 2px 6px rgba(0,0,0,0.7);margin-bottom:10px;overflow:hidden;}
-.hero img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:brightness(0.7);}
-.hero-content{position:relative;z-index:2;text-align:center;padding:8px;}
-.card{background:var(--card);padding:8px;border-radius:10px;margin-bottom:10px;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
-button{cursor:pointer;padding:6px 8px;border:none;border-radius:6px;background:var(--pri);color:#fff;margin:2px;font-size:13px;}
-input,textarea{padding:6px;border-radius:6px;border:1px solid #ccc;margin-bottom:4px;width:100%;font-size:13px;}
-.msg{padding:6px;margin:4px 0;border-radius:10px;word-wrap:break-word;font-size:12px;display:flex;justify-content:space-between;align-items:center;}
-.msg.me{background:#dcf8c6;text-align:right;}
-.msg.other{background:#fff;text-align:left;}
-.msg button{padding:2px 4px;font-size:10px;margin-left:4px;}
-.user{padding:6px 10px;border-radius:10px;background:#eee;cursor:pointer;white-space:nowrap;margin:0 3px;flex-shrink:0;display:flex;align-items:center;gap:4px;font-size:12px;}
-.user.online::before{content:"🟢";}
+.card{background:var(--card);padding:8px;border-radius:8px;margin-bottom:8px;}
+input,textarea,button{padding:6px;border-radius:6px;border:1px solid #ccc;margin-bottom:4px;width:100%;font-size:13px;}
+button{background:var(--pri);color:#fff;border:none;cursor:pointer;}
+.msg{padding:6px;margin:4px 0;border-radius:8px;font-size:12px;display:flex;justify-content:space-between;align-items:center;}
+.msg.me{background:#dcf8c6;}
+.msg.other{background:#fff;}
+.user{padding:6px 8px;border-radius:8px;background:#eee;cursor:pointer;margin:0 3px;flex-shrink:0;font-size:12px;}
+.user.online::before{content:"🟢";margin-right:4px;}
 #users,#groupList,#currentUsers{display:flex;overflow-x:auto;padding:4px 0;}
-.bottom-nav{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;background:var(--pri);color:#fff;height:50px;align-items:center;z-index:1000;border-top-left-radius:10px;border-top-right-radius:10px;}
+.bottom-nav{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;background:var(--pri);color:#fff;height:50px;align-items:center;z-index:1000;}
 .bottom-nav i{font-size:22px;cursor:pointer;}
 .active-nav{color:#fff;}
-.social-icons a{margin:0 4px;font-size:18px;color:var(--sec);text-decoration:none;}
-.social-icons a:hover{opacity:0.8;}
-@media(max-width:480px){
-  .hero{height:100px;} 
-  input,textarea,button{font-size:12px;padding:5px;} 
-  .msg{font-size:11px;}
-  .bottom-nav i{font-size:20px;}
-}
+@media(max-width:480px){input,textarea,button{font-size:12px;padding:5px;} .msg{font-size:11px;} .bottom-nav i{font-size:20px;}}
 </style>
 </head>
 <body>
@@ -58,26 +47,8 @@ input,textarea{padding:6px;border-radius:6px;border:1px solid #ccc;margin-bottom
 
 <!-- Home Page -->
 <div id="home" class="page">
-<div class="hero">
-  <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=800&q=60" alt="Hero">
-  <div class="hero-content">
-    <h1 style="font-size:20px;">Live Connect 🚀</h1>
-    <p style="font-size:13px;">Chat with friends & groups in real-time. Secure & mobile-friendly.</p>
-  </div>
-</div>
-
 <div class="card">
-<h4 style="text-align:center;">Features ✨</h4>
-<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
-  <div class="card" style="flex:1 1 90px;text-align:center;"><i class="fa fa-comment fa-2x" style="color:#25D366;"></i><p style="font-size:11px;">Chat</p></div>
-  <div class="card" style="flex:1 1 90px;text-align:center;"><i class="fa fa-users fa-2x" style="color:#10b981;"></i><p style="font-size:11px;">Online Users</p></div>
-  <div class="card" style="flex:1 1 90px;text-align:center;"><i class="fa fa-user fa-2x" style="color:#3b82f6;"></i><p style="font-size:11px;">Profile & Status</p></div>
-  <div class="card" style="flex:1 1 90px;text-align:center;"><i class="fa fa-moon fa-2x" style="color:#facc15;"></i><p style="font-size:11px;">Dark Mode</p></div>
-</div>
-</div>
-
-<div class="card">
-<h4 style="text-align:center;">🟢 Online Users</h4>
+<h4>🟢 Online Users</h4>
 <div id="currentUsers"></div>
 </div>
 </div>
@@ -90,8 +61,8 @@ input,textarea{padding:6px;border-radius:6px;border:1px solid #ccc;margin-bottom
 <div id="msgs" style="height:180px;overflow-y:auto;border:1px solid #ccc;padding:4px;border-radius:6px;margin-bottom:6px;"></div>
 <input type="text" id="msg" placeholder="Type message...">
 <input type="file" id="img" accept="image/*" hidden>
-<button onclick="sendMsg()">➤</button>
-<button onclick="img.click()">🖼️</button>
+<button onclick="sendMsg()">Send</button>
+<button onclick="img.click()">Image</button>
 <button onclick="clearChat()">Clear</button>
 </div>
 </div>
@@ -120,22 +91,16 @@ input,textarea{padding:6px;border-radius:6px;border:1px solid #ccc;margin-bottom
 <!-- About Page -->
 <div id="about" class="page">
 <div class="card">
-<h4>About Live Connect 🚀</h4>
-<p>Live Connect is simple, modern chat for friends & groups. Send messages, images, set status, stay online!</p>
-<div class="social-icons">
-<a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank"><i class="fab fa-facebook"></i></a>
-<a href="https://www.instagram.com/mr_nazim073" target="_blank"><i class="fab fa-instagram"></i></a>
-<a href="https://youtube.com/@crazykhantv" target="_blank"><i class="fab fa-youtube"></i></a>
-</div>
+<h4>About</h4>
+<p>Live Connect is a **simple modern chat app**. Chat with friends, see who's online, create groups, upload images, and set your status.</p>
 </div>
 </div>
 
 <!-- Contact Page -->
 <div id="contact" class="page">
 <div class="card">
-<h4>Contact Us</h4>
+<h4>Contact</h4>
 <p>Email: <a href="mailto:webhub262@gmail.com">webhub262@gmail.com</a></p>
-<p>Reach out anytime for support!</p>
 </div>
 </div>
 
@@ -239,7 +204,7 @@ window.openChat=(u,g)=>{
     snap.forEach(m=>{
       const div=document.createElement("div");
       div.className="msg "+(m.val().from===currentUser?"me":"other");
-      div.innerHTML=m.val().img?`<img src=\"${m.val().img}\">`:m.val().text;
+      div.textContent=m.val().text || "";
       const btn=document.createElement("button");
       btn.textContent="🗑️";
       btn.onclick=()=>remove(ref(db,path+"/"+m.key));
@@ -255,13 +220,6 @@ window.sendMsg=()=>{
   const text=document.getElementById("msg").value.trim(); if(!text) return;
   push(ref(db,isGroup?"groupChats/"+curChat:"chats/"+[currentUser,curChat].sort().join("_")),{from:currentUser,text});
   document.getElementById("msg").value="";
-};
-
-document.getElementById("img").onchange=async()=>{
-  const file=document.getElementById("img").files[0]; if(!file||!curChat) return;
-  const r=sRef(st,"imgs/"+Date.now()+file.name);
-  await uploadBytes(r,file); const url=await getDownloadURL(r);
-  push(ref(db,isGroup?"groupChats/"+curChat:"chats/"+[currentUser,curChat].sort().join("_")),{from:currentUser,img:url});
 };
 
 window.createGroup=()=>{
