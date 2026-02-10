@@ -2,9 +2,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Live Connect Pro</title>
+<title>Live Connect Pro Fixed</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
 :root{
  --pri:#25D366;
@@ -170,7 +169,7 @@ body.dark .other{color:#fff;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove, onDisconnect, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
 // Firebase config
@@ -214,21 +213,6 @@ function loadUsers(){
     d.className="user "+(u.val().online?"online":"offline");
     d.textContent=u.key;
     d.onclick=()=>openChat(u.key);
-    let unreadRef = ref(db,"unread/"+u.key+"/"+me);
-    onValue(unreadRef, snap=>{
-      let count = snap.exists() ? Object.keys(snap.val()).length : 0;
-      if(count>0){
-        if(!d.querySelector(".unread")){
-          let badge = document.createElement("span");
-          badge.className="unread";
-          badge.textContent=count;
-          d.appendChild(badge);
-        }else d.querySelector(".unread").textContent=count;
-      } else {
-        let badge = d.querySelector(".unread");
-        if(badge) badge.remove();
-      }
-    });
     users.appendChild(d);
   });
  });
@@ -239,15 +223,12 @@ window.openChat=(u)=>{
  cur = u; chatWith.textContent = u;
  const path = "chats/"+[me,u].sort().join("_");
 
- // Clear unread count
- remove(ref(db,"unread/"+me+"/"+u));
-
  onValue(ref(db,path), s=>{
   msgs.innerHTML="";
   s.forEach(m=>{
    let d = document.createElement("div");
    d.className="msg "+(m.val().from===me?"me":"other");
-   d.innerHTML = m.val().img ? `<img src=\"${m.val().img}\">` : m.val().text;
+   d.innerHTML = m.val().img ? `<img src="${m.val().img}">` : m.val().text;
    if(m.val().from===me){
      let b=document.createElement("button");
      b.className="del"; b.textContent="×";
@@ -264,8 +245,6 @@ window.openChat=(u)=>{
 window.send=()=>{
  if(!cur || !msg.value.trim()) return;
  push(ref(db,"chats/"+[me,cur].sort().join("_")), {from:me,text:msg.value});
- // Update unread for recipient
- push(ref(db,"unread/"+cur+"/"+me), {time:Date.now()});
  msg.value="";
  playNotification();
 };
@@ -277,7 +256,6 @@ img.onchange=async()=>{
  await uploadBytes(r,f);
  let u = await getDownloadURL(r);
  push(ref(db,"chats/"+[me,cur].sort().join("_")), {from:me,img:u});
- push(ref(db,"unread/"+cur+"/"+me), {time:Date.now()});
  playNotification();
 };
 
@@ -297,7 +275,6 @@ setInterval(()=>{
   s.forEach(u=>{
     if(u.key!==me) typingUsers.push(u.key);
   });
-  typing.textContent = typingUsers.length>0 ? typingUsers.join(", ")+" is typing..." : "";
  });
 },500);
 
