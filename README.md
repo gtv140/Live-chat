@@ -24,9 +24,9 @@ header{height:60px;background:var(--pri);color:#fff;display:flex;align-items:cen
 .user img{width:24px;height:24px;border-radius:50%}
 
 .chat{flex:1;display:flex;flex-direction:column;min-height:0;margin:8px}
-.chat-head{padding:10px;background:var(--card);display:flex;justify-content:space-between;font-size:14px;border-radius:8px;margin-bottom:4px}
-.messages{flex:1;overflow-y:auto;padding:8px;background:var(--card);border-radius:8px}
-.msg{max-width:75%;margin-bottom:6px;padding:8px;border-radius:12px;font-size:13px;position:relative}
+.chat-head{padding:10px;background:var(--card);display:flex;justify-content:space-between;font-size:14px;border-radius:8px;margin-bottom:4px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.messages{flex:1;overflow-y:auto;padding:8px;background:var(--card);border-radius:8px;box-shadow:inset 0 2px 4px rgba(0,0,0,0.05)}
+.msg{max-width:75%;margin-bottom:6px;padding:8px;border-radius:12px;font-size:13px;position:relative;word-wrap:break-word}
 .me{background:var(--me);margin-left:auto}
 .other{background:var(--other)}
 .msg img{max-width:180px;border-radius:8px}
