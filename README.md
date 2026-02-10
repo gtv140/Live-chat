@@ -79,9 +79,11 @@ header{
  background:#00000015;font-size:14px;
  white-space:nowrap;
  cursor:pointer;
+ position:relative;
 }
 .user.online::before{content:"● ";color:#25D366}
 .user.offline::before{content:"● ";color:#888}
+.user .unread{position:absolute;top:-2px;right:-2px;background:#f44336;color:#fff;border-radius:50%;font-size:10px;padding:2px 4px}
 
 /* CHAT */
 .chat{flex:1;display:flex;flex-direction:column;min-height:0}
@@ -124,6 +126,9 @@ body.dark .other{color:#fff;}
  border:none;background:var(--pri);color:#fff;
  cursor:pointer;
 }
+.typing-indicator{
+ font-size:12px;color:#888;margin:2px 0 4px 6px;
+}
 </style>
 </head>
 
@@ -151,6 +156,7 @@ body.dark .other{color:#fff;}
    <i class="fa fa-moon" onclick="document.body.classList.toggle('dark')"></i>
   </div>
 
+  <div class="typing-indicator" id="typing"></div>
   <div class="messages" id="msgs"></div>
 
   <div class="input">
@@ -164,7 +170,7 @@ body.dark .other{color:#fff;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove, onDisconnect, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
 // Firebase config
@@ -183,6 +189,7 @@ const db = getDatabase(app);
 const st = getStorage(app);
 
 let me="", cur="";
+let typingTimeout;
 
 // START
 window.start=()=>{
@@ -207,8 +214,22 @@ function loadUsers(){
     d.className="user "+(u.val().online?"online":"offline");
     d.textContent=u.key;
     d.onclick=()=>openChat(u.key);
+    let unreadRef = ref(db,"unread/"+u.key+"/"+me);
+    onValue(unreadRef, snap=>{
+      let count = snap.exists() ? Object.keys(snap.val()).length : 0;
+      if(count>0){
+        if(!d.querySelector(".unread")){
+          let badge = document.createElement("span");
+          badge.className="unread";
+          badge.textContent=count;
+          d.appendChild(badge);
+        }else d.querySelector(".unread").textContent=count;
+      } else {
+        let badge = d.querySelector(".unread");
+        if(badge) badge.remove();
+      }
+    });
     users.appendChild(d);
-   }
   });
  });
 }
@@ -217,6 +238,10 @@ function loadUsers(){
 window.openChat=(u)=>{
  cur = u; chatWith.textContent = u;
  const path = "chats/"+[me,u].sort().join("_");
+
+ // Clear unread count
+ remove(ref(db,"unread/"+me+"/"+u));
+
  onValue(ref(db,path), s=>{
   msgs.innerHTML="";
   s.forEach(m=>{
@@ -239,7 +264,10 @@ window.openChat=(u)=>{
 window.send=()=>{
  if(!cur || !msg.value.trim()) return;
  push(ref(db,"chats/"+[me,cur].sort().join("_")), {from:me,text:msg.value});
+ // Update unread for recipient
+ push(ref(db,"unread/"+cur+"/"+me), {time:Date.now()});
  msg.value="";
+ playNotification();
 };
 
 // SEND IMAGE
@@ -249,7 +277,35 @@ img.onchange=async()=>{
  await uploadBytes(r,f);
  let u = await getDownloadURL(r);
  push(ref(db,"chats/"+[me,cur].sort().join("_")), {from:me,img:u});
+ push(ref(db,"unread/"+cur+"/"+me), {time:Date.now()});
+ playNotification();
 };
+
+// TYPING INDICATOR
+msg.addEventListener("input",()=>{
+ if(!cur) return;
+ set(ref(db,"typing/"+cur+"/"+me),true);
+ clearTimeout(typingTimeout);
+ typingTimeout=setTimeout(()=>remove(ref(db,"typing/"+cur+"/"+me)),1000);
+});
+
+// SHOW TYPING
+setInterval(()=>{
+ if(!cur) return;
+ onValue(ref(db,"typing/"+cur), s=>{
+  let typingUsers = [];
+  s.forEach(u=>{
+    if(u.key!==me) typingUsers.push(u.key);
+  });
+  typing.textContent = typingUsers.length>0 ? typingUsers.join(", ")+" is typing..." : "";
+ });
+},500);
+
+// NOTIFICATION SOUND
+function playNotification(){
+ let audio = new Audio("https://www.myinstants.com/media/sounds/facebook_messenger.mp3");
+ audio.play();
+}
 
 // HERO SLIDES
 const slides=[
