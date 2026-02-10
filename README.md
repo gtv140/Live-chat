@@ -13,23 +13,23 @@ header div{font-size:18px;}
 .container{padding:12px;max-width:960px;margin:auto;}
 .page{display:none;}
 .page.active{display:block;}
-.hero{height:180px;border-radius:12px;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;text-shadow:0 2px 6px #000;margin-bottom:12px;}
+.hero{height:140px;border-radius:12px;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;text-shadow:0 2px 6px #000;margin-bottom:12px;}
 .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);margin-bottom:12px;}
 ul{padding-left:20px;} li{margin-bottom:6px;}
-button{cursor:pointer;padding:8px 14px;border:none;border-radius:8px;background:var(--pri);color:#fff;margin:2px;font-size:14px;}
+button{cursor:pointer;padding:10px 14px;border:none;border-radius:8px;background:var(--pri);color:#fff;margin:2px;font-size:14px;}
 button:hover{opacity:0.9;}
 input,textarea{padding:10px;border-radius:8px;border:1px solid #ccc;margin-bottom:4px;width:100%;font-size:14px;}
 img{max-width:100%;border-radius:8px;}
 .msg{padding:8px;margin:4px 0;border-radius:8px;word-wrap:break-word;}
 .msg.me{background:#dcf8c6;text-align:right;}
 .msg.other{background:#fff;text-align:left;}
-.user{padding:10px 12px;border-radius:8px;background:#eee;cursor:pointer;white-space:nowrap;margin:0 4px;flex-shrink:0;}
-.user.online{border:2px solid var(--pri);}
-.user.offline{opacity:0.6;}
+.user{padding:10px 12px;border-radius:8px;background:#eee;cursor:pointer;white-space:nowrap;margin:0 4px;flex-shrink:0;display:flex;align-items:center;gap:4px;}
+.user.online::before{content:"🟢";}
+.user.offline::before{content:"⚪";}
 #users,#groupList{display:flex;overflow-x:auto;padding:4px 0;}
 .bottom-nav{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;background:var(--pri);color:#fff;height:50px;align-items:center;z-index:1000;border-top-left-radius:12px;border-top-right-radius:12px;}
 .bottom-nav i{font-size:20px;}
-@media(max-width:600px){.hero{height:140px;font-size:18px;} input,textarea,button{font-size:16px;padding:10px;} .card{padding:12px;}}
+@media(max-width:600px){.hero{height:120px;font-size:16px;} input,textarea,button{font-size:16px;padding:10px;} .card{padding:12px;}}
 </style>
 </head>
 <body>
@@ -138,7 +138,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebas
 import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
   authDomain: "live-chat-b810c.firebaseapp.com",
