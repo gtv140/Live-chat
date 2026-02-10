@@ -31,6 +31,7 @@ img{max-width:100%;border-radius:8px;}
 #users,#groupList,#currentUsers{display:flex;overflow-x:auto;padding:4px 0;}
 .bottom-nav{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;background:var(--pri);color:#fff;height:60px;align-items:center;z-index:1000;border-top-left-radius:12px;border-top-right-radius:12px;}
 .bottom-nav i{font-size:24px;cursor:pointer;}
+.active-nav{color:#fff;}
 @media(max-width:480px){.hero{height:120px;font-size:14px;} input,textarea,button{font-size:14px;padding:8px;} .card{padding:8px;} .msg{font-size:13px;}}
 </style>
 </head>
@@ -43,7 +44,7 @@ img{max-width:100%;border-radius:8px;}
 
 <div class="container">
 
-<!-- Login -->
+<!-- Login Page -->
 <div id="loginPage" class="page active">
 <div class="card">
 <h3>Enter Username</h3>
@@ -54,21 +55,14 @@ img{max-width:100%;border-radius:8px;}
 
 <!-- Home Page -->
 <div id="home" class="page">
-
-<!-- Hero Section -->
 <div class="hero">
   <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=800&q=60" alt="Live Connect Hero">
   <div class="hero-content">
     <h1 style="font-size:26px;font-weight:700;margin-bottom:6px;">Live Connect 🚀</h1>
     <p style="font-size:15px;margin-bottom:12px;">Secure, Modern & Mobile-Friendly Real-Time Chat</p>
-    <div style="margin-top:12px;">
-      <button onclick="showPage('chat')" style="margin-right:6px;">💬 Start Chatting</button>
-      <button onclick="showPage('profile')">👤 Create Profile</button>
-    </div>
   </div>
 </div>
 
-<!-- Key Features Section -->
 <div class="card">
 <h3 style="text-align:center;font-size:18px;margin-bottom:8px;">✨ Key Features</h3>
 <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
@@ -91,15 +85,13 @@ img{max-width:100%;border-radius:8px;}
 </div>
 </div>
 
-<!-- Online Users Preview -->
 <div class="card">
 <h3 style="text-align:center;font-size:18px;margin-bottom:8px;">🟢 Online Users</h3>
 <div id="currentUsers"></div>
 </div>
-
 </div>
 
-<!-- Chat -->
+<!-- Chat Page -->
 <div id="chat" class="page">
 <div class="card">
 <h3>Chat</h3>
@@ -113,7 +105,7 @@ img{max-width:100%;border-radius:8px;}
 </div>
 </div>
 
-<!-- Groups -->
+<!-- Groups Page -->
 <div id="groups" class="page">
 <div class="card">
 <h3>Groups</h3>
@@ -122,7 +114,7 @@ img{max-width:100%;border-radius:8px;}
 </div>
 </div>
 
-<!-- Profile -->
+<!-- Profile Page -->
 <div id="profile" class="page">
 <div class="card">
 <h3>Profile</h3>
@@ -132,6 +124,42 @@ img{max-width:100%;border-radius:8px;}
 <textarea id="status" placeholder="Status..."></textarea>
 <button onclick="updateStatus()">Update Status</button>
 </div>
+</div>
+
+<!-- About Page -->
+<div id="about" class="page">
+<div class="card">
+<h3>About Live Connect 🚀</h3>
+<img src="https://images.unsplash.com/photo-1581091012184-1ff3f6d8e7b3?auto=format&fit=crop&w=800&q=60" alt="About" style="margin-bottom:8px;">
+<p>Live Connect is a **modern real-time chat platform** designed for **secure communication**. Enjoy features like **instant messaging, group chats, online status, profile management, and dark mode**. Fully responsive and mobile-friendly experience guaranteed.</p>
+<p>Follow us:</p>
+<p>
+<a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank"><i class="fab fa-facebook"></i> Facebook</a> | 
+<a href="https://www.instagram.com/mr_nazim073" target="_blank"><i class="fab fa-instagram"></i> Instagram</a> | 
+<a href="https://youtube.com/@crazykhantv" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+</p>
+</div>
+</div>
+
+<!-- Contact Page -->
+<div id="contact" class="page">
+<div class="card">
+<h3>Contact Us</h3>
+<p>Email: <a href="mailto:webhub262@gmail.com">webhub262@gmail.com</a></p>
+<p>For support or inquiries, reach out anytime!</p>
+</div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+<i class="fa fa-house active-nav" onclick="showPage('home');setActiveNav(this)"></i>
+<i class="fa fa-comment" onclick="showPage('chat');setActiveNav(this)"></i>
+<i class="fa fa-users" onclick="showPage('groups');setActiveNav(this)"></i>
+<i class="fa fa-user" onclick="showPage('profile');setActiveNav(this)"></i>
+<i class="fa fa-info-circle" onclick="showPage('about');setActiveNav(this)"></i>
+<i class="fa fa-envelope" onclick="showPage('contact');setActiveNav(this)"></i>
+</div>
+
 </div>
 
 <script type="module">
@@ -154,37 +182,13 @@ const db = getDatabase(app);
 const st = getStorage(app);
 
 let currentUser=null, curChat="", isGroup=false;
-const msgsDiv=document.getElementById("msgs");
-
-function showPage(p){
-  document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));
-  document.getElementById(p).classList.add('active');
-}
-window.showPage = showPage;
-
 const currentUsersDiv=document.getElementById("currentUsers");
-onValue(ref(db,"users"), snap=>{
-  if(currentUsersDiv) currentUsersDiv.innerHTML="";
-  const usersDiv=document.getElementById("users"); if(usersDiv) usersDiv.innerHTML="";
-  snap.forEach(u=>{
-    if(u.key!==currentUser){
-      if(usersDiv){
-        const d=document.createElement("div");
-        d.className="user "+(u.val().online?"online":"offline");
-        d.textContent=u.val().name;
-        d.onclick=()=>openChat(u.key,false);
-        usersDiv.appendChild(d);
-      }
-    }
-    if(currentUsersDiv){
-      const d=document.createElement("div");
-      d.className="user "+(u.val().online?"online":"offline");
-      d.style.padding="6px 10px"; d.style.background="#fff"; d.style.borderRadius="12px"; d.style.fontSize="12px"; d.style.color="#000";
-      d.textContent=u.val().name + (u.val().status?" — "+u.val().status:"");
-      currentUsersDiv.appendChild(d);
-    }
-  });
-});
+const msgsDiv=document.getElementById("msgs");
+const usersDiv=document.getElementById("users");
+const groupListDiv=document.getElementById("groupList");
+const avatarImg=document.getElementById("avatar");
+const avatarInput=document.getElementById("avatarInput");
+const statusInput=document.getElementById("status");
 
 window.login=()=>{
   const uname=document.getElementById("usernameInput").value.trim();
@@ -194,6 +198,49 @@ window.login=()=>{
   showPage('home');
 };
 
+window.showPage=(p)=>{
+  document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));
+  document.getElementById(p).classList.add('active');
+};
+
+window.setActiveNav=(el)=>{
+  document.querySelectorAll('.bottom-nav i').forEach(i=>i.classList.remove('active-nav'));
+  el.classList.add('active-nav');
+};
+
+// Online users
+onValue(ref(db,"users"), snap=>{
+  if(currentUsersDiv) currentUsersDiv.innerHTML="";
+  snap.forEach(u=>{
+    if(currentUsersDiv){
+      const d=document.createElement("div");
+      d.className="user "+(u.val().online?"online":"offline");
+      d.textContent=u.val().name + (u.val().status?" — "+u.val().status:"");
+      currentUsersDiv.appendChild(d);
+    }
+    if(usersDiv && u.key!==currentUser){
+      const d=document.createElement("div");
+      d.className="user "+(u.val().online?"online":"offline");
+      d.textContent=u.val().name;
+      d.onclick=()=>openChat(u.key,false);
+      usersDiv.appendChild(d);
+    }
+  });
+});
+
+// Groups
+onValue(ref(db,"groups"), snap=>{
+  if(groupListDiv) groupListDiv.innerHTML="";
+  snap.forEach(g=>{
+    const d=document.createElement("div");
+    d.className="user online";
+    d.textContent=g.key;
+    d.onclick=()=>openChat(g.key,true);
+    groupListDiv.appendChild(d);
+  });
+});
+
+// Chat
 window.openChat=(u,g)=>{
   curChat=u; isGroup=g;
   const path=g?"groupChats/"+u:"chats/"+[currentUser,u].sort().join("_");
@@ -229,10 +276,6 @@ window.createGroup=()=>{
   set(ref(db,"groups/"+g),{by:currentUser,members:{[currentUser]:true}}); alert("Group created!");
 };
 
-const avatarImg=document.getElementById("avatar");
-const avatarInput=document.getElementById("avatarInput");
-const statusInput=document.getElementById("status");
-
 window.uploadAvatar=async()=>{
   const f=avatarInput.files[0]; if(!f) return alert("Select image");
   const r=sRef(st,"avatars/"+currentUser+"_"+Date.now()+f.name);
@@ -242,7 +285,8 @@ window.uploadAvatar=async()=>{
 
 window.updateStatus=()=>{set(ref(db,"users/"+currentUser+"/status"),statusInput.value.trim()); alert("Status updated!");};
 
-window.clearChat=()=>{if(!curChat) return; remove(ref(db,isGroup?"groupChats/"+curChat:"chats/"+[currentUser,curChat].sort().join("_")));}
+window.clearChat=()=>{if(!curChat) return; remove(ref(db,isGroup?"groupChats/"+curChat:"chats/"+[currentUser,curChat].sort().join("_")));};
 </script>
+
 </body>
 </html>
