@@ -3,23 +3,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Connect 🚀</title>
+<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
-  --bg:#f6f7fb;
-  --card:#fff;
-  --text:#111827;
-  --muted:#6b7280;
-  --primary:#2563eb;
+  --bg:#f6f7fb;--card:#fff;--text:#111827;--muted:#6b7280;--primary:#2563eb;
 }
-body.dark{
-  --bg:#0f172a;
-  --card:#111827;
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --primary:#3b82f6;
-}
-*{box-sizing:border-box}
+body.dark{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--primary:#3b82f6;}
+*{box-sizing:border-box;}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
 .app{max-width:420px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
 header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.06);}
@@ -153,11 +144,7 @@ window.login = ()=>{
   const uname = document.getElementById('usernameInput').value.trim();
   if(!uname){alert("Enter username");return;}
   currentUser = uname;
-
-  // Set user in firebase online
   set(ref(db,"users/"+uname), {name:uname, online:true});
-
-  // Hide login, show home
   document.getElementById('login').classList.remove('active');
   document.getElementById('home').classList.add('active');
   welcomeText.textContent = "Welcome, "+uname+"!";
@@ -183,7 +170,6 @@ onValue(ref(db,"messages"), snap=>{
     const div = document.createElement("div");
     div.className="msg";
     div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text}`;
-    // delete button if message owner
     if(m.val().from === currentUser){
       const btn = document.createElement("button");
       btn.textContent="🗑️";
