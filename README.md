@@ -300,9 +300,6 @@ const slides=[
 let i=0;
 setInterval(()=>hero.style.backgroundImage=`url(${slides[i++%slides.length]})`,3000);
 
-// NOTIFICATION
-function playNotification(){let a=new Audio("https://www.myinstants.com/media/sounds/facebook_messenger.mp3");a.play();}
-
 // FAB NEW GROUP (placeholder)
 window.newGroup=()=>alert("Group feature coming soon!");
 </script>
