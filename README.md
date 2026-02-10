@@ -46,8 +46,17 @@ img{max-width:100%;border-radius:6px;}
 
 <div class="container">
 
+<!-- Username Login -->
+<div id="loginPage" class="page">
+<div class="card">
+<h3>Enter Username to Start</h3>
+<input type="text" id="usernameInput" placeholder="Your username">
+<button onclick="login()">Enter</button>
+</div>
+</div>
+
 <!-- Home Page -->
-<div id="home" class="page">
+<div id="home" class="page" style="display:none;">
 <div class="hero" id="hero">Welcome to Live Connect 🚀</div>
 <div class="card">
 <h3>Features</h3>
@@ -58,7 +67,7 @@ img{max-width:100%;border-radius:6px;}
 <li>Dark/Light Mode Toggle</li>
 <li>Responsive Design for Mobile & Desktop</li>
 <li>Modern & Premium UI</li>
-<li>Google Login Authentication</li>
+<li>Username Login</li>
 </ul>
 </div>
 </div>
@@ -102,7 +111,7 @@ img{max-width:100%;border-radius:6px;}
 <div id="about" class="page" style="display:none;">
 <div class="card">
 <h3>About Live Connect</h3>
-<p>Live Connect is a modern, secure, mobile-friendly multi-page chat platform with 1:1 & Group chat, images, profile avatars, dark/light mode, Google login, and responsive design.</p>
+<p>Live Connect is a modern, secure, mobile-friendly multi-page chat platform with 1:1 & Group chat, images, profile avatars, dark/light mode, username login, and responsive design.</p>
 </div>
 </div>
 
@@ -117,16 +126,12 @@ img{max-width:100%;border-radius:6px;}
 </div>
 </div>
 
-<!-- Google Login Button -->
-<div style="text-align:center;margin:12px;">
-<button onclick="googleLogin()" style="padding:10px 20px;font-size:16px;"><i class="fa fa-google"></i> Login with Google</button>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -143,8 +148,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const st = getStorage(app);
-const auth = getAuth();
-const provider = new GoogleAuthProvider();
+
+let currentUser = null;
+let curChat = "", isGroup = false;
+const msgsDiv = document.getElementById("msgs");
 
 // -------------------- Multi-page --------------------
 function showPage(p){document.querySelectorAll('.page').forEach(pg=>pg.style.display='none'); document.getElementById(p).style.display='block';}
@@ -155,47 +162,37 @@ const heroImgs=["https://images.unsplash.com/photo-1525182008055-f88b95ff7980","
 let i=0;
 setInterval(()=>{const h=document.getElementById("hero"); if(h) h.style.backgroundImage=`url(${heroImgs[i++%heroImgs.length]})`;},3000);
 
-// -------------------- Google Login --------------------
-window.googleLogin = ()=>{
-  signInWithPopup(auth, provider).then(result=>{
-    const user=result.user;
-    alert("Logged in as "+user.displayName);
-    set(ref(db,"users/"+user.uid),{name:user.displayName,email:user.email,online:true,uid:user.uid});
-  }).catch(e=>console.error(e));
+// -------------------- Username Login --------------------
+window.login = ()=>{
+  const uname = document.getElementById("usernameInput").value.trim();
+  if(!uname){alert("Enter username"); return;}
+  currentUser = uname;
+  set(ref(db,"users/"+uname),{name:uname,online:true,avatar:"https://via.placeholder.com/80"});
+  showPage('home');
 };
 
-// -------------------- Auth state --------------------
-onAuthStateChanged(auth, user=>{
-  if(user){
-    console.log("User:",user.displayName);
-  }
-});
-
 // -------------------- Chat --------------------
-let cur="", isGroup=false;
-const msgsDiv=document.getElementById("msgs");
-
 onValue(ref(db,"users"), snap=>{
   const usersDiv=document.getElementById("users"); if(!usersDiv) return;
   usersDiv.innerHTML="";
   snap.forEach(u=>{
-    if(u.key!==auth.currentUser?.uid){
-      const d=document.createElement("div"); d.className="user "+(u.val().online?"online":"offline"); d.textContent=u.val().name;
+    if(u.key!==currentUser){
+      const d=document.createElement("div"); d.className="user online"; d.textContent=u.val().name;
       d.onclick=()=>openChat(u.key,false); usersDiv.appendChild(d);
     }
   });
 });
 
 window.openChat=(u,g)=>{
-  cur=u; isGroup=g;
-  const path=g?"groupChats/"+u:"chats/"+[auth.currentUser.uid,u].sort().join("_");
+  curChat=u; isGroup=g;
+  const path=g?"groupChats/"+u:"chats/"+[currentUser,u].sort().join("_");
   onValue(ref(db,path), snap=>{
     msgsDiv.innerHTML="";
     snap.forEach(m=>{
       const div=document.createElement("div");
-      div.className="msg "+(m.val().from===auth.currentUser.uid?"me":"other");
+      div.className="msg "+(m.val().from===currentUser?"me":"other");
       div.innerHTML=m.val().img?`<img src="${m.val().img}">`:m.val().text;
-      if(m.val().from===auth.currentUser.uid){const b=document.createElement("button");b.textContent="🗑️";b.onclick=()=>remove(ref(db,path+"/"+m.key)); div.appendChild(b);}
+      if(m.val().from===currentUser){const b=document.createElement("button");b.textContent="🗑️";b.onclick=()=>remove(ref(db,path+"/"+m.key)); div.appendChild(b);}
       msgsDiv.appendChild(div);
       msgsDiv.scrollTop=msgsDiv.scrollHeight;
     });
@@ -203,23 +200,23 @@ window.openChat=(u,g)=>{
 };
 
 window.sendMsg=()=>{
-  if(!cur||!auth.currentUser) return;
+  if(!curChat) return;
   const text=document.getElementById("msg").value.trim(); if(!text) return;
-  push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[auth.currentUser.uid,cur].sort().join("_")),{from:auth.currentUser.uid,text});
+  push(ref(db,isGroup?"groupChats/"+curChat:"chats/"+[currentUser,curChat].sort().join("_")),{from:currentUser,text});
   document.getElementById("msg").value="";
 };
 
 document.getElementById("img").onchange=async()=>{
-  const file=document.getElementById("img").files[0]; if(!file||!cur) return;
+  const file=document.getElementById("img").files[0]; if(!file||!curChat) return;
   const r=sRef(st,"imgs/"+Date.now()+file.name);
   await uploadBytes(r,file); const url=await getDownloadURL(r);
-  push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[auth.currentUser.uid,cur].sort().join("_")),{from:auth.currentUser.uid,img:url});
+  push(ref(db,isGroup?"groupChats/"+curChat:"chats/"+[currentUser,curChat].sort().join("_")),{from:currentUser,img:url});
 };
 
 // -------------------- Groups --------------------
 window.createGroup=()=>{
   const g=prompt("Enter group name:"); if(!g) return;
-  set(ref(db,"groups/"+g),{by:auth.currentUser.uid}); alert("Group created!");
+  set(ref(db,"groups/"+g),{by:currentUser,members:{[currentUser]:true}}); alert("Group created!");
 };
 
 // -------------------- Profile --------------------
@@ -229,14 +226,13 @@ const statusInput=document.getElementById("status");
 
 window.uploadAvatar=async()=>{
   const f=avatarInput.files[0]; if(!f) return alert("Select image");
-  const r=sRef(st,"avatars/"+auth.currentUser.uid+"_"+Date.now()+f.name);
+  const r=sRef(st,"avatars/"+currentUser+"_"+Date.now()+f.name);
   await uploadBytes(r,f); const u=await getDownloadURL(r);
-  set(ref(db,"users/"+auth.currentUser.uid+"/avatar"),u); avatarImg.src=u; alert("Avatar updated!");
+  set(ref(db,"users/"+currentUser+"/avatar"),u); avatarImg.src=u; alert("Avatar updated!");
 };
 
 window.updateStatus=()=>{
-  if(!auth.currentUser) return;
-  set(ref(db,"users/"+auth.currentUser.uid+"/status"),statusInput.value.trim());
+  set(ref(db,"users/"+currentUser+"/status"),statusInput.value.trim());
   alert("Status updated!");
 };
 
@@ -248,10 +244,11 @@ window.sendContact=()=>{
 
 // -------------------- Clear Chat --------------------
 window.clearChat=()=>{
-  if(!cur||!auth.currentUser) return;
-  const path=isGroup?"groupChats/"+cur:"chats/"+[auth.currentUser.uid,cur].sort().join("_");
+  if(!curChat) return;
+  const path=isGroup?"groupChats/"+curChat:"chats/"+[currentUser,curChat].sort().join("_");
   remove(ref(db,path));
 };
 </script>
+
 </body>
 </html>
