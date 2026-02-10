@@ -55,7 +55,7 @@ img{max-width:100%;border-radius:6px;}
 <li>Dark/Light Mode Toggle</li>
 <li>Responsive Design for Mobile & Desktop</li>
 <li>Modern & Premium UI</li>
-<li>Easy-to-Use Multi-page Layout</li>
+<li>Google Login Authentication</li>
 </ul>
 </div>
 </div>
@@ -99,7 +99,7 @@ img{max-width:100%;border-radius:6px;}
 <div id="about" class="page" style="display:none;">
 <div class="card">
 <h3>About Live Connect</h3>
-<p>Live Connect is a modern, secure, mobile-friendly multi-page chat platform with 1:1 & Group chat, images, profile avatars, dark/light mode, and responsive design.</p>
+<p>Live Connect is a modern, secure, mobile-friendly multi-page chat platform with 1:1 & Group chat, images, profile avatars, dark/light mode, Google login, and responsive design.</p>
 </div>
 </div>
 
@@ -114,24 +114,35 @@ img{max-width:100%;border-radius:6px;}
 </div>
 </div>
 
+<!-- Google Login Button -->
+<div style="text-align:center;margin:12px;">
+<button onclick="googleLogin()" style="padding:10px 20px;font-size:16px;"><i class="fa fa-google"></i> Login with Google</button>
+</div>
+
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
 // Firebase config
 const firebaseConfig = {
-apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-authDomain:"live-chat-b810c.firebaseapp.com",
-databaseURL:"https://live-chat-b810c-default-rtdb.firebaseio.com",
-projectId:"live-chat-b810c",
-storageBucket:"live-chat-b810c.appspot.com"
+apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+authDomain: "live-chat-b810c.firebaseapp.com",
+databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
+projectId: "live-chat-b810c",
+storageBucket: "live-chat-b810c.appspot.com",
+messagingSenderId: "555058795334",
+appId: "1:555058795334:web:f668887409800c32970b47"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const st = getStorage(app);
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
 
 // Multi-page function
 function showPage(p){document.querySelectorAll('.page').forEach(pg=>pg.style.display='none');document.getElementById(p).style.display='block';}
@@ -142,31 +153,40 @@ const heroImgs=["https://images.unsplash.com/photo-1525182008055-f88b95ff7980","
 let i=0;
 setInterval(()=>{const h=document.getElementById("hero");if(h)h.style.backgroundImage=`url(${heroImgs[i++%heroImgs.length]})`;},3000);
 
-// User login
-let me = prompt("Enter your name:").trim(); if(!me) me = "Guest_"+Date.now();
-set(ref(db,"users/"+me),{online:true});
+// Google Login
+window.googleLogin=()=>{
+signInWithPopup(auth,provider).then(result=>{
+const user=result.user;
+alert("Logged in as "+user.displayName);
+// Set user online
+set(ref(db,"users/"+user.uid),{name:user.displayName,online:true,uid:user.uid});
+}).catch(e=>console.error(e));
+};
+
+// Chat & Users
+let cur="", isGroup=false;
+const msgsDiv = document.getElementById("msgs");
 onValue(ref(db,"users"),snap=>{
 const usersDiv=document.getElementById("users"); usersDiv.innerHTML="";
 snap.forEach(u=>{
-if(u.key!==me){const d=document.createElement("div");d.className="user "+(u.val().online?"online":"offline");d.textContent=u.key;d.onclick=()=>openChat(u.key,false);usersDiv.appendChild(d);}}});
+if(u.key!==auth.currentUser?.uid){const d=document.createElement("div");d.className="user "+(u.val().online?"online":"offline");d.textContent=u.val().name; d.onclick=()=>openChat(u.key,false); usersDiv.appendChild(d);}})});
 
-// Chat
-let cur="", isGroup=false;
-const msgsDiv = document.getElementById("msgs");
-window.openChat=(u,g)=>{cur=u;isGroup=g;let path = g?"groupChats/"+u:"chats/"+[me,u].sort().join("_");onValue(ref(db,path),snap=>{msgsDiv.innerHTML="";snap.forEach(m=>{const div=document.createElement("div");div.className="msg "+(m.val().from===me?"me":"other");div.innerHTML=m.val().img?`<img src="${m.val().img}">`:m.val().text;if(m.val().from===me){const b=document.createElement("button");b.textContent="🗑️";b.onclick=()=>remove(ref(db,path+"/"+m.key));div.appendChild(b);}msgsDiv.appendChild(div);msgsDiv.scrollTop=msgsDiv.scrollHeight;});});};
+// Chat functions
+window.openChat=(u,g)=>{cur=u;isGroup=g;let path = g?"groupChats/"+u:"chats/"+[auth.currentUser.uid,u].sort().join("_");onValue(ref(db,path),snap=>{msgsDiv.innerHTML="";snap.forEach(m=>{const div=document.createElement("div");div.className="msg "+(m.val().from===auth.currentUser.uid?"me":"other");div.innerHTML=m.val().img?`<img src="${m.val().img}">`:m.val().text;if(m.val().from===auth.currentUser.uid){const b=document.createElement("button");b.textContent="🗑️";b.onclick=()=>remove(ref(db,path+"/"+m.key));div.appendChild(b);}msgsDiv.appendChild(div);msgsDiv.scrollTop=msgsDiv.scrollHeight;});});};
 
-window.sendMsg=()=>{if(!cur)return;const text=document.getElementById("msg").value.trim();if(!text)return;push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[me,cur].sort().join("_")),{from:me,text});document.getElementById("msg").value="";};
-document.getElementById("img").onchange=async()=>{const file=document.getElementById("img").files[0];if(!file)return;const r=sRef(st,"imgs/"+Date.now()+file.name);await uploadBytes(r,file);const url=await getDownloadURL(r);push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[me,cur].sort().join("_")),{from:me,img:url});};
+window.sendMsg=()=>{if(!cur)return;const text=document.getElementById("msg").value.trim();if(!text)return;push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[auth.currentUser.uid,cur].sort().join("_")),{from:auth.currentUser.uid,text});document.getElementById("msg").value="";};
+
+document.getElementById("img").onchange=async()=>{const file=document.getElementById("img").files[0];if(!file)return;const r=sRef(st,"imgs/"+Date.now()+file.name);await uploadBytes(r,file);const url=await getDownloadURL(r);push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[auth.currentUser.uid,cur].sort().join("_")),{from:auth.currentUser.uid,img:url});};
 
 // Groups
-window.createGroup=()=>{const g=prompt("Enter group name:");if(!g)return;set(ref(db,"groups/"+g),{by:me});alert("Group created!");};
+window.createGroup=()=>{const g=prompt("Enter group name:");if(!g)return;set(ref(db,"groups/"+g),{by:auth.currentUser.uid});alert("Group created!");};
 
 // Profile
 const avatarImg=document.getElementById("avatar");
 const avatarInput=document.getElementById("avatarInput");
 const statusInput=document.getElementById("status");
-window.uploadAvatar=async()=>{const f=avatarInput.files[0];if(!f){alert("Select image");return;}const r=sRef(st,"avatars/"+me+"_"+Date.now()+f.name);await uploadBytes(r,f);const u=await getDownloadURL(r);set(ref(db,"users/"+me+"/avatar"),u);avatarImg.src=u;alert("Avatar updated!");};
-window.updateStatus=()=>{set(ref(db,"users/"+me+"/status"),statusInput.value.trim());alert("Status updated!");};
+window.uploadAvatar=async()=>{const f=avatarInput.files[0];if(!f){alert("Select image");return;}const r=sRef(st,"avatars/"+auth.currentUser.uid+"_"+Date.now()+f.name);await uploadBytes(r,f);const u=await getDownloadURL(r);set(ref(db,"users/"+auth.currentUser.uid+"/avatar"),u);avatarImg.src=u;alert("Avatar updated!");};
+window.updateStatus=()=>{set(ref(db,"users/"+auth.currentUser.uid+"/status"),statusInput.value.trim());alert("Status updated!");};
 
 // Contact
 window.sendContact=()=>{alert("Thanks! Your message has been sent."); document.getElementById("cname").value=""; document.getElementById("cemail").value=""; document.getElementById("cmessage").value="";}
