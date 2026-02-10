@@ -3,58 +3,49 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Connect 🚀</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
-  --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280; --primary:#2563eb;
+  --bg:#f6f7fb;
+  --card:#fff;
+  --text:#111827;
+  --muted:#6b7280;
+  --primary:#2563eb;
 }
 body.dark{
-  --bg:#0f172a; --card:#111827; --text:#e5e7eb; --muted:#9ca3af; --primary:#3b82f6;
+  --bg:#0f172a;
+  --card:#111827;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --primary:#3b82f6;
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
 .app{max-width:420px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
 header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.06);}
 header h1{font-size:18px;margin:0;}
-header button{background:none;border:none;font-size:18px;color:var(--text);}
+header button{background:none;border:none;font-size:18px;color:var(--text);cursor:pointer;}
 .page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
-
-/* Login Attractive */
-#login{display:flex;flex-direction:column;align-items:center;justify-content:center;}
-#login h2{margin-bottom:16px;color:var(--primary);}
-#login input{padding:12px;border-radius:12px;border:1px solid #ccc;width:80%;margin-bottom:12px;font-size:16px;}
-#login button{padding:12px 20px;border:none;border-radius:12px;background:var(--primary);color:#fff;font-size:16px;cursor:pointer;transition:0.3s;}
-#login button:hover{opacity:0.9;transform:scale(1.02);}
-
-/* Home */
 .hero{background:linear-gradient(135deg,var(--primary),#60a5fa);color:#fff;padding:24px;border-radius:18px;text-align:center;margin-bottom:12px;}
-.hero h2{margin:0 0 8px;}
-.hero p{margin:0;opacity:.9}
-
-/* Chat */
-.chat-box{background:var(--card);border-radius:16px;padding:12px;height:35vh;overflow-y:auto;margin-bottom:10px;}
-.msg{background:#e5e7eb;color:#000;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;display:flex;justify-content:space-between;align-items:center;}
+.hero h2{margin:0 0 8px;font-size:22px;}
+.hero p{margin:0;font-size:14px;opacity:.9;}
+.chat-box{background:var(--card);border-radius:16px;padding:12px;height:40vh;overflow-y:auto;margin-bottom:10px;}
+.msg{background:#e5e7eb;color:#000;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;}
 body.dark .msg{background:#1f2937;color:#e5e7eb;}
-.input-row{display:flex;gap:8px;}
+.msg button{position:absolute;top:4px;right:4px;background:none;border:none;color:red;cursor:pointer;}
+.input-row{display:flex;gap:8px;margin-bottom:12px;}
 .input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #ccc;}
-.input-row button{padding:12px 16px;border:none;border-radius:12px;background:var(--primary);color:#fff;}
-
-/* Users */
-.user{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;justify-content:space-between;}
-.user-name{display:flex;align-items:center;gap:6px;}
+.input-row button{padding:12px 16px;border:none;border-radius:12px;background:var(--primary);color:#fff;cursor:pointer;}
+.user{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .dot{width:10px;height:10px;background:#22c55e;border-radius:50%;}
-
-/* About & Contact */
-.card{background:var(--card);border-radius:16px;padding:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
-.card h3{margin-top:0;}
-.card a{color:var(--primary);text-decoration:none;margin-right:8px;}
-
-/* Bottom Nav */
 nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(0,0,0,.06);}
-nav button{background:none;border:none;font-size:20px;color:#6b7280;}
+nav button{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;}
 nav button.active{color:var(--primary);}
-button.like, button.del{background:none;border:none;color:var(--primary);cursor:pointer;margin-left:6px;font-size:14px;}
+.login-card{background:var(--card);padding:20px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.1);text-align:center;margin-top:50px;}
+.login-card input{width:80%;padding:12px;margin:8px 0;border-radius:12px;border:1px solid #ccc;}
+.login-card button{padding:12px 20px;border:none;border-radius:12px;background:var(--primary);color:#fff;cursor:pointer;font-size:16px;}
+a{text-decoration:none;color:var(--primary);}
 </style>
 </head>
 <body>
@@ -62,62 +53,57 @@ button.like, button.del{background:none;border:none;color:var(--primary);cursor:
 <div class="app">
 
 <header>
-  <h1>Live Connect</h1>
-  <button onclick="toggleDark()"><i class="fa-solid fa-moon"></i></button>
+<h1>Live Connect 🚀</h1>
+<button onclick="toggleDark()"><i class="fa-solid fa-moon"></i></button>
 </header>
 
-<!-- LOGIN -->
+<!-- LOGIN PAGE -->
 <div id="login" class="page active">
-  <h2>Welcome to Live Connect 🚀</h2>
-  <input type="text" id="usernameInput" placeholder="Enter your username" />
-  <button onclick="login()">Continue</button>
+  <div class="login-card">
+    <h2>Welcome to Live Connect!</h2>
+    <input type="text" id="usernameInput" placeholder="Enter your username"/>
+    <button onclick="login()">Continue</button>
+  </div>
 </div>
 
-<!-- HOME -->
+<!-- HOME PAGE -->
 <div id="home" class="page">
   <div class="hero">
-    <h2 id="welcomeUser">Welcome!</h2>
+    <h2 id="welcomeText">Real-Time Live Chat</h2>
     <p>Fast • Secure • Mobile Friendly</p>
   </div>
-  <p style="color:var(--muted)">Connect instantly, see who’s online, chat in private or groups, like messages, delete your messages, and manage your profile easily.</p>
 </div>
 
-<!-- CHAT -->
+<!-- CHAT PAGE -->
 <div id="chat" class="page">
   <div class="chat-box" id="chatBox"></div>
   <div class="input-row">
-    <input id="msgInput" placeholder="Type message…" />
+    <input id="msgInput" placeholder="Type message…"/>
     <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
   </div>
 </div>
 
-<!-- USERS -->
+<!-- USERS PAGE -->
 <div id="users" class="page">
   <h3>Online Users</h3>
-  <div id="currentUsers"></div>
+  <div id="onlineUsers"></div>
 </div>
 
-<!-- ABOUT -->
+<!-- ABOUT PAGE -->
 <div id="about" class="page">
-  <div class="card">
-    <h3>About Live Connect 🚀</h3>
-    <p>Live Connect is a modern, real-time chat platform for mobile and desktop users. Chat privately or in groups, see online users, manage your status, and enjoy a fast and secure experience.</p>
-    <p>Follow us:</p>
-    <p>
-      <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
-      <a href="https://www.instagram.com/mr_nazim073" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
-      <a href="https://youtube.com/@crazykhantv" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
-    </p>
-  </div>
+  <h3>About Live Connect 🚀</h3>
+  <p>Live Connect is a modern, secure, and mobile-friendly real-time chat platform. Chat, create groups, like and delete messages, and see who's online instantly!</p>
 </div>
 
-<!-- CONTACT -->
+<!-- CONTACT PAGE -->
 <div id="contact" class="page">
-  <div class="card">
-    <h3>Contact & Support</h3>
-    <p><i class="fa-solid fa-envelope"></i> webhub262@gmail.com</p>
-    <p>Reach out anytime for support or inquiries!</p>
-  </div>
+  <h3>Contact & Support</h3>
+  <p><i class="fa-solid fa-envelope"></i> webhub262@gmail.com</p>
+  <p>
+    <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank"><i class="fab fa-facebook"></i> Facebook</a> | 
+    <a href="https://www.instagram.com/mr_nazim073" target="_blank"><i class="fab fa-instagram"></i> Instagram</a> | 
+    <a href="https://youtube.com/@crazykhantv" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+  </p>
 </div>
 
 <nav>
@@ -132,7 +118,7 @@ button.like, button.del{background:none;border:none;color:var(--primary);cursor:
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -146,94 +132,74 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-let currentUser=null, curChat=null;
 
-// Login
-window.login=()=>{
-  const uname=document.getElementById("usernameInput").value.trim();
-  if(!uname){alert("Enter username"); return;}
-  currentUser=uname;
-  set(ref(db,"users/"+uname),{name:uname,online:true});
-  document.getElementById("login").classList.remove("active");
-  document.getElementById("home").classList.add("active");
-  document.getElementById("welcomeUser").textContent=`Welcome, ${currentUser}!`;
-  listenUsers();
-};
+let currentUser = null;
+const chatBox = document.getElementById("chatBox");
+const onlineUsersDiv = document.getElementById("onlineUsers");
+const welcomeText = document.getElementById("welcomeText");
 
-// Page Nav
-window.openPage=(id,btn)=>{
+// Page navigation
+function openPage(id, btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-};
-
-// Dark Mode
-window.toggleDark=()=>{document.body.classList.toggle('dark');};
-
-// Chat
-window.sendMsg=()=>{
-  if(!curChat) return alert("Select user to chat");
-  const input=document.getElementById('msgInput');
-  if(!input.value) return;
-  const path="chats/"+[currentUser,curChat].sort().join("_");
-  push(ref(db,path),{from:currentUser,text:input.value,likes:0});
-  input.value='';
-};
-
-// Online Users
-function listenUsers(){
-  const usersDiv=document.getElementById("currentUsers");
-  onValue(ref(db,"users"),snap=>{
-    usersDiv.innerHTML="";
-    snap.forEach(u=>{
-      if(u.val().online && u.key!==currentUser){
-        const div=document.createElement("div");
-        div.className="user";
-        div.innerHTML=`<div class="user-name"><div class="dot"></div>${u.val().name}</div>`;
-        div.onclick=()=>{
-          curChat=u.key;
-          openPage('chat',document.querySelector('nav button:nth-child(2)'));
-          listenChat(curChat);
-        };
-        usersDiv.appendChild(div);
-      }
-    });
-  });
 }
 
-// Chat listener
-function listenChat(user){
-  const chatBox=document.getElementById("chatBox");
-  const path="chats/"+[currentUser,user].sort().join("_");
-  onValue(ref(db,path),snap=>{
-    chatBox.innerHTML="";
-    snap.forEach(m=>{
-      const div=document.createElement("div");
-      div.className="msg";
-      div.innerHTML=`<span><b>${m.val().from}:</b> ${m.val().text}</span>
-      <span>
-      <button class="like" onclick="likeMsg('${path}','${m.key}')">❤️ ${m.val().likes||0}</button>
-      ${m.val().from===currentUser?`<button class="del" onclick="deleteMsg('${path}','${m.key}')">🗑️</button>`:''}
-      </span>`;
-      chatBox.appendChild(div);
-      chatBox.scrollTop=chatBox.scrollHeight;
-    });
-  });
-}
+function toggleDark(){document.body.classList.toggle('dark');}
 
-// Like message
-window.likeMsg=(path,key)=>{
-  const msgRef=ref(db,path+"/"+key+"/likes");
-  onValue(msgRef,snap=>{
-    const val=snap.val()||0;
-    set(msgRef,val+1);
-  },{once:true});
+// LOGIN FUNCTION
+window.login = ()=>{
+  const uname = document.getElementById('usernameInput').value.trim();
+  if(!uname){alert("Enter username");return;}
+  currentUser = uname;
+
+  // Set user in firebase online
+  set(ref(db,"users/"+uname), {name:uname, online:true});
+
+  // Hide login, show home
+  document.getElementById('login').classList.remove('active');
+  document.getElementById('home').classList.add('active');
+  welcomeText.textContent = "Welcome, "+uname+"!";
 };
 
-// Delete message
-window.deleteMsg=(path,key)=>{
-  remove(ref(db,path+"/"+key));
+// REAL-TIME ONLINE USERS
+onValue(ref(db,"users"), snap=>{
+  onlineUsersDiv.innerHTML="";
+  snap.forEach(u=>{
+    if(u.val().online){
+      const div = document.createElement("div");
+      div.className="user";
+      div.innerHTML=`<div class="dot"></div> ${u.val().name}`;
+      onlineUsersDiv.appendChild(div);
+    }
+  });
+});
+
+// REAL-TIME CHAT
+onValue(ref(db,"messages"), snap=>{
+  chatBox.innerHTML="";
+  snap.forEach(m=>{
+    const div = document.createElement("div");
+    div.className="msg";
+    div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text}`;
+    // delete button if message owner
+    if(m.val().from === currentUser){
+      const btn = document.createElement("button");
+      btn.textContent="🗑️";
+      btn.onclick=()=>remove(ref(db,"messages/"+m.key));
+      div.appendChild(btn);
+    }
+    chatBox.appendChild(div);
+    chatBox.scrollTop=chatBox.scrollHeight;
+  });
+});
+
+window.sendMsg = ()=>{
+  const msgInput = document.getElementById('msgInput');
+  if(!msgInput.value) return;
+  push(ref(db,"messages"), {from:currentUser,text:msgInput.value});
+  msgInput.value="";
 };
 </script>
 
