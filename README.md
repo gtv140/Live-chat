@@ -81,7 +81,7 @@ a{text-decoration:none;color:var(--primary);}
 <!-- ABOUT -->
 <div id="about" class="page">
 <h3>About Live Connect 🚀</h3>
-<p>Live Connect is a modern, secure, and mobile-friendly real-time chat platform. Chat, create groups, like and delete messages, and see who's online instantly!</p>
+<p>Live Connect is a modern, secure, and mobile-friendly real-time chat platform. Chat, like and delete messages, and see who's online instantly!</p>
 </div>
 
 <!-- CONTACT -->
