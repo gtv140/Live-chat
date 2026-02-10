@@ -9,19 +9,21 @@
 :root{
  --pri:#25D366;
  --bg:#eef2f5;
- --card:rgba(255,255,255,.75);
+ --card:rgba(255,255,255,.9);
  --me:#dcf8c6;
  --other:#fff;
  --blur:blur(14px);
+ --text:#000;
 }
 body.dark{
- --bg:#0b141a;
- --card:rgba(17,27,33,.85);
- --me:#005c4b;
- --other:#1f2c34;
+ --bg:#121212;
+ --card:rgba(18,18,18,.95);
+ --me:#1f4b2f;
+ --other:#222;
+ --text:#fff;
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui;background:var(--bg);transition:.3s}
+*{box-sizing:border-box;}
+body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text);transition:.3s}
 
 header{
  height:56px;
@@ -34,6 +36,7 @@ header{
 .hero{
  height:180px;
  background-size:cover;
+ background-position:center;
  display:flex;align-items:center;justify-content:center;
  color:#fff;font-size:22px;
  text-shadow:0 4px 12px #000;
@@ -60,7 +63,7 @@ header{
  to{transform:scale(1);opacity:1}
 }
 .login-card h2{text-align:center;margin:0 0 6px}
-.login-card p{text-align:center;font-size:13px;opacity:.7}
+.login-card p{text-align:center;font-size:13px;opacity:.8}
 .login-card input{width:100%;padding:14px;border-radius:14px;border:none;margin:14px 0;font-size:15px}
 .login-card button{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#25D366,#1ebea5);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
 
@@ -86,7 +89,7 @@ header{
  padding:8px;background:var(--card);
  backdrop-filter:var(--blur);
  display:flex;justify-content:space-between;
- font-size:13px;
+ font-size:14px;
 }
 .messages{flex:1;overflow-y:auto;padding:10px}
 .msg{
@@ -94,13 +97,16 @@ header{
  padding:10px 12px;border-radius:14px;
  font-size:14px;animation:fade .2s;
  position:relative;
+ word-wrap:break-word;
 }
 @keyframes fade{
  from{opacity:0;transform:translateY(6px)}
  to{opacity:1}
 }
-.me{background:var(--me);margin-left:auto}
-.other{background:var(--other)}
+.me{background:var(--me);margin-left:auto;color:#000;}
+.other{background:var(--other);color:#000;}
+body.dark .me{color:#fff;}
+body.dark .other{color:#fff;}
 .msg img{max-width:180px;border-radius:10px}
 .msg .del{position:absolute;top:4px;right:4px;background:#f44336;color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer}
 
