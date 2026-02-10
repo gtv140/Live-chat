@@ -33,7 +33,7 @@ header button{background:none;border:none;font-size:18px;color:var(--text);}
 .hero p{margin:0;opacity:.9}
 
 /* Chat */
-.chat-box{background:var(--card);border-radius:16px;padding:12px;height:40vh;overflow-y:auto;margin-bottom:10px;}
+.chat-box{background:var(--card);border-radius:16px;padding:12px;height:35vh;overflow-y:auto;margin-bottom:10px;}
 .msg{background:#e5e7eb;color:#000;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;display:flex;justify-content:space-between;align-items:center;}
 body.dark .msg{background:#1f2937;color:#e5e7eb;}
 .input-row{display:flex;gap:8px;}
@@ -44,6 +44,11 @@ body.dark .msg{background:#1f2937;color:#e5e7eb;}
 .user{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;justify-content:space-between;}
 .user-name{display:flex;align-items:center;gap:6px;}
 .dot{width:10px;height:10px;background:#22c55e;border-radius:50%;}
+
+/* About & Contact */
+.card{background:var(--card);border-radius:16px;padding:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.card h3{margin-top:0;}
+.card a{color:var(--primary);text-decoration:none;margin-right:8px;}
 
 /* Bottom Nav */
 nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(0,0,0,.06);}
@@ -92,10 +97,35 @@ button.like, button.del{background:none;border:none;color:var(--primary);cursor:
   <div id="currentUsers"></div>
 </div>
 
+<!-- ABOUT -->
+<div id="about" class="page">
+  <div class="card">
+    <h3>About Live Connect 🚀</h3>
+    <p>Live Connect is a modern, real-time chat platform for mobile and desktop users. Chat privately or in groups, see online users, manage your status, and enjoy a fast and secure experience.</p>
+    <p>Follow us:</p>
+    <p>
+      <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+      <a href="https://www.instagram.com/mr_nazim073" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+      <a href="https://youtube.com/@crazykhantv" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+    </p>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="page">
+  <div class="card">
+    <h3>Contact & Support</h3>
+    <p><i class="fa-solid fa-envelope"></i> webhub262@gmail.com</p>
+    <p>Reach out anytime for support or inquiries!</p>
+  </div>
+</div>
+
 <nav>
   <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
   <button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
   <button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
+  <button onclick="openPage('about',this)"><i class="fa-solid fa-circle-info"></i></button>
+  <button onclick="openPage('contact',this)"><i class="fa-solid fa-envelope"></i></button>
 </nav>
 
 </div>
@@ -116,7 +146,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
 let currentUser=null, curChat=null;
 
 // Login
@@ -207,5 +236,6 @@ window.deleteMsg=(path,key)=>{
   remove(ref(db,path+"/"+key));
 };
 </script>
+
 </body>
 </html>
