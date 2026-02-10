@@ -68,17 +68,6 @@ img{max-width:100%;border-radius:8px;}
   </div>
 </div>
 
-<!-- About + Support + Social -->
-<div class="card" style="text-align:center;">
-  <p style="margin:4px;">About: Live Connect — Modern chat platform</p>
-  <p style="margin:4px;">Support: <a href="mailto:webhub262@gmail.com" style="color:#0d6efd;">webhub262@gmail.com</a></p>
-  <div style="display:flex;gap:12px;margin-top:8px;justify-content:center;">
-    <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank" style="font-size:20px;color:#3b5998;"><i class="fab fa-facebook-square"></i></a>
-    <a href="https://www.instagram.com/mr_nazim073?igsh=MXd4d2hmcWNvNjVsdQ==" target="_blank" style="font-size:20px;color:#e1306c;"><i class="fab fa-instagram"></i></a>
-    <a href="https://youtube.com/@crazykhantv?si=KxpJG79rAEBUQuZn" target="_blank" style="font-size:20px;color:#ff0000;"><i class="fab fa-youtube"></i></a>
-  </div>
-</div>
-
 <!-- Key Features Section -->
 <div class="card">
 <h3 style="text-align:center;font-size:18px;margin-bottom:8px;">✨ Key Features</h3>
@@ -100,6 +89,12 @@ img{max-width:100%;border-radius:8px;}
     <p>Dark/Light Mode</p>
   </div>
 </div>
+</div>
+
+<!-- Online Users Preview -->
+<div class="card">
+<h3 style="text-align:center;font-size:18px;margin-bottom:8px;">🟢 Online Users</h3>
+<div id="currentUsers"></div>
 </div>
 
 </div>
