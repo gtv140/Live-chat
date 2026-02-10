@@ -12,8 +12,8 @@ header{height:50px;background:var(--pri);color:#fff;display:flex;align-items:cen
 .container{padding:8px;max-width:600px;margin:auto;}
 .page{display:none;}
 .page.active{display:block;}
-.hero{position:relative;height:120px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;text-shadow:0 2px 6px #000;margin-bottom:8px;overflow:hidden;}
-.hero img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.4);}
+.hero{position:relative;height:140px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;text-shadow:0 2px 6px #000;margin-bottom:8px;overflow:hidden;}
+.hero img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.5);}
 .hero-content{position:relative;text-align:center;padding:12px;}
 .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);margin-bottom:12px;}
 ul{padding-left:0;list-style:none;} li{margin-bottom:4px;font-size:14px;}
@@ -30,7 +30,7 @@ img{max-width:100%;border-radius:8px;}
 #users,#groupList,#currentUsers{display:flex;overflow-x:auto;padding:4px 0;}
 .bottom-nav{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;background:var(--pri);color:#fff;height:60px;align-items:center;z-index:1000;border-top-left-radius:12px;border-top-right-radius:12px;}
 .bottom-nav i{font-size:24px;}
-@media(max-width:480px){.hero{height:100px;font-size:14px;} input,textarea,button{font-size:14px;padding:8px;} .card{padding:8px;} .msg{font-size:13px;}}
+@media(max-width:480px){.hero{height:120px;font-size:14px;} input,textarea,button{font-size:14px;padding:8px;} .card{padding:8px;} .msg{font-size:13px;}}
 </style>
 </head>
 <body>
@@ -51,56 +51,56 @@ img{max-width:100%;border-radius:8px;}
 </div>
 </div>
 
-<!-- Home -->
+<!-- Home Page -->
 <div id="home" class="page">
+
+<!-- Hero Section -->
 <div class="hero">
   <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=800&q=60">
   <div class="hero-content">
-    <h1 style="font-size:22px;font-weight:700;">Live Connect 🚀</h1>
-    <p style="font-size:14px;">Real-Time Messaging Platform — Modern, Secure & Mobile-Friendly</p>
-    <div id="currentUsers" style="margin-top:12px;display:flex;justify-content:center;gap:8px;overflow-x:auto;"></div>
+    <h1 style="font-size:24px;font-weight:700;margin-bottom:4px;">Live Connect 🚀</h1>
+    <p style="font-size:14px;margin-bottom:12px;">Real-Time Messaging — Secure, Modern & Mobile-Friendly</p>
+    
+    <!-- Support & About Overlay -->
+    <div style="background:rgba(0,0,0,0.5);padding:8px;border-radius:12px;display:inline-block;margin-bottom:8px;">
+      About: Live Connect — Modern chat platform <br>
+      Support: <a href="mailto:webhub262@gmail.com" style="color:#0d6efd;">webhub262@gmail.com</a>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div style="margin-top:12px;">
+      <button onclick="showPage('chat')" style="margin-right:6px;">💬 Start Chatting</button>
+      <button onclick="showPage('profile')">👤 Create Profile</button>
+    </div>
+
+    <!-- Online Users -->
+    <div id="currentUsers" style="display:flex;overflow-x:auto;gap:8px;margin-top:12px;padding:4px;"></div>
   </div>
 </div>
 
+<!-- Key Features Section -->
 <div class="card">
-<h3 style="text-align:center;font-size:18px;">✨ Key Features</h3>
-<ul>
-<li>💬 1:1 & Group Chat — Real-Time Messaging</li>
-<li>🟢 Online Users — Know Who’s Active</li>
-<li>👤 Profile Avatars & Status Updates</li>
-<li>🖼️ Send Images & Emojis Instantly</li>
-<li>🌗 Dark & Light Mode — Easy on Eyes</li>
-<li>📱 Fully Mobile & Desktop Friendly</li>
-<li>🔒 Secure Firebase Backend</li>
-<li>⚡ Modern & Fast UX/UI</li>
-</ul>
+<h3 style="text-align:center;font-size:18px;margin-bottom:8px;">✨ Key Features</h3>
+<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+  <div class="card" style="flex:1 1 120px;min-width:120px;text-align:center;">
+    <i class="fa fa-comment fa-2x" style="color:#25D366;"></i>
+    <p>Real-Time Chat</p>
+  </div>
+  <div class="card" style="flex:1 1 120px;min-width:120px;text-align:center;">
+    <i class="fa fa-users fa-2x" style="color:#10b981;"></i>
+    <p>Online Users</p>
+  </div>
+  <div class="card" style="flex:1 1 120px;min-width:120px;text-align:center;">
+    <i class="fa fa-user fa-2x" style="color:#3b82f6;"></i>
+    <p>Profile & Status</p>
+  </div>
+  <div class="card" style="flex:1 1 120px;min-width:120px;text-align:center;">
+    <i class="fa fa-moon fa-2x" style="color:#facc15;"></i>
+    <p>Dark/Light Mode</p>
+  </div>
+</div>
 </div>
 
-<!-- About -->
-<div id="about" class="card">
-<h3 style="text-align:center;font-size:18px;">About Live Connect</h3>
-<div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
-<img src="https://images.unsplash.com/photo-1558888407-6c8d02be5f30?auto=format&fit=crop&w=400&q=60" 
-     style="width:100%;max-width:300px;border-radius:12px;">
-<p style="font-size:14px;text-align:center;">
-Live Connect is a modern chat platform built for <strong>real-time communication</strong>, <strong>secure messaging</strong>, and <strong>easy connectivity</strong>. Connect with friends, join groups, share images, update your status, and enjoy a smooth mobile-friendly experience. Our mission is to make chatting <strong>fun, fast, and safe</strong> for everyone.
-</p>
-<p style="font-size:14px;text-align:center;font-weight:600;">Support: 
-<a href="mailto:webhub262@gmail.com" style="color:#0d6efd;">webhub262@gmail.com</a></p>
-
-<!-- Social Media Icons -->
-<div style="display:flex;gap:12px;margin-top:8px;">
-  <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank" style="font-size:20px;color:#3b5998;">
-    <i class="fab fa-facebook-square"></i>
-  </a>
-  <a href="https://www.instagram.com/mr_nazim073?igsh=MXd4d2hmcWNvNjVsdQ==" target="_blank" style="font-size:20px;color:#e1306c;">
-    <i class="fab fa-instagram"></i>
-  </a>
-  <a href="https://youtube.com/@crazykhantv?si=KxpJG79rAEBUQuZn" target="_blank" style="font-size:20px;color:#ff0000;">
-    <i class="fab fa-youtube"></i>
-  </a>
-</div>
-</div>
 </div>
 
 <!-- Chat -->
@@ -135,6 +135,23 @@ Live Connect is a modern chat platform built for <strong>real-time communication
 <button onclick="uploadAvatar()">Upload Avatar</button>
 <textarea id="status" placeholder="Status..."></textarea>
 <button onclick="updateStatus()">Update Status</button>
+</div>
+</div>
+
+<!-- About Full -->
+<div id="about" class="page">
+<div class="card">
+<h3 style="text-align:center;font-size:18px;">About Live Connect</h3>
+<div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+<img src="https://images.unsplash.com/photo-1558888407-6c8d02be5f30?auto=format&fit=crop&w=400&q=60" style="width:100%;max-width:300px;border-radius:12px;">
+<p style="font-size:14px;text-align:center;">Live Connect is a modern chat platform built for <strong>real-time communication</strong>, <strong>secure messaging</strong>, and <strong>easy connectivity</strong>. Connect with friends, join groups, share images, update your status, and enjoy a smooth mobile-friendly experience.</p>
+<p style="font-size:14px;text-align:center;font-weight:600;">Support: <a href="mailto:webhub262@gmail.com" style="color:#0d6efd;">webhub262@gmail.com</a></p>
+<div style="display:flex;gap:12px;margin-top:8px;">
+  <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank" style="font-size:20px;color:#3b5998;"><i class="fab fa-facebook-square"></i></a>
+  <a href="https://www.instagram.com/mr_nazim073?igsh=MXd4d2hmcWNvNjVsdQ==" target="_blank" style="font-size:20px;color:#e1306c;"><i class="fab fa-instagram"></i></a>
+  <a href="https://youtube.com/@crazykhantv?si=KxpJG79rAEBUQuZn" target="_blank" style="font-size:20px;color:#ff0000;"><i class="fab fa-youtube"></i></a>
+</div>
+</div>
 </div>
 </div>
 
@@ -275,7 +292,6 @@ window.sendContact=()=>{
 };
 
 window.clearChat=()=>{if(!curChat) return; remove(ref(db,isGroup?"groupChats/"+curChat:"chats/"+[currentUser,curChat].sort().join("_")));}
-
 </script>
 </body>
 </html>
