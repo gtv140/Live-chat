@@ -23,6 +23,9 @@ img{max-width:100%;border-radius:6px;}
 .msg{padding:6px;margin:4px 0;border-radius:6px;}
 .msg.me{background:#dcf8c6;text-align:right;}
 .msg.other{background:#fff;text-align:left;}
+.user{padding:6px 8px;border-radius:6px;background:#eee;cursor:pointer;white-space:nowrap;}
+.user.online{border:2px solid var(--pri);}
+.user.offline{opacity:0.6;}
 @media(max-width:600px){header nav{display:flex;flex-wrap:wrap;gap:6px;} .hero{font-size:18px;height:150px;}}
 </style>
 </head>
@@ -117,11 +120,13 @@ img{max-width:100%;border-radius:6px;}
 <!-- Google Login Button -->
 <div style="text-align:center;margin:12px;">
 <button onclick="googleLogin()" style="padding:10px 20px;font-size:16px;"><i class="fa fa-google"></i> Login with Google</button>
-</div><script type="module">
+</div>
+
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -141,145 +146,112 @@ const st = getStorage(app);
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
-// -------------------- Multi-page navigation --------------------
-function showPage(p){
-  document.querySelectorAll('.page').forEach(pg=>pg.style.display='none');
-  document.getElementById(p).style.display='block';
-}
+// -------------------- Multi-page --------------------
+function showPage(p){document.querySelectorAll('.page').forEach(pg=>pg.style.display='none'); document.getElementById(p).style.display='block';}
 window.showPage = showPage;
 
-// -------------------- Hero slider --------------------
-const heroImgs=[
-  "https://images.unsplash.com/photo-1525182008055-f88b95ff7980",
-  "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2",
-  "https://images.unsplash.com/photo-1492724441997-5dc865305da7"
-];
+// -------------------- Hero --------------------
+const heroImgs=["https://images.unsplash.com/photo-1525182008055-f88b95ff7980","https://images.unsplash.com/photo-1515378791036-0648a3ef77b2","https://images.unsplash.com/photo-1492724441997-5dc865305da7"];
 let i=0;
-setInterval(()=>{
-  const h=document.getElementById("hero");
-  if(h) h.style.backgroundImage=`url(${heroImgs[i++%heroImgs.length]})`;
-},3000);
+setInterval(()=>{const h=document.getElementById("hero"); if(h) h.style.backgroundImage=`url(${heroImgs[i++%heroImgs.length]})`;},3000);
 
 // -------------------- Google Login --------------------
-window.googleLogin = () => {
-  signInWithPopup(auth, provider).then(result => {
-    const user = result.user;
+window.googleLogin = ()=>{
+  signInWithPopup(auth, provider).then(result=>{
+    const user=result.user;
     alert("Logged in as "+user.displayName);
-    // Save user to DB
-    set(ref(db,"users/"+user.uid),{
-      name: user.displayName,
-      email: user.email,
-      online: true,
-      uid: user.uid
-    });
+    set(ref(db,"users/"+user.uid),{name:user.displayName,email:user.email,online:true,uid:user.uid});
   }).catch(e=>console.error(e));
 };
 
-// -------------------- Chat & Users --------------------
+// -------------------- Auth state --------------------
+onAuthStateChanged(auth, user=>{
+  if(user){
+    console.log("User:",user.displayName);
+  }
+});
+
+// -------------------- Chat --------------------
 let cur="", isGroup=false;
-const msgsDiv = document.getElementById("msgs");
+const msgsDiv=document.getElementById("msgs");
 
 onValue(ref(db,"users"), snap=>{
-  const usersDiv=document.getElementById("users");
+  const usersDiv=document.getElementById("users"); if(!usersDiv) return;
   usersDiv.innerHTML="";
   snap.forEach(u=>{
-    if(u.key !== auth.currentUser?.uid){
-      const d=document.createElement("div");
-      d.className="user "+(u.val().online?"online":"offline");
-      d.textContent=u.val().name;
-      d.onclick=()=>openChat(u.key,false);
-      usersDiv.appendChild(d);
+    if(u.key!==auth.currentUser?.uid){
+      const d=document.createElement("div"); d.className="user "+(u.val().online?"online":"offline"); d.textContent=u.val().name;
+      d.onclick=()=>openChat(u.key,false); usersDiv.appendChild(d);
     }
   });
 });
 
-// -------------------- Chat functions --------------------
-window.openChat = (u,g) => {
-  cur = u;
-  isGroup = g;
-  let path = g ? "groupChats/"+u : "chats/"+[auth.currentUser.uid,u].sort().join("_");
+window.openChat=(u,g)=>{
+  cur=u; isGroup=g;
+  const path=g?"groupChats/"+u:"chats/"+[auth.currentUser.uid,u].sort().join("_");
   onValue(ref(db,path), snap=>{
     msgsDiv.innerHTML="";
     snap.forEach(m=>{
       const div=document.createElement("div");
       div.className="msg "+(m.val().from===auth.currentUser.uid?"me":"other");
-      div.innerHTML = m.val().img ? `<img src="${m.val().img}">` : m.val().text;
-      if(m.val().from===auth.currentUser.uid){
-        const b=document.createElement("button");
-        b.textContent="🗑️";
-        b.onclick=()=>remove(ref(db,path+"/"+m.key));
-        div.appendChild(b);
-      }
+      div.innerHTML=m.val().img?`<img src="${m.val().img}">`:m.val().text;
+      if(m.val().from===auth.currentUser.uid){const b=document.createElement("button");b.textContent="🗑️";b.onclick=()=>remove(ref(db,path+"/"+m.key)); div.appendChild(b);}
       msgsDiv.appendChild(div);
-      msgsDiv.scrollTop = msgsDiv.scrollHeight;
+      msgsDiv.scrollTop=msgsDiv.scrollHeight;
     });
   });
 };
 
-window.sendMsg = () => {
-  if(!cur) return;
-  const text=document.getElementById("msg").value.trim();
-  if(!text) return;
-  push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[auth.currentUser.uid,cur].sort().join("_")),{
-    from: auth.currentUser.uid,
-    text
-  });
+window.sendMsg=()=>{
+  if(!cur||!auth.currentUser) return;
+  const text=document.getElementById("msg").value.trim(); if(!text) return;
+  push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[auth.currentUser.uid,cur].sort().join("_")),{from:auth.currentUser.uid,text});
   document.getElementById("msg").value="";
 };
 
-document.getElementById("img").onchange = async () => {
-  const file = document.getElementById("img").files[0];
-  if(!file) return;
-  const r = sRef(st,"imgs/"+Date.now()+file.name);
-  await uploadBytes(r,file);
-  const url = await getDownloadURL(r);
-  push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[auth.currentUser.uid,cur].sort().join("_")),{
-    from: auth.currentUser.uid,
-    img: url
-  });
+document.getElementById("img").onchange=async()=>{
+  const file=document.getElementById("img").files[0]; if(!file||!cur) return;
+  const r=sRef(st,"imgs/"+Date.now()+file.name);
+  await uploadBytes(r,file); const url=await getDownloadURL(r);
+  push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[auth.currentUser.uid,cur].sort().join("_")),{from:auth.currentUser.uid,img:url});
 };
 
 // -------------------- Groups --------------------
-window.createGroup = () => {
-  const g = prompt("Enter group name:");
-  if(!g) return;
-  set(ref(db,"groups/"+g),{by: auth.currentUser.uid});
-  alert("Group created!");
+window.createGroup=()=>{
+  const g=prompt("Enter group name:"); if(!g) return;
+  set(ref(db,"groups/"+g),{by:auth.currentUser.uid}); alert("Group created!");
 };
 
 // -------------------- Profile --------------------
-const avatarImg = document.getElementById("avatar");
-const avatarInput = document.getElementById("avatarInput");
-const statusInput = document.getElementById("status");
+const avatarImg=document.getElementById("avatar");
+const avatarInput=document.getElementById("avatarInput");
+const statusInput=document.getElementById("status");
 
-window.uploadAvatar = async () => {
-  const f = avatarInput.files[0];
-  if(!f){ alert("Select image"); return; }
-  const r = sRef(st,"avatars/"+auth.currentUser.uid+"_"+Date.now()+f.name);
-  await uploadBytes(r,f);
-  const u = await getDownloadURL(r);
-  set(ref(db,"users/"+auth.currentUser.uid+"/avatar"),u);
-  avatarImg.src=u;
-  alert("Avatar updated!");
+window.uploadAvatar=async()=>{
+  const f=avatarInput.files[0]; if(!f) return alert("Select image");
+  const r=sRef(st,"avatars/"+auth.currentUser.uid+"_"+Date.now()+f.name);
+  await uploadBytes(r,f); const u=await getDownloadURL(r);
+  set(ref(db,"users/"+auth.currentUser.uid+"/avatar"),u); avatarImg.src=u; alert("Avatar updated!");
 };
 
-window.updateStatus = () => {
+window.updateStatus=()=>{
+  if(!auth.currentUser) return;
   set(ref(db,"users/"+auth.currentUser.uid+"/status"),statusInput.value.trim());
   alert("Status updated!");
 };
 
 // -------------------- Contact --------------------
-window.sendContact = () => {
+window.sendContact=()=>{
   alert("Thanks! Your message has been sent.");
-  document.getElementById("cname").value="";
-  document.getElementById("cemail").value="";
-  document.getElementById("cmessage").value="";
+  document.getElementById("cname").value=""; document.getElementById("cemail").value=""; document.getElementById("cmessage").value="";
 };
 
 // -------------------- Clear Chat --------------------
-window.clearChat = () => {
-  if(!cur) return;
-  const path = isGroup?"groupChats/"+cur:"chats/"+[auth.currentUser.uid,cur].sort().join("_");
+window.clearChat=()=>{
+  if(!cur||!auth.currentUser) return;
+  const path=isGroup?"groupChats/"+cur:"chats/"+[auth.currentUser.uid,cur].sort().join("_");
   remove(ref(db,path));
 };
 </script>
+</body>
+</html>
