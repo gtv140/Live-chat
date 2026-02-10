@@ -1,30 +1,15 @@
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Connect 🚀</title>
-
-<!-- Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js"></script>
-
 <style>
 :root{
-  --bg:#f6f7fb;
-  --card:#fff;
-  --text:#111827;
-  --muted:#6b7280;
-  --primary:#2563eb;
+  --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280; --primary:#2563eb;
 }
 body.dark{
-  --bg:#0f172a;
-  --card:#111827;
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --primary:#3b82f6;
+  --bg:#0f172a; --card:#111827; --text:#e5e7eb; --muted:#9ca3af; --primary:#3b82f6;
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
@@ -34,43 +19,51 @@ header h1{font-size:18px;margin:0;}
 header button{background:none;border:none;font-size:18px;color:var(--text);}
 .page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
-.hero{background:linear-gradient(135deg,var(--primary),#60a5fa);color:#fff;padding:24px;border-radius:18px;text-align:center;}
+
+/* Login Attractive */
+#login{display:flex;flex-direction:column;align-items:center;justify-content:center;}
+#login h2{margin-bottom:16px;color:var(--primary);}
+#login input{padding:12px;border-radius:12px;border:1px solid #ccc;width:80%;margin-bottom:12px;font-size:16px;}
+#login button{padding:12px 20px;border:none;border-radius:12px;background:var(--primary);color:#fff;font-size:16px;cursor:pointer;transition:0.3s;}
+#login button:hover{opacity:0.9;transform:scale(1.02);}
+
+/* Home */
+.hero{background:linear-gradient(135deg,var(--primary),#60a5fa);color:#fff;padding:24px;border-radius:18px;text-align:center;margin-bottom:12px;}
 .hero h2{margin:0 0 8px;}
 .hero p{margin:0;opacity:.9;}
-.login-box{background:var(--card);padding:20px;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.1);text-align:center;}
-.login-box input{width:100%;padding:12px;margin:10px 0;border-radius:10px;border:1px solid #ccc;font-size:14px;}
-.login-box button{padding:12px 16px;border:none;border-radius:10px;background:var(--primary);color:#fff;font-size:16px;cursor:pointer;}
-.chat-box{background:var(--card);border-radius:16px;padding:12px;height:45vh;overflow-y:auto;margin-bottom:10px;}
-.msg{background:#e5e7eb;color:#000;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;}
+
+/* Chat */
+.chat-box{background:var(--card);border-radius:16px;padding:12px;height:50vh;overflow-y:auto;margin-bottom:10px;}
+.msg{background:#e5e7eb;color:#000;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;}
 body.dark .msg{background:#1f2937;color:#e5e7eb;}
-.msg .actions{position:absolute;right:6px;top:6px;font-size:12px;}
-.input-row{display:flex;gap:8px;margin-bottom:10px;}
+.input-row{display:flex;gap:8px;}
 .input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #ccc;}
 .input-row button{padding:12px 16px;border:none;border-radius:12px;background:var(--primary);color:#fff;}
+
+/* Users */
 .user{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;}
 .dot{width:10px;height:10px;background:#22c55e;border-radius:50%;}
+
+/* Bottom Nav */
 nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(0,0,0,.06);}
-nav button{background:none;border:none;font-size:20px;color:var(--muted);}
+nav button{background:none;border:none;font-size:20px;color:#6b7280;}
 nav button.active{color:var(--primary);}
 </style>
 </head>
-
 <body>
+
 <div class="app">
 
 <header>
-  <h1>Live Connect 🚀</h1>
-  <button id="darkBtn"><i class="fa-solid fa-moon"></i></button>
+  <h1>Live Connect</h1>
+  <button onclick="toggleDark()"><i class="fa-solid fa-moon"></i></button>
 </header>
 
 <!-- LOGIN -->
 <div id="login" class="page active">
-  <div class="login-box">
-    <h2>Welcome!</h2>
-    <p>Enter your username to continue</p>
-    <input type="text" id="usernameInput" placeholder="Username">
-    <button id="loginBtn">Continue</button>
-  </div>
+  <h2>Welcome to Live Connect 🚀</h2>
+  <input type="text" id="usernameInput" placeholder="Enter your username" />
+  <button onclick="login()">Continue</button>
 </div>
 
 <!-- HOME -->
@@ -79,7 +72,7 @@ nav button.active{color:var(--primary);}
     <h2>Real-Time Live Chat</h2>
     <p>Fast • Secure • Mobile Friendly</p>
   </div>
-  <p style="margin-top:16px;color:var(--muted)">Connect instantly, see who’s online, and chat smoothly on mobile.</p>
+  <p style="color:var(--muted)">Connect instantly, see who’s online, chat in private or groups, like messages, and manage your profile easily.</p>
 </div>
 
 <!-- CHAT -->
@@ -87,7 +80,7 @@ nav button.active{color:var(--primary);}
   <div class="chat-box" id="chatBox"></div>
   <div class="input-row">
     <input id="msgInput" placeholder="Type message…" />
-    <button id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+    <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
   </div>
 </div>
 
@@ -97,36 +90,18 @@ nav button.active{color:var(--primary);}
   <div id="currentUsers"></div>
 </div>
 
-<!-- ABOUT -->
-<div id="about" class="page">
-  <h3>About</h3>
-  <p>
-    Live Connect is a modern real-time chat platform for mobile users. Chat in groups, see who is online, like, comment, and manage your profile easily.
-  </p>
-</div>
-
-<!-- CONTACT -->
-<div id="contact" class="page">
-  <h3>Contact & Support</h3>
-  <p><i class="fa-solid fa-envelope"></i> webhub262@gmail.com</p>
-  <p>
-    <a href="https://www.facebook.com/profile.php?id=100084218946114">Facebook</a> |
-    <a href="https://www.instagram.com/mr_nazim073">Instagram</a> |
-    <a href="https://youtube.com/@crazykhantv">YouTube</a>
-  </p>
-</div>
-
 <nav>
-  <button data-page="home" class="active"><i class="fa-solid fa-house"></i></button>
-  <button data-page="chat"><i class="fa-solid fa-comments"></i></button>
-  <button data-page="users"><i class="fa-solid fa-user-group"></i></button>
-  <button data-page="about"><i class="fa-solid fa-circle-info"></i></button>
-  <button data-page="contact"><i class="fa-solid fa-envelope"></i></button>
+  <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
+  <button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
+  <button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
 </nav>
 
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
   authDomain: "live-chat-b810c.firebaseapp.com",
@@ -137,92 +112,77 @@ const firebaseConfig = {
   appId: "1:555058795334:web:f668887409800c32970b47"
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-let currentUser = null;
-let curChat = "";
+let currentUser=null, curChat=null;
 
-const loginPage = document.getElementById("login");
-const homePage = document.getElementById("home");
-const chatPage = document.getElementById("chat");
-const usersPage = document.getElementById("users");
-
-const currentUsersDiv = document.getElementById("currentUsers");
-const chatBox = document.getElementById("chatBox");
-
-document.getElementById("darkBtn").onclick = ()=>document.body.classList.toggle("dark");
-
-document.getElementById("loginBtn").onclick = function(){
-  const uname = document.getElementById("usernameInput").value.trim();
+// Login
+window.login=()=>{
+  const uname=document.getElementById("usernameInput").value.trim();
   if(!uname){alert("Enter username"); return;}
-  currentUser = uname;
-  firebase.database().ref("users/"+uname).set({name:uname,online:true});
-  loginPage.classList.remove("active");
-  homePage.classList.add("active");
+  currentUser=uname;
+  set(ref(db,"users/"+uname),{name:uname,online:true});
+  document.getElementById("login").classList.remove("active");
+  document.getElementById("home").classList.add("active");
   listenUsers();
-  listenChats();
 };
 
-document.querySelectorAll('nav button').forEach(btn=>{
-  btn.onclick = ()=>{
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    const pageId = btn.dataset.page;
-    document.getElementById(pageId).classList.add('active');
-    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-  };
-});
+// Page Nav
+window.openPage=(id,btn)=>{
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+};
 
+// Dark Mode
+window.toggleDark=()=>{document.body.classList.toggle('dark');};
+
+// Chat
+window.sendMsg=()=>{
+  if(!curChat) return alert("Select user to chat");
+  const input=document.getElementById('msgInput');
+  if(!input.value) return;
+  const path="chats/"+[currentUser,curChat].sort().join("_");
+  push(ref(db,path),{from:currentUser,text:input.value});
+  input.value='';
+};
+
+// Online Users
 function listenUsers(){
-  firebase.database().ref("users").on("value", snap=>{
-    currentUsersDiv.innerHTML="";
+  const usersDiv=document.getElementById("currentUsers");
+  onValue(ref(db,"users"),snap=>{
+    usersDiv.innerHTML="";
     snap.forEach(u=>{
       if(u.val().online && u.key!==currentUser){
         const div=document.createElement("div");
         div.className="user";
         div.innerHTML=`<div class="dot"></div>${u.val().name}`;
-        div.onclick=()=>{curChat=u.key; openPage('chat');};
-        currentUsersDiv.appendChild(div);
+        div.onclick=()=>{
+          curChat=u.key;
+          openPage('chat',document.querySelector('nav button:nth-child(2)'));
+          listenChat(curChat);
+        };
+        usersDiv.appendChild(div);
       }
     });
   });
 }
 
-function sendMsg(){
-  if(!curChat) return alert("Select a user first");
-  const input = document.getElementById("msgInput");
-  if(!input.value) return;
-  const path = "chats/"+[currentUser,curChat].sort().join("_");
-  firebase.database().ref(path).push({from:currentUser,text:input.value,likes:0});
-  input.value="";
-}
-
-function listenChats(){
-  setInterval(()=>{
-    if(!curChat) return;
-    const path = "chats/"+[currentUser,curChat].sort().join("_");
-    firebase.database().ref(path).on("value", snap=>{
-      chatBox.innerHTML="";
-      snap.forEach(m=>{
-        const div=document.createElement("div");
-        div.className="msg";
-        div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text} <span class="actions"><span onclick="likeMsg('${path}','${m.key}')">👍</span><span onclick="deleteMsg('${path}','${m.key}')">🗑️</span></span>`;
-        chatBox.appendChild(div);
-        chatBox.scrollTop=chatBox.scrollHeight;
-      });
+function listenChat(user){
+  const chatBox=document.getElementById("chatBox");
+  const path="chats/"+[currentUser,user].sort().join("_");
+  onValue(ref(db,path),snap=>{
+    chatBox.innerHTML="";
+    snap.forEach(m=>{
+      const div=document.createElement("div");
+      div.className="msg";
+      div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text}`;
+      chatBox.appendChild(div);
+      chatBox.scrollTop=chatBox.scrollHeight;
     });
-  },1000);
-}
-
-function openPage(pageId){document.getElementById(pageId).classList.add('active');}
-
-function likeMsg(path,key){
-  firebase.database().ref(path+"/"+key+"/likes").transaction(l=> (l||0)+1 );
-}
-
-function deleteMsg(path,key){
-  firebase.database().ref(path+"/"+key).remove();
+  });
 }
 </script>
 </body>
