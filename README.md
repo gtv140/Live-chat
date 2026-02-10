@@ -1,354 +1,258 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Connect 🚀</title>
+<title>Live Connect</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 :root{
-  --bg:#f0f2f5;
-  --card:#ffffff;
-  --pri:#25D366;
-  --text:#000000;
+ --bg:#f5f7fb;--card:#fff;--pri:#22c55e;--text:#111;
 }
 body.dark{
-  --bg:#121212;
-  --card:#1e1e1e;
-  --pri:#10b981;
-  --text:#ffffff;
+ --bg:#0f172a;--card:#1e293b;--pri:#10b981;--text:#f9fafb;
 }
-
 body{
-  margin:0;
-  font-family:system-ui, sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  font-size:16px;
-  -webkit-text-size-adjust:100%;
+ margin:0;font-family:system-ui,sans-serif;
+ background:var(--bg);color:var(--text);
 }
-
 header{
-  height:56px;
-  background:var(--pri);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 14px;
-  font-weight:700;
-  position:sticky;
-  top:0;
-  z-index:1000;
-  font-size:20px;
+ height:56px;background:var(--pri);color:#fff;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0 16px;font-size:20px;font-weight:700;
+ position:sticky;top:0;z-index:1000;
 }
-
 .container{
-  padding:10px;
-  max-width:640px;
-  margin:auto;
-  padding-bottom:90px;
+ max-width:640px;margin:auto;
+ padding:12px;padding-bottom:90px;
 }
-
-.page{display:none;}
-.page.active{display:block;}
-
-.hero{
-  position:relative;
-  height:180px;
-  border-radius:14px;
-  overflow:hidden;
-  margin-bottom:14px;
-}
-.hero img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  filter:brightness(0.7);
-}
-.hero-content{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  text-align:center;
-}
-.hero-content h1{
-  font-size:28px;
-  margin:0;
-}
-.hero-content p{
-  font-size:16px;
-}
-
+.page{display:none}
+.page.active{display:block}
 .card{
-  background:var(--card);
-  padding:14px;
-  border-radius:14px;
-  margin-bottom:14px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+ background:var(--card);border-radius:16px;
+ padding:14px;margin-bottom:12px;
+ box-shadow:0 4px 14px rgba(0,0,0,.08);
 }
+.hero{
+ height:180px;border-radius:18px;
+ background:url("https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=900&q=60") center/cover;
+ display:flex;align-items:center;justify-content:center;
+ color:#fff;text-align:center;
+}
+.hero h1{margin:0;font-size:30px}
+.hero p{opacity:.9}
 
+input,textarea{
+ width:100%;padding:14px;border-radius:12px;
+ border:1px solid #ccc;font-size:15px;margin-bottom:8px;
+}
 button{
-  width:100%;
-  padding:14px;
-  font-size:16px;
-  border:none;
-  border-radius:10px;
-  background:var(--pri);
-  color:#fff;
-  cursor:pointer;
-  margin-top:6px;
+ width:100%;padding:14px;border:none;
+ border-radius:12px;background:var(--pri);
+ color:#fff;font-size:15px;cursor:pointer;
 }
-
-input, textarea{
-  width:100%;
-  padding:14px;
-  font-size:16px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  margin-bottom:6px;
-}
-
-.msg{
-  padding:10px;
-  margin:6px 0;
-  border-radius:12px;
-  font-size:15px;
-}
-.msg.me{background:#dcf8c6;text-align:right;}
-.msg.other{background:#ffffff;}
 
 .user{
-  padding:10px 14px;
-  background:#eaeaea;
-  border-radius:20px;
-  margin:4px;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  font-size:15px;
-  cursor:pointer;
+ display:inline-flex;align-items:center;gap:6px;
+ background:#e5e7eb;padding:8px 14px;
+ border-radius:20px;margin:4px;font-size:14px;
 }
-.user.online::before{content:"🟢";}
-.user.offline::before{content:"⚪";}
+.user::before{content:"🟢"}
 
-#users,#groupList,#currentUsers{
-  display:flex;
-  overflow-x:auto;
+.msg{
+ padding:10px;margin:6px 0;border-radius:14px;
+ max-width:80%;
 }
+.me{background:#dcf8c6;margin-left:auto}
+.other{background:#fff}
+
+.status{border-bottom:1px solid #ddd;padding:8px 0}
+.actions{display:flex;gap:16px;font-size:18px;margin-top:6px}
 
 .bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  height:70px;
-  background:var(--pri);
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  color:#fff;
+ position:fixed;bottom:0;width:100%;height:70px;
+ background:var(--pri);display:flex;
+ justify-content:space-around;align-items:center;
+ color:#fff;z-index:1000;
 }
-.bottom-nav i{
-  font-size:28px;
-  cursor:pointer;
-}
-.active-nav{opacity:1;}
-
-@media(max-width:480px){
-  body{font-size:18px;}
-}
+.bottom-nav i{font-size:26px}
 </style>
 </head>
 
 <body>
 
 <header>
-  <div>Live Connect 🚀</div>
-  <button style="width:auto" onclick="document.body.classList.toggle('dark')">
-    <i class="fa fa-moon"></i>
-  </button>
+ <span>Live Connect</span>
+ <i class="fa fa-moon" onclick="document.body.classList.toggle('dark')"></i>
 </header>
 
 <div class="container">
 
 <!-- LOGIN -->
-<div id="loginPage" class="page active">
-  <div class="card">
-    <h3>Enter Username</h3>
-    <input id="usernameInput" placeholder="Username">
-    <button onclick="login()">Enter</button>
-  </div>
+<div id="login" class="page active">
+ <div class="card">
+  <h3>Enter Username</h3>
+  <input id="username">
+  <button onclick="login()">Continue</button>
+ </div>
 </div>
 
 <!-- HOME -->
 <div id="home" class="page">
-  <div class="hero">
-    <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=800&q=60">
-    <div class="hero-content">
-      <h1>Live Connect 🚀</h1>
-      <p>Modern • Real-Time • Mobile Friendly Chat</p>
-    </div>
+ <div class="hero">
+  <div>
+   <h1>Live Connect</h1>
+   <p>Chat • Status • Reactions</p>
   </div>
+ </div>
 
-  <div class="card">
-    <h3 style="text-align:center">Key Features</h3>
-    <div style="display:flex;flex-wrap:wrap;gap:10px">
-      <div class="card" style="flex:1;text-align:center">
-        <i class="fa fa-comment fa-3x"></i>
-        <p>Live Chat</p>
-      </div>
-      <div class="card" style="flex:1;text-align:center">
-        <i class="fa fa-users fa-3x"></i>
-        <p>Online Users</p>
-      </div>
-      <div class="card" style="flex:1;text-align:center">
-        <i class="fa fa-user fa-3x"></i>
-        <p>Status</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>Online Users</h3>
-    <div id="currentUsers"></div>
-  </div>
+ <div class="card">
+  <h3>🟢 Online Users</h3>
+  <div id="onlineUsers"></div>
+ </div>
 </div>
 
 <!-- CHAT -->
 <div id="chat" class="page">
-  <div class="card">
-    <div id="users"></div>
-    <div id="msgs" style="height:260px;overflow:auto"></div>
-    <input id="msg" placeholder="Type message">
-    <button onclick="sendMsg()">Send</button>
-  </div>
+ <div class="card">
+  <div id="users"></div>
+  <div id="msgs" style="height:260px;overflow:auto"></div>
+  <input id="msg" placeholder="Message">
+  <button onclick="sendMsg()">Send</button>
+ </div>
 </div>
 
-<!-- GROUP -->
-<div id="groups" class="page">
-  <div class="card">
-    <button onclick="createGroup()">Create Group</button>
-    <div id="groupList"></div>
-  </div>
+<!-- STATUS -->
+<div id="statusPage" class="page">
+ <div class="card">
+  <textarea id="newStatus" placeholder="What's on your mind?"></textarea>
+  <button onclick="postStatus()">Post Status</button>
+ </div>
+
+ <div class="card">
+  <h3>All Status</h3>
+  <div id="statusList"></div>
+ </div>
 </div>
 
 <!-- PROFILE -->
 <div id="profile" class="page">
-  <div class="card">
-    <textarea id="status" placeholder="Your status"></textarea>
-    <button onclick="updateStatus()">Update</button>
-  </div>
-</div>
-
-<!-- ABOUT -->
-<div id="about" class="page">
-  <div class="card">
-    <p>Live Connect is a modern real-time chat platform.</p>
-    <p>
-      <a href="https://www.facebook.com/profile.php?id=100084218946114">Facebook</a> |
-      <a href="https://www.instagram.com/mr_nazim073">Instagram</a> |
-      <a href="https://youtube.com/@crazykhantv">YouTube</a>
-    </p>
-  </div>
-</div>
-
-<!-- CONTACT -->
-<div id="contact" class="page">
-  <div class="card">
-    <p>Email: webhub262@gmail.com</p>
-  </div>
+ <div class="card">
+  <h3>Your Status</h3>
+  <textarea id="myStatus"></textarea>
+  <button onclick="updateMyStatus()">Update</button>
+ </div>
 </div>
 
 </div>
 
 <!-- NAV -->
 <div class="bottom-nav">
-  <i class="fa fa-house" onclick="nav('home',this)"></i>
-  <i class="fa fa-comment" onclick="nav('chat',this)"></i>
-  <i class="fa fa-users" onclick="nav('groups',this)"></i>
-  <i class="fa fa-user" onclick="nav('profile',this)"></i>
-  <i class="fa fa-info-circle" onclick="nav('about',this)"></i>
-  <i class="fa fa-envelope" onclick="nav('contact',this)"></i>
+ <i class="fa fa-house" onclick="nav('home')"></i>
+ <i class="fa fa-comment" onclick="nav('chat')"></i>
+ <i class="fa fa-plus" onclick="nav('statusPage')"></i>
+ <i class="fa fa-user" onclick="nav('profile')"></i>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-const firebaseConfig={
-  apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-  authDomain:"live-chat-b810c.firebaseapp.com",
-  databaseURL:"https://live-chat-b810c-default-rtdb.firebaseio.com",
-  projectId:"live-chat-b810c",
-  messagingSenderId:"555058795334",
-  appId:"1:555058795334:web:f668887409800c32970b47"
-};
-
-const app=initializeApp(firebaseConfig);
+const app=initializeApp({
+ apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+ databaseURL:"https://live-chat-b810c-default-rtdb.firebaseio.com"
+});
 const db=getDatabase(app);
 
-let currentUser=null,curChat=null;
+let user=null,chatUser=null;
 
 window.login=()=>{
-  currentUser=usernameInput.value.trim();
-  if(!currentUser) return;
-  set(ref(db,"users/"+currentUser),{online:true});
-  show("home");
+ user=username.value.trim();
+ if(!user) return;
+ set(ref(db,"users/"+user),{online:true});
+ show("home");
 };
 
 function show(p){
-  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-  document.getElementById(p).classList.add("active");
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ document.getElementById(p).classList.add("active");
 }
+window.nav=show;
 
-window.nav=(p,el)=>{
-  document.querySelectorAll(".bottom-nav i").forEach(i=>i.classList.remove("active-nav"));
-  el.classList.add("active-nav");
-  show(p);
-};
+/* ONLINE USERS ONLY (OFFLINE HIDE) */
+onValue(ref(db,"users"),snap=>{
+ users.innerHTML=""; onlineUsers.innerHTML="";
+ snap.forEach(u=>{
+  if(!u.val().online) return; // 🔴 offline hide
 
-onValue(ref(db,"users"),s=>{
-  currentUsers.innerHTML="";
-  users.innerHTML="";
-  s.forEach(u=>{
-    const d=document.createElement("div");
-    d.className="user online";
-    d.textContent=u.key;
-    if(u.key!==currentUser){
-      d.onclick=()=>openChat(u.key);
-      users.appendChild(d);
-    }
-    currentUsers.appendChild(d.cloneNode(true));
-  });
+  const d=document.createElement("div");
+  d.className="user"; d.textContent=u.key;
+
+  if(u.key!==user){
+   d.onclick=()=>openChat(u.key);
+   users.appendChild(d);
+  }
+  onlineUsers.appendChild(d.cloneNode(true));
+ });
 });
 
+/* CHAT */
 function openChat(u){
-  curChat=u;
-  onValue(ref(db,"chats/"+[currentUser,u].sort().join("_")),s=>{
-    msgs.innerHTML="";
-    s.forEach(m=>{
-      const d=document.createElement("div");
-      d.className="msg "+(m.val().from===currentUser?"me":"other");
-      d.textContent=m.val().text;
-      msgs.appendChild(d);
-    });
+ chatUser=u;
+ onValue(ref(db,"chats/"+[user,u].sort().join("_")),s=>{
+  msgs.innerHTML="";
+  s.forEach(m=>{
+   const d=document.createElement("div");
+   d.className="msg "+(m.val().from===user?"me":"other");
+   d.textContent=m.val().text;
+   msgs.appendChild(d);
   });
+ });
 }
 
 window.sendMsg=()=>{
-  if(!curChat||!msg.value) return;
-  push(ref(db,"chats/"+[currentUser,curChat].sort().join("_")),{from:currentUser,text:msg.value});
-  msg.value="";
+ if(!chatUser||!msg.value) return;
+ push(ref(db,"chats/"+[user,chatUser].sort().join("_")),{from:user,text:msg.value});
+ msg.value="";
 };
 
-window.createGroup=()=>alert("Group feature ready");
-window.updateStatus=()=>alert("Status updated");
+/* STATUS */
+window.postStatus=()=>{
+ if(!newStatus.value) return;
+ push(ref(db,"status"),{user,text:newStatus.value,likes:0});
+ newStatus.value="";
+};
+
+onValue(ref(db,"status"),s=>{
+ statusList.innerHTML="";
+ s.forEach(st=>{
+  const d=document.createElement("div");
+  d.className="status";
+  d.innerHTML=`
+   <b>${st.val().user}</b>
+   <p>${st.val().text}</p>
+   <small>Likes: ${st.val().likes||0}</small>
+   <div class="actions">
+    <i class="fa fa-heart" onclick="likeStatus('${st.key}',${st.val().likes||0})"></i>
+   </div>`;
+  statusList.prepend(d);
+ });
+});
+
+window.likeStatus=(id,c)=>update(ref(db,"status/"+id),{likes:c+1});
+
+/* PROFILE STATUS */
+window.updateMyStatus=()=>{
+ update(ref(db,"users/"+user),{status:myStatus.value});
+ alert("Updated");
+};
+
+/* AUTO OFFLINE */
+window.addEventListener("beforeunload",()=>{
+ if(user) set(ref(db,"users/"+user+"/online"),false);
+});
 </script>
 
 </body>
