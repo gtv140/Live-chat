@@ -180,10 +180,12 @@ let me="", cur="";
 
 // START
 window.start=()=>{
- me = name.value.trim();
+ const nameInput = document.getElementById("name");
+ me = nameInput.value.trim();
  if(!me) return alert("Enter your full name!");
- login.style.display="none";
- app.style.display="flex";
+ document.getElementById("login").style.display="none";
+ document.getElementById("app").style.display="flex";
+
  set(ref(db,"users/"+me), { online:true });
  onDisconnect(ref(db,"users/"+me)).set({ online:false });
  loadUsers();
