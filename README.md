@@ -1,7 +1,7 @@
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Live Connect Pro</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -280,7 +280,6 @@ window.send=()=>{
  if(!cur || !msg.value.trim()) return;
  push(ref(db,"chats/"+[me,cur].sort().join("_")),{from:me,text:msg.value,time:Date.now()});
  msg.value="";
- playNotification();
 };
 
 // SEND IMAGE
@@ -290,7 +289,6 @@ img.onchange=async()=>{
  await uploadBytes(r,f);
  let u=await getDownloadURL(r);
  push(ref(db,"chats/"+[me,cur].sort().join("_")),{from:me,img:u,time:Date.now()});
- playNotification();
 };
 
 // HERO SLIDES
