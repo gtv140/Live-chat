@@ -164,25 +164,28 @@ import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://ww
 // Firebase config
 const firebaseConfig={
  apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+ authDomain:"live-chat-b810c.firebaseapp.com",
  databaseURL:"https://live-chat-b810c-default-rtdb.firebaseio.com",
  projectId:"live-chat-b810c",
- storageBucket:"live-chat-b810c.appspot.com"
+ storageBucket:"live-chat-b810c.appspot.com",
+ messagingSenderId:"555058795334",
+ appId:"1:555058795334:web:f668887409800c32970b47"
 };
 
-const fb = initializeApp(firebaseConfig);
-const db = getDatabase(fb);
-const st = getStorage(fb);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const st = getStorage(app);
 
 let me="", cur="";
 
 // START
 window.start=()=>{
  me = name.value.trim();
- if(!me) return;
+ if(!me) return alert("Enter your full name!");
  login.style.display="none";
  app.style.display="flex";
- set(ref(db,"users/"+me),{online:true});
- onDisconnect(ref(db,"users/"+me)).set({online:false});
+ set(ref(db,"users/"+me), { online:true });
+ onDisconnect(ref(db,"users/"+me)).set({ online:false });
  loadUsers();
 };
 
@@ -248,7 +251,7 @@ const slides=[
 ];
 let i=0;
 setInterval(()=>hero.style.backgroundImage=`url(${slides[i++%slides.length]})`,3000);
-
 </script>
+
 </body>
 </html>
