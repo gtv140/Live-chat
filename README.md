@@ -3,13 +3,30 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Live Connect 🚀</title>
+
+<!-- Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js"></script>
+
 <style>
 :root{
-  --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280; --primary:#2563eb;
+  --bg:#f6f7fb;
+  --card:#fff;
+  --text:#111827;
+  --muted:#6b7280;
+  --primary:#2563eb;
 }
-body.dark{--bg:#0f172a; --card:#111827; --text:#e5e7eb; --muted:#9ca3af; --primary:#3b82f6;}
-*{box-sizing:border-box;}
+body.dark{
+  --bg:#0f172a;
+  --card:#111827;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --primary:#3b82f6;
+}
+*{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
 .app{max-width:420px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
 header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.06);}
@@ -17,13 +34,17 @@ header h1{font-size:18px;margin:0;}
 header button{background:none;border:none;font-size:18px;color:var(--text);}
 .page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
-.hero{background:linear-gradient(135deg,var(--primary),#60a5fa);color:#fff;padding:24px;border-radius:18px;}
+.hero{background:linear-gradient(135deg,var(--primary),#60a5fa);color:#fff;padding:24px;border-radius:18px;text-align:center;}
 .hero h2{margin:0 0 8px;}
 .hero p{margin:0;opacity:.9;}
-.chat-box{background:var(--card);border-radius:16px;padding:12px;height:50vh;overflow-y:auto;margin-bottom:10px;}
-.msg{background:#e5e7eb;color:#000;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;display:flex;justify-content:space-between;align-items:center;}
+.login-box{background:var(--card);padding:20px;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.1);text-align:center;}
+.login-box input{width:100%;padding:12px;margin:10px 0;border-radius:10px;border:1px solid #ccc;font-size:14px;}
+.login-box button{padding:12px 16px;border:none;border-radius:10px;background:var(--primary);color:#fff;font-size:16px;cursor:pointer;}
+.chat-box{background:var(--card);border-radius:16px;padding:12px;height:45vh;overflow-y:auto;margin-bottom:10px;}
+.msg{background:#e5e7eb;color:#000;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;}
 body.dark .msg{background:#1f2937;color:#e5e7eb;}
-.input-row{display:flex;gap:8px;}
+.msg .actions{position:absolute;right:6px;top:6px;font-size:12px;}
+.input-row{display:flex;gap:8px;margin-bottom:10px;}
 .input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #ccc;}
 .input-row button{padding:12px 16px;border:none;border-radius:12px;background:var(--primary);color:#fff;}
 .user{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;}
@@ -31,34 +52,24 @@ body.dark .msg{background:#1f2937;color:#e5e7eb;}
 nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(0,0,0,.06);}
 nav button{background:none;border:none;font-size:20px;color:var(--muted);}
 nav button.active{color:var(--primary);}
-.actions span{cursor:pointer;margin-left:6px;font-size:14px;}
-.comments{margin-left:16px;font-size:13px;color:var(--muted);}
-.comment-input{display:flex;margin-top:4px;gap:4px;}
-.comment-input input{flex:1;padding:6px;border-radius:6px;border:1px solid #ccc;font-size:12px;}
-.comment-input button{padding:6px 8px;border:none;border-radius:6px;background:var(--primary);color:#fff;font-size:12px;}
-/* Login styles */
-#login{display:flex;flex-direction:column;justify-content:center;align-items:center;height:80vh;text-align:center;}
-#login div{background:var(--card);padding:24px;border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.1);width:90%;max-width:350px;}
-#login h2{margin-bottom:16px;color:var(--primary);}
-#login input{width:100%;padding:12px;border-radius:12px;border:1px solid #ccc;margin-bottom:12px;font-size:16px;}
-#login button{width:100%;padding:12px;border-radius:12px;font-size:16px;background:var(--primary);color:#fff;font-weight:bold;}
-#login p{margin-top:12px;font-size:14px;color:var(--muted);}
 </style>
 </head>
+
 <body>
 <div class="app">
+
 <header>
-  <h1>Live Connect</h1>
-  <button onclick="toggleDark()"><i class="fa-solid fa-moon"></i></button>
+  <h1>Live Connect 🚀</h1>
+  <button id="darkBtn"><i class="fa-solid fa-moon"></i></button>
 </header>
 
 <!-- LOGIN -->
 <div id="login" class="page active">
-  <div>
-    <h2>Welcome to Live Connect 🚀</h2>
-    <input type="text" id="usernameInput" placeholder="Enter Username">
-    <button onclick="login()">Continue</button>
-    <p>Fast • Secure • Real-Time Chat</p>
+  <div class="login-box">
+    <h2>Welcome!</h2>
+    <p>Enter your username to continue</p>
+    <input type="text" id="usernameInput" placeholder="Username">
+    <button id="loginBtn">Continue</button>
   </div>
 </div>
 
@@ -76,7 +87,7 @@ nav button.active{color:var(--primary);}
   <div class="chat-box" id="chatBox"></div>
   <div class="input-row">
     <input id="msgInput" placeholder="Type message…" />
-    <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+    <button id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
   </div>
 </div>
 
@@ -89,7 +100,9 @@ nav button.active{color:var(--primary);}
 <!-- ABOUT -->
 <div id="about" class="page">
   <h3>About</h3>
-  <p>Live Connect is a modern real-time chat platform designed specially for mobile users. Chat in groups, see online users, like messages, delete your messages, and manage your profile easily.</p>
+  <p>
+    Live Connect is a modern real-time chat platform for mobile users. Chat in groups, see who is online, like, comment, and manage your profile easily.
+  </p>
 </div>
 
 <!-- CONTACT -->
@@ -104,18 +117,16 @@ nav button.active{color:var(--primary);}
 </div>
 
 <nav>
-  <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
-  <button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
-  <button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
-  <button onclick="openPage('about',this)"><i class="fa-solid fa-circle-info"></i></button>
-  <button onclick="openPage('contact',this)"><i class="fa-solid fa-envelope"></i></button>
+  <button data-page="home" class="active"><i class="fa-solid fa-house"></i></button>
+  <button data-page="chat"><i class="fa-solid fa-comments"></i></button>
+  <button data-page="users"><i class="fa-solid fa-user-group"></i></button>
+  <button data-page="about"><i class="fa-solid fa-circle-info"></i></button>
+  <button data-page="contact"><i class="fa-solid fa-envelope"></i></button>
 </nav>
+
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-
+<script>
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
   authDomain: "live-chat-b810c.firebaseapp.com",
@@ -125,68 +136,75 @@ const firebaseConfig = {
   messagingSenderId: "555058795334",
   appId: "1:555058795334:web:f668887409800c32970b47"
 };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 
-let currentUser=null, curChat="", isGroup=false;
-const currentUsersDiv=document.getElementById("currentUsers");
-const chatBox=document.getElementById("chatBox");
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-function login(){
-  const uname=document.getElementById("usernameInput").value.trim();
+let currentUser = null;
+let curChat = "";
+
+const loginPage = document.getElementById("login");
+const homePage = document.getElementById("home");
+const chatPage = document.getElementById("chat");
+const usersPage = document.getElementById("users");
+
+const currentUsersDiv = document.getElementById("currentUsers");
+const chatBox = document.getElementById("chatBox");
+
+document.getElementById("darkBtn").onclick = ()=>document.body.classList.toggle("dark");
+
+document.getElementById("loginBtn").onclick = function(){
+  const uname = document.getElementById("usernameInput").value.trim();
   if(!uname){alert("Enter username"); return;}
-  currentUser=uname;
-  set(ref(db,"users/"+uname),{name:uname,online:true});
-  document.getElementById("login").classList.remove("active");
-  document.getElementById("home").classList.add("active");
+  currentUser = uname;
+  firebase.database().ref("users/"+uname).set({name:uname,online:true});
+  loginPage.classList.remove("active");
+  homePage.classList.add("active");
   listenUsers();
   listenChats();
-}
+};
 
-function openPage(id,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-}
-function toggleDark(){document.body.classList.toggle('dark');}
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    const pageId = btn.dataset.page;
+    document.getElementById(pageId).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  };
+});
 
-// Online Users
 function listenUsers(){
-  onValue(ref(db,"users"), snap=>{
+  firebase.database().ref("users").on("value", snap=>{
     currentUsersDiv.innerHTML="";
     snap.forEach(u=>{
       if(u.val().online && u.key!==currentUser){
         const div=document.createElement("div");
         div.className="user";
         div.innerHTML=`<div class="dot"></div>${u.val().name}`;
-        div.onclick=()=>{curChat=u.key; isGroup=false; openPage('chat',document.querySelector('nav button:nth-child(2)'))};
+        div.onclick=()=>{curChat=u.key; openPage('chat');};
         currentUsersDiv.appendChild(div);
       }
     });
   });
 }
 
-// Send Message
 function sendMsg(){
-  if(!curChat) return alert("Select a user/group first");
-  const input=document.getElementById('msgInput');
+  if(!curChat) return alert("Select a user first");
+  const input = document.getElementById("msgInput");
   if(!input.value) return;
-  const path = isGroup ? "groupChats/"+curChat : "chats/"+[currentUser,curChat].sort().join("_");
-  push(ref(db,path),{from:currentUser,text:input.value,likes:0,comments:{}});
-  input.value='';
+  const path = "chats/"+[currentUser,curChat].sort().join("_");
+  firebase.database().ref(path).push({from:currentUser,text:input.value,likes:0});
+  input.value="";
 }
 
-// Listen Chats
 function listenChats(){
-  const chatsRef=ref(db);
-  onValue(chatsRef, snap=>{
-    chatBox.innerHTML="";
+  setInterval(()=>{
     if(!curChat) return;
-    const path = isGroup ? "groupChats/"+curChat : "chats/"+[currentUser,curChat].sort().join("_");
-    onValue(ref(db,path), chatSnap=>{
+    const path = "chats/"+[currentUser,curChat].sort().join("_");
+    firebase.database().ref(path).on("value", snap=>{
       chatBox.innerHTML="";
-      chatSnap.forEach(m=>{
+      snap.forEach(m=>{
         const div=document.createElement("div");
         div.className="msg";
         div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text} <span class="actions"><span onclick="likeMsg('${path}','${m.key}')">👍</span><span onclick="deleteMsg('${path}','${m.key}')">🗑️</span></span>`;
@@ -194,20 +212,17 @@ function listenChats(){
         chatBox.scrollTop=chatBox.scrollHeight;
       });
     });
-  });
+  },1000);
 }
 
-// Like Message
-window.likeMsg=(path,key)=>{
-  const msgRef=ref(db,path+"/"+key+"/likes");
-  onValue(msgRef,snap=>{
-    update(ref(db,path+"/"+key),{likes:(snap.val()||0)+1});
-  },{onlyOnce:true});
+function openPage(pageId){document.getElementById(pageId).classList.add('active');}
+
+function likeMsg(path,key){
+  firebase.database().ref(path+"/"+key+"/likes").transaction(l=> (l||0)+1 );
 }
 
-// Delete Message
-window.deleteMsg=(path,key)=>{
-  remove(ref(db,path+"/"+key));
+function deleteMsg(path,key){
+  firebase.database().ref(path+"/"+key).remove();
 }
 </script>
 </body>
