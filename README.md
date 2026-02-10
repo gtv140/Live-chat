@@ -1,18 +1,17 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Connect 🚀</title>
-
-<!-- FontAwesome Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
 :root{
-  --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280; --primary:#2563eb;
+  --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280; --primary:#2563eb; --success:#22c55e; --danger:#ef4444;
 }
-body.dark{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--primary:#3b82f6;}
-
+body.dark{
+  --bg:#0f172a; --card:#111827; --text:#e5e7eb; --muted:#9ca3af; --primary:#3b82f6; --success:#22c55e; --danger:#f87171;
+}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
 header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,0.06);}
@@ -26,21 +25,21 @@ input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;
 button{cursor:pointer;border:none;border-radius:10px;background:var(--primary);color:#fff;}
 .hero{background:linear-gradient(135deg,var(--primary),#60a5fa);padding:20px;border-radius:16px;color:#fff;margin-bottom:12px;text-align:center;}
 .hero h2{margin-bottom:6px;}
-.chat-box{background:var(--card);padding:12px;border-radius:16px;height:40vh;overflow-y:auto;margin-bottom:10px;}
-.msg{padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;}
-.msg.me{background:#dcf8c6;text-align:right;}
-.msg.other{background:#fff;text-align:left;}
+.chat-box{background:var(--card);padding:12px;border-radius:16px;height:35vh;overflow-y:auto;margin-bottom:10px;}
+.msg{padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;display:flex;justify-content:space-between;align-items:center;}
+.msg.me{background:#dcf8c6;}
+.msg.other{background:#fff;}
 .input-row{display:flex;gap:6px;}
 .input-row input{flex:1;}
 .user{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
-.dot{width:10px;height:10px;border-radius:50%;background:#22c55e;}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--success);}
 nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(0,0,0,0.06);}
 nav button{background:none;border:none;font-size:20px;color:var(--muted);}
 nav button.active{color:var(--primary);}
+.like-btn{background:none;border:none;color:var(--primary);cursor:pointer;font-size:14px;margin-left:6px;}
 </style>
 </head>
 <body>
-
 <div class="app">
 
 <header>
@@ -79,10 +78,17 @@ nav button.active{color:var(--primary);}
 <div id="onlineUsers"></div>
 </div>
 
+<!-- GROUPS -->
+<div id="groups" class="page">
+<h3>Groups</h3>
+<button onclick="createGroup()">+ Create Group</button>
+<div id="groupList"></div>
+</div>
+
 <!-- ABOUT -->
 <div id="about" class="page">
 <h3>About Live Connect 🚀</h3>
-<p>Live Connect is a modern real-time chat platform. Mobile-friendly, secure, with group chat, status, like & delete features.</p>
+<p>Modern real-time chat platform. Mobile-friendly, secure, with group chat, status, like & delete features.</p>
 </div>
 
 <!-- CONTACT -->
@@ -96,18 +102,16 @@ nav button.active{color:var(--primary);}
 </p>
 </div>
 
-<!-- Bottom Navigation -->
 <nav>
 <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
 <button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
 <button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
+<button onclick="openPage('groups',this)"><i class="fa-solid fa-users"></i></button>
 <button onclick="openPage('about',this)"><i class="fa-solid fa-circle-info"></i></button>
 <button onclick="openPage('contact',this)"><i class="fa-solid fa-envelope"></i></button>
 </nav>
-
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
@@ -125,22 +129,21 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 let currentUser = null;
+let currentGroup = null;
 
 const chatBox = document.getElementById("chatBox");
 const onlineUsersDiv = document.getElementById("onlineUsers");
 const welcomeUserSpan = document.getElementById("welcomeUser");
+const groupListDiv = document.getElementById("groupList");
 
 function login(){
   const uname = document.getElementById("usernameInput").value.trim();
-  if(!uname){alert("Enter username"); return;}
+  if(!uname){alert("Enter username");return;}
   currentUser = uname;
-  set(ref(db,"users/"+currentUser),{online:true});
   welcomeUserSpan.textContent = currentUser;
+  set(ref(db,"users/"+currentUser),{online:true});
   openPage('home', document.querySelector('nav button:first-child'));
   document.getElementById("loginPage").classList.remove('active');
-  document.getElementById("home").classList.add('active');
-  listenUsers();
-  listenMessages();
 }
 
 function openPage(id,btn){
@@ -150,28 +153,48 @@ function openPage(id,btn){
   if(btn) btn.classList.add('active');
 }
 
-function listenUsers(){
-  onValue(ref(db,"users"),snap=>{
-    onlineUsersDiv.innerHTML="";
-    snap.forEach(u=>{
-      if(u.val().online){
-        const div = document.createElement("div");
-        div.className="user";
-        div.innerHTML=`<div class="dot"></div>${u.key}`;
-        onlineUsersDiv.appendChild(div);
-      }
-    });
+// LISTEN ONLINE USERS
+onValue(ref(db,"users"),snap=>{
+  onlineUsersDiv.innerHTML="";
+  snap.forEach(u=>{
+    if(u.val().online){
+      const div = document.createElement("div");
+      div.className="user";
+      div.innerHTML=`<div class="dot"></div>${u.key}`;
+      onlineUsersDiv.appendChild(div);
+    }
   });
+});
+
+// GROUPS
+onValue(ref(db,"groups"),snap=>{
+  groupListDiv.innerHTML="";
+  snap.forEach(g=>{
+    const div = document.createElement("div");
+    div.className="user";
+    div.textContent = g.key;
+    div.onclick = ()=>openGroup(g.key);
+    groupListDiv.appendChild(div);
+  });
+});
+
+function createGroup(){
+  const name = prompt("Enter group name:");
+  if(!name) return;
+  set(ref(db,"groups/"+name),{owner:currentUser});
 }
 
-function listenMessages(){
-  const chatRef = ref(db,"messages");
+function openGroup(name){
+  currentGroup = name;
+  const chatRef = ref(db,"groupChats/"+name);
   onValue(chatRef,snap=>{
     chatBox.innerHTML="";
     snap.forEach(m=>{
       const div = document.createElement("div");
       div.className = m.val().from===currentUser?"msg me":"msg other";
-      div.innerHTML = `<b>${m.val().from}:</b> ${m.val().text} <button onclick="deleteMsg('${m.key}')">🗑️</button>`;
+      div.innerHTML = `<b>${m.val().from}:</b> ${m.val().text} 
+      ${m.val().from===currentUser?'<button onclick="deleteMsg(\''+m.key+'\',\''+name+'\')" style="background:none;border:none;color:red;cursor:pointer;">🗑️</button>':''}
+      <button class="like-btn" onclick="likeMsg('${m.key}','${name}')">❤️</button>`;
       chatBox.appendChild(div);
       chatBox.scrollTop = chatBox.scrollHeight;
     });
@@ -181,14 +204,20 @@ function listenMessages(){
 function sendMsg(){
   const input = document.getElementById("msgInput");
   if(!input.value) return;
-  push(ref(db,"messages"),{from:currentUser,text:input.value});
-  input.value="";
+  if(currentGroup){
+    push(ref(db,"groupChats/"+currentGroup),{from:currentUser,text:input.value,likes:0});
+    input.value="";
+  }
 }
 
-function deleteMsg(key){
-  remove(ref(db,"messages/"+key));
+function deleteMsg(key,group){
+  remove(ref(db,"groupChats/"+group+"/"+key));
+}
+
+function likeMsg(key,group){
+  // This is just a placeholder; likes can be implemented with proper update
+  alert("You liked this message!");
 }
 </script>
-
 </body>
 </html>
