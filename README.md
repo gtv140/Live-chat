@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Live Connect</title>
+<title>Live Connect 🚀</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{--bg:#f0f2f5;--card:#fff;--me:#dcf8c6;--other:#fff;--pri:#25D366;--text:#000}
@@ -101,96 +101,101 @@ let me="", cur="", isGroup=false, creator={};
 let typingTimeout;
 
 window.start = () => {
-me = name.value.trim();
-if(!me) return alert("Enter name!");
-login.style.display="none";
-app.style.display="flex";
-set(ref(db,"users/"+me), {online:true});
-onDisconnect(ref(db,"users/"+me)).set({online:false});
-load();
+  me = document.getElementById("name").value.trim();
+  if(!me) { alert("Enter name!"); return; }
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+  set(ref(db, "users/" + me), {online:true});
+  onDisconnect(ref(db, "users/" + me)).set({online:false});
+  loadUsersAndGroups();
 };
 
-function load(){
-onValue(ref(db,"users"), s=>{
-users.innerHTML="";
-s.forEach(u=>{
-let status = u.val().online ? "online" : "offline";
-if(u.key!==me){
-let d=document.createElement("div");
-d.className="user "+status;
-d.textContent=u.key;
-d.onclick=()=>open(u.key,false);
-users.appendChild(d);
-}});
-});
-onValue(ref(db,"groups"), s=>{
-s.forEach(g=>{
-creator[g.key]=g.val().by;
-let d=document.createElement("div");
-d.className="user group";
-d.textContent=g.key;
-d.onclick=()=>open(g.key,true);
-users.appendChild(d);
-});
-});
+function loadUsersAndGroups(){
+  onValue(ref(db, "users"), snapshot => {
+    document.getElementById("users").innerHTML = "";
+    snapshot.forEach(u=>{
+      if(u.key !== me){
+        let status = u.val().online ? "online" : "offline";
+        let d = document.createElement("div");
+        d.className = "user "+status;
+        d.textContent = u.key;
+        d.onclick = ()=> open(u.key, false);
+        document.getElementById("users").appendChild(d);
+      }
+    });
+  });
+
+  onValue(ref(db, "groups"), snapshot=>{
+    snapshot.forEach(g=>{
+      creator[g.key]=g.val().by;
+      let d = document.createElement("div");
+      d.className="user group";
+      d.textContent=g.key;
+      d.onclick=()=>open(g.key,true);
+      document.getElementById("users").appendChild(d);
+    });
+  });
 }
 
 window.open=(u,g)=>{
-cur=u; isGroup=g;
-chatWith.textContent=u;
-let p = g ? "groupChats/"+u : "chats/"+[me,u].sort().join("_");
-onValue(ref(db,p), s=>{
-msgs.innerHTML="";
-s.forEach(m=>{
-let d=document.createElement("div");
-d.className="msg "+(m.val().from===me?"me":"other");
-d.innerHTML = m.val().img ? `<img src="${m.val().img}">` : m.val().text || "";
-// reactions
-let reactionsDiv = document.createElement("div");
-reactionsDiv.className="reactions";
-['❤️','😂','👍'].forEach(r=>{
-let btn = document.createElement("span");
-btn.className="reaction";
-btn.textContent=r;
-btn.onclick=()=>push(ref(db,p+"/"+m.key+"/reactions"),r);
-reactionsDiv.appendChild(btn);
-});
-d.appendChild(reactionsDiv);
+  cur=u; isGroup=g;
+  document.getElementById("chatWith").textContent=u;
+  let p = g ? "groupChats/"+u : "chats/"+[me,u].sort().join("_");
+  onValue(ref(db,p), snapshot=>{
+    const msgs = document.getElementById("msgs");
+    msgs.innerHTML="";
+    snapshot.forEach(m=>{
+      let d=document.createElement("div");
+      d.className="msg "+(m.val().from===me?"me":"other");
+      d.innerHTML = m.val().img ? `<img src="${m.val().img}">` : m.val().text || "";
 
-if(m.val().from===me){
-let b=document.createElement("button");
-b.textContent="🗑️";
-b.onclick=()=>remove(ref(db,p+"/"+m.key));
-d.appendChild(b);
-}
-msgs.appendChild(d);
-});
-msgs.scrollTop=msgs.scrollHeight;
-});
+      // reactions
+      let reactionsDiv = document.createElement("div");
+      reactionsDiv.className="reactions";
+      ['❤️','😂','👍'].forEach(r=>{
+        let btn = document.createElement("span");
+        btn.className="reaction";
+        btn.textContent=r;
+        btn.onclick=()=>push(ref(db,p+"/"+m.key+"/reactions"),r);
+        reactionsDiv.appendChild(btn);
+      });
+      d.appendChild(reactionsDiv);
+
+      if(m.val().from===me){
+        let b=document.createElement("button");
+        b.textContent="🗑️";
+        b.onclick=()=>remove(ref(db,p+"/"+m.key));
+        d.appendChild(b);
+      }
+      msgs.appendChild(d);
+    });
+    msgs.scrollTop = msgs.scrollHeight;
+  });
 };
 
 window.send=()=>{
-if(!cur) return;
-if(msg.value.trim()!="") push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[me,cur].sort().join("_")), {from:me,text:msg.value});
-msg.value="";
+  if(!cur) return;
+  if(msg.value.trim()!="")
+    push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[me,cur].sort().join("_")), {from:me,text:msg.value});
+  msg.value="";
 };
 
 img.onchange=async()=>{
-let f=img.files[0];
-let r=sRef(st,"imgs/"+Date.now()+f.name);
-await uploadBytes(r,f);
-let u=await getDownloadURL(r);
-push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[me,cur].sort().join("_")), {from:me,img:u});
+  let f=img.files[0];
+  let r=sRef(st,"imgs/"+Date.now()+f.name);
+  await uploadBytes(r,f);
+  let u=await getDownloadURL(r);
+  push(ref(db,isGroup?"groupChats/"+cur:"chats/"+[me,cur].sort().join("_")), {from:me,img:u});
 };
 
 window.clearChat=()=>remove(ref(db,isGroup?"groupChats/"+cur:"chats/"+[me,cur].sort().join("_")));
 window.delGroup=()=>{if(isGroup && creator[cur]===me) remove(ref(db,"groups/"+cur))};
 
 window.createGroup=()=>{
-let g=prompt("Enter group name:");
-if(!g) return;
-set(ref(db,"groups/"+g),{by:me});
-alert("Group created!");
+  let g=prompt("Enter group name:");
+  if(!g) return;
+  set(ref(db,"groups/"+g),{by:me});
+  alert("Group created!");
 };
 
 window.showStickers=()=>alert("Sticker/GIF panel coming soon!");
@@ -201,7 +206,7 @@ const imgs=[
 "https://images.unsplash.com/photo-1492724441997-5dc865305da7"
 ];
 let i=0;
-setInterval(()=>hero.style.backgroundImage=`url(${imgs[i++%imgs.length]})`,3000);
+setInterval(()=>document.getElementById("hero").style.backgroundImage=`url(${imgs[i++%imgs.length]})`,3000);
 </script>
 </body>
 </html>
