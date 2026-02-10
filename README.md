@@ -58,7 +58,6 @@ img{max-width:100%;border-radius:8px;}
   <div class="hero-content">
     <h1 style="font-size:22px;font-weight:700;">Live Connect 🚀</h1>
     <p style="font-size:14px;">Real-Time Messaging Platform — Modern, Secure & Mobile-Friendly</p>
-    <button onclick="showPage('loginPage')">Get Started</button>
     <div id="currentUsers" style="margin-top:12px;display:flex;justify-content:center;gap:8px;overflow-x:auto;"></div>
   </div>
 </div>
@@ -153,7 +152,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebas
 import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
   authDomain: "live-chat-b810c.firebaseapp.com",
@@ -177,21 +175,6 @@ function showPage(p){
 }
 window.showPage = showPage;
 
-// Hero images
-const heroImgs=["https://images.unsplash.com/photo-1525182008055-f88b95ff7980","https://images.unsplash.com/photo-1515378791036-0648a3ef77b2","https://images.unsplash.com/photo-1492724441997-5dc865305da7"];
-let i=0;
-setInterval(()=>{const h=document.getElementById("hero"); if(h) h.style.backgroundImage=`url(${heroImgs[i++%heroImgs.length]})`;},3000);
-
-// Login
-window.login=()=>{
-  const uname=document.getElementById("usernameInput").value.trim();
-  if(!uname){alert("Enter username"); return;}
-  currentUser=uname;
-  set(ref(db,"users/"+uname),{name:uname,online:true,avatar:"https://via.placeholder.com/80"});
-  showPage('home');
-};
-
-// Online users in home & chat
 const currentUsersDiv=document.getElementById("currentUsers");
 onValue(ref(db,"users"), snap=>{
   if(currentUsersDiv) currentUsersDiv.innerHTML="";
@@ -215,6 +198,14 @@ onValue(ref(db,"users"), snap=>{
     }
   });
 });
+
+window.login=()=>{
+  const uname=document.getElementById("usernameInput").value.trim();
+  if(!uname){alert("Enter username"); return;}
+  currentUser=uname;
+  set(ref(db,"users/"+uname),{name:uname,online:true,avatar:"https://via.placeholder.com/80"});
+  showPage('home');
+};
 
 window.openChat=(u,g)=>{
   curChat=u; isGroup=g;
