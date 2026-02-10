@@ -1,44 +1,60 @@
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Live Connect Pro Fixed</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Connect</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
 :root{
  --pri:#25D366;
- --bg:#eef2f5;
- --card:rgba(255,255,255,.9);
+ --bg:#f0f2f5;
+ --card:rgba(255,255,255,0.95);
  --me:#dcf8c6;
  --other:#fff;
- --blur:blur(14px);
- --text:#000;
+ --text:#111;
+ --blur:blur(12px);
 }
 body.dark{
  --bg:#121212;
- --card:rgba(18,18,18,.95);
+ --card:rgba(20,20,20,0.95);
  --me:#1f4b2f;
  --other:#222;
  --text:#fff;
 }
-*{box-sizing:border-box;}
 body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text);transition:.3s}
-
 header{
- height:56px;
+ height:60px;
  background:linear-gradient(135deg,#1ebea5,#25D366);
  color:#fff;
- display:flex;align-items:center;justify-content:center;
- font-weight:700;letter-spacing:.5px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:800;
+ font-size:20px;
+ letter-spacing:.7px;
+ text-shadow:0 2px 4px rgba(0,0,0,.3);
+ position:relative;
 }
-
+header::after{
+ content:"";
+ position:absolute;bottom:0;left:0;width:100%;height:4px;
+ background:rgba(255,255,255,0.3);
+ box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
 .hero{
- height:180px;
+ height:200px;
+ width:100%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:22px;
+ font-weight:600;
+ color:#fff;
+ text-shadow:0 4px 12px rgba(0,0,0,0.5);
  background-size:cover;
  background-position:center;
- display:flex;align-items:center;justify-content:center;
- color:#fff;font-size:22px;
- text-shadow:0 4px 12px #000;
+ transition:.5s;
 }
 
 /* LOGIN */
@@ -46,97 +62,94 @@ header{
  position:fixed;inset:0;
  display:flex;align-items:center;justify-content:center;
  background:linear-gradient(135deg,#25D366,#1ebea5);
- z-index:9;
+ z-index:10;
 }
 .login-card{
- width:90%;max-width:360px;
+ width:90%;max-width:380px;
  background:var(--card);
  backdrop-filter:var(--blur);
- border-radius:18px;
- padding:22px;
- box-shadow:0 20px 40px rgba(0,0,0,.2);
- animation:pop .4s ease;
+ border-radius:20px;
+ padding:24px;
+ box-shadow:0 20px 40px rgba(0,0,0,.25);
+ text-align:center;
 }
-@keyframes pop{
- from{transform:scale(.9);opacity:0}
- to{transform:scale(1);opacity:1}
+.login-card h2{margin:0 0 8px;font-size:22px;}
+.login-card p{font-size:13px;color:#555;margin-bottom:16px;}
+.login-card input{
+ width:100%;padding:14px 16px;margin:10px 0;border-radius:16px;border:none;font-size:15px;
 }
-.login-card h2{text-align:center;margin:0 0 6px}
-.login-card p{text-align:center;font-size:13px;opacity:.8}
-.login-card input{width:100%;padding:14px;border-radius:14px;border:none;margin:14px 0;font-size:15px}
-.login-card button{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#25D366,#1ebea5);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.login-card button{
+ width:100%;padding:14px;border-radius:16px;border:none;background:linear-gradient(135deg,#25D366,#1ebea5);
+ color:#fff;font-size:16px;font-weight:600;cursor:pointer;
+ transition:.3s;
+}
+.login-card button:hover{opacity:.9;}
 
 /* APP */
-.app{display:none;flex-direction:column;height:calc(100vh - 236px)}
+.app{display:none;flex-direction:column;height:calc(100vh - 260px)}
 .users{
- display:flex;gap:8px;padding:8px;
+ display:flex;gap:10px;padding:8px;
  overflow-x:auto;background:var(--card);
  backdrop-filter:var(--blur);
+ border-radius:12px;
+ margin:8px;
 }
 .user{
- padding:6px 14px;border-radius:999px;
+ padding:8px 16px;border-radius:999px;
  background:#00000015;font-size:14px;
- white-space:nowrap;
- cursor:pointer;
- position:relative;
+ white-space:nowrap;cursor:pointer;
+ position:relative;transition:.3s;
 }
-.user.online::before{content:"● ";color:#25D366}
-.user.offline::before{content:"● ";color:#888}
-.user .unread{position:absolute;top:-2px;right:-2px;background:#f44336;color:#fff;border-radius:50%;font-size:10px;padding:2px 4px}
+.user:hover{background:#00000025;}
+.user.online::before{content:"● ";color:#25D366;}
+.user.offline::before{content:"● ";color:#888;}
+.user .unread{position:absolute;top:-4px;right:-4px;background:#f44336;color:#fff;border-radius:50%;font-size:10px;padding:2px 5px;}
 
-/* CHAT */
-.chat{flex:1;display:flex;flex-direction:column;min-height:0}
+.chat{
+ flex:1;display:flex;flex-direction:column;min-height:0;margin:8px;
+}
 .chat-head{
- padding:8px;background:var(--card);
- backdrop-filter:var(--blur);
- display:flex;justify-content:space-between;
- font-size:14px;
+ padding:10px;background:var(--card);backdrop-filter:var(--blur);
+ display:flex;justify-content:space-between;align-items:center;
+ font-size:15px;font-weight:600;
+ border-radius:12px 12px 0 0;
 }
-.messages{flex:1;overflow-y:auto;padding:10px}
+.messages{flex:1;overflow-y:auto;padding:10px;background:var(--card);border-radius:0 0 12px 12px;}
 .msg{
- max-width:75%;margin-bottom:8px;
- padding:10px 12px;border-radius:14px;
- font-size:14px;animation:fade .2s;
- position:relative;
- word-wrap:break-word;
+ max-width:75%;margin-bottom:8px;padding:10px 14px;border-radius:16px;font-size:14px;word-wrap:break-word;
+ animation:fadeIn .3s;position:relative;
 }
-@keyframes fade{
- from{opacity:0;transform:translateY(6px)}
- to{opacity:1}
-}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;}}
 .me{background:var(--me);margin-left:auto;color:#000;}
 .other{background:var(--other);color:#000;}
 body.dark .me{color:#fff;}
 body.dark .other{color:#fff;}
-.msg img{max-width:180px;border-radius:10px}
-.msg .del{position:absolute;top:4px;right:4px;background:#f44336;color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer}
+.msg img{max-width:180px;border-radius:12px;}
+.msg .del{position:absolute;top:4px;right:4px;background:#f44336;color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;}
 
 /* INPUT */
 .input{
  display:flex;gap:6px;padding:8px;
- background:var(--card);backdrop-filter:var(--blur)
+ background:var(--card);backdrop-filter:var(--blur);
+ border-radius:12px;
 }
 .input input{
- flex:1;padding:12px;border-radius:999px;
- border:1px solid #ccc;
+ flex:1;padding:12px;border-radius:999px;border:1px solid #ccc;font-size:14px;
 }
 .input button{
- width:40px;height:40px;border-radius:50%;
- border:none;background:var(--pri);color:#fff;
- cursor:pointer;
+ width:42px;height:42px;border-radius:50%;
+ border:none;background:var(--pri);color:#fff;cursor:pointer;font-size:16px;
+ transition:.3s;
 }
-.typing-indicator{
- font-size:12px;color:#888;margin:2px 0 4px 6px;
-}
+.input button:hover{opacity:.9;}
+.typing-indicator{font-size:12px;color:#888;margin:2px 0 4px 6px;}
 </style>
 </head>
-
 <body>
 
-<header>Live Connect Pro</header>
-<div class="hero" id="hero">Chat. Connect. Instantly.</div>
+<header>Live Connect</header>
+<div class="hero" id="hero">Connect Instantly • Chat Anywhere</div>
 
-<!-- LOGIN -->
 <div class="login" id="login">
  <div class="login-card">
   <h2>Welcome 👋</h2>
@@ -154,7 +167,6 @@ body.dark .other{color:#fff;}
    <span id="chatWith">Select user</span>
    <i class="fa fa-moon" onclick="document.body.classList.toggle('dark')"></i>
   </div>
-
   <div class="typing-indicator" id="typing"></div>
   <div class="messages" id="msgs"></div>
 
@@ -172,7 +184,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebas
 import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
-// Firebase config
 const firebaseConfig={
  apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
  authDomain:"live-chat-b810c.firebaseapp.com",
@@ -188,101 +199,76 @@ const db = getDatabase(app);
 const st = getStorage(app);
 
 let me="", cur="";
-let typingTimeout;
 
-// START
+// LOGIN START
 window.start=()=>{
- const nameInput = document.getElementById("name");
- me = nameInput.value.trim();
+ me=document.getElementById("name").value.trim();
  if(!me) return alert("Enter your full name!");
+ const meRef=ref(db,"users/"+me);
+ set(meRef,{online:true});
+ onDisconnect(meRef).set({online:false});
  document.getElementById("login").style.display="none";
  document.getElementById("app").style.display="flex";
-
- set(ref(db,"users/"+me), { online:true });
- onDisconnect(ref(db,"users/"+me)).set({ online:false });
  loadUsers();
-};
+}
 
 // LOAD USERS
 function loadUsers(){
- onValue(ref(db,"users"), s=>{
-  users.innerHTML="";
-  s.forEach(u=>{
+ const usersEl=document.getElementById("users");
+ onValue(ref(db,"users"), snapshot=>{
+  usersEl.innerHTML="";
+  snapshot.forEach(u=>{
    if(u.key!==me){
-    let d=document.createElement("div");
+    const d=document.createElement("div");
     d.className="user "+(u.val().online?"online":"offline");
     d.textContent=u.key;
     d.onclick=()=>openChat(u.key);
-    users.appendChild(d);
+    usersEl.appendChild(d);
+   }
   });
  });
 }
 
 // OPEN CHAT
 window.openChat=(u)=>{
- cur = u; chatWith.textContent = u;
- const path = "chats/"+[me,u].sort().join("_");
-
- onValue(ref(db,path), s=>{
+ cur=u;
+ chatWith.textContent=u;
+ const path="chats/"+[me,u].sort().join("_");
+ onValue(ref(db,path),s=>{
   msgs.innerHTML="";
   s.forEach(m=>{
-   let d = document.createElement("div");
+   const d=document.createElement("div");
    d.className="msg "+(m.val().from===me?"me":"other");
-   d.innerHTML = m.val().img ? `<img src="${m.val().img}">` : m.val().text;
+   d.innerHTML=m.val().img?`<img src="${m.val().img}">`:m.val().text;
    if(m.val().from===me){
-     let b=document.createElement("button");
-     b.className="del"; b.textContent="×";
+     const b=document.createElement("button");
+     b.className="del";b.textContent="×";
      b.onclick=()=>remove(ref(db,path+"/"+m.key));
      d.appendChild(b);
    }
    msgs.appendChild(d);
   });
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.scrollTop=msgs.scrollHeight;
  });
 };
 
 // SEND MESSAGE
 window.send=()=>{
  if(!cur || !msg.value.trim()) return;
- push(ref(db,"chats/"+[me,cur].sort().join("_")), {from:me,text:msg.value});
+ push(ref(db,"chats/"+[me,cur].sort().join("_")),{from:me,text:msg.value});
  msg.value="";
  playNotification();
 };
 
 // SEND IMAGE
 img.onchange=async()=>{
- let f = img.files[0];
- let r = sRef(st,"imgs/"+Date.now()+f.name);
+ let f=img.files[0];
+ let r=sRef(st,"imgs/"+Date.now()+f.name);
  await uploadBytes(r,f);
- let u = await getDownloadURL(r);
- push(ref(db,"chats/"+[me,cur].sort().join("_")), {from:me,img:u});
+ let u=await getDownloadURL(r);
+ push(ref(db,"chats/"+[me,cur].sort().join("_")),{from:me,img:u});
  playNotification();
 };
-
-// TYPING INDICATOR
-msg.addEventListener("input",()=>{
- if(!cur) return;
- set(ref(db,"typing/"+cur+"/"+me),true);
- clearTimeout(typingTimeout);
- typingTimeout=setTimeout(()=>remove(ref(db,"typing/"+cur+"/"+me)),1000);
-});
-
-// SHOW TYPING
-setInterval(()=>{
- if(!cur) return;
- onValue(ref(db,"typing/"+cur), s=>{
-  let typingUsers = [];
-  s.forEach(u=>{
-    if(u.key!==me) typingUsers.push(u.key);
-  });
- });
-},500);
-
-// NOTIFICATION SOUND
-function playNotification(){
- let audio = new Audio("https://www.myinstants.com/media/sounds/facebook_messenger.mp3");
- audio.play();
-}
 
 // HERO SLIDES
 const slides=[
@@ -292,6 +278,8 @@ const slides=[
 ];
 let i=0;
 setInterval(()=>hero.style.backgroundImage=`url(${slides[i++%slides.length]})`,3000);
+
+function playNotification(){let a=new Audio("https://www.myinstants.com/media/sounds/facebook_messenger.mp3");a.play();}
 </script>
 
 </body>
