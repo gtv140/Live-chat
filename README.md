@@ -2,9 +2,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Connect</title>
+<title>Live Connect Pro</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
 :root{
  --pri:#25D366;
@@ -31,7 +30,7 @@ header{
  align-items:center;
  justify-content:center;
  font-weight:800;
- font-size:20px;
+ font-size:22px;
  letter-spacing:.7px;
  text-shadow:0 2px 4px rgba(0,0,0,.3);
  position:relative;
@@ -104,7 +103,9 @@ header::after{
 .user.online::before{content:"● ";color:#25D366;}
 .user.offline::before{content:"● ";color:#888;}
 .user .unread{position:absolute;top:-4px;right:-4px;background:#f44336;color:#fff;border-radius:50%;font-size:10px;padding:2px 5px;}
+.user img{width:26px;height:26px;border-radius:50%;margin-right:6px;vertical-align:middle;}
 
+/* CHAT */
 .chat{
  flex:1;display:flex;flex-direction:column;min-height:0;margin:8px;
 }
@@ -126,6 +127,8 @@ body.dark .me{color:#fff;}
 body.dark .other{color:#fff;}
 .msg img{max-width:180px;border-radius:12px;}
 .msg .del{position:absolute;top:4px;right:4px;background:#f44336;color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;}
+.msg .time{position:absolute;bottom:-16px;right:8px;font-size:10px;color:#555;}
+body.dark .msg .time{color:#ccc;}
 
 /* INPUT */
 .input{
@@ -143,11 +146,22 @@ body.dark .other{color:#fff;}
 }
 .input button:hover{opacity:.9;}
 .typing-indicator{font-size:12px;color:#888;margin:2px 0 4px 6px;}
+.fab{
+ position:fixed;bottom:24px;right:24px;width:56px;height:56px;
+ border-radius:50%;background:var(--pri);color:#fff;
+ display:flex;align-items:center;justify-content:center;
+ font-size:24px;cursor:pointer;
+ box-shadow:0 6px 12px rgba(0,0,0,.2);
+}
+.fab:hover{opacity:.9;}
+.search-bar{
+ width:calc(100% - 16px);margin:8px;padding:6px 12px;border-radius:999px;border:1px solid #ccc;
+}
 </style>
 </head>
 <body>
 
-<header>Live Connect</header>
+<header>Live Connect Pro</header>
 <div class="hero" id="hero">Connect Instantly • Chat Anywhere</div>
 
 <div class="login" id="login">
@@ -160,6 +174,7 @@ body.dark .other{color:#fff;}
 </div>
 
 <div class="app" id="app">
+ <input type="text" id="searchUser" class="search-bar" placeholder="Search users...">
  <div class="users" id="users"></div>
 
  <div class="chat">
@@ -178,6 +193,8 @@ body.dark .other{color:#fff;}
   </div>
  </div>
 </div>
+
+<div class="fab" onclick="newGroup()"><i class="fa fa-users"></i></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
@@ -200,7 +217,7 @@ const st = getStorage(app);
 
 let me="", cur="";
 
-// LOGIN START
+// LOGIN
 window.start=()=>{
  me=document.getElementById("name").value.trim();
  if(!me) return alert("Enter your full name!");
@@ -215,10 +232,11 @@ window.start=()=>{
 // LOAD USERS
 function loadUsers(){
  const usersEl=document.getElementById("users");
+ const searchInput=document.getElementById("searchUser");
  onValue(ref(db,"users"), snapshot=>{
   usersEl.innerHTML="";
   snapshot.forEach(u=>{
-   if(u.key!==me){
+   if(u.key!==me && u.key.toLowerCase().includes(searchInput.value.toLowerCase())){
     const d=document.createElement("div");
     d.className="user "+(u.val().online?"online":"offline");
     d.textContent=u.key;
@@ -227,6 +245,7 @@ function loadUsers(){
    }
   });
  });
+ searchInput.addEventListener("input",loadUsers);
 }
 
 // OPEN CHAT
@@ -240,6 +259,10 @@ window.openChat=(u)=>{
    const d=document.createElement("div");
    d.className="msg "+(m.val().from===me?"me":"other");
    d.innerHTML=m.val().img?`<img src="${m.val().img}">`:m.val().text;
+   const t=document.createElement("div");
+   t.className="time";
+   t.textContent=new Date(m.val().time||Date.now()).toLocaleTimeString();
+   d.appendChild(t);
    if(m.val().from===me){
      const b=document.createElement("button");
      b.className="del";b.textContent="×";
@@ -255,7 +278,7 @@ window.openChat=(u)=>{
 // SEND MESSAGE
 window.send=()=>{
  if(!cur || !msg.value.trim()) return;
- push(ref(db,"chats/"+[me,cur].sort().join("_")),{from:me,text:msg.value});
+ push(ref(db,"chats/"+[me,cur].sort().join("_")),{from:me,text:msg.value,time:Date.now()});
  msg.value="";
  playNotification();
 };
@@ -266,7 +289,7 @@ img.onchange=async()=>{
  let r=sRef(st,"imgs/"+Date.now()+f.name);
  await uploadBytes(r,f);
  let u=await getDownloadURL(r);
- push(ref(db,"chats/"+[me,cur].sort().join("_")),{from:me,img:u});
+ push(ref(db,"chats/"+[me,cur].sort().join("_")),{from:me,img:u,time:Date.now()});
  playNotification();
 };
 
@@ -279,7 +302,11 @@ const slides=[
 let i=0;
 setInterval(()=>hero.style.backgroundImage=`url(${slides[i++%slides.length]})`,3000);
 
+// NOTIFICATION
 function playNotification(){let a=new Audio("https://www.myinstants.com/media/sounds/facebook_messenger.mp3");a.play();}
+
+// FAB NEW GROUP (placeholder)
+window.newGroup=()=>alert("Group feature coming soon!");
 </script>
 
 </body>
