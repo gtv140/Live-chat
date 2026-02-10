@@ -4,23 +4,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Live Connect 🚀</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
 <style>
 :root{
-  --bg:#f6f7fb;
-  --card:#fff;
-  --text:#111827;
-  --muted:#6b7280;
-  --primary:#2563eb;
+  --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280; --primary:#2563eb;
 }
-body.dark{
-  --bg:#0f172a;
-  --card:#111827;
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --primary:#3b82f6;
-}
-*{box-sizing:border-box}
+body.dark{--bg:#0f172a; --card:#111827; --text:#e5e7eb; --muted:#9ca3af; --primary:#3b82f6;}
+*{box-sizing:border-box;}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
 .app{max-width:420px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
 header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.06);}
@@ -32,27 +21,32 @@ header button{background:none;border:none;font-size:18px;color:var(--text);}
 .hero h2{margin:0 0 8px;}
 .hero p{margin:0;opacity:.9;}
 .chat-box{background:var(--card);border-radius:16px;padding:12px;height:50vh;overflow-y:auto;margin-bottom:10px;}
-.msg{background:#e5e7eb;color:#000;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;}
+.msg{background:#e5e7eb;color:#000;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;display:flex;justify-content:space-between;align-items:center;}
 body.dark .msg{background:#1f2937;color:#e5e7eb;}
 .input-row{display:flex;gap:8px;}
 .input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #ccc;}
 .input-row button{padding:12px 16px;border:none;border-radius:12px;background:var(--primary);color:#fff;}
-.user{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.user{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;}
 .dot{width:10px;height:10px;background:#22c55e;border-radius:50%;}
 nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(0,0,0,.06);}
 nav button{background:none;border:none;font-size:20px;color:var(--muted);}
 nav button.active{color:var(--primary);}
-.actions span{cursor:pointer;margin-left:6px;}
+.actions span{cursor:pointer;margin-left:6px;font-size:14px;}
 .comments{margin-left:16px;font-size:13px;color:var(--muted);}
 .comment-input{display:flex;margin-top:4px;gap:4px;}
 .comment-input input{flex:1;padding:6px;border-radius:6px;border:1px solid #ccc;font-size:12px;}
 .comment-input button{padding:6px 8px;border:none;border-radius:6px;background:var(--primary);color:#fff;font-size:12px;}
+/* Login styles */
+#login{display:flex;flex-direction:column;justify-content:center;align-items:center;height:80vh;text-align:center;}
+#login div{background:var(--card);padding:24px;border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.1);width:90%;max-width:350px;}
+#login h2{margin-bottom:16px;color:var(--primary);}
+#login input{width:100%;padding:12px;border-radius:12px;border:1px solid #ccc;margin-bottom:12px;font-size:16px;}
+#login button{width:100%;padding:12px;border-radius:12px;font-size:16px;background:var(--primary);color:#fff;font-weight:bold;}
+#login p{margin-top:12px;font-size:14px;color:var(--muted);}
 </style>
 </head>
-
 <body>
 <div class="app">
-
 <header>
   <h1>Live Connect</h1>
   <button onclick="toggleDark()"><i class="fa-solid fa-moon"></i></button>
@@ -60,9 +54,12 @@ nav button.active{color:var(--primary);}
 
 <!-- LOGIN -->
 <div id="login" class="page active">
-  <h3>Enter Username</h3>
-  <input type="text" id="usernameInput" placeholder="Username">
-  <button onclick="login()">Continue</button>
+  <div>
+    <h2>Welcome to Live Connect 🚀</h2>
+    <input type="text" id="usernameInput" placeholder="Enter Username">
+    <button onclick="login()">Continue</button>
+    <p>Fast • Secure • Real-Time Chat</p>
+  </div>
 </div>
 
 <!-- HOME -->
@@ -71,9 +68,7 @@ nav button.active{color:var(--primary);}
     <h2>Real-Time Live Chat</h2>
     <p>Fast • Secure • Mobile Friendly</p>
   </div>
-  <p style="margin-top:16px;color:var(--muted)">
-    Connect instantly, see who’s online, and chat smoothly on mobile.
-  </p>
+  <p style="margin-top:16px;color:var(--muted)">Connect instantly, see who’s online, and chat smoothly on mobile.</p>
 </div>
 
 <!-- CHAT -->
@@ -94,9 +89,7 @@ nav button.active{color:var(--primary);}
 <!-- ABOUT -->
 <div id="about" class="page">
   <h3>About</h3>
-  <p>
-    Live Connect is a modern real-time chat platform designed specially for mobile users. You can chat in groups, see who is online, comment, like, and manage your profile easily.
-  </p>
+  <p>Live Connect is a modern real-time chat platform designed specially for mobile users. Chat in groups, see online users, like messages, delete your messages, and manage your profile easily.</p>
 </div>
 
 <!-- CONTACT -->
@@ -117,7 +110,6 @@ nav button.active{color:var(--primary);}
   <button onclick="openPage('about',this)"><i class="fa-solid fa-circle-info"></i></button>
   <button onclick="openPage('contact',this)"><i class="fa-solid fa-envelope"></i></button>
 </nav>
-
 </div>
 
 <script type="module">
@@ -133,12 +125,10 @@ const firebaseConfig = {
   messagingSenderId: "555058795334",
   appId: "1:555058795334:web:f668887409800c32970b47"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 let currentUser=null, curChat="", isGroup=false;
-
 const currentUsersDiv=document.getElementById("currentUsers");
 const chatBox=document.getElementById("chatBox");
 
@@ -159,7 +149,6 @@ function openPage(id,btn){
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
-
 function toggleDark(){document.body.classList.toggle('dark');}
 
 // Online Users
