@@ -3,7 +3,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Live Connect Pro</title>
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
@@ -63,7 +62,7 @@ header{
 .login-card h2{text-align:center;margin:0 0 6px}
 .login-card p{text-align:center;font-size:13px;opacity:.7}
 .login-card input{width:100%;padding:14px;border-radius:14px;border:none;margin:14px 0;font-size:15px}
-.login-card button{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#25D366,#1ebea5);color:#fff;font-size:15px;font-weight:600}
+.login-card button{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#25D366,#1ebea5);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
 
 /* APP */
 .app{display:none;flex-direction:column;height:calc(100vh - 236px)}
@@ -78,7 +77,8 @@ header{
  white-space:nowrap;
  cursor:pointer;
 }
-.user::before{content:"● ";color:#25D366}
+.user.online::before{content:"● ";color:#25D366}
+.user.offline::before{content:"● ";color:#888}
 
 /* CHAT */
 .chat{flex:1;display:flex;flex-direction:column;min-height:0}
@@ -92,7 +92,8 @@ header{
 .msg{
  max-width:75%;margin-bottom:8px;
  padding:10px 12px;border-radius:14px;
- font-size:14px;animation:fade .2s
+ font-size:14px;animation:fade .2s;
+ position:relative;
 }
 @keyframes fade{
  from{opacity:0;transform:translateY(6px)}
@@ -101,7 +102,9 @@ header{
 .me{background:var(--me);margin-left:auto}
 .other{background:var(--other)}
 .msg img{max-width:180px;border-radius:10px}
+.msg .del{position:absolute;top:4px;right:4px;background:#f44336;color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer}
 
+/* INPUT */
 .input{
  display:flex;gap:6px;padding:8px;
  background:var(--card);backdrop-filter:var(--blur)
@@ -120,7 +123,7 @@ header{
 
 <body>
 
-<header>Live Connect</header>
+<header>Live Connect Pro</header>
 <div class="hero" id="hero">Chat. Connect. Instantly.</div>
 
 <!-- LOGIN -->
@@ -158,6 +161,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebas
 import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-storage.js";
 
+// Firebase config
 const firebaseConfig={
  apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
  databaseURL:"https://live-chat-b810c-default-rtdb.firebaseio.com",
@@ -171,6 +175,7 @@ const st = getStorage(fb);
 
 let me="", cur="";
 
+// START
 window.start=()=>{
  me = name.value.trim();
  if(!me) return;
@@ -181,13 +186,14 @@ window.start=()=>{
  loadUsers();
 };
 
+// LOAD USERS
 function loadUsers(){
  onValue(ref(db,"users"), s=>{
   users.innerHTML="";
   s.forEach(u=>{
-   if(u.val().online && u.key!==me){
+   if(u.key!==me){
     let d=document.createElement("div");
-    d.className="user";
+    d.className="user "+(u.val().online?"online":"offline");
     d.textContent=u.key;
     d.onclick=()=>openChat(u.key);
     users.appendChild(d);
@@ -196,6 +202,7 @@ function loadUsers(){
  });
 }
 
+// OPEN CHAT
 window.openChat=(u)=>{
  cur = u; chatWith.textContent = u;
  const path = "chats/"+[me,u].sort().join("_");
@@ -204,19 +211,27 @@ window.openChat=(u)=>{
   s.forEach(m=>{
    let d = document.createElement("div");
    d.className="msg "+(m.val().from===me?"me":"other");
-   d.innerHTML = m.val().img ? `<img src="${m.val().img}">` : m.val().text;
+   d.innerHTML = m.val().img ? `<img src=\"${m.val().img}\">` : m.val().text;
+   if(m.val().from===me){
+     let b=document.createElement("button");
+     b.className="del"; b.textContent="×";
+     b.onclick=()=>remove(ref(db,path+"/"+m.key));
+     d.appendChild(b);
+   }
    msgs.appendChild(d);
   });
   msgs.scrollTop = msgs.scrollHeight;
  });
 };
 
+// SEND MESSAGE
 window.send=()=>{
  if(!cur || !msg.value.trim()) return;
  push(ref(db,"chats/"+[me,cur].sort().join("_")), {from:me,text:msg.value});
  msg.value="";
 };
 
+// SEND IMAGE
 img.onchange=async()=>{
  let f = img.files[0];
  let r = sRef(st,"imgs/"+Date.now()+f.name);
@@ -225,6 +240,7 @@ img.onchange=async()=>{
  push(ref(db,"chats/"+[me,cur].sort().join("_")), {from:me,img:u});
 };
 
+// HERO SLIDES
 const slides=[
  "https://images.unsplash.com/photo-1525182008055-f88b95ff7980",
  "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2",
@@ -232,7 +248,7 @@ const slides=[
 ];
 let i=0;
 setInterval(()=>hero.style.backgroundImage=`url(${slides[i++%slides.length]})`,3000);
-</script>
 
+</script>
 </body>
 </html>
