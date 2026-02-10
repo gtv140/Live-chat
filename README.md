@@ -85,7 +85,21 @@ img{max-width:100%;border-radius:8px;}
 <p style="font-size:14px;text-align:center;">
 Live Connect is a modern chat platform built for <strong>real-time communication</strong>, <strong>secure messaging</strong>, and <strong>easy connectivity</strong>. Connect with friends, join groups, share images, update your status, and enjoy a smooth mobile-friendly experience. Our mission is to make chatting <strong>fun, fast, and safe</strong> for everyone.
 </p>
-<p style="font-size:14px;text-align:center;font-weight:600;">Support: <a href="mailto:webhub262@gmail.com" style="color:#0d6efd;">webhub262@gmail.com</a></p>
+<p style="font-size:14px;text-align:center;font-weight:600;">Support: 
+<a href="mailto:webhub262@gmail.com" style="color:#0d6efd;">webhub262@gmail.com</a></p>
+
+<!-- Social Media Icons -->
+<div style="display:flex;gap:12px;margin-top:8px;">
+  <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank" style="font-size:20px;color:#3b5998;">
+    <i class="fab fa-facebook-square"></i>
+  </a>
+  <a href="https://www.instagram.com/mr_nazim073?igsh=MXd4d2hmcWNvNjVsdQ==" target="_blank" style="font-size:20px;color:#e1306c;">
+    <i class="fab fa-instagram"></i>
+  </a>
+  <a href="https://youtube.com/@crazykhantv?si=KxpJG79rAEBUQuZn" target="_blank" style="font-size:20px;color:#ff0000;">
+    <i class="fab fa-youtube"></i>
+  </a>
+</div>
 </div>
 </div>
 
