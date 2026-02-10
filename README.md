@@ -8,13 +8,14 @@
 :root{--bg:#f0f2f5;--card:#fff;--pri:#25D366;--text:#000;}
 body.dark{--bg:#121212;--card:#1e1e1e;--pri:#10b981;--text:#fff;}
 body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);}
-header{height:50px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-weight:700;position:sticky;top:0;z-index:1000;font-size:18px;}
+header{height:50px;background:var(--pri);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-weight:700;position:sticky;top:0;z-index:1000;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
 .container{padding:8px;max-width:600px;margin:auto;}
 .page{display:none;}
 .page.active{display:block;}
-.hero{position:relative;height:140px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;text-shadow:0 2px 6px #000;margin-bottom:8px;overflow:hidden;}
-.hero img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.5);}
-.hero-content{position:relative;text-align:center;padding:12px;}
+.hero{position:relative;height:160px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--text);text-shadow:0 2px 6px rgba(0,0,0,0.7);margin-bottom:12px;overflow:hidden;}
+.hero::after{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.3));z-index:1;}
+.hero img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:brightness(0.7);}
+.hero-content{position:relative;z-index:2;text-align:center;padding:12px;}
 .card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);margin-bottom:12px;}
 ul{padding-left:0;list-style:none;} li{margin-bottom:4px;font-size:14px;}
 button{cursor:pointer;padding:10px 12px;border:none;border-radius:8px;background:var(--pri);color:#fff;margin:2px;font-size:16px;}
@@ -29,7 +30,7 @@ img{max-width:100%;border-radius:8px;}
 .user.offline::before{content:"⚪";}
 #users,#groupList,#currentUsers{display:flex;overflow-x:auto;padding:4px 0;}
 .bottom-nav{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;background:var(--pri);color:#fff;height:60px;align-items:center;z-index:1000;border-top-left-radius:12px;border-top-right-radius:12px;}
-.bottom-nav i{font-size:24px;}
+.bottom-nav i{font-size:24px;cursor:pointer;}
 @media(max-width:480px){.hero{height:120px;font-size:14px;} input,textarea,button{font-size:14px;padding:8px;} .card{padding:8px;} .msg{font-size:13px;}}
 </style>
 </head>
@@ -56,25 +57,25 @@ img{max-width:100%;border-radius:8px;}
 
 <!-- Hero Section -->
 <div class="hero">
-  <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=800&q=60">
+  <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=800&q=60" alt="Live Connect Hero">
   <div class="hero-content">
-    <h1 style="font-size:24px;font-weight:700;margin-bottom:4px;">Live Connect 🚀</h1>
-    <p style="font-size:14px;margin-bottom:12px;">Real-Time Messaging — Secure, Modern & Mobile-Friendly</p>
-    
-    <!-- Support & About Overlay -->
-    <div style="background:rgba(0,0,0,0.5);padding:8px;border-radius:12px;display:inline-block;margin-bottom:8px;">
-      About: Live Connect — Modern chat platform <br>
-      Support: <a href="mailto:webhub262@gmail.com" style="color:#0d6efd;">webhub262@gmail.com</a>
-    </div>
-
-    <!-- CTA Buttons -->
+    <h1 style="font-size:26px;font-weight:700;margin-bottom:6px;">Live Connect 🚀</h1>
+    <p style="font-size:15px;margin-bottom:12px;">Secure, Modern & Mobile-Friendly Real-Time Chat</p>
     <div style="margin-top:12px;">
       <button onclick="showPage('chat')" style="margin-right:6px;">💬 Start Chatting</button>
       <button onclick="showPage('profile')">👤 Create Profile</button>
     </div>
+  </div>
+</div>
 
-    <!-- Online Users -->
-    <div id="currentUsers" style="display:flex;overflow-x:auto;gap:8px;margin-top:12px;padding:4px;"></div>
+<!-- About + Support + Social -->
+<div class="card" style="text-align:center;">
+  <p style="margin:4px;">About: Live Connect — Modern chat platform</p>
+  <p style="margin:4px;">Support: <a href="mailto:webhub262@gmail.com" style="color:#0d6efd;">webhub262@gmail.com</a></p>
+  <div style="display:flex;gap:12px;margin-top:8px;justify-content:center;">
+    <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank" style="font-size:20px;color:#3b5998;"><i class="fab fa-facebook-square"></i></a>
+    <a href="https://www.instagram.com/mr_nazim073?igsh=MXd4d2hmcWNvNjVsdQ==" target="_blank" style="font-size:20px;color:#e1306c;"><i class="fab fa-instagram"></i></a>
+    <a href="https://youtube.com/@crazykhantv?si=KxpJG79rAEBUQuZn" target="_blank" style="font-size:20px;color:#ff0000;"><i class="fab fa-youtube"></i></a>
   </div>
 </div>
 
@@ -136,46 +137,6 @@ img{max-width:100%;border-radius:8px;}
 <textarea id="status" placeholder="Status..."></textarea>
 <button onclick="updateStatus()">Update Status</button>
 </div>
-</div>
-
-<!-- About Full -->
-<div id="about" class="page">
-<div class="card">
-<h3 style="text-align:center;font-size:18px;">About Live Connect</h3>
-<div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
-<img src="https://images.unsplash.com/photo-1558888407-6c8d02be5f30?auto=format&fit=crop&w=400&q=60" style="width:100%;max-width:300px;border-radius:12px;">
-<p style="font-size:14px;text-align:center;">Live Connect is a modern chat platform built for <strong>real-time communication</strong>, <strong>secure messaging</strong>, and <strong>easy connectivity</strong>. Connect with friends, join groups, share images, update your status, and enjoy a smooth mobile-friendly experience.</p>
-<p style="font-size:14px;text-align:center;font-weight:600;">Support: <a href="mailto:webhub262@gmail.com" style="color:#0d6efd;">webhub262@gmail.com</a></p>
-<div style="display:flex;gap:12px;margin-top:8px;">
-  <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank" style="font-size:20px;color:#3b5998;"><i class="fab fa-facebook-square"></i></a>
-  <a href="https://www.instagram.com/mr_nazim073?igsh=MXd4d2hmcWNvNjVsdQ==" target="_blank" style="font-size:20px;color:#e1306c;"><i class="fab fa-instagram"></i></a>
-  <a href="https://youtube.com/@crazykhantv?si=KxpJG79rAEBUQuZn" target="_blank" style="font-size:20px;color:#ff0000;"><i class="fab fa-youtube"></i></a>
-</div>
-</div>
-</div>
-</div>
-
-<!-- Contact -->
-<div id="contact" class="page">
-<div class="card">
-<h3>Contact Us</h3>
-<input type="text" id="cname" placeholder="Name">
-<input type="email" id="cemail" placeholder="Email">
-<textarea id="cmessage" placeholder="Message"></textarea>
-<button onclick="sendContact()">Send</button>
-</div>
-</div>
-
-</div>
-
-<!-- Bottom Navigation for Mobile -->
-<div class="bottom-nav">
-<i class="fa fa-home" onclick="showPage('home')"></i>
-<i class="fa fa-comment" onclick="showPage('chat')"></i>
-<i class="fa fa-users" onclick="showPage('groups')"></i>
-<i class="fa fa-user" onclick="showPage('profile')"></i>
-<i class="fa fa-info-circle" onclick="showPage('about')"></i>
-<i class="fa fa-envelope" onclick="showPage('contact')"></i>
 </div>
 
 <script type="module">
@@ -285,11 +246,6 @@ window.uploadAvatar=async()=>{
 };
 
 window.updateStatus=()=>{set(ref(db,"users/"+currentUser+"/status"),statusInput.value.trim()); alert("Status updated!");};
-
-window.sendContact=()=>{
-  alert("Thanks! Your message has been sent.");
-  document.getElementById("cname").value=""; document.getElementById("cemail").value=""; document.getElementById("cmessage").value="";
-};
 
 window.clearChat=()=>{if(!curChat) return; remove(ref(db,isGroup?"groupChats/"+curChat:"chats/"+[currentUser,curChat].sort().join("_")));}
 </script>
