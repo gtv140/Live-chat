@@ -17,7 +17,7 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var
 .app{max-width:420px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
 header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.6);}
 header h1{margin:0;font-size:18px;color:var(--primary);text-shadow:0 0 10px var(--accent);}
-header button{background:none;border:none;font-size:18px;color:var(--text);cursor:pointer;}
+header button{background:none;border:none;font-size:18px;color:var(--text);}
 .page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
 .hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff);color:#fff;padding:24px;border-radius:18px;text-align:center;text-shadow:0 0 8px #fff;}
@@ -51,12 +51,14 @@ nav button.active{color:var(--primary);}
 .contact-card p{margin:2px 0 0;font-size:14px;}
 .contact-card a{text-decoration:none;color:var(--primary);}
 .contact-card a:hover{text-decoration:underline;}
+.toggle-dark{position:absolute;top:14px;right:50px;font-size:18px;cursor:pointer;color:var(--text);}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
 <h1>Live Connect</h1>
+<i class="fa-solid fa-moon toggle-dark" onclick="toggleDark()"></i>
 <button onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
 </header>
 
@@ -74,28 +76,7 @@ nav button.active{color:var(--primary);}
 <div class="hero">
 <h2>Welcome <span id="dashUser"></span> 🚀</h2>
 <p>Real-Time Chat & Active Connections</p>
-<div style="margin-top:12px;display:flex;gap:12px;justify-content:center;">
-  <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank">
-    <i class="fab fa-facebook fa-2x" style="color:#3b5998;"></i>
-  </a>
-  <a href="https://www.instagram.com/mr_nazim073?igsh=MXd4d2hmcWNvNjVsdQ==" target="_blank">
-    <i class="fab fa-instagram fa-2x" style="color:#c13584;"></i>
-  </a>
-  <a href="https://youtube.com/@CrazyKhanTV" target="_blank">
-    <i class="fab fa-youtube fa-2x" style="color:#ff0000;"></i>
-  </a>
-  <a href="mailto:webhub262@gmail.com">
-    <i class="fa-solid fa-envelope fa-2x" style="color:#6b5bff;"></i>
-  </a>
-</div>
-</div>
-<div class="dashboard-stat">
-<h4>Online Users</h4>
-<span id="onlineCount">0</span>
-</div>
-<div class="dashboard-stat">
-<h4>Groups</h4>
-<span id="groupCount">0</span>
+<p>Total Users: <span id="onlineCount">0</span> | Total Groups: <span id="groupCount">0</span></p>
 </div>
 </div>
 
@@ -203,7 +184,7 @@ window.login=()=>{
   dashUser.textContent=currentUser;
   const userRef=ref(db,"users/"+uname);
   set(userRef,{name:uname,online:true});
-  onDisconnect(userRef).update({online:false});
+  onDisconnect(userRef).update({online:false}); // offline on disconnect
   document.getElementById("loginPage").classList.remove("active");
   document.getElementById("home").classList.add("active");
 };
@@ -297,6 +278,10 @@ window.addComment=(path,key,btn)=>{
   if(!input.value) return;
   push(ref(db,path+"/"+key+"/comments"),{from:currentUser,text:input.value});
   input.value='';
+};
+
+window.toggleDark=()=>{
+  document.body.classList.toggle('dark');
 };
 </script>
 </body>
