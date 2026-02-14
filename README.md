@@ -6,49 +6,49 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
-  --bg:#0a0a0a;
+  --bg:#0c0c1a;
   --card:#111;
   --text:#e5e5e5;
   --muted:#aaa;
   --primary:#6b5bff;
   --accent:#ff5c8d;
+  --glow:#9d7aff;
 }
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
-body.dark{--bg:#0a0a0a;--card:#111;--text:#e5e5e5;}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:linear-gradient(135deg,#0a0a0a,#0c0c1a,#111122);color:var(--text);}
 .app{max-width:420px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.6);}
-header h1{margin:0;font-size:18px;color:var(--primary);text-shadow:0 0 10px var(--accent);}
-header button{background:none;border:none;font-size:18px;color:var(--text);}
+header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 0 20px rgba(107,91,255,0.3);}
+header h1{margin:0;font-size:18px;color:var(--primary);text-shadow:0 0 8px var(--accent);}
+header button{background:none;border:none;font-size:18px;color:var(--text);cursor:pointer;}
 .page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
 .hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff);color:#fff;padding:24px;border-radius:18px;text-align:center;text-shadow:0 0 8px #fff;}
 .hero h2{margin:0 0 8px;}
 .hero p{margin:0;opacity:.9;}
-.chat-box{background:var(--card);border-radius:16px;padding:12px;height:35vh;overflow-y:auto;margin-bottom:10px;box-shadow:0 0 8px var(--primary);}
-.msg{background:#222;color:#fff;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 5px #6b5bff;}
+.chat-box{background:var(--card);border-radius:16px;padding:12px;height:35vh;overflow-y:auto;margin-bottom:10px;box-shadow:0 0 12px var(--primary);}
+.msg{background:#222;color:#fff;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 8px var(--glow);}
 .msg .actions{position:absolute;top:4px;right:6px;display:flex;gap:4px;font-size:12px;cursor:pointer;}
 .msg .comments{margin-top:6px;padding-left:12px;border-left:2px solid #444;}
 .input-row{display:flex;gap:8px;}
 .input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #444;background:#111;color:#fff;}
-.input-row button{padding:12px 16px;border:none;border-radius:12px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 8px #ff5c8d;}
+.input-row button{padding:12px 16px;border:none;border-radius:12px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 12px #ff5c8d;}
 .user{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;}
 .dot{width:10px;height:10px;background:#22c55e;border-radius:50%;}
-nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(0,0,0,.6);}
-nav button{background:none;border:none;font-size:20px;color:var(--muted);}
+nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(107,91,255,0.3);}
+nav button{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;}
 nav button.active{color:var(--primary);}
-.login-card{background:var(--card);padding:16px;border-radius:16px;box-shadow:0 0 12px var(--primary);}
+.login-card{background:var(--card);padding:16px;border-radius:16px;box-shadow:0 0 16px var(--primary);}
 .login-card input{width:100%;padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid #444;background:#111;color:#fff;}
-.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 8px #ff5c8d;}
-.group{background:var(--card);padding:8px;margin-bottom:6px;border-radius:12px;cursor:pointer;box-shadow:0 0 5px #6b5bff;}
+.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 12px #ff5c8d;}
+.group{background:var(--card);padding:8px;margin-bottom:6px;border-radius:12px;cursor:pointer;box-shadow:0 0 8px var(--primary);}
 .group:hover{background:#222;}
 .comment-input{margin-top:4px;display:flex;gap:4px;}
 .comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #444;font-size:12px;background:#111;color:#fff;}
 .comment-input button{padding:6px 8px;border:none;border-radius:8px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;font-size:12px;cursor:pointer;}
-.dashboard-stat{background:var(--card);padding:12px;margin-bottom:10px;border-radius:12px;box-shadow:0 0 10px var(--primary);display:flex;justify-content:space-between;align-items:center;}
+.dashboard-stat{background:var(--card);padding:12px;margin-bottom:10px;border-radius:12px;box-shadow:0 0 12px var(--glow);display:flex;justify-content:space-between;align-items:center;}
 .dashboard-stat h4{margin:0;color:var(--accent);}
-.contact-card{display:flex;align-items:center;gap:12px;background:var(--card);padding:12px 16px;border-radius:12px;margin-bottom:12px;box-shadow:0 0 10px var(--accent);transition:0.3s;}
+.contact-card{display:flex;align-items:center;gap:12px;background:var(--card);padding:12px 16px;border-radius:12px;margin-bottom:12px;box-shadow:0 0 12px var(--accent);transition:0.3s;}
 .contact-card:hover{transform:translateY(-3px);box-shadow:0 0 15px var(--primary);}
-.contact-card h4{margin:0;color:var(--accent);text-shadow:0 0 5px var(--primary);}
+.contact-card h4{margin:0;color:var(--accent);text-shadow:0 0 6px var(--primary);}
 .contact-card p{margin:2px 0 0;font-size:14px;}
 .contact-card a{text-decoration:none;color:var(--primary);}
 .contact-card a:hover{text-decoration:underline;}
@@ -70,7 +70,7 @@ nav button.active{color:var(--primary);}
 </div>
 </div>
 
-<!-- DASHBOARD / HOME PAGE -->
+<!-- DASHBOARD -->
 <div id="home" class="page">
 <div class="hero">
 <h2>Welcome <span id="dashUser"></span> 🚀</h2>
@@ -86,7 +86,7 @@ nav button.active{color:var(--primary);}
 </div>
 </div>
 
-<!-- CHAT PAGE -->
+<!-- CHAT -->
 <div id="chat" class="page">
 <div class="chat-box" id="chatBox"></div>
 <div class="input-row">
@@ -95,7 +95,7 @@ nav button.active{color:var(--primary);}
 </div>
 </div>
 
-<!-- USERS PAGE -->
+<!-- USERS -->
 <div id="users" class="page">
 <h3>Online Users</h3>
 <div id="userList"></div>
@@ -107,50 +107,45 @@ nav button.active{color:var(--primary);}
 </div>
 </div>
 
-<!-- ABOUT PAGE MODERN -->
+<!-- ABOUT -->
 <div id="about" class="page">
-<h3 style="color:var(--accent); text-shadow:0 0 8px var(--primary);">About Live Connect 🚀</h3>
-<p>Live Connect is a modern chat platform designed for seamless real-time communication. Features include:</p>
-<ul style="padding-left:20px;">
+<h3>About Live Connect 🚀</h3>
+<p>Live Connect is a modern chat platform with:</p>
+<ul>
 <li>Real-time private & group chats</li>
 <li>Live active users tracking</li>
 <li>Comments, likes, delete messages</li>
 <li>Dark/light mode & neon gradients</li>
 <li>Professional dashboard & support system</li>
-<li>Secure & reliable Firebase backend</li>
+<li>Secure and fast connections</li>
 </ul>
-
-<div class="social-icons" style="margin-top:12px;">
-<a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank"><i class="fab fa-facebook" style="color:#3b5998;font-size:24px;margin-right:12px;"></i></a>
-<a href="https://www.instagram.com/mr_nazim073" target="_blank"><i class="fab fa-instagram" style="color:#c13584;font-size:24px;margin-right:12px;"></i></a>
-<a href="https://youtube.com/@crazykhantv" target="_blank"><i class="fab fa-youtube" style="color:#ff0000;font-size:24px;margin-right:12px;"></i></a>
-<a href="mailto:webhub262@gmail.com" target="_blank"><i class="fa-solid fa-envelope" style="color:#00f0ff;font-size:24px;"></i></a>
+<div style="margin-top:12px;display:flex;gap:12px;">
+<a href="https://www.facebook.com/yourprofile" target="_blank"><i class="fab fa-facebook fa-2x" style="color:#3b5998;"></i></a>
+<a href="https://www.instagram.com/yourprofile" target="_blank"><i class="fab fa-instagram fa-2x" style="color:#c13584;"></i></a>
+<a href="https://youtube.com/yourchannel" target="_blank"><i class="fab fa-youtube fa-2x" style="color:#ff0000;"></i></a>
+<a href="mailto:webhub262@gmail.com"><i class="fa-solid fa-envelope fa-2x" style="color:#6b5bff;"></i></a>
 </div>
 </div>
 
-<!-- CONTACT PAGE MODERN -->
+<!-- CONTACT -->
 <div id="contact" class="page">
-<h3 style="color:var(--accent); text-shadow:0 0 8px var(--primary);">Contact & Support</h3>
-<p style="margin-bottom:16px;">Reach out via any of the following channels:</p>
-
+<h3 style="color:var(--accent);text-shadow:0 0 10px var(--primary)">Contact & Support</h3>
+<p style="margin-bottom:12px;">Reach us via:</p>
 <div class="contact-card">
 <i class="fa-solid fa-envelope" style="font-size:24px;"></i>
 <div><h4>Email</h4><p><a href="mailto:webhub262@gmail.com">webhub262@gmail.com</a></p></div>
 </div>
-
 <div class="contact-card">
 <i class="fab fa-facebook" style="color:#3b5998;font-size:24px;"></i>
-<div><h4>Facebook</h4><p><a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank">Visit Profile</a></p></div>
+<div><h4>Facebook</h4><p><a href="https://www.facebook.com/yourprofile" target="_blank">Visit Profile</a></p></div>
 </div>
-
 <div class="contact-card">
 <i class="fab fa-instagram" style="color:#c13584;font-size:24px;"></i>
-<div><h4>Instagram</h4><p><a href="https://www.instagram.com/mr_nazim073" target="_blank">Follow Us</a></p></div>
+<div><h4>Instagram</h4><p><a href="https://www.instagram.com/yourprofile" target="_blank">Follow Us</a></p></div>
 </div>
-
 <div class="contact-card">
 <i class="fab fa-youtube" style="color:#ff0000;font-size:24px;"></i>
-<div><h4>YouTube</h4><p><a href="https://youtube.com/@crazykhantv" target="_blank">Subscribe</a></p></div>
+<div><h4>YouTube</h4><p><a href="https://youtube.com/yourchannel" target="_blank">Subscribe</a></p></div>
 </div>
 </div>
 
@@ -198,7 +193,7 @@ window.login=()=>{
   dashUser.textContent=currentUser;
   const userRef=ref(db,"users/"+uname);
   set(userRef,{name:uname,online:true});
-  onDisconnect(userRef).update({online:false}); // offline on disconnect
+  onDisconnect(userRef).update({online:false});
   document.getElementById("loginPage").classList.remove("active");
   document.getElementById("home").classList.add("active");
 };
