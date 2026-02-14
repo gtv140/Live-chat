@@ -5,64 +5,65 @@
 <title>Live Connect 🚀</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* Root colors & neon theme */
 :root{
-  --bg:#0a0a0a; --card:#111; --text:#fff; --muted:#aaa; 
-  --primary-gradient:linear-gradient(45deg,#ff00ff,#00ffff,#ff007f);
+  --bg:#0a0a0a; --card:#111; --text:#fff; --muted:#aaa;
+  --primary-gradient:linear-gradient(45deg,#ff3cac,#00ffff,#ff007f);
   --button-gradient:linear-gradient(45deg,#ff3cac,#784ba0,#2b86c5);
 }
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
+body.dark{--bg:#050505;--card:#111;}
 .app{max-width:480px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:#111;box-shadow:0 0 10px #00ffff;}
-header h1{margin:0;font-size:20px;color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
+header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:#111;box-shadow:0 0 15px #ff3cac;}
+header h1{margin:0;font-size:22px;color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff,0 0 15px #ff007f;}
 header button{background:none;border:none;font-size:18px;color:var(--text);}
 .page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
-
-/* Hero / Dashboard */
-.hero{background:var(--primary-gradient);padding:24px;border-radius:18px;color:#fff;text-align:center;text-shadow:0 0 5px #fff,0 0 10px #ff3cac;}
-.hero h2{margin:0;font-size:22px;}
+.hero{background:var(--primary-gradient);padding:24px;border-radius:18px;color:#fff;text-align:center;text-shadow:0 0 5px #fff,0 0 10px #ff3cac,0 0 15px #00ffff;}
+.hero h2{margin:0;font-size:24px;}
 .hero p{margin:4px 0;opacity:.9;font-size:14px;}
 
-/* Cards for stats */
+/* Cards */
 .stats{display:flex;justify-content:space-around;margin-top:16px;gap:8px;flex-wrap:wrap;}
-.card{background:#111;border:1px solid #222;border-radius:12px;padding:12px;flex:1;min-width:100px;text-align:center;color:#fff;box-shadow:0 0 10px #ff3cac;}
-.card h3{margin:0 0 4px;font-size:16px;text-shadow:0 0 3px #00ffff;}
+.card{background:#111;border:1px solid #222;border-radius:12px;padding:12px;flex:1;min-width:100px;text-align:center;color:#fff;box-shadow:0 0 10px #ff3cac,0 0 20px #00ffff;}
+.card h3{margin:0 0 4px;font-size:16px;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
 .card p{margin:0;font-size:14px;opacity:.8;}
 
-/* Chat styles */
-.chat-box{background:var(--card);border-radius:16px;padding:12px;height:40vh;overflow-y:auto;margin-bottom:10px;}
-.msg{background:#222;color:#fff;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 5px #ff3cac;}
+/* Chat */
+.chat-box{background:var(--card);border-radius:16px;padding:12px;height:40vh;overflow-y:auto;margin-bottom:10px;box-shadow:0 0 10px #ff3cac;}
+.msg{background:#222;color:#fff;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
 .msg .actions{position:absolute;top:4px;right:6px;display:flex;gap:4px;font-size:12px;cursor:pointer;}
 .msg .comments{margin-top:6px;padding-left:12px;border-left:2px solid #444;}
 .input-row{display:flex;gap:8px;}
-.input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #333;background:#111;color:#fff;}
-.input-row button{padding:12px 16px;border:none;border-radius:12px;background:var(--button-gradient);color:#fff;cursor:pointer;box-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
+.input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #333;background:#111;color:#fff;box-shadow:0 0 5px #00ffff inset;}
+.input-row button{padding:12px 16px;border:none;border-radius:12px;background:var(--button-gradient);color:#fff;cursor:pointer;box-shadow:0 0 5px #ff3cac,0 0 10px #00ffff,0 0 15px #ff007f;transition:0.3s;}
+.input-row button:hover{box-shadow:0 0 10px #ff3cac,0 0 20px #00ffff,0 0 25px #ff007f;}
 
 /* Users / Groups */
 .user,.group{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;padding:6px;border-radius:10px;}
-.user:hover,.group:hover{background:linear-gradient(45deg,#ff3cac,#00ffff);color:#000;}
+.user:hover,.group:hover{background:var(--primary-gradient);color:#000;box-shadow:0 0 10px #ff3cac,0 0 15px #00ffff;}
 .dot{width:10px;height:10px;background:#22c55e;border-radius:50%;}
 
 /* Navigation */
-nav{display:flex;justify-content:space-around;background:#111;padding:10px 0;box-shadow:0 -2px 10px #00ffff;}
-nav button{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;}
-nav button.active{color:#ff3cac;}
+nav{display:flex;justify-content:space-around;background:#111;padding:10px 0;box-shadow:0 -2px 15px #00ffff;}
+nav button{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;transition:0.3s;}
+nav button.active{color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
 
-/* Login card */
+/* Login */
 .login-card{background:#111;padding:16px;border-radius:16px;box-shadow:0 0 10px #ff3cac;}
-.login-card input{width:100%;padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid #333;background:#111;color:#fff;}
-.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:var(--button-gradient);color:#fff;cursor:pointer;box-shadow:0 0 5px #ff3cac;}
+.login-card input{width:100%;padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid #333;background:#111;color:#fff;box-shadow:0 0 5px #00ffff inset;}
+.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:var(--button-gradient);color:#fff;cursor:pointer;box-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;transition:0.3s;}
+.login-card button:hover{box-shadow:0 0 10px #ff3cac,0 0 20px #00ffff,0 0 25px #ff007f;}
 
-/* Comment input */
+/* Comment */
 .comment-input{margin-top:4px;display:flex;gap:4px;}
-.comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;font-size:12px;}
-.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:var(--button-gradient);color:#fff;font-size:12px;cursor:pointer;box-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
+.comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;font-size:12px;box-shadow:0 0 5px #00ffff inset;}
+.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:var(--button-gradient);color:#fff;font-size:12px;cursor:pointer;box-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;transition:0.3s;}
+.comment-input button:hover{box-shadow:0 0 10px #ff3cac,0 0 20px #00ffff,0 0 25px #ff007f;}
 
 /* About / Contact */
-h3{text-shadow:0 0 5px #ff3cac;}
+h3{text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
 a{color:#00ffff;text-decoration:none;}
-a:hover{color:#ff3cac;}
+a:hover{color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
 </style>
 </head>
 <body>
@@ -72,7 +73,7 @@ a:hover{color:#ff3cac;}
 <button onclick="document.body.classList.toggle('dark')"><i class="fa-solid fa-moon"></i></button>
 </header>
 
-<!-- LOGIN PAGE -->
+<!-- LOGIN -->
 <div id="loginPage" class="page active">
 <div class="login-card">
 <h3>Enter Username</h3>
@@ -81,7 +82,7 @@ a:hover{color:#ff3cac;}
 </div>
 </div>
 
-<!-- DASHBOARD / HOME PAGE -->
+<!-- DASHBOARD -->
 <div id="home" class="page">
 <div class="hero">
 <h2>Welcome, <span id="currentUserDisplay">User</span> 🚀</h2>
@@ -95,7 +96,7 @@ a:hover{color:#ff3cac;}
 <p style="margin-top:16px;color:#aaa;">Connect instantly, chat privately or in groups, like & comment messages in real-time.</p>
 </div>
 
-<!-- CHAT PAGE -->
+<!-- CHAT -->
 <div id="chat" class="page">
 <div class="chat-box" id="chatBox"></div>
 <div class="input-row">
@@ -104,7 +105,7 @@ a:hover{color:#ff3cac;}
 </div>
 </div>
 
-<!-- USERS PAGE -->
+<!-- USERS -->
 <div id="users" class="page">
 <h3>Online Users</h3>
 <div id="userList"></div>
@@ -116,7 +117,7 @@ a:hover{color:#ff3cac;}
 </div>
 </div>
 
-<!-- ABOUT PAGE -->
+<!-- ABOUT -->
 <div id="about" class="page">
 <h3>About Live Connect 🚀</h3>
 <p><b>Live Connect</b> is a premium neon chat platform designed for fast, secure, and real-time communication.</p>
@@ -128,14 +129,14 @@ a:hover{color:#ff3cac;}
 </ul>
 </div>
 
-<!-- CONTACT PAGE -->
+<!-- CONTACT -->
 <div id="contact" class="page">
 <h3>Contact & Support</h3>
 <form id="contactForm">
-<input type="text" placeholder="Name" required style="width:100%;padding:8px;margin-bottom:6px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;">
-<input type="email" placeholder="Email" required style="width:100%;padding:8px;margin-bottom:6px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;">
-<textarea placeholder="Message" required style="width:100%;padding:8px;margin-bottom:6px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;"></textarea>
-<button type="submit" style="padding:10px 16px;border:none;border-radius:12px;background:linear-gradient(45deg,#ff3cac,#00ffff,#ff007f);color:#fff;cursor:pointer;box-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;">Send Message</button>
+<input type="text" placeholder="Name" required>
+<input type="email" placeholder="Email" required>
+<textarea placeholder="Message" required></textarea>
+<button type="submit">Send Message</button>
 </form>
 <p style="margin-top:8px;"><i class="fa-solid fa-envelope"></i> webhub262@gmail.com</p>
 <p>
@@ -145,7 +146,6 @@ a:hover{color:#ff3cac;}
 </p>
 </div>
 
-<!-- NAVIGATION -->
 <nav>
 <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
 <button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
@@ -193,7 +193,6 @@ window.login=()=>{
   set(ref(db,"users/"+uname),{name:uname,online:true});
   document.getElementById("loginPage").classList.remove("active");
   document.getElementById("home").classList.add("active");
-  updateStats();
 };
 
 window.openPage=(id,btn)=>{
@@ -203,7 +202,7 @@ window.openPage=(id,btn)=>{
   btn.classList.add('active');
 };
 
-// Online users (only currently logged-in)
+// Online users only currently logged-in
 onValue(ref(db,"users"),snap=>{
   userList.innerHTML="";
   let onlineCount=0;
@@ -244,7 +243,6 @@ window.createGroup=()=>{
   document.getElementById("groupInput").value='';
 };
 
-// Chat load
 function loadChat(){
   if(!curChat) return;
   const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
@@ -275,17 +273,12 @@ window.sendMsg=()=>{
 };
 
 window.deleteMsg=(path,key)=>{remove(ref(db,path+"/"+key));};
-
 window.addComment=(path,key,btn)=>{
   const input=btn.previousElementSibling;
   if(!input.value) return;
   push(ref(db,path+"/"+key+"/comments"),{from:currentUser,text:input.value});
   input.value='';
 };
-
-function updateStats(){
-  // This can include more detailed stats in future
-}
 </script>
 </body>
 </html>
