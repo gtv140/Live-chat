@@ -5,40 +5,41 @@
 <title>Live Connect 🚀</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{--bg:#f6f7fb;--card:#fff;--text:#111827;--muted:#6b7280;--primary:#2563eb;}
-body.dark{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--primary:#3b82f6;}
+:root{
+  --bg:#0b0c10; --card:#1f1f1f; --text:#e5e7eb; --muted:#aaa; --primary:#0ff; --shadow:0 0 15px rgba(0,255,255,0.2);
+}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
 .app{max-width:420px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.06);}
-header h1{margin:0;font-size:18px;}
-header button{background:none;border:none;font-size:18px;color:var(--text);}
+header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:var(--shadow);}
+header h1{margin:0;font-size:18px;color:var(--primary);text-shadow:0 0 8px var(--primary);}
+header button{background:none;border:none;font-size:18px;color:var(--primary);text-shadow:0 0 6px var(--primary);}
 .page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
-.hero{background:linear-gradient(135deg,var(--primary),#60a5fa);color:#fff;padding:24px;border-radius:18px;}
-.hero h2{margin:0 0 8px;}
+.hero{background:linear-gradient(135deg,#0ff,#00aaff);color:#fff;padding:24px;border-radius:18px;box-shadow:var(--shadow);}
+.hero h2{margin:0 0 8px;text-shadow:0 0 8px #0ff;}
 .hero p{margin:0;opacity:.9;}
-.chat-box{background:var(--card);border-radius:16px;padding:12px;height:40vh;overflow-y:auto;margin-bottom:10px;}
-.msg{background:#e5e7eb;color:#000;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;}
-body.dark .msg{background:#1f2937;color:#e5e7eb;}
+.chat-box{background:var(--card);border-radius:16px;padding:12px;height:40vh;overflow-y:auto;margin-bottom:10px;box-shadow:var(--shadow);}
+.msg{background:#111;padding:10px 14px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 6px #0ff55;}
 .msg .actions{position:absolute;top:4px;right:6px;display:flex;gap:4px;font-size:12px;cursor:pointer;}
-.msg .comments{margin-top:6px;padding-left:12px;border-left:2px solid #ccc;}
+.msg .comments{margin-top:6px;padding-left:12px;border-left:2px solid #0ff;}
 .input-row{display:flex;gap:8px;}
-.input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #ccc;}
-.input-row button{padding:12px 16px;border:none;border-radius:12px;background:var(--primary);color:#fff;}
-.user{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;}
-.dot{width:10px;height:10px;background:#22c55e;border-radius:50%;}
-nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(0,0,0,.06);}
+.input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #0ff;background:#111;color:#fff;outline:none;box-shadow:0 0 8px #0ff inset;}
+.input-row button{padding:12px 16px;border:none;border-radius:12px;background:var(--primary);color:#000;font-weight:bold;box-shadow:var(--shadow);transition:0.3s;}
+.input-row button:hover{box-shadow:0 0 15px var(--primary);transform:scale(1.05);}
+.user,.group{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;padding:6px 10px;border-radius:12px;transition:0.3s;box-shadow:0 0 5px #0ff1;}
+.user:hover,.group:hover{background:rgba(0,255,255,0.1);box-shadow:0 0 12px #0ff;}
+.dot{width:10px;height:10px;background:#0f0;border-radius:50%;box-shadow:0 0 6px #0f0;}
+nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:var(--shadow);}
 nav button{background:none;border:none;font-size:20px;color:var(--muted);}
-nav button.active{color:var(--primary);}
-.login-card{background:var(--card);padding:16px;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
-.login-card input{width:100%;padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid #ccc;}
-.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:var(--primary);color:#fff;}
-.group{background:var(--card);padding:8px;margin-bottom:6px;border-radius:12px;cursor:pointer;}
-.group:hover{background:#e0e7ff;}
+nav button.active{color:var(--primary);text-shadow:0 0 6px var(--primary);}
+.login-card{background:var(--card);padding:16px;border-radius:16px;box-shadow:var(--shadow);}
+.login-card input{width:100%;padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid #0ff;background:#111;color:#fff;outline:none;box-shadow:0 0 8px #0ff inset;}
+.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:var(--primary);color:#000;font-weight:bold;box-shadow:var(--shadow);transition:0.3s;}
+.login-card button:hover{box-shadow:0 0 15px var(--primary);transform:scale(1.05);}
 .comment-input{margin-top:4px;display:flex;gap:4px;}
-.comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #ccc;font-size:12px;}
-.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-size:12px);}
-.logout-btn{margin-top:10px;padding:10px;border:none;border-radius:12px;background:#ef4444;color:#fff;width:100%;}
+.comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #0ff;background:#111;color:#fff;outline:none;box-shadow:0 0 6px #0ff inset;}
+.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:var(--primary);color:#000;font-size:12px;box-shadow:var(--shadow);}
+.comment-input button:hover{box-shadow:0 0 12px var(--primary);transform:scale(1.05);}
 </style>
 </head>
 <body>
@@ -63,10 +64,7 @@ nav button.active{color:var(--primary);}
 <h2>Real-Time Chat</h2>
 <p>Fast • Secure • Mobile Friendly</p>
 </div>
-<p style="margin-top:16px;color:var(--muted)">
-Connect instantly, see who’s online, chat privately or in groups, like and comment messages in real-time.
-</p>
-<button class="logout-btn" onclick="logout()">Logout</button>
+<p style="margin-top:16px;color:var(--muted)">Connect instantly, see who’s online, chat privately or in groups, like and comment messages in real-time.</p>
 </div>
 
 <!-- CHAT PAGE -->
@@ -139,119 +137,107 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let currentUser = null;
-let curChat = "";
-let isGroup = false;
+let currentUser=null;
+let curChat="";
+let isGroup=false;
 
-const chatBox = document.getElementById("chatBox");
-const userList = document.getElementById("userList");
-const groupList = document.getElementById("groupList");
+const chatBox=document.getElementById("chatBox");
+const userList=document.getElementById("userList");
+const groupList=document.getElementById("groupList");
 
 // LOGIN
-window.login = () => {
-  const uname = document.getElementById("usernameInput").value.trim();
-  if (!uname) { alert("Enter username"); return; }
-  currentUser = uname;
-
-  const userRef = ref(db, "users/" + uname);
-  set(userRef, { name: uname, online: true });
-
-  // disconnect par offline mark
-  onDisconnect(userRef).update({ online: false });
-
+window.login=()=>{
+  const uname=document.getElementById("usernameInput").value.trim();
+  if(!uname){alert("Enter username");return;}
+  currentUser=uname;
+  const userRef = ref(db,"users/"+uname);
+  set(userRef,{name:uname,online:true});
+  // ensure offline on disconnect
+  onDisconnect(userRef).update({online:false});
   document.getElementById("loginPage").classList.remove("active");
   document.getElementById("home").classList.add("active");
 };
 
-// LOGOUT
-window.logout = () => {
-  if (!currentUser) return;
-  set(ref(db, "users/" + currentUser), { name: currentUser, online: false });
-  currentUser = null;
-  document.getElementById("home").classList.remove("active");
-  document.getElementById("loginPage").classList.add("active");
-};
-
-// PAGE SWITCH
-window.openPage = (id, btn) => {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+// PAGE NAV
+window.openPage=(id,btn)=>{
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 };
 
 // ONLINE USERS
-onValue(ref(db, "users"), snap => {
-  userList.innerHTML = "";
-  snap.forEach(u => {
-    if (u.val().online && u.key !== currentUser) {
-      const d = document.createElement("div");
-      d.className = "user";
-      d.innerHTML = `<div class="dot"></div>${u.val().name}`;
-      d.onclick = () => { curChat = u.key; isGroup = false; loadChat(); openPage('chat', document.querySelector('nav button:nth-child(2)')); };
+onValue(ref(db,"users"),snap=>{
+  userList.innerHTML="";
+  snap.forEach(u=>{
+    if(u.val().online && u.key!==currentUser){
+      const d=document.createElement("div");
+      d.className="user";
+      d.innerHTML=`<div class="dot"></div>${u.val().name}`;
+      d.onclick=()=>{curChat=u.key; isGroup=false; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));};
       userList.appendChild(d);
     }
   });
 });
 
 // GROUPS
-onValue(ref(db, "groups"), snap => {
-  groupList.innerHTML = "";
-  snap.forEach(g => {
-    const d = document.createElement("div");
-    d.className = "group";
-    d.textContent = g.key;
-    d.onclick = () => { curChat = g.key; isGroup = true; loadChat(); openPage('chat', document.querySelector('nav button:nth-child(2)')); };
+onValue(ref(db,"groups"),snap=>{
+  groupList.innerHTML="";
+  snap.forEach(g=>{
+    const d=document.createElement("div");
+    d.className="group";
+    d.textContent=g.key;
+    d.onclick=()=>{curChat=g.key; isGroup=true; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));};
     groupList.appendChild(d);
   });
 });
 
 // CREATE GROUP
-window.createGroup = () => {
-  const g = document.getElementById("groupInput").value.trim();
-  if (!g) { alert("Enter group name"); return; }
-  set(ref(db, "groups/" + g), { createdBy: currentUser });
-  document.getElementById("groupInput").value = '';
+window.createGroup=()=>{
+  const g=document.getElementById("groupInput").value.trim();
+  if(!g){alert("Enter group name");return;}
+  set(ref(db,"groups/"+g),{createdBy:currentUser});
+  document.getElementById("groupInput").value='';
 };
 
-// LOAD CHAT
-function loadChat() {
-  if (!curChat) return;
-  const path = (isGroup ? "groupChats/" : "chats/") + [currentUser, curChat].sort().join("_");
-  onValue(ref(db, path), snap => {
-    chatBox.innerHTML = "";
-    snap.forEach(m => {
-      const div = document.createElement("div");
-      div.className = "msg";
-      let actions = `<div class="actions"><span onclick="deleteMsg('${path}','${m.key}')">🗑️</span></div>`;
-      let commentsHTML = '<div class="comments">' + (m.val().comments ? Object.values(m.val().comments).map(c => `<div><b>${c.from}:</b> ${c.text}</div>`).join('') : '') + '</div>';
-      let commentInput = `<div class="comment-input"><input placeholder="Comment"/><button onclick="addComment('${path}','${m.key}',this)">💬</button></div>`;
-      div.innerHTML = `<b>${m.val().from}:</b> ${m.val().text} ${actions} ${commentsHTML} ${commentInput}`;
+// CHAT LOADING
+function loadChat(){
+  if(!curChat) return;
+  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
+  onValue(ref(db,path),snap=>{
+    chatBox.innerHTML="";
+    snap.forEach(m=>{
+      const div=document.createElement("div");
+      div.className="msg";
+      let actions=`<div class="actions"><span onclick="deleteMsg('${path}','${m.key}')">🗑️</span></div>`;
+      let commentsHTML='<div class="comments">'+(m.val().comments?Object.values(m.val().comments).map(c=>`<div><b>${c.from}:</b> ${c.text}</div>`).join(''):'')+'</div>';
+      let commentInput=`<div class="comment-input"><input placeholder="Comment"/><button onclick="addComment('${path}','${m.key}',this)">💬</button></div>`;
+      div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text} ${actions} ${commentsHTML} ${commentInput}`;
       chatBox.appendChild(div);
-      chatBox.scrollTop = chatBox.scrollHeight;
+      chatBox.scrollTop=chatBox.scrollHeight;
     });
   });
 }
 
 // SEND MESSAGE
-window.sendMsg = () => {
-  if (!curChat) return alert("Select a user/group first");
-  const input = document.getElementById('msgInput');
-  if (!input.value) return;
-  const path = (isGroup ? "groupChats/" : "chats/") + [currentUser, curChat].sort().join("_");
-  push(ref(db, path), { from: currentUser, text: input.value });
-  input.value = '';
+window.sendMsg=()=>{
+  if(!curChat) return alert("Select a user/group first");
+  const input=document.getElementById('msgInput');
+  if(!input.value) return;
+  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
+  push(ref(db,path),{from:currentUser,text:input.value});
+  input.value='';
 };
 
 // DELETE MESSAGE
-window.deleteMsg = (path, key) => { remove(ref(db, path + "/" + key)); };
+window.deleteMsg=(path,key)=>{remove(ref(db,path+"/"+key));};
 
 // ADD COMMENT
-window.addComment = (path, key, btn) => {
-  const input = btn.previousElementSibling;
-  if (!input.value) return;
-  push(ref(db, path + "/" + key + "/comments"), { from: currentUser, text: input.value });
-  input.value = '';
+window.addComment=(path,key,btn)=>{
+  const input=btn.previousElementSibling;
+  if(!input.value) return;
+  push(ref(db,path+"/"+key+"/comments"),{from:currentUser,text:input.value});
+  input.value='';
 };
 </script>
 </body>
