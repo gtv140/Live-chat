@@ -19,8 +19,8 @@ body.dark{--bg:#0a0a0a;}
 .app{max-width:480px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
 header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 20px rgba(255,255,255,.1);}
 header h1{margin:0;font-size:20px;color:var(--primary);text-shadow:0 0 8px var(--primary);}
-header button{background:none;border:none;font-size:20px;color:var(--text);cursor:pointer;transition:0.3s;}
-header button:hover{color:var(--secondary);}
+header .logout-btn{font-size:18px;color:var(--accent);cursor:pointer;transition:.3s;}
+header .logout-btn:hover{color:#ff77aa;}
 .page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
 .hero{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:24px;border-radius:20px;box-shadow:0 0 20px var(--primary);}
@@ -56,7 +56,7 @@ nav button:hover{color:var(--secondary);}
 <div class="app">
 <header>
 <h1>Live Connect</h1>
-<button onclick="document.body.classList.toggle('dark')"><i class="fa-solid fa-moon"></i></button>
+<i class="fa-solid fa-right-from-bracket logout-btn" onclick="logout()" title="Logout"></i>
 </header>
 
 <!-- LOGIN PAGE -->
@@ -170,6 +170,16 @@ window.login=()=>{
   document.getElementById("home").classList.add("active");
 };
 
+// Logout
+window.logout=()=>{
+  if(!currentUser) return;
+  const userRef=ref(db,"users/"+currentUser);
+  set(userRef,{name:currentUser,online:false});
+  currentUser=null;
+  document.getElementById("home").classList.remove("active");
+  document.getElementById("loginPage").classList.add("active");
+};
+
 // Page switch
 window.openPage=(id,btn)=>{
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -180,7 +190,8 @@ window.openPage=(id,btn)=>{
 
 // Online users
 onValue(ref(db,"users"),snap=>{
-  userList.innerHTML=""; groupList.innerHTML="";
+  userList.innerHTML="";
+  groupList.innerHTML="";
   snap.forEach(u=>{
     if(u.val().online && u.key!==currentUser){
       const d=document.createElement("div");
