@@ -1,9 +1,22 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Connect 🚀</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>Live Connect 🚀 - Real Time Chat & Groups</title>
+<meta name="description" content="Live Connect is a modern chat platform with real-time private & group chats, online user tracking, dark/light mode, and professional dashboard.">
+<meta name="keywords" content="Live Chat, Group Chat, Real Time Chat, Online Users, Chat App, WebHub Technologies">
+<link rel="canonical" href="https://gtv140.github.io/Live-chat/">
+<meta property="og:title" content="Live Connect 🚀 - Real Time Chat & Groups">
+<meta property="og:description" content="Connect instantly with real-time chat, groups, and active user tracking.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gtv140.github.io/Live-chat/">
+<meta property="og:image" content="https://gtv140.github.io/Live-chat/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Live Connect 🚀 - Real Time Chat & Groups">
+<meta name="twitter:description" content="Connect instantly with real-time chat, groups, and active user tracking.">
+<meta name="twitter:image" content="https://gtv140.github.io/Live-chat/assets/og-image.png">
+
 <style>
 :root{
   --bg:#0a0a0a;
@@ -280,20 +293,50 @@ function loadChat(){
 
 window.sendMsg=()=>{
   if(!curChat) return alert("Select a user/group first");
-  const input=document.getElementById('msgInput');
-  if(!input.value) return;
-  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
-  push(ref(db,path),{from:currentUser,text:input.value});
-  input.value='';
+  const input const msgInput = document.getElementById("msgInput");
+
+msgInput.addEventListener("keypress", function(e){
+  if(e.key==="Enter"){ sendMsg(); }
+});
+
+function sendMsg(){
+  const text = msgInput.value.trim();
+  if(!text) return;
+  const path = (isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
+  const newMsgRef = push(ref(db,path));
+  set(newMsgRef,{
+    from: currentUser,
+    text: text,
+    timestamp: Date.now()
+  });
+  msgInput.value="";
+}
+
+window.addComment=(path,msgId,btn)=>{
+  const input = btn.previousElementSibling;
+  const text = input.value.trim();
+  if(!text) return;
+  const commentRef = push(ref(db, path + "/" + msgId + "/comments"));
+  set(commentRef,{
+    from: currentUser,
+    text: text,
+    timestamp: Date.now()
+  });
+  input.value="";
 };
 
-window.deleteMsg=(path,key)=>{remove(ref(db,path+"/"+key));};
-window.addComment=(path,key,btn)=>{
-  const input=btn.previousElementSibling;
-  if(!input.value) return;
-  push(ref(db,path+"/"+key+"/comments"),{from:currentUser,text:input.value});
-  input.value='';
+window.deleteMsg=(path,msgId)=>{
+  if(confirm("Delete this message?")){
+    remove(ref(db,path+"/"+msgId));
+  }
 };
+
+// Scroll to bottom on new messages
+onValue(ref(db,"chats"),()=>{ if(chatBox) chatBox.scrollTop=chatBox.scrollHeight; });
+onValue(ref(db,"groupChats"),()=>{ if(chatBox) chatBox.scrollTop=chatBox.scrollHeight; });
 </script>
+
+<!-- Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
