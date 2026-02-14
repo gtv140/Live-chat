@@ -12,52 +12,42 @@
   --muted:#aaa;
   --primary:#6b5bff;
   --accent:#ff5c8d;
-  --success:#22c55e;
 }
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);transition:.3s;}
-body.light{--bg:#f1f1f1;--card:#fff;--text:#111;--muted:#555;}
-.app{max-width:480px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 3px 15px rgba(0,0,0,.7);}
-header h1{margin:0;font-size:22px;color:var(--primary);text-shadow:0 0 12px var(--accent);}
-header button{background:none;border:none;font-size:20px;color:var(--text);cursor:pointer;transition:.3s;}
-header button:hover{color:var(--accent);}
-.page{display:none;padding:16px;flex:1;transition:0.3s;}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
+.app{max-width:420px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
+header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.6);}
+header h1{margin:0;font-size:18px;color:var(--primary);text-shadow:0 0 10px var(--accent);}
+header button{background:none;border:none;font-size:18px;color:var(--text);cursor:pointer;}
+.page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
-.hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff);color:#fff;padding:28px;border-radius:20px;text-align:center;text-shadow:0 0 12px #fff;box-shadow:0 0 15px #6b5bff;transition:.3s;}
-.hero h2{margin:0 0 10px;font-size:22px;}
-.hero p{margin:0;font-size:14px;opacity:.9;}
-.dashboard-stat{background:var(--card);padding:16px;margin-bottom:12px;border-radius:16px;box-shadow:0 0 12px var(--primary);display:flex;justify-content:space-between;align-items:center;transition:.3s;}
-.dashboard-stat:hover{box-shadow:0 0 15px var(--accent);}
-.dashboard-stat h4{margin:0;color:var(--accent);}
-.dashboard-stat span{font-weight:bold;}
-.chat-box{background:var(--card);border-radius:18px;padding:14px;height:36vh;overflow-y:auto;margin-bottom:12px;box-shadow:0 0 12px var(--primary);}
-.msg{background:#222;color:#fff;padding:10px 14px;border-radius:16px;margin-bottom:10px;font-size:14px;position:relative;box-shadow:0 0 6px var(--primary);transition:.3s;}
-.msg:hover{box-shadow:0 0 12px var(--accent);}
-.msg .actions{position:absolute;top:6px;right:8px;display:flex;gap:6px;font-size:13px;cursor:pointer;}
-.msg .comments{margin-top:8px;padding-left:14px;border-left:2px solid #444;}
-.input-row{display:flex;gap:10px;}
-.input-row input{flex:1;padding:14px;border-radius:14px;border:1px solid #444;background:#111;color:#fff;outline:none;}
-.input-row input:focus{border-color:var(--primary);}
-.input-row button{padding:14px 18px;border:none;border-radius:14px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 10px #ff5c8d;transition:.3s;}
-.input-row button:hover{box-shadow:0 0 15px #6b5bff;}
-.user,.group{display:flex;align-items:center;gap:10px;margin-bottom:12px;cursor:pointer;padding:12px;background:var(--card);border-radius:14px;box-shadow:0 0 8px var(--primary);transition:.3s;}
-.user:hover,.group:hover{background:#222;transform:translateY(-2px);}
-.dot{width:12px;height:12px;background:var(--success);border-radius:50%;}
-nav{display:flex;justify-content:space-around;background:var(--card);padding:12px 0;box-shadow:0 -3px 12px rgba(0,0,0,.7);}
-nav button{background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;transition:.3s;}
+.hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff);color:#fff;padding:24px;border-radius:18px;text-align:center;text-shadow:0 0 8px #fff;}
+.hero h2{margin:0 0 8px;}
+.hero p{margin:0;opacity:.9;}
+.chat-box{background:var(--card);border-radius:16px;padding:12px;height:35vh;overflow-y:auto;margin-bottom:10px;box-shadow:0 0 8px var(--primary);}
+.msg{background:#222;color:#fff;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 5px #6b5bff;}
+.msg .actions{position:absolute;top:4px;right:6px;display:flex;gap:4px;font-size:12px;cursor:pointer;}
+.msg .comments{margin-top:6px;padding-left:12px;border-left:2px solid #444;}
+.input-row{display:flex;gap:8px;}
+.input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #444;background:#111;color:#fff;}
+.input-row button{padding:12px 16px;border:none;border-radius:12px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 8px #ff5c8d;}
+.user{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;}
+.dot{width:10px;height:10px;background:#22c55e;border-radius:50%;}
+nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(0,0,0,.6);}
+nav button{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;}
 nav button.active{color:var(--primary);}
-nav button:hover{color:var(--accent);}
-.login-card{background:var(--card);padding:20px;border-radius:18px;box-shadow:0 0 15px var(--primary);}
-.login-card input{width:100%;padding:14px;border-radius:14px;margin-bottom:12px;border:1px solid #444;background:#111;color:#fff;outline:none;}
-.login-card button{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 12px #ff5c8d;transition:.3s;}
-.login-card button:hover{box-shadow:0 0 15px #6b5bff;}
-.comment-input{margin-top:6px;display:flex;gap:6px;}
-.comment-input input{flex:1;padding:8px;border-radius:10px;border:1px solid #444;font-size:13px;background:#111;color:#fff;outline:none;}
-.comment-input button{padding:8px 10px;border:none;border-radius:10px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;font-size:13px;cursor:pointer;transition:.3s;}
-.comment-input button:hover{box-shadow:0 0 10px var(--primary);}
-.contact-card{display:flex;align-items:center;gap:14px;background:var(--card);padding:14px 18px;border-radius:14px;margin-bottom:14px;box-shadow:0 0 12px var(--accent);transition:0.3s;}
-.contact-card:hover{transform:translateY(-3px);box-shadow:0 0 18px var(--primary);}
-.contact-card h4{margin:0;color:var(--accent);text-shadow:0 0 6px var(--primary);}
+.login-card{background:var(--card);padding:16px;border-radius:16px;box-shadow:0 0 12px var(--primary);}
+.login-card input{width:100%;padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid #444;background:#111;color:#fff;}
+.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 8px #ff5c8d;}
+.group{background:var(--card);padding:8px;margin-bottom:6px;border-radius:12px;cursor:pointer;box-shadow:0 0 5px #6b5bff;}
+.group:hover{background:#222;}
+.comment-input{margin-top:4px;display:flex;gap:4px;}
+.comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #444;font-size:12px;background:#111;color:#fff;}
+.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;font-size:12px;cursor:pointer;}
+.dashboard-stat{background:var(--card);padding:12px;margin-bottom:10px;border-radius:12px;box-shadow:0 0 10px var(--primary);display:flex;justify-content:space-between;align-items:center;}
+.dashboard-stat h4{margin:0;color:var(--accent);}
+.contact-card{display:flex;align-items:center;gap:12px;background:var(--card);padding:12px 16px;border-radius:12px;margin-bottom:12px;box-shadow:0 0 10px var(--accent);transition:0.3s;}
+.contact-card:hover{transform:translateY(-3px);box-shadow:0 0 15px var(--primary);}
+.contact-card h4{margin:0;color:var(--accent);text-shadow:0 0 5px var(--primary);}
 .contact-card p{margin:2px 0 0;font-size:14px;}
 .contact-card a{text-decoration:none;color:var(--primary);}
 .contact-card a:hover{text-decoration:underline;}
@@ -67,7 +57,6 @@ nav button:hover{color:var(--accent);}
 <div class="app">
 <header>
 <h1>Live Connect</h1>
-<button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
 <button onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
 </header>
 
@@ -86,23 +75,31 @@ nav button:hover{color:var(--accent);}
 <h2>Welcome <span id="dashUser"></span> 🚀</h2>
 <p>Real-Time Chat & Active Connections</p>
 </div>
-<div class="dashboard-stat"><h4>Total Users</h4><span id="onlineCount">0</span></div>
-<div class="dashboard-stat"><h4>Total Groups</h4><span id="groupCount">0</span></div>
+<div class="dashboard-stat">
+<h4>Online Users</h4>
+<span id="onlineCount">0</span>
+</div>
+<div class="dashboard-stat">
+<h4>Groups</h4>
+<span id="groupCount">0</span>
+</div>
 </div>
 
 <!-- CHAT -->
 <div id="chat" class="page">
 <div class="chat-box" id="chatBox"></div>
 <div class="input-row">
-<input id="msgInput" placeholder="Type message…"/>
+<input id="msgInput" placeholder="Type message…" />
 <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
 </div>
 </div>
 
-<!-- USERS & GROUPS -->
+<!-- USERS -->
 <div id="users" class="page">
-<h3>Online Users</h3><div id="userList"></div>
-<h3 style="margin-top:16px;">Groups</h3><div id="groupList"></div>
+<h3>Online Users</h3>
+<div id="userList"></div>
+<h3 style="margin-top:16px;">Groups</h3>
+<div id="groupList"></div>
 <div class="input-row" style="margin-top:6px;">
 <input id="groupInput" placeholder="Create group"/>
 <button onclick="createGroup()">➕</button>
@@ -112,21 +109,21 @@ nav button:hover{color:var(--accent);}
 <!-- ABOUT -->
 <div id="about" class="page">
 <h3>About Live Connect 🚀</h3>
-<p>Live Connect is developed by <b>WebHub Technologies</b>, a leading provider of real-time communication apps.</p>
+<p>Live Connect is a modern chat platform with:</p>
 <ul>
-<li>Real-time private & group chats with comments and likes</li>
-<li>Live user tracking and professional dashboard</li>
-<li>Dark/Light mode and modern UI design</li>
-<li>Customizable groups, notifications, and admin controls</li>
-<li>Secure, fast, and fully responsive on mobile & desktop</li>
+<li>Real-time private & group chats</li>
+<li>Live active users tracking</li>
+<li>Comments, likes, delete messages</li>
+<li>Dark/light mode & neon gradients</li>
+<li>Professional dashboard & support system</li>
+<li>Secure and fast connections</li>
 </ul>
-<p>Our mission is to connect people instantly with a safe, modern, and professional platform.</p>
 </div>
 
 <!-- CONTACT -->
 <div id="contact" class="page">
-<h3 style="color:var(--accent);text-shadow:0 0 8px var(--primary)">Contact & Support</h3>
-<p style="margin-bottom:12px;">Reach out via:</p>
+<h3 style="color:var(--accent);text-shadow:0 0 10px var(--primary)">Contact & Support</h3>
+<p>Reach us via:</p>
 
 <div class="contact-card">
 <i class="fa-solid fa-envelope" style="font-size:24px;"></i>
@@ -146,11 +143,6 @@ nav button:hover{color:var(--accent);}
 <div class="contact-card">
 <i class="fab fa-youtube" style="color:#ff0000;font-size:24px;"></i>
 <div><h4>YouTube</h4><p><a href="https://youtube.com/@CrazyKhanTV" target="_blank">Subscribe</a></p></div>
-</div>
-
-<div class="contact-card">
-<i class="fa-solid fa-phone" style="color:var(--success);font-size:24px;"></i>
-<div><h4>Phone</h4><p><a href="tel:+923001234567">+92 300 1234567</a></p></div>
 </div>
 </div>
 
@@ -193,19 +185,19 @@ const groupCount=document.getElementById("groupCount");
 
 window.login=()=>{
   const uname=document.getElementById("usernameInput").value.trim();
-  if(!uname){alert("Enter username");return;}
+  if(!uname){alert(\"Enter username\");return;}
   currentUser=uname;
   dashUser.textContent=currentUser;
-  const userRef=ref(db,"users/"+uname);
+  const userRef=ref(db,\"users/\"+uname);
   set(userRef,{name:uname,online:true});
   onDisconnect(userRef).update({online:false});
-  document.getElementById("loginPage").classList.remove("active");
-  document.getElementById("home").classList.add("active");
+  document.getElementById(\"loginPage\").classList.remove(\"active\");
+  document.getElementById(\"home\").classList.add(\"active\");
 };
 
 window.logout=()=>{
   if(!currentUser) return;
-  const userRef=ref(db,"users/"+currentUser);
+  const userRef=ref(db,\"users/\"+currentUser);
   set(userRef,{name:currentUser,online:false});
   location.reload();
 };
@@ -217,18 +209,16 @@ window.openPage=(id,btn)=>{
   btn.classList.add('active');
 };
 
-window.toggleTheme=()=>{document.body.classList.toggle('light');};
-
-onValue(ref(db,"users"),snap=>{
+onValue(ref(db,\"users\"),snap=>{
   let online=0;
-  userList.innerHTML="";
+  userList.innerHTML=\"\"; 
   snap.forEach(u=>{
     if(u.val().online){
       online++;
       if(u.key!==currentUser){
-        const d=document.createElement("div");
-        d.className="user";
-        d.innerHTML=`<div class="dot"></div>${u.val().name}`;
+        const d=document.createElement(\"div\");
+        d.className=\"user\";
+        d.innerHTML=`<div class=\"dot\"></div>${u.val().name}`;
         d.onclick=()=>{
           curChat=u.key; isGroup=false; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));
         };
@@ -239,12 +229,12 @@ onValue(ref(db,"users"),snap=>{
   onlineCount.textContent=online;
 });
 
-onValue(ref(db,"groups"),snap=>{
-  groupList.innerHTML="";
+onValue(ref(db,\"groups\"),snap=>{
+  groupList.innerHTML=\"\";
   groupCount.textContent=snap.size;
   snap.forEach(g=>{
-    const d=document.createElement("div");
-    d.className="group";
+    const d=document.createElement(\"div\");
+    d.className=\"group\";
     d.textContent=g.key;
     d.onclick=()=>{
       curChat=g.key; isGroup=true; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));
@@ -254,23 +244,23 @@ onValue(ref(db,"groups"),snap=>{
 });
 
 window.createGroup=()=>{
-  const g=document.getElementById("groupInput").value.trim();
-  if(!g){alert("Enter group name");return;}
-  set(ref(db,"groups/"+g),{createdBy:currentUser});
-  document.getElementById("groupInput").value='';
+  const g=document.getElementById(\"groupInput\").value.trim();
+  if(!g){alert(\"Enter group name\");return;}
+  set(ref(db,\"groups/\"+g),{createdBy:currentUser});
+  document.getElementById(\"groupInput\").value='';
 };
 
 function loadChat(){
   if(!curChat) return;
-  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
+  const path=(isGroup?\"groupChats/\":\"chats/\")+ [currentUser,curChat].sort().join(\"_\");
   onValue(ref(db,path),snap=>{
-    chatBox.innerHTML="";
+    chatBox.innerHTML=\"\";
     snap.forEach(m=>{
-      const div=document.createElement("div");
-      div.className="msg";
-      let actions=`<div class="actions"><span onclick="deleteMsg('${path}','${m.key}')">🗑️</span></div>`;
-      let commentsHTML='<div class="comments">'+(m.val().comments?Object.values(m.val().comments).map(c=>`<div><b>${c.from}:</b> ${c.text}</div>`).join(''):'')+'</div>';
-      let commentInput=`<div class="comment-input"><input placeholder="Comment"/><button onclick="addComment('${path}','${m.key}',this)">💬</button></div>`;
+      const div=document.createElement(\"div\");
+      div.className=\"msg\";
+      let actions=`<div class=\"actions\"><span onclick=\"deleteMsg('${path}','${m.key}')\">🗑️</span></div>`;
+      let commentsHTML='<div class=\"comments\">'+(m.val().comments?Object.values(m.val().comments).map(c=>`<div><b>${c.from}:</b> ${c.text}</div>`).join(''):'')+'</div>';
+      let commentInput=`<div class=\"comment-input\"><input placeholder=\"Comment\"/><button onclick=\"addComment('${path}','${m.key}',this)\">💬</button></div>`;
       div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text} ${actions} ${commentsHTML} ${commentInput}`;
       chatBox.appendChild(div);
       chatBox.scrollTop=chatBox.scrollHeight;
@@ -279,19 +269,20 @@ function loadChat(){
 }
 
 window.sendMsg=()=>{
-  if(!curChat) return alert("Select a user/group first");
+  if(!curChat) return alert(\"Select a user/group first\");
   const input=document.getElementById('msgInput');
   if(!input.value) return;
-  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
+  const path=(isGroup?\"groupChats/\":\"chats/\")+ [currentUser,curChat].sort().join(\"_\");
   push(ref(db,path),{from:currentUser,text:input.value});
   input.value='';
 };
 
-window.deleteMsg=(path,key)=>{remove(ref(db,path+"/"+key));};
+window.deleteMsg=(path,key)=>{remove(ref(db,path+\"/\"+key));};
+
 window.addComment=(path,key,btn)=>{
   const input=btn.previousElementSibling;
   if(!input.value) return;
-  push(ref(db,path+"/"+key+"/comments"),{from:currentUser,text:input.value});
+  push(ref(db,path+\"/\"+key+\"/comments\"),{from:currentUser,text:input.value});
   input.value='';
 };
 </script>
