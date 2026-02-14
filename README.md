@@ -6,19 +6,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
-  --bg:#0b0c1e; --card:#111; --text:#eee; --muted:#aaa; --primary:#ff00ff;
+  --bg:#0a0a1f; --card:#111; --text:#eee; --muted:#aaa;
   --neon1:#ff6ec7; --neon2:#6ec1ff; --neon3:#b366ff;
+  --primary:#ff00ff;
 }
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
 .app{max-width:480px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
 header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 0 10px rgba(255,255,255,.1);}
-header h1{margin:0;font-size:20px;text-shadow:0 0 5px var(--neon1);}
+header h1{margin:0;font-size:22px;text-shadow:0 0 5px var(--neon1);}
 header button{background:none;border:none;font-size:18px;color:var(--text);}
 .page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
-.hero{background:linear-gradient(135deg,var(--neon1),var(--neon2));color:#fff;padding:24px;border-radius:18px;text-align:center;}
+.hero{background:linear-gradient(135deg,var(--neon1),var(--neon2));color:#fff;padding:24px;border-radius:18px;text-align:center;box-shadow:0 0 15px rgba(255,110,199,.4);}
 .hero h2{text-shadow:0 0 10px var(--neon3);}
 .hero p{opacity:.9;}
+.dashboard{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+.card{background:#111;padding:14px;border-radius:16px;text-align:center;box-shadow:0 0 10px rgba(255,255,255,.1);transition:0.3s;}
+.card:hover{box-shadow:0 0 20px var(--neon2);transform:translateY(-3px);}
+.card h3{margin:0;color:var(--neon1);}
+.card p{margin:4px 0;color:#eee;}
 .chat-box{background:var(--card);border-radius:16px;padding:12px;height:40vh;overflow-y:auto;margin-bottom:10px;box-shadow:0 0 10px rgba(255,255,255,.05);}
 .msg{background:#1a1a2e;color:#eee;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 5px rgba(255,255,255,.1);}
 .msg .actions{position:absolute;top:4px;right:6px;display:flex;gap:4px;font-size:12px;cursor:pointer;}
@@ -60,13 +66,18 @@ nav button.active{color:var(--neon1);}
 </div>
 </div>
 
-<!-- HOME -->
+<!-- HOME DASHBOARD -->
 <div id="home" class="page">
 <div class="hero">
-<h2>Real-Time Chat</h2>
-<p>Fast • Secure • Mobile Friendly • Modern</p>
+<h2>Welcome to Live Connect</h2>
+<p id="welcomeUser">Loading...</p>
 </div>
-<p style="margin-top:16px;color:var(--muted)">Connect instantly, see who’s online, chat privately or in groups, like and comment messages in real-time.</p>
+<div class="dashboard" id="dashboardCards">
+<div class="card"><h3>Online Users</h3><p id="onlineCount">0</p></div>
+<div class="card"><h3>Total Groups</h3><p id="groupCount">0</p></div>
+<div class="card"><h3>Recent Messages</h3><p id="recentMsgs">0</p></div>
+<div class="card"><h3>My Username</h3><p id="currentUserDisplay">---</p></div>
+</div>
 </div>
 
 <!-- CHAT -->
@@ -93,7 +104,7 @@ nav button.active{color:var(--neon1);}
 <!-- ABOUT -->
 <div id="about" class="page">
 <h3>About Live Connect 🚀</h3>
-<p>Live Connect is a cutting-edge chat platform designed for real-time communication. Our features include private & group chats, live online status, and interactive messaging.</p>
+<p>Live Connect is a futuristic chat platform designed for fast, secure, and interactive communication. Our company is dedicated to delivering the most immersive real-time messaging experience.</p>
 <p>Connect with us on social media:</p>
 <p>
 <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank"><i class="fab fa-facebook"></i> Facebook</a> | 
@@ -148,6 +159,11 @@ let isGroup=false;
 const chatBox=document.getElementById("chatBox");
 const userList=document.getElementById("userList");
 const groupList=document.getElementById("groupList");
+const welcomeUser=document.getElementById("welcomeUser");
+const onlineCount=document.getElementById("onlineCount");
+const groupCount=document.getElementById("groupCount");
+const recentMsgs=document.getElementById("recentMsgs");
+const currentUserDisplay=document.getElementById("currentUserDisplay");
 
 // LOGIN
 window.login=()=>{
@@ -155,6 +171,8 @@ window.login=()=>{
   if(!uname){alert("Enter username");return;}
   currentUser=uname;
   set(ref(db,"users/"+uname),{name:uname,online:true});
+  currentUserDisplay.textContent=uname;
+  welcomeUser.textContent=`Hello, ${uname}!`;
   document.getElementById("loginPage").classList.remove("active");
   document.getElementById("home").classList.add("active");
 };
@@ -169,9 +187,11 @@ window.openPage=(id,btn)=>{
 
 // ONLINE USERS
 onValue(ref(db,"users"),snap=>{
-  userList.innerHTML=""; groupList.innerHTML="";
+  userList.innerHTML=""; 
+  let count=0;
   snap.forEach(u=>{
     if(u.val().online && u.key!==currentUser){
+      count++;
       const d=document.createElement("div");
       d.className="user";
       d.innerHTML=`<div class="dot"></div>${u.val().name}`;
@@ -179,11 +199,13 @@ onValue(ref(db,"users"),snap=>{
       userList.appendChild(d);
     }
   });
+  onlineCount.textContent=count;
 });
 
 // GROUPS
 onValue(ref(db,"groups"),snap=>{
   groupList.innerHTML="";
+  groupCount.textContent = snap.size;
   snap.forEach(g=>{
     const d=document.createElement("div");
     d.className="group";
@@ -193,6 +215,7 @@ onValue(ref(db,"groups"),snap=>{
   });
 });
 
+// CREATE GROUP
 window.createGroup=()=>{
   const g=document.getElementById("groupInput").value.trim();
   if(!g){alert("Enter group name");return;}
@@ -206,6 +229,7 @@ function loadChat(){
   const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
   onValue(ref(db,path),snap=>{
     chatBox.innerHTML="";
+    recentMsgs.textContent = snap.size;
     snap.forEach(m=>{
       const div=document.createElement("div");
       div.className="msg";
