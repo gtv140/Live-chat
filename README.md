@@ -37,7 +37,8 @@ nav button.active{color:var(--primary);}
 .group:hover{background:#e0e7ff;}
 .comment-input{margin-top:4px;display:flex;gap:4px;}
 .comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #ccc;font-size:12px;}
-.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-size:12px;}
+.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-size:12px);}
+.logout-btn{margin-top:10px;padding:10px;border:none;border-radius:12px;background:#ef4444;color:#fff;width:100%;}
 </style>
 </head>
 <body>
@@ -62,7 +63,10 @@ nav button.active{color:var(--primary);}
 <h2>Real-Time Chat</h2>
 <p>Fast • Secure • Mobile Friendly</p>
 </div>
-<p style="margin-top:16px;color:var(--muted)">Connect instantly, see who’s online, chat privately or in groups, like and comment messages in real-time.</p>
+<p style="margin-top:16px;color:var(--muted)">
+Connect instantly, see who’s online, chat privately or in groups, like and comment messages in real-time.
+</p>
+<button class="logout-btn" onclick="logout()">Logout</button>
 </div>
 
 <!-- CHAT PAGE -->
@@ -143,7 +147,7 @@ const chatBox = document.getElementById("chatBox");
 const userList = document.getElementById("userList");
 const groupList = document.getElementById("groupList");
 
-// LOGIN FUNCTION
+// LOGIN
 window.login = () => {
   const uname = document.getElementById("usernameInput").value.trim();
   if (!uname) { alert("Enter username"); return; }
@@ -152,11 +156,20 @@ window.login = () => {
   const userRef = ref(db, "users/" + uname);
   set(userRef, { name: uname, online: true });
 
-  // onDisconnect set to false
-  onDisconnect(ref(db, "users/" + uname + "/online")).set(false);
+  // disconnect par offline mark
+  onDisconnect(userRef).update({ online: false });
 
   document.getElementById("loginPage").classList.remove("active");
   document.getElementById("home").classList.add("active");
+};
+
+// LOGOUT
+window.logout = () => {
+  if (!currentUser) return;
+  set(ref(db, "users/" + currentUser), { name: currentUser, online: false });
+  currentUser = null;
+  document.getElementById("home").classList.remove("active");
+  document.getElementById("loginPage").classList.add("active");
 };
 
 // PAGE SWITCH
@@ -170,7 +183,6 @@ window.openPage = (id, btn) => {
 // ONLINE USERS
 onValue(ref(db, "users"), snap => {
   userList.innerHTML = "";
-  groupList.innerHTML = "";
   snap.forEach(u => {
     if (u.val().online && u.key !== currentUser) {
       const d = document.createElement("div");
@@ -229,10 +241,10 @@ window.sendMsg = () => {
   const path = (isGroup ? "groupChats/" : "chats/") + [currentUser, curChat].sort().join("_");
   push(ref(db, path), { from: currentUser, text: input.value });
   input.value = '';
-}
+};
 
 // DELETE MESSAGE
-window.deleteMsg = (path, key) => { remove(ref(db, path + "/" + key)); }
+window.deleteMsg = (path, key) => { remove(ref(db, path + "/" + key)); };
 
 // ADD COMMENT
 window.addComment = (path, key, btn) => {
@@ -240,7 +252,7 @@ window.addComment = (path, key, btn) => {
   if (!input.value) return;
   push(ref(db, path + "/" + key + "/comments"), { from: currentUser, text: input.value });
   input.value = '';
-}
+};
 </script>
 </body>
 </html>
