@@ -8,56 +8,57 @@
 :root{
   --bg:#0a0a0a;
   --card:#111;
-  --text:#fff;
+  --text:#e5e5e5;
   --muted:#aaa;
-  --primary:#7f00ff; /* neon purple */
-  --accent:#00c3ff; /* neon blue */
-  --danger:#ff004c; /* neon red */
+  --primary:#6b5bff;
+  --accent:#ff5c8d;
 }
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
-.app{max-width:480px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.8);}
-header h1{margin:0;font-size:18px;color:var(--primary);text-shadow:0 0 5px var(--primary);}
+body.dark{--bg:#0a0a0a;--card:#111;--text:#e5e5e5;}
+.app{max-width:420px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
+header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.6);}
+header h1{margin:0;font-size:18px;color:var(--primary);text-shadow:0 0 10px var(--accent);}
 header button{background:none;border:none;font-size:18px;color:var(--text);}
 .page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
-.hero{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;padding:20px;border-radius:18px;text-align:center;box-shadow:0 0 15px var(--primary);}
-.hero h2{margin:0 0 8px;text-shadow:0 0 8px var(--accent);}
+.hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff);color:#fff;padding:24px;border-radius:18px;text-align:center;text-shadow:0 0 8px #fff;}
+.hero h2{margin:0 0 8px;}
 .hero p{margin:0;opacity:.9;}
-.stats{display:flex;justify-content:space-around;margin:16px 0;}
-.stat-card{background:var(--card);padding:12px 16px;border-radius:12px;box-shadow:0 0 10px var(--accent);text-align:center;}
-.stat-card h3{margin:0;font-size:16px;color:var(--accent);}
-.stat-card p{margin:4px 0 0;font-size:20px;color:var(--primary);}
-.chat-box{background:var(--card);border-radius:16px;padding:12px;height:35vh;overflow-y:auto;margin-bottom:10px;box-shadow:0 0 10px var(--accent);}
-.msg{background:#222;color:#fff;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 5px #000;}
+.chat-box{background:var(--card);border-radius:16px;padding:12px;height:35vh;overflow-y:auto;margin-bottom:10px;box-shadow:0 0 8px var(--primary);}
+.msg{background:#222;color:#fff;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 5px #6b5bff;}
 .msg .actions{position:absolute;top:4px;right:6px;display:flex;gap:4px;font-size:12px;cursor:pointer;}
-.msg .comments{margin-top:6px;padding-left:12px;border-left:2px solid #333;}
+.msg .comments{margin-top:6px;padding-left:12px;border-left:2px solid #444;}
 .input-row{display:flex;gap:8px;}
-.input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #333;background:#111;color:#fff;}
-.input-row button{padding:12px 16px;border:none;border-radius:12px;background:linear-gradient(45deg,var(--primary),var(--accent));color:#fff;cursor:pointer;}
+.input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #444;background:#111;color:#fff;}
+.input-row button{padding:12px 16px;border:none;border-radius:12px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 8px #ff5c8d;}
 .user{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;}
 .dot{width:10px;height:10px;background:#22c55e;border-radius:50%;}
 nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(0,0,0,.6);}
 nav button{background:none;border:none;font-size:20px;color:var(--muted);}
-nav button.active{color:var(--accent);}
-.login-card{background:var(--card);padding:16px;border-radius:16px;box-shadow:0 0 15px var(--accent);}
-.login-card input{width:100%;padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid #333;background:#111;color:#fff;}
-.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(45deg,var(--primary),var(--accent));color:#fff;cursor:pointer;}
-.group{background:var(--card);padding:8px;margin-bottom:6px;border-radius:12px;cursor:pointer;}
-.group:hover{background:#222;box-shadow:0 0 8px var(--accent);}
+nav button.active{color:var(--primary);}
+.login-card{background:var(--card);padding:16px;border-radius:16px;box-shadow:0 0 12px var(--primary);}
+.login-card input{width:100%;padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid #444;background:#111;color:#fff;}
+.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 8px #ff5c8d;}
+.group{background:var(--card);padding:8px;margin-bottom:6px;border-radius:12px;cursor:pointer;box-shadow:0 0 5px #6b5bff;}
+.group:hover{background:#222;}
 .comment-input{margin-top:4px;display:flex;gap:4px;}
-.comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;font-size:12px;}
-.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:linear-gradient(45deg,var(--primary),var(--accent));color:#fff;font-size:12px;cursor:pointer;}
-a{color:var(--accent);text-decoration:none;}
-a:hover{text-decoration:underline;}
-.logout-icon{cursor:pointer;color:var(--danger);}
+.comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #444;font-size:12px;background:#111;color:#fff;}
+.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;font-size:12px;cursor:pointer;}
+.dashboard-stat{background:var(--card);padding:12px;margin-bottom:10px;border-radius:12px;box-shadow:0 0 10px var(--primary);display:flex;justify-content:space-between;align-items:center;}
+.dashboard-stat h4{margin:0;color:var(--accent);}
+.contact-card{display:flex;align-items:center;gap:12px;background:var(--card);padding:12px 16px;border-radius:12px;margin-bottom:12px;box-shadow:0 0 10px var(--accent);transition:0.3s;}
+.contact-card:hover{transform:translateY(-3px);box-shadow:0 0 15px var(--primary);}
+.contact-card h4{margin:0;color:var(--accent);text-shadow:0 0 5px var(--primary);}
+.contact-card p{margin:2px 0 0;font-size:14px;}
+.contact-card a{text-decoration:none;color:var(--primary);}
+.contact-card a:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
 <h1>Live Connect</h1>
-<i class="fa-solid fa-right-from-bracket logout-icon" title="Logout" onclick="logoutUser()"></i>
+<button onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
 </header>
 
 <!-- LOGIN PAGE -->
@@ -69,23 +70,20 @@ a:hover{text-decoration:underline;}
 </div>
 </div>
 
-<!-- DASHBOARD / HOME -->
+<!-- DASHBOARD / HOME PAGE -->
 <div id="home" class="page">
 <div class="hero">
-<h2>Welcome to Live Connect 🚀</h2>
-<p>Fast, secure & modern chat platform</p>
+<h2>Welcome <span id="dashUser"></span> 🚀</h2>
+<p>Real-Time Chat & Active Connections</p>
 </div>
-<div class="stats">
-<div class="stat-card">
-<h3>Active Users</h3>
-<p id="activeUsers">0</p>
+<div class="dashboard-stat">
+<h4>Online Users</h4>
+<span id="onlineCount">0</span>
 </div>
-<div class="stat-card">
-<h3>Active Groups</h3>
-<p id="activeGroups">0</p>
+<div class="dashboard-stat">
+<h4>Groups</h4>
+<span id="groupCount">0</span>
 </div>
-</div>
-<p style="color:var(--muted)">Connect instantly, chat privately or in groups, like & comment messages in real-time.</p>
 </div>
 
 <!-- CHAT PAGE -->
@@ -112,30 +110,40 @@ a:hover{text-decoration:underline;}
 <!-- ABOUT PAGE -->
 <div id="about" class="page">
 <h3>About Live Connect 🚀</h3>
-<p>Live Connect is a professional real-time chat platform designed for modern users. Features include:</p>
+<p>Live Connect is a modern chat platform that allows:</p>
 <ul>
-<li>Private and group chats</li>
-<li>Real-time online status</li>
-<li>Like & comment messages</li>
-<li>Dark/Neon modern design</li>
-<li>Professional & responsive layout</li>
+<li>Real-time private & group chats</li>
+<li>Live active users tracking</li>
+<li>Comments, likes, delete messages</li>
+<li>Dark/light mode & neon gradients</li>
+<li>Professional dashboard & support system</li>
 </ul>
-<p>Follow us on social media:</p>
-<p>
-<a href="https://www.facebook.com/yourprofile" target="_blank"><i class="fab fa-facebook"></i> Facebook</a> | 
-<a href="https://www.instagram.com/yourprofile" target="_blank"><i class="fab fa-instagram"></i> Instagram</a> | 
-<a href="https://youtube.com/yourchannel" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
-</p>
 </div>
 
 <!-- CONTACT PAGE -->
 <div id="contact" class="page">
-<h3>Contact & Support</h3>
-<p>Need help? Reach out to us via:</p>
-<p><i class="fa-solid fa-envelope"></i> <a href="mailto:webhub262@gmail.com">webhub262@gmail.com</a></p>
-<p><i class="fab fa-facebook"></i> <a href="https://www.facebook.com/yourprofile" target="_blank">Facebook</a></p>
-<p><i class="fab fa-instagram"></i> <a href="https://www.instagram.com/yourprofile" target="_blank">Instagram</a></p>
-<p><i class="fab fa-youtube"></i> <a href="https://youtube.com/yourchannel" target="_blank">YouTube</a></p>
+<h3 style="color:var(--accent);text-shadow:0 0 8px var(--primary)">Contact & Support</h3>
+<p style="margin-bottom:12px;">Reach out via any of the following channels:</p>
+
+<div class="contact-card">
+<i class="fa-solid fa-envelope" style="font-size:24px;"></i>
+<div><h4>Email</h4><p><a href="mailto:webhub262@gmail.com">webhub262@gmail.com</a></p></div>
+</div>
+
+<div class="contact-card">
+<i class="fab fa-facebook" style="color:#3b5998;font-size:24px;"></i>
+<div><h4>Facebook</h4><p><a href="https://www.facebook.com/yourprofile" target="_blank">Visit Profile</a></p></div>
+</div>
+
+<div class="contact-card">
+<i class="fab fa-instagram" style="color:#c13584;font-size:24px;"></i>
+<div><h4>Instagram</h4><p><a href="https://www.instagram.com/yourprofile" target="_blank">Follow Us</a></p></div>
+</div>
+
+<div class="contact-card">
+<i class="fab fa-youtube" style="color:#ff0000;font-size:24px;"></i>
+<div><h4>YouTube</h4><p><a href="https://youtube.com/yourchannel" target="_blank">Subscribe</a></p></div>
+</div>
 </div>
 
 <nav>
@@ -149,7 +157,7 @@ a:hover{text-decoration:underline;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -171,18 +179,28 @@ let isGroup=false;
 const chatBox=document.getElementById("chatBox");
 const userList=document.getElementById("userList");
 const groupList=document.getElementById("groupList");
-const activeUsersEl=document.getElementById("activeUsers");
-const activeGroupsEl=document.getElementById("activeGroups");
+const dashUser=document.getElementById("dashUser");
+const onlineCount=document.getElementById("onlineCount");
+const groupCount=document.getElementById("groupCount");
 
 window.login=()=>{
   const uname=document.getElementById("usernameInput").value.trim();
   if(!uname){alert("Enter username");return;}
   currentUser=uname;
+  dashUser.textContent=currentUser;
   const userRef=ref(db,"users/"+uname);
   set(userRef,{name:uname,online:true});
-  onDisconnect(userRef).update({online:false});
+  onDisconnect(userRef).update({online:false}); // offline on disconnect
   document.getElementById("loginPage").classList.remove("active");
   document.getElementById("home").classList.add("active");
+};
+
+// logout
+window.logout=()=>{
+  if(!currentUser) return;
+  const userRef=ref(db,"users/"+currentUser);
+  set(userRef,{name:currentUser,online:false});
+  location.reload();
 };
 
 // Page switch
@@ -193,34 +211,38 @@ window.openPage=(id,btn)=>{
   btn.classList.add('active');
 };
 
-// Online users count
+// Online users
 onValue(ref(db,"users"),snap=>{
-  let activeCount=0;
-  userList.innerHTML="";
+  let online=0;
+  userList.innerHTML=""; 
   snap.forEach(u=>{
     if(u.val().online){
-      activeCount++;
+      online++;
       if(u.key!==currentUser){
         const d=document.createElement("div");
         d.className="user";
         d.innerHTML=`<div class="dot"></div>${u.val().name}`;
-        d.onclick=()=>{curChat=u.key; isGroup=false; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));};
+        d.onclick=()=>{
+          curChat=u.key; isGroup=false; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));
+        };
         userList.appendChild(d);
       }
     }
   });
-  activeUsersEl.textContent=activeCount;
+  onlineCount.textContent=online;
 });
 
-// Groups count
+// Groups
 onValue(ref(db,"groups"),snap=>{
   groupList.innerHTML="";
-  activeGroupsEl.textContent = snap.size;
+  groupCount.textContent=snap.size;
   snap.forEach(g=>{
     const d=document.createElement("div");
     d.className="group";
     d.textContent=g.key;
-    d.onclick=()=>{curChat=g.key; isGroup=true; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));};
+    d.onclick=()=>{
+      curChat=g.key; isGroup=true; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));
+    };
     groupList.appendChild(d);
   });
 });
@@ -261,21 +283,12 @@ window.sendMsg=()=>{
 };
 
 window.deleteMsg=(path,key)=>{remove(ref(db,path+"/"+key));};
+
 window.addComment=(path,key,btn)=>{
   const input=btn.previousElementSibling;
   if(!input.value) return;
   push(ref(db,path+"/"+key+"/comments"),{from:currentUser,text:input.value});
   input.value='';
-};
-
-// Logout
-window.logoutUser=()=>{
-  if(!currentUser) return;
-  const userRef=ref(db,"users/"+currentUser);
-  update(userRef,{online:false});
-  currentUser=null;
-  document.getElementById("home").classList.remove("active");
-  document.getElementById("loginPage").classList.add("active");
 };
 </script>
 </body>
