@@ -72,7 +72,7 @@ nav button.active, nav button:hover{color:var(--primary);text-shadow:0 0 8px var
 <button onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
 </header>
 
-<!-- LOGIN PAGE -->
+<!-- LOGIN -->
 <div id="loginPage" class="page active">
 <div class="login-card">
 <h3>Enter Username</h3>
@@ -131,9 +131,9 @@ nav button.active, nav button:hover{color:var(--primary);text-shadow:0 0 8px var
 <li>Secure and fast connections</li>
 </ul>
 <div style="margin-top:12px;display:flex;gap:12px;">
-<a href="https://www.facebook.com/yourprofile" target="_blank"><i class="fab fa-facebook fa-2x" style="color:#3b5998;"></i></a>
-<a href="https://www.instagram.com/yourprofile" target="_blank"><i class="fab fa-instagram fa-2x" style="color:#c13584;"></i></a>
-<a href="https://youtube.com/yourchannel" target="_blank"><i class="fab fa-youtube fa-2x" style="color:#ff0000;"></i></a>
+<a href="https://www.facebook.com/webhub262" target="_blank"><i class="fab fa-facebook fa-2x" style="color:#3b5998;"></i></a>
+<a href="https://www.instagram.com/webhub262" target="_blank"><i class="fab fa-instagram fa-2x" style="color:#c13584;"></i></a>
+<a href="https://youtube.com/@CrazyKhanTV" target="_blank"><i class="fab fa-youtube fa-2x" style="color:#ff0000;"></i></a>
 <a href="mailto:webhub262@gmail.com"><i class="fa-solid fa-envelope fa-2x" style="color:#6b5bff;"></i></a>
 </div>
 </div>
@@ -148,15 +148,15 @@ nav button.active, nav button:hover{color:var(--primary);text-shadow:0 0 8px var
 </div>
 <div class="contact-card">
 <i class="fab fa-facebook" style="color:#3b5998;font-size:24px;"></i>
-<div><h4>Facebook</h4><p><a href="https://www.facebook.com/yourprofile" target="_blank">Visit Profile</a></p></div>
+<div><h4>Facebook</h4><p><a href="https://www.facebook.com/webhub262" target="_blank">Visit Profile</a></p></div>
 </div>
 <div class="contact-card">
 <i class="fab fa-instagram" style="color:#c13584;font-size:24px;"></i>
-<div><h4>Instagram</h4><p><a href="https://www.instagram.com/yourprofile" target="_blank">Follow Us</a></p></div>
+<div><h4>Instagram</h4><p><a href="https://www.instagram.com/webhub262" target="_blank">Follow Us</a></p></div>
 </div>
 <div class="contact-card">
 <i class="fab fa-youtube" style="color:#ff0000;font-size:24px;"></i>
-<div><h4>YouTube</h4><p><a href="https://youtube.com/yourchannel" target="_blank">Subscribe</a></p></div>
+<div><h4>YouTube</h4><p><a href="https://youtube.com/@CrazyKhanTV" target="_blank">Subscribe</a></p></div>
 </div>
 </div>
 
@@ -295,9 +295,31 @@ window.deleteMsg=(path,key)=>{remove(ref(db,path+"/"+key));};
 window.addComment=(path,key,btn)=>{
   const input=btn.previousElementSibling;
   if(!input.value) return;
-  push(ref(db,path+"/"+key+"/comments"),{from:currentUser,text:input.value});
+  const commentRef=ref(db,path+"/"+key+"/comments");
+  push(commentRef,{from:currentUser,text:input.value});
   input.value='';
 };
+
+// Optional: Auto scroll chat on new message
+const chatBoxObserver = new MutationObserver(() => {
+  chatBox.scrollTop = chatBox.scrollHeight;
+});
+chatBoxObserver.observe(chatBox, {childList:true});
+
+// Sample: preload some groups (optional)
+const defaultGroups = ["General","Sports","Music"];
+defaultGroups.forEach(g=>{
+  const gRef=ref(db,"groups/"+g);
+  set(gRef,{createdBy:"System"});
+});
+
+// Optional: Live dashboard stats update
+onValue(ref(db,"groups"),snap=>{groupCount.textContent=snap.size;});
+onValue(ref(db,"users"),snap=>{
+  let online=0;
+  snap.forEach(u=>{ if(u.val().online) online++; });
+  onlineCount.textContent=online;
+});
 </script>
 </body>
 </html>
