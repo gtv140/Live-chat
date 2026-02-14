@@ -14,40 +14,46 @@
   --accent:#ff5c8d;
 }
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
-.app{max-width:420px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.6);}
-header h1{margin:0;font-size:18px;color:var(--primary);text-shadow:0 0 10px var(--accent);}
-header button{background:none;border:none;font-size:18px;color:var(--text);}
-.page{display:none;padding:16px;flex:1;}
+.app{max-width:450px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
+header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 3px 15px rgba(0,0,0,.7);}
+header h1{margin:0;font-size:20px;color:var(--primary);text-shadow:0 0 12px var(--accent);}
+header button{background:none;border:none;font-size:20px;color:var(--text);cursor:pointer;transition:.3s;}
+header button:hover{color:var(--accent);}
+.page{display:none;padding:16px;flex:1;transition:0.3s;}
 .page.active{display:block;}
-.hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff);color:#fff;padding:24px;border-radius:18px;text-align:center;text-shadow:0 0 12px #fff;}
-.hero h2{margin:0 0 8px;}
-.hero p{margin:0;opacity:.9;}
-.chat-box{background:var(--card);border-radius:16px;padding:12px;height:35vh;overflow-y:auto;margin-bottom:10px;box-shadow:0 0 10px var(--primary);}
-.msg{background:#222;color:#fff;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 6px var(--primary);}
-.msg .actions{position:absolute;top:4px;right:6px;display:flex;gap:4px;font-size:12px;cursor:pointer;}
-.msg .comments{margin-top:6px;padding-left:12px;border-left:2px solid #444;}
-.input-row{display:flex;gap:8px;}
-.input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #444;background:#111;color:#fff;}
-.input-row button{padding:12px 16px;border:none;border-radius:12px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 10px #ff5c8d;}
-.user{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;}
-.dot{width:10px;height:10px;background:#22c55e;border-radius:50%;}
-nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(0,0,0,.6);}
-nav button{background:none;border:none;font-size:20px;color:var(--muted);}
+.hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff);color:#fff;padding:28px;border-radius:20px;text-align:center;text-shadow:0 0 12px #fff;box-shadow:0 0 15px #6b5bff;}
+.hero h2{margin:0 0 10px;font-size:22px;}
+.hero p{margin:0;font-size:14px;opacity:.9;}
+.chat-box{background:var(--card);border-radius:18px;padding:14px;height:38vh;overflow-y:auto;margin-bottom:12px;box-shadow:0 0 12px var(--primary);}
+.msg{background:#222;color:#fff;padding:10px 14px;border-radius:16px;margin-bottom:10px;font-size:14px;position:relative;box-shadow:0 0 6px var(--primary);transition:.3s;}
+.msg:hover{box-shadow:0 0 12px var(--accent);}
+.msg .actions{position:absolute;top:6px;right:8px;display:flex;gap:6px;font-size:13px;cursor:pointer;}
+.msg .comments{margin-top:8px;padding-left:14px;border-left:2px solid #444;}
+.input-row{display:flex;gap:10px;}
+.input-row input{flex:1;padding:14px;border-radius:14px;border:1px solid #444;background:#111;color:#fff;outline:none;}
+.input-row input:focus{border-color:var(--primary);}
+.input-row button{padding:14px 18px;border:none;border-radius:14px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 10px #ff5c8d;transition:.3s;}
+.input-row button:hover{box-shadow:0 0 15px #6b5bff;}
+.user,.group{display:flex;align-items:center;gap:10px;margin-bottom:12px;cursor:pointer;padding:10px;background:var(--card);border-radius:14px;box-shadow:0 0 8px var(--primary);transition:.3s;}
+.user:hover,.group:hover{background:#222;transform:translateY(-2px);}
+.dot{width:12px;height:12px;background:#22c55e;border-radius:50%;}
+nav{display:flex;justify-content:space-around;background:var(--card);padding:12px 0;box-shadow:0 -3px 12px rgba(0,0,0,.7);}
+nav button{background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;transition:.3s;}
 nav button.active{color:var(--primary);}
-.login-card{background:var(--card);padding:16px;border-radius:16px;box-shadow:0 0 12px var(--primary);}
-.login-card input{width:100%;padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid #444;background:#111;color:#fff;}
-.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 10px #ff5c8d;}
-.group{background:var(--card);padding:8px;margin-bottom:6px;border-radius:12px;cursor:pointer;box-shadow:0 0 5px var(--primary);}
-.group:hover{background:#222;}
-.comment-input{margin-top:4px;display:flex;gap:4px;}
-.comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #444;font-size:12px;background:#111;color:#fff;}
-.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;font-size:12px;cursor:pointer;}
-.dashboard-stat{background:var(--card);padding:12px;margin-bottom:10px;border-radius:12px;box-shadow:0 0 10px var(--primary);display:flex;justify-content:space-between;align-items:center;}
+nav button:hover{color:var(--accent);}
+.login-card{background:var(--card);padding:18px;border-radius:18px;box-shadow:0 0 15px var(--primary);}
+.login-card input{width:100%;padding:14px;border-radius:14px;margin-bottom:12px;border:1px solid #444;background:#111;color:#fff;outline:none;}
+.login-card button{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 12px #ff5c8d;transition:.3s;}
+.login-card button:hover{box-shadow:0 0 15px #6b5bff;}
+.comment-input{margin-top:6px;display:flex;gap:6px;}
+.comment-input input{flex:1;padding:8px;border-radius:10px;border:1px solid #444;font-size:13px;background:#111;color:#fff;outline:none;}
+.comment-input button{padding:8px 10px;border:none;border-radius:10px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;font-size:13px;cursor:pointer;transition:.3s;}
+.comment-input button:hover{box-shadow:0 0 10px var(--primary);}
+.dashboard-stat{background:var(--card);padding:14px;margin-bottom:12px;border-radius:14px;box-shadow:0 0 12px var(--primary);display:flex;justify-content:space-between;align-items:center;}
 .dashboard-stat h4{margin:0;color:var(--accent);}
-.contact-card{display:flex;align-items:center;gap:12px;background:var(--card);padding:12px 16px;border-radius:12px;margin-bottom:12px;box-shadow:0 0 10px var(--accent);transition:0.3s;}
-.contact-card:hover{transform:translateY(-3px);box-shadow:0 0 15px var(--primary);}
-.contact-card h4{margin:0;color:var(--accent);text-shadow:0 0 5px var(--primary);}
+.contact-card{display:flex;align-items:center;gap:14px;background:var(--card);padding:14px 18px;border-radius:14px;margin-bottom:14px;box-shadow:0 0 12px var(--accent);transition:0.3s;}
+.contact-card:hover{transform:translateY(-3px);box-shadow:0 0 18px var(--primary);}
+.contact-card h4{margin:0;color:var(--accent);text-shadow:0 0 6px var(--primary);}
 .contact-card p{margin:2px 0 0;font-size:14px;}
 .contact-card a{text-decoration:none;color:var(--primary);}
 .contact-card a:hover{text-decoration:underline;}
@@ -60,7 +66,6 @@ nav button.active{color:var(--primary);}
 <button onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
 </header>
 
-<!-- LOGIN PAGE -->
 <div id="loginPage" class="page active">
 <div class="login-card">
 <h3>Enter Username</h3>
@@ -69,21 +74,15 @@ nav button.active{color:var(--primary);}
 </div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="home" class="page">
 <div class="hero">
 <h2>Welcome <span id="dashUser"></span> 🚀</h2>
 <p>Real-Time Chat & Active Connections</p>
 </div>
-<div class="dashboard-stat">
-<h4>Total Users</h4><span id="onlineCount">0</span>
-</div>
-<div class="dashboard-stat">
-<h4>Total Groups</h4><span id="groupCount">0</span>
-</div>
+<div class="dashboard-stat"><h4>Total Users</h4><span id="onlineCount">0</span></div>
+<div class="dashboard-stat"><h4>Total Groups</h4><span id="groupCount">0</span></div>
 </div>
 
-<!-- CHAT PAGE -->
 <div id="chat" class="page">
 <div class="chat-box" id="chatBox"></div>
 <div class="input-row">
@@ -92,19 +91,15 @@ nav button.active{color:var(--primary);}
 </div>
 </div>
 
-<!-- USERS PAGE -->
 <div id="users" class="page">
-<h3>Online Users</h3>
-<div id="userList"></div>
-<h3 style="margin-top:16px;">Groups</h3>
-<div id="groupList"></div>
+<h3>Online Users</h3><div id="userList"></div>
+<h3 style="margin-top:16px;">Groups</h3><div id="groupList"></div>
 <div class="input-row" style="margin-top:6px;">
 <input id="groupInput" placeholder="Create group"/>
 <button onclick="createGroup()">➕</button>
 </div>
 </div>
 
-<!-- ABOUT PAGE -->
 <div id="about" class="page">
 <h3>About Live Connect 🚀</h3>
 <p>Live Connect is a modern chat platform:</p>
@@ -117,7 +112,6 @@ nav button.active{color:var(--primary);}
 </ul>
 </div>
 
-<!-- CONTACT PAGE -->
 <div id="contact" class="page">
 <h3 style="color:var(--accent);text-shadow:0 0 8px var(--primary)">Contact & Support</h3>
 <div class="contact-card">
@@ -203,7 +197,7 @@ window.openPage=(id,btn)=>{
 
 onValue(ref(db,"users"),snap=>{
   let online=0;
-  userList.innerHTML=""; 
+  userList.innerHTML="";
   snap.forEach(u=>{
     if(u.val().online){
       online++;
