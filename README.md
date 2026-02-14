@@ -45,25 +45,37 @@ nav button.active{color:var(--primary);}
 <header>
 <h1>Live Connect</h1>
 <button onclick="document.body.classList.toggle('dark')"><i class="fa-solid fa-moon"></i></button>
-</header><div id="loginPage" class="page active">
+</header>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="page active">
 <div class="login-card">
 <h3>Enter Username</h3>
 <input type="text" id="usernameInput" placeholder="Username">
 <button onclick="login()">Continue</button>
 </div>
-</div><div id="home" class="page">
+</div>
+
+<!-- HOME PAGE -->
+<div id="home" class="page">
 <div class="hero">
 <h2>Real-Time Chat</h2>
 <p>Fast • Secure • Mobile Friendly</p>
 </div>
 <p style="margin-top:16px;color:var(--muted)">Connect instantly, see who’s online, chat privately or in groups, like and comment messages in real-time.</p>
-</div><div id="chat" class="page">
+</div>
+
+<!-- CHAT PAGE -->
+<div id="chat" class="page">
 <div class="chat-box" id="chatBox"></div>
 <div class="input-row">
 <input id="msgInput" placeholder="Type message…" />
 <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
 </div>
-</div><div id="users" class="page">
+</div>
+
+<!-- USERS PAGE -->
+<div id="users" class="page">
 <h3>Online Users</h3>
 <div id="userList"></div>
 <h3 style="margin-top:16px;">Groups</h3>
@@ -72,7 +84,10 @@ nav button.active{color:var(--primary);}
 <input id="groupInput" placeholder="Create group"/>
 <button onclick="createGroup()">➕</button>
 </div>
-</div><div id="about" class="page">
+</div>
+
+<!-- ABOUT PAGE -->
+<div id="about" class="page">
 <h3>About Live Connect 🚀</h3>
 <p>Live Connect is a modern chat platform for mobile and desktop. You can:</p>
 <ul>
@@ -81,7 +96,10 @@ nav button.active{color:var(--primary);}
 <li>Like & comment messages</li>
 <li>Use dark/light mode</li>
 </ul>
-</div><div id="contact" class="page">
+</div>
+
+<!-- CONTACT PAGE -->
+<div id="contact" class="page">
 <h3>Contact & Support</h3>
 <p><i class="fa-solid fa-envelope"></i> webhub262@gmail.com</p>
 <p>
@@ -89,16 +107,20 @@ nav button.active{color:var(--primary);}
 <a href="https://www.instagram.com/mr_nazim073" target="_blank"><i class="fab fa-instagram"></i> Instagram</a> | 
 <a href="https://youtube.com/@crazykhantv" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
 </p>
-</div><nav>
+</div>
+
+<nav>
 <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
 <button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
 <button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
 <button onclick="openPage('about',this)"><i class="fa-solid fa-circle-info"></i></button>
 <button onclick="openPage('contact',this)"><i class="fa-solid fa-envelope"></i></button>
 </nav>
-</div><script type="module">
+</div>
+
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -113,95 +135,112 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let currentUser=null;
-let curChat="";
-let isGroup=false;
+let currentUser = null;
+let curChat = "";
+let isGroup = false;
 
-const chatBox=document.getElementById("chatBox");
-const userList=document.getElementById("userList");
-const groupList=document.getElementById("groupList");
+const chatBox = document.getElementById("chatBox");
+const userList = document.getElementById("userList");
+const groupList = document.getElementById("groupList");
 
-window.login=()=>{
-  const uname=document.getElementById("usernameInput").value.trim();
-  if(!uname){alert("Enter username");return;}
-  currentUser=uname;
-  set(ref(db,"users/"+uname),{name:uname,online:true});
+// LOGIN FUNCTION
+window.login = () => {
+  const uname = document.getElementById("usernameInput").value.trim();
+  if (!uname) { alert("Enter username"); return; }
+  currentUser = uname;
+
+  const userRef = ref(db, "users/" + uname);
+  set(userRef, { name: uname, online: true });
+
+  // onDisconnect set to false
+  onDisconnect(ref(db, "users/" + uname + "/online")).set(false);
+
   document.getElementById("loginPage").classList.remove("active");
   document.getElementById("home").classList.add("active");
 };
 
-window.openPage=(id,btn)=>{
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+// PAGE SWITCH
+window.openPage = (id, btn) => {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 };
 
-onValue(ref(db,"users"),snap=>{
-  userList.innerHTML=""; groupList.innerHTML="";
-  snap.forEach(u=>{
-    if(u.val().online && u.key!==currentUser){
-      const d=document.createElement("div");
-      d.className="user";
-      d.innerHTML=`<div class="dot"></div>${u.val().name}`;
-      d.onclick=()=>{curChat=u.key; isGroup=false; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));};
+// ONLINE USERS
+onValue(ref(db, "users"), snap => {
+  userList.innerHTML = "";
+  groupList.innerHTML = "";
+  snap.forEach(u => {
+    if (u.val().online && u.key !== currentUser) {
+      const d = document.createElement("div");
+      d.className = "user";
+      d.innerHTML = `<div class="dot"></div>${u.val().name}`;
+      d.onclick = () => { curChat = u.key; isGroup = false; loadChat(); openPage('chat', document.querySelector('nav button:nth-child(2)')); };
       userList.appendChild(d);
     }
   });
 });
 
-onValue(ref(db,"groups"),snap=>{
-  groupList.innerHTML="";
-  snap.forEach(g=>{
-    const d=document.createElement("div");
-    d.className="group";
-    d.textContent=g.key;
-    d.onclick=()=>{curChat=g.key; isGroup=true; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));};
+// GROUPS
+onValue(ref(db, "groups"), snap => {
+  groupList.innerHTML = "";
+  snap.forEach(g => {
+    const d = document.createElement("div");
+    d.className = "group";
+    d.textContent = g.key;
+    d.onclick = () => { curChat = g.key; isGroup = true; loadChat(); openPage('chat', document.querySelector('nav button:nth-child(2)')); };
     groupList.appendChild(d);
   });
 });
 
-window.createGroup=()=>{
-  const g=document.getElementById("groupInput").value.trim();
-  if(!g){alert("Enter group name");return;}
-  set(ref(db,"groups/"+g),{createdBy:currentUser});
-  document.getElementById("groupInput").value='';
+// CREATE GROUP
+window.createGroup = () => {
+  const g = document.getElementById("groupInput").value.trim();
+  if (!g) { alert("Enter group name"); return; }
+  set(ref(db, "groups/" + g), { createdBy: currentUser });
+  document.getElementById("groupInput").value = '';
 };
 
-function loadChat(){
-  if(!curChat) return;
-  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
-  onValue(ref(db,path),snap=>{
-    chatBox.innerHTML="";
-    snap.forEach(m=>{
-      const div=document.createElement("div");
-      div.className="msg";
-      let actions=`<div class="actions"><span onclick="deleteMsg('${path}','${m.key}')">🗑️</span></div>`;
-      let commentsHTML='<div class="comments">'+(m.val().comments?Object.values(m.val().comments).map(c=>`<div><b>${c.from}:</b> ${c.text}</div>`).join(''):'')+'</div>';
-      let commentInput=`<div class="comment-input"><input placeholder="Comment"/><button onclick="addComment('${path}','${m.key}',this)">💬</button></div>`;
-      div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text} ${actions} ${commentsHTML} ${commentInput}`;
+// LOAD CHAT
+function loadChat() {
+  if (!curChat) return;
+  const path = (isGroup ? "groupChats/" : "chats/") + [currentUser, curChat].sort().join("_");
+  onValue(ref(db, path), snap => {
+    chatBox.innerHTML = "";
+    snap.forEach(m => {
+      const div = document.createElement("div");
+      div.className = "msg";
+      let actions = `<div class="actions"><span onclick="deleteMsg('${path}','${m.key}')">🗑️</span></div>`;
+      let commentsHTML = '<div class="comments">' + (m.val().comments ? Object.values(m.val().comments).map(c => `<div><b>${c.from}:</b> ${c.text}</div>`).join('') : '') + '</div>';
+      let commentInput = `<div class="comment-input"><input placeholder="Comment"/><button onclick="addComment('${path}','${m.key}',this)">💬</button></div>`;
+      div.innerHTML = `<b>${m.val().from}:</b> ${m.val().text} ${actions} ${commentsHTML} ${commentInput}`;
       chatBox.appendChild(div);
-      chatBox.scrollTop=chatBox.scrollHeight;
+      chatBox.scrollTop = chatBox.scrollHeight;
     });
   });
 }
 
-window.sendMsg=()=>{
-  if(!curChat) return alert("Select a user/group first");
-  const input=document.getElementById('msgInput');
-  if(!input.value) return;
-  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
-  push(ref(db,path),{from:currentUser,text:input.value});
-  input.value='';
-};
+// SEND MESSAGE
+window.sendMsg = () => {
+  if (!curChat) return alert("Select a user/group first");
+  const input = document.getElementById('msgInput');
+  if (!input.value) return;
+  const path = (isGroup ? "groupChats/" : "chats/") + [currentUser, curChat].sort().join("_");
+  push(ref(db, path), { from: currentUser, text: input.value });
+  input.value = '';
+}
 
-window.deleteMsg=(path,key)=>{remove(ref(db,path+"/"+key));};
+// DELETE MESSAGE
+window.deleteMsg = (path, key) => { remove(ref(db, path + "/" + key)); }
 
-window.addComment=(path,key,btn)=>{
-  const input=btn.previousElementSibling;
-  if(!input.value) return;
-  push(ref(db,path+"/"+key+"/comments"),{from:currentUser,text:input.value});
-  input.value='';
-};
-</script></body>
+// ADD COMMENT
+window.addComment = (path, key, btn) => {
+  const input = btn.previousElementSibling;
+  if (!input.value) return;
+  push(ref(db, path + "/" + key + "/comments"), { from: currentUser, text: input.value });
+  input.value = '';
+}
+</script>
+</body>
 </html>
