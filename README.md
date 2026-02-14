@@ -6,64 +6,46 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
-  --bg:#0a0a0a; --card:#111; --text:#fff; --muted:#aaa;
-  --primary-gradient:linear-gradient(45deg,#ff3cac,#00ffff,#ff007f);
-  --button-gradient:linear-gradient(45deg,#ff3cac,#784ba0,#2b86c5);
+  --bg:#0a0a0a;
+  --card:#111;
+  --text:#e0e0ff;
+  --muted:#a0a0b0;
+  --primary:#6f42c1;
+  --btn-gradient: linear-gradient(135deg, #ff6ec4, #42a5f5, #9b5de5);
 }
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);}
-body.dark{--bg:#050505;--card:#111;}
-.app{max-width:480px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:#111;box-shadow:0 0 15px #ff3cac;}
-header h1{margin:0;font-size:22px;color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff,0 0 15px #ff007f;}
+body.dark{--bg:#0a0a0a;--card:#111;--text:#e0e0ff;--muted:#a0a0b0;--primary:#9b5de5;}
+.app{max-width:420px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
+header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 2px 15px rgba(111,66,193,.4);}
+header h1{margin:0;font-size:18px;color:#fff;text-shadow:0 0 8px #9b5de5;}
 header button{background:none;border:none;font-size:18px;color:var(--text);}
 .page{display:none;padding:16px;flex:1;}
 .page.active{display:block;}
-.hero{background:var(--primary-gradient);padding:24px;border-radius:18px;color:#fff;text-align:center;text-shadow:0 0 5px #fff,0 0 10px #ff3cac,0 0 15px #00ffff;}
-.hero h2{margin:0;font-size:24px;}
-.hero p{margin:4px 0;opacity:.9;font-size:14px;}
-
-/* Cards */
-.stats{display:flex;justify-content:space-around;margin-top:16px;gap:8px;flex-wrap:wrap;}
-.card{background:#111;border:1px solid #222;border-radius:12px;padding:12px;flex:1;min-width:100px;text-align:center;color:#fff;box-shadow:0 0 10px #ff3cac,0 0 20px #00ffff;}
-.card h3{margin:0 0 4px;font-size:16px;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
-.card p{margin:0;font-size:14px;opacity:.8;}
-
-/* Chat */
-.chat-box{background:var(--card);border-radius:16px;padding:12px;height:40vh;overflow-y:auto;margin-bottom:10px;box-shadow:0 0 10px #ff3cac;}
-.msg{background:#222;color:#fff;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
+.hero{background:linear-gradient(135deg,#1a1a1a,#111);color:#fff;padding:24px;border-radius:18px;box-shadow:0 0 20px #6f42c1;}
+.hero h2{margin:0 0 8px;text-shadow:0 0 8px #ff6ec4;}
+.hero p{margin:0;opacity:.9;color:#ccc;}
+.chat-box{background:var(--card);border-radius:16px;padding:12px;height:40vh;overflow-y:auto;margin-bottom:10px;box-shadow:0 0 10px #6f42c1;}
+.msg{background:#1c1c1c;color:#e0e0ff;padding:8px 12px;border-radius:14px;margin-bottom:8px;font-size:14px;position:relative;box-shadow:0 0 6px #9b5de5;}
 .msg .actions{position:absolute;top:4px;right:6px;display:flex;gap:4px;font-size:12px;cursor:pointer;}
 .msg .comments{margin-top:6px;padding-left:12px;border-left:2px solid #444;}
 .input-row{display:flex;gap:8px;}
-.input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #333;background:#111;color:#fff;box-shadow:0 0 5px #00ffff inset;}
-.input-row button{padding:12px 16px;border:none;border-radius:12px;background:var(--button-gradient);color:#fff;cursor:pointer;box-shadow:0 0 5px #ff3cac,0 0 10px #00ffff,0 0 15px #ff007f;transition:0.3s;}
-.input-row button:hover{box-shadow:0 0 10px #ff3cac,0 0 20px #00ffff,0 0 25px #ff007f;}
-
-/* Users / Groups */
-.user,.group{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;padding:6px;border-radius:10px;}
-.user:hover,.group:hover{background:var(--primary-gradient);color:#000;box-shadow:0 0 10px #ff3cac,0 0 15px #00ffff;}
+.input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #444;background:#111;color:#e0e0ff;}
+.input-row button{padding:12px 16px;border:none;border-radius:12px;background:var(--btn-gradient);color:#fff;cursor:pointer;box-shadow:0 0 10px #ff6ec4;}
+.user{display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer;}
 .dot{width:10px;height:10px;background:#22c55e;border-radius:50%;}
-
-/* Navigation */
-nav{display:flex;justify-content:space-around;background:#111;padding:10px 0;box-shadow:0 -2px 15px #00ffff;}
-nav button{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;transition:0.3s;}
-nav button.active{color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
-
-/* Login */
-.login-card{background:#111;padding:16px;border-radius:16px;box-shadow:0 0 10px #ff3cac;}
-.login-card input{width:100%;padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid #333;background:#111;color:#fff;box-shadow:0 0 5px #00ffff inset;}
-.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:var(--button-gradient);color:#fff;cursor:pointer;box-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;transition:0.3s;}
-.login-card button:hover{box-shadow:0 0 10px #ff3cac,0 0 20px #00ffff,0 0 25px #ff007f;}
-
-/* Comment */
+nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;box-shadow:0 -2px 10px rgba(111,66,193,.4);}
+nav button{background:none;border:none;font-size:20px;color:var(--muted);}
+nav button.active{color:var(--primary);}
+.login-card{background:var(--card);padding:16px;border-radius:16px;box-shadow:0 0 15px #6f42c1;}
+.login-card input{width:100%;padding:12px;border-radius:12px;margin-bottom:8px;border:1px solid #444;background:#111;color:#e0e0ff;}
+.login-card button{width:100%;padding:12px;border:none;border-radius:12px;background:var(--btn-gradient);color:#fff;cursor:pointer;box-shadow:0 0 10px #ff6ec4;}
+.group{background:#111;padding:8px;margin-bottom:6px;border-radius:12px;cursor:pointer;box-shadow:0 0 5px #9b5de5;}
+.group:hover{background:#222;}
 .comment-input{margin-top:4px;display:flex;gap:4px;}
-.comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;font-size:12px;box-shadow:0 0 5px #00ffff inset;}
-.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:var(--button-gradient);color:#fff;font-size:12px;cursor:pointer;box-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;transition:0.3s;}
-.comment-input button:hover{box-shadow:0 0 10px #ff3cac,0 0 20px #00ffff,0 0 25px #ff007f;}
-
-/* About / Contact */
-h3{text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
-a{color:#00ffff;text-decoration:none;}
-a:hover{color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
+.comment-input input{flex:1;padding:6px;border-radius:8px;border:1px solid #444;background:#111;color:#e0e0ff;font-size:12px;}
+.comment-input button{padding:6px 8px;border:none;border-radius:8px;background:var(--btn-gradient);color:#fff;font-size:12px;cursor:pointer;}
+a{color:#42a5f5;text-decoration:none;}
+a:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -73,7 +55,7 @@ a:hover{color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
 <button onclick="document.body.classList.toggle('dark')"><i class="fa-solid fa-moon"></i></button>
 </header>
 
-<!-- LOGIN -->
+<!-- LOGIN PAGE -->
 <div id="loginPage" class="page active">
 <div class="login-card">
 <h3>Enter Username</h3>
@@ -82,21 +64,16 @@ a:hover{color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
 </div>
 </div>
 
-<!-- DASHBOARD -->
+<!-- HOME PAGE -->
 <div id="home" class="page">
 <div class="hero">
-<h2>Welcome, <span id="currentUserDisplay">User</span> 🚀</h2>
-<p>Fast • Secure • Neon Chat Platform</p>
+<h2>Real-Time Chat</h2>
+<p>Fast • Secure • Mobile Friendly</p>
 </div>
-<div class="stats">
-<div class="card"><h3 id="onlineCount">0</h3><p>Online Users</p></div>
-<div class="card"><h3 id="groupCount">0</h3><p>Groups</p></div>
-<div class="card"><h3 id="msgCount">0</h3><p>Messages Sent</p></div>
-</div>
-<p style="margin-top:16px;color:#aaa;">Connect instantly, chat privately or in groups, like & comment messages in real-time.</p>
+<p style="margin-top:16px;color:var(--muted)">Connect instantly, see who’s online, chat privately or in groups, like and comment messages in real-time.</p>
 </div>
 
-<!-- CHAT -->
+<!-- CHAT PAGE -->
 <div id="chat" class="page">
 <div class="chat-box" id="chatBox"></div>
 <div class="input-row">
@@ -105,7 +82,7 @@ a:hover{color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
 </div>
 </div>
 
-<!-- USERS -->
+<!-- USERS PAGE -->
 <div id="users" class="page">
 <h3>Online Users</h3>
 <div id="userList"></div>
@@ -117,28 +94,24 @@ a:hover{color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
 </div>
 </div>
 
-<!-- ABOUT -->
+<!-- ABOUT PAGE -->
 <div id="about" class="page">
 <h3>About Live Connect 🚀</h3>
-<p><b>Live Connect</b> is a premium neon chat platform designed for fast, secure, and real-time communication.</p>
+<p>Live Connect is a modern chat platform designed for professionals and communities. Our features include:</p>
 <ul>
-<li>Founded: 2026</li>
-<li>Mission: Connect people globally instantly</li>
-<li>Vision: Modern neon chat experience</li>
-<li>Features: Private chat, group chat, likes & comments, dark/neon mode</li>
+<li>Real-time chat with private & group messaging</li>
+<li>Online presence indicator</li>
+<li>Message likes & comments</li>
+<li>Dark/Light mode for visual comfort</li>
+<li>Secure & fast communication</li>
 </ul>
+<p>We aim to bring seamless communication with an attractive and intuitive interface.</p>
 </div>
 
-<!-- CONTACT -->
+<!-- CONTACT PAGE -->
 <div id="contact" class="page">
 <h3>Contact & Support</h3>
-<form id="contactForm">
-<input type="text" placeholder="Name" required>
-<input type="email" placeholder="Email" required>
-<textarea placeholder="Message" required></textarea>
-<button type="submit">Send Message</button>
-</form>
-<p style="margin-top:8px;"><i class="fa-solid fa-envelope"></i> webhub262@gmail.com</p>
+<p>Email: <a href="mailto:webhub262@gmail.com">webhub262@gmail.com</a></p>
 <p>
 <a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank"><i class="fab fa-facebook"></i> Facebook</a> | 
 <a href="https://www.instagram.com/mr_nazim073" target="_blank"><i class="fab fa-instagram"></i> Instagram</a> | 
@@ -157,7 +130,7 @@ a:hover{color:#ff3cac;text-shadow:0 0 5px #ff3cac,0 0 10px #00ffff;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -179,22 +152,17 @@ let isGroup=false;
 const chatBox=document.getElementById("chatBox");
 const userList=document.getElementById("userList");
 const groupList=document.getElementById("groupList");
-const onlineCountDisplay=document.getElementById("onlineCount");
-const groupCountDisplay=document.getElementById("groupCount");
-const msgCountDisplay=document.getElementById("msgCount");
-const currentUserDisplay=document.getElementById("currentUserDisplay");
-let msgCounter=0;
 
 window.login=()=>{
   const uname=document.getElementById("usernameInput").value.trim();
   if(!uname){alert("Enter username");return;}
   currentUser=uname;
-  currentUserDisplay.textContent=currentUser;
   set(ref(db,"users/"+uname),{name:uname,online:true});
   document.getElementById("loginPage").classList.remove("active");
   document.getElementById("home").classList.add("active");
 };
 
+// Page switch
 window.openPage=(id,btn)=>{
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -202,38 +170,30 @@ window.openPage=(id,btn)=>{
   btn.classList.add('active');
 };
 
-// Online users only currently logged-in
+// Online users (only current online)
 onValue(ref(db,"users"),snap=>{
-  userList.innerHTML="";
-  let onlineCount=0;
+  userList.innerHTML=""; groupList.innerHTML="";
   snap.forEach(u=>{
-    if(u.val().online){
-      onlineCount++;
-      if(u.key!==currentUser) {
-        const d=document.createElement("div");
-        d.className="user";
-        d.innerHTML=`<div class="dot"></div>${u.val().name}`;
-        d.onclick=()=>{curChat=u.key; isGroup=false; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));};
-        userList.appendChild(d);
-      }
+    if(u.val().online && u.key!==currentUser){
+      const d=document.createElement("div");
+      d.className="user";
+      d.innerHTML=`<div class="dot"></div>${u.val().name}`;
+      d.onclick=()=>{curChat=u.key; isGroup=false; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));};
+      userList.appendChild(d);
     }
   });
-  onlineCountDisplay.textContent=onlineCount;
 });
 
 // Groups
 onValue(ref(db,"groups"),snap=>{
   groupList.innerHTML="";
-  let gCount=0;
   snap.forEach(g=>{
-    gCount++;
     const d=document.createElement("div");
     d.className="group";
     d.textContent=g.key;
     d.onclick=()=>{curChat=g.key; isGroup=true; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));};
     groupList.appendChild(d);
   });
-  groupCountDisplay.textContent=gCount;
 });
 
 window.createGroup=()=>{
@@ -243,6 +203,7 @@ window.createGroup=()=>{
   document.getElementById("groupInput").value='';
 };
 
+// Chat load
 function loadChat(){
   if(!curChat) return;
   const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
@@ -267,12 +228,11 @@ window.sendMsg=()=>{
   if(!input.value) return;
   const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
   push(ref(db,path),{from:currentUser,text:input.value});
-  msgCounter++;
-  msgCountDisplay.textContent=msgCounter;
   input.value='';
 };
 
 window.deleteMsg=(path,key)=>{remove(ref(db,path+"/"+key));};
+
 window.addComment=(path,key,btn)=>{
   const input=btn.previousElementSibling;
   if(!input.value) return;
