@@ -2,129 +2,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect | Meta Infinity</title>
+    <title>Live Connect | Meta OS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #0084FF; --bg: #000; --card: #121212; --text: #fff; --border: #262626; --insta: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        :root { --p: #0084FF; --bg: #000; --card: #121212; --text: #fff; --border: #262626; --notify: #FF3B30; }
         .light-mode { --bg: #fff; --card: #fff; --text: #000; --border: #dbdbdb; }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
 
-        /* HEADER */
+        /* HEADER & NOTIFICATION DOT */
         header { padding: 12px 15px; background: var(--bg); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        header h1 { font-size: 24px; font-weight: 800; color: var(--text); font-style: italic; letter-spacing: -1px; }
+        header h1 { font-size: 22px; font-weight: 800; color: var(--text); font-style: italic; letter-spacing: -1px; }
+        .notify-dot { position: absolute; top: -5px; right: -5px; width: 10px; height: 10px; background: var(--notify); border-radius: 50%; display: none; }
 
         /* VIEWPORT */
         .viewport { height: calc(100vh - 65px); overflow-y: auto; scrollbar-width: none; }
-        .viewport::-webkit-scrollbar { display: none; }
         .view { display: none; padding-bottom: 100px; }
-        .view.active { display: block; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; animation: slideIn 0.3s ease; }
 
-        /* STORIES */
-        .story-tray { display: flex; gap: 12px; padding: 15px; overflow-x: auto; border-bottom: 1px solid var(--border); }
-        .story-circle { min-width: 65px; height: 65px; border-radius: 50%; padding: 3px; background: var(--insta); }
-        .inner-circle { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--bg); background: #333; display: flex; align-items: center; justify-content: center; font-size: 10px; }
-
-        /* POSTS */
+        /* POSTS & FOLLOW */
         .post { background: var(--card); border-bottom: 5px solid var(--border); }
         .post-header { padding: 12px; display: flex; align-items: center; justify-content: space-between; }
-        .post-user { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; }
-        .post-img { width: 100%; background: #222; min-height: 250px; object-fit: cover; }
-        .post-actions { padding: 12px; display: flex; gap: 18px; font-size: 22px; }
-        
-        /* COMMENTS */
-        .comment-sec { padding: 0 12px 12px; font-size: 13px; }
-        .comment-item { margin-top: 5px; }
+        .follow-btn { color: var(--p); font-size: 13px; font-weight: 700; cursor: pointer; }
+        .follow-btn.following { color: #888; }
 
-        /* REELS */
-        .reels-scroll { height: 100vh; overflow-y: scroll; snap-type: y mandatory; margin-top: -60px; }
-        .reel { height: 100vh; snap-align: start; background: #000; position: relative; }
-        .reel-ui { position: absolute; bottom: 100px; right: 15px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        /* NOTIFICATIONS VIEW */
+        .notif-item { padding: 15px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .notif-item .dot { width: 8px; height: 8px; background: var(--p); border-radius: 50%; }
+
+        /* PROFILE STATS */
+        .stat-box { text-align: center; flex: 1; }
+        .stat-num { font-size: 18px; font-weight: 800; }
+        .stat-label { font-size: 12px; opacity: 0.6; }
 
         /* NAV */
         nav { position: fixed; bottom: 0; width: 100%; max-width: 500px; height: 65px; background: var(--bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 2000; }
-        .nav-btn { font-size: 24px; color: var(--text); opacity: 0.5; }
+        .nav-btn { font-size: 22px; color: var(--text); opacity: 0.5; position: relative; cursor: pointer; }
         .nav-btn.active { opacity: 1; color: var(--p); }
 
-        /* MODALS */
-        #auth { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 30px; }
-        .btn-p { width: 100%; padding: 15px; background: var(--p); color: #fff; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div id="auth">
+<div id="auth" style="position:fixed; inset:0; background:#000; z-index:9999; display:flex; align-items:center; justify-content:center; padding:30px;">
     <div style="text-align:center; width: 100%; max-width: 320px;">
-        <h1 style="font-size: 38px; margin-bottom: 10px; color: var(--p);">Meta</h1>
-        <p style="color: #666; margin-bottom: 30px;">Connect with the world</p>
-        <input type="text" id="uInp" placeholder="Username" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; border-radius:12px; margin-bottom:15px; outline:none;">
-        <button class="btn-p" onclick="login()">Log In</button>
+        <h1 style="font-size: 38px; color: var(--p); margin-bottom: 10px;">Meta Infinity</h1>
+        <input type="text" id="uInp" placeholder="Choose a Username" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; border-radius:12px; margin-bottom:15px; outline:none;">
+        <button onclick="login()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:12px; color:#fff; font-weight:800;">Join Network</button>
     </div>
 </div>
 
-<div class="app-shell" style="max-width:500px; margin:0 auto;">
-    <header id="mainHead">
+<div class="app-shell" style="max-width:500px; margin:0 auto; position:relative;">
+    <header>
         <h1>LiveConnect</h1>
-        <div style="display:flex; gap:20px; font-size:22px;">
-            <i class="fa-regular fa-square-plus" onclick="createNew()"></i>
+        <div style="display:flex; gap:20px;">
+            <i class="fa-regular fa-heart" onclick="tab('notifs')"><div id="nDot" class="notify-dot"></div></i>
             <i class="fa-brands fa-facebook-messenger" onclick="tab('chat')"></i>
         </div>
     </header>
 
-    <div class="viewport" id="vPort">
+    <div class="viewport">
         <div id="v-home" class="view active">
-            <div class="story-tray">
-                <div class="story-circle"><div class="inner-circle">You</div></div>
-                <div class="story-circle"><div class="inner-circle">Admin</div></div>
-                <div class="story-circle"><div class="inner-circle">Live</div></div>
-            </div>
             <div id="feedArea"></div>
         </div>
 
-        <div id="v-reels" class="view">
-            <div class="reels-scroll">
-                <div class="reel" style="display:flex; align-items:center; justify-content:center;">
-                    <p style="color:#555">Video Reel 1 (Swipe Up)</p>
-                    <div class="reel-ui"><i class="fa-solid fa-heart"></i><i class="fa-solid fa-comment"></i><i class="fa-solid fa-share"></i></div>
-                </div>
-                <div class="reel" style="background:#111; display:flex; align-items:center; justify-content:center;">
-                    <p style="color:#555">Video Reel 2</p>
-                    <div class="reel-ui"><i class="fa-solid fa-heart"></i><i class="fa-solid fa-comment"></i><i class="fa-solid fa-share"></i></div>
-                </div>
-            </div>
+        <div id="v-notifs" class="view">
+            <h3 style="padding:15px;">Notifications</h3>
+            <div id="notifList"></div>
         </div>
 
         <div id="v-chat" class="view">
             <div id="chatArea" style="padding:15px; display:flex; flex-direction:column; gap:10px;"></div>
             <div style="position:fixed; bottom:70px; width:100%; max-width:500px; padding:10px; display:flex; gap:10px; background:var(--bg);">
-                <input type="text" id="mInp" placeholder="Message..." style="flex:1; padding:12px; border-radius:20px; background:var(--card); color:#fff; border:1px solid var(--border);">
-                <button onclick="sendMsg()" style="background:var(--p); border:none; color:#fff; border-radius:50%; width:40px; height:40px;"><i class="fa-solid fa-paper-plane"></i></button>
+                <input type="text" id="mInp" placeholder="Type message..." style="flex:1; padding:12px; border-radius:25px; background:var(--card); color:#fff; border:1px solid var(--border);">
+                <button onclick="sendMsg()" style="background:var(--p); border:none; color:#fff; border-radius:50%; width:45px; height:45px;"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
 
         <div id="v-profile" class="view" style="padding:20px; text-align:center;">
-            <div style="width:100px; height:100px; border-radius:50%; background:var(--insta); margin:0 auto; padding:4px;">
-                <div style="width:100%; height:100%; background:#222; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:40px;" id="uAvatar">?</div>
+            <div style="width:90px; height:90px; border-radius:50%; background:var(--p); margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:35px;" id="uAvatar">?</div>
+            <h2 id="uName">User</h2>
+            <div style="display:flex; margin:25px 0;">
+                <div class="stat-box"><div class="stat-num" id="pCount">0</div><div class="stat-label">Posts</div></div>
+                <div class="stat-box"><div class="stat-num">4.2k</div><div class="stat-label">Followers</div></div>
+                <div class="stat-box"><div class="stat-num">890</div><div class="stat-label">Following</div></div>
             </div>
-            <h2 id="uName">Username</h2>
-            <div style="display:flex; justify-content:space-around; margin:20px 0; border-top:1px solid var(--border); padding-top:20px;">
-                <div><b>12</b><br><small>Posts</small></div>
-                <div><b>450</b><br><small>Followers</small></div>
-                <div><b>120</b><br><small>Following</small></div>
-            </div>
-            <button onclick="localStorage.clear(); location.reload();" style="color:red; background:none; border:none; font-weight:800;">Log Out</button>
+            <button onclick="localStorage.clear(); location.reload();" style="width:100%; padding:12px; border-radius:10px; background:var(--card); border:1px solid var(--border); color:#FF3B30; font-weight:700;">Logout</button>
         </div>
     </div>
 
     <nav>
         <div class="nav-btn active" onclick="tab('home')"><i class="fa-solid fa-house"></i></div>
-        <div class="nav-btn"><i class="fa-solid fa-search"></i></div>
-        <div class="nav-btn" onclick="tab('reels')"><i class="fa-solid fa-clapperboard"></i></div>
-        <div class="nav-btn"><i class="fa-solid fa-bag-shopping"></i></div>
+        <div class="nav-btn"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <div class="nav-btn" onclick="addNewPost()"><i class="fa-regular fa-square-plus"></i></div>
+        <div class="nav-btn" onclick="tab('notifs')"><i class="fa-regular fa-heart"></i></div>
         <div class="nav-btn" onclick="tab('profile')"><i class="fa-solid fa-circle-user"></i></div>
     </nav>
 </div>
@@ -137,90 +111,105 @@ const conf = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "
 const app = initializeApp(conf);
 const db = getDatabase(app);
 
-let user = localStorage.getItem("meta_inf_user");
+let user = localStorage.getItem("meta_os_user");
 if(user) { document.getElementById("auth").style.display = "none"; init(); }
 
 window.login = () => {
     const v = document.getElementById("uInp").value.trim();
-    if(v) { localStorage.setItem("meta_inf_user", v); location.reload(); }
+    if(v) { localStorage.setItem("meta_os_user", v); location.reload(); }
 };
 
 function init() {
     document.getElementById("uName").innerText = user;
     document.getElementById("uAvatar").innerText = user.charAt(0).toUpperCase();
 
-    // Feed Sync
-    onValue(ref(db, 'meta_v20_posts'), (snap) => {
+    // Feed with Follow Logic
+    onValue(ref(db, 'meta_os_posts'), (snap) => {
         const area = document.getElementById("feedArea"); area.innerHTML = "";
+        let count = 0;
         snap.forEach(s => {
             const p = s.val();
+            if(p.user === user) count++;
             area.innerHTML = `
                 <div class="post">
                     <div class="post-header">
-                        <div class="post-user"><div style="width:30px;height:30px;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;">${p.user.charAt(0)}</div> ${p.user}</div>
-                        ${p.user === user ? `<i class="fa-solid fa-ellipsis-v" onclick="del('meta_v20_posts/${s.key}')"></i>` : ''}
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:32px; height:32px; background:var(--p); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px;">${p.user.charAt(0)}</div>
+                            <b>${p.user}</b>
+                            ${p.user !== user ? `<span class="follow-btn" id="f-${s.key}" onclick="toggleFollow('${s.key}', '${p.user}')"> • Follow</span>` : ''}
+                        </div>
+                        <i class="fa-solid fa-ellipsis-h" style="opacity:0.5"></i>
                     </div>
-                    ${p.img ? `<img src="${p.img}" class="post-img">` : ''}
-                    <div style="padding:10px 15px;">${p.text}</div>
-                    <div class="post-actions">
-                        <i class="fa-regular fa-heart" onclick="like('${s.key}')"></i>
-                        <i class="fa-regular fa-comment" onclick="addComment('${s.key}')"></i>
+                    <div style="padding:0 15px 15px; font-size:15px;">${p.text}</div>
+                    <div style="padding:12px; display:flex; gap:20px; border-top:1px solid var(--border); font-size:20px;">
+                        <i class="fa-regular fa-heart" onclick="like('${s.key}', '${p.user}')"></i>
+                        <i class="fa-regular fa-comment"></i>
                         <i class="fa-regular fa-paper-plane"></i>
                     </div>
-                    <div class="comment-sec" id="comm-${s.key}"></div>
                 </div>` + area.innerHTML;
-            syncComments(s.key);
         });
+        document.getElementById("pCount").innerText = count;
+    });
+
+    // Notifications Logic
+    onValue(ref(db, `meta_os_notifs/${user}`), (snap) => {
+        const list = document.getElementById("notifList"); list.innerHTML = "";
+        const dot = document.getElementById("nDot");
+        let hasNew = false;
+        snap.forEach(s => {
+            hasNew = true;
+            const n = s.val();
+            list.innerHTML = `<div class="notif-item"><div class="dot"></div> <b>${n.from}</b> ${n.action}</div>` + list.innerHTML;
+        });
+        dot.style.display = hasNew ? "block" : "none";
     });
 
     // Chat Sync
-    onValue(ref(db, 'meta_v20_chat'), (snap) => {
+    onValue(ref(db, 'meta_os_chat'), (snap) => {
         const chat = document.getElementById("chatArea"); chat.innerHTML = "";
         snap.forEach(s => {
             const m = s.val();
             const isMe = m.user === user;
-            chat.innerHTML += `<div style="align-self:${isMe?'flex-end':'flex-start'}; background:${isMe?var(--p):'#222'}; padding:10px; border-radius:15px; max-width:80%; font-size:14px;">
-                <small style="font-size:9px; display:block; opacity:0.6">${m.user}</small>${m.text}</div>`;
+            chat.innerHTML += `<div style="align-self:${isMe?'flex-end':'flex-start'}; background:${isMe?var(--p):'#222'}; padding:10px 15px; border-radius:18px; max-width:80%; font-size:14px; position:relative;">
+                <small style="font-size:9px; display:block; opacity:0.5">${m.user}</small>${m.text}</div>`;
         });
     });
 }
 
-window.createNew = () => {
-    const t = prompt("What's on your mind?");
-    if(t) push(ref(db, 'meta_v20_posts'), { user, text: t, likes: 0, time: Date.now() });
+window.addNewPost = () => {
+    const t = prompt("Write something...");
+    if(t) push(ref(db, 'meta_os_posts'), { user, text: t, likes: 0 });
 };
 
-window.addComment = (id) => {
-    const c = prompt("Write a comment:");
-    if(c) push(ref(db, `meta_v20_comments/${id}`), { user, text: c });
+window.toggleFollow = (id, targetUser) => {
+    const btn = document.getElementById(`f-${id}`);
+    btn.innerText = " • Following";
+    btn.classList.add("following");
+    push(ref(db, `meta_os_notifs/${targetUser}`), { from: user, action: "started following you" });
 };
 
-function syncComments(id) {
-    onValue(ref(db, `meta_v20_comments/${id}`), (snap) => {
-        const cArea = document.getElementById(`comm-${id}`);
-        if(!cArea) return;
-        cArea.innerHTML = "";
-        snap.forEach(s => {
-            const c = s.val();
-            cArea.innerHTML += `<div class="comment-item"><b>${c.user}</b> ${c.text}</div>`;
-        });
-    });
-}
+window.like = (id, targetUser) => {
+    runTransaction(ref(db, `meta_os_posts/${id}/likes`), (c) => (c || 0) + 1);
+    if(targetUser !== user) {
+        push(ref(db, `meta_os_notifs/${targetUser}`), { from: user, action: "liked your post" });
+    }
+};
 
 window.sendMsg = () => {
     const i = document.getElementById("mInp");
-    if(i.value) { push(ref(db, 'meta_v20_chat'), { user, text: i.value }); i.value = ""; }
+    if(i.value) { push(ref(db, 'meta_os_chat'), { user, text: i.value }); i.value = ""; }
 };
-
-window.like = (id) => runTransaction(ref(db, `meta_v20_posts/${id}/likes`), (c) => (c || 0) + 1);
-window.del = (path) => { if(confirm("Delete this?")) remove(ref(db, path)); };
 
 window.tab = (t) => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('v-'+t).classList.add('active');
-    event.currentTarget.classList.add('active');
-    document.getElementById("mainHead").style.display = (t === 'reels') ? 'none' : 'flex';
+    if(t === 'notifs') document.getElementById("nDot").style.display = "none";
+    // Find nav button for this tab
+    const btns = document.querySelectorAll('.nav-btn');
+    if(t === 'home') btns[0].classList.add('active');
+    if(t === 'notifs') btns[3].classList.add('active');
+    if(t === 'profile') btns[4].classList.add('active');
 };
 </script>
 </body>
