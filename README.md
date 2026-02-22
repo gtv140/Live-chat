@@ -2,121 +2,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Infinity | Ultimate Social</title>
+    <title>Infinity X | Super-App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #0084FF; --wa: #25D366; --bg: #000; --card: #121212; --border: #262626; --text: #fff; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+        :root { --accent: #007bff; --bg: #000000; --card: #111111; --border: #222222; --text: #ffffff; --wa: #25D366; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Outfit', sans-serif; }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
 
-        /* AUTH */
-        #authBox { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 25px; }
-        .auth-card { width: 100%; max-width: 360px; text-align: center; }
-        .auth-input { width: 100%; padding: 18px; background: #1a1a1a; border: 1px solid var(--border); border-radius: 15px; color: #fff; margin-bottom: 15px; outline: none; }
+        /* LUXURY AUTH */
+        #authBox { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 30px; }
+        .auth-card { width: 100%; max-width: 380px; text-align: center; }
+        .auth-card h1 { font-size: 50px; font-weight: 800; letter-spacing: -2px; background: linear-gradient(to bottom, #fff, #444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .auth-input { width: 100%; padding: 20px; background: #111; border: 1px solid #333; border-radius: 20px; color: #fff; margin: 20px 0; outline: none; font-size: 16px; }
+        .btn-join { width: 100%; padding: 20px; background: #fff; border: none; border-radius: 20px; color: #000; font-weight: 800; cursor: pointer; }
 
-        /* SHELL */
-        .app-shell { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; position: relative; background: var(--bg); }
-        header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); z-index: 100; }
-        
-        /* SCROLLABLE VIEWPORT */
-        .viewport { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; padding-bottom: 100px; }
+        /* APP LAYOUT */
+        .app-shell { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 50px rgba(0,0,0,1); }
+        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); z-index: 100; }
+        header h2 { font-weight: 800; font-size: 24px; letter-spacing: -1px; }
+
+        /* VIEWPORT */
+        .viewport { flex: 1; overflow-y: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding-bottom: 100px; }
         .viewport::-webkit-scrollbar { display: none; }
-        .view { display: none; padding: 0; width: 100%; }
-        .view.active { display: block; animation: fadeIn 0.3s ease; }
+        .view { display: none; width: 100%; }
+        .view.active { display: block; animation: zoomIn 0.3s ease; }
 
-        /* FEED & POSTS */
-        .post { background: var(--card); margin-bottom: 10px; border-bottom: 1px solid var(--border); }
-        .p-info { padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .p-info img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--p); }
-        .media-box { width: 100%; min-height: 200px; background: #0a0a0a; }
-        .media-box img, .media-box video { width: 100%; display: block; }
-        .p-actions { padding: 12px 15px; display: flex; gap: 20px; font-size: 22px; color: #888; }
-        .react-btn:active { transform: scale(1.4); color: #ff0055; }
-        .comment-sec { padding: 0 15px 15px; font-size: 13px; border-top: 1px solid #1a1a1a; }
+        /* POST CARDS */
+        .post { background: var(--card); margin-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .p-header { padding: 12px 15px; display: flex; align-items: center; gap: 12px; }
+        .p-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--accent); }
+        .p-media { width: 100%; min-height: 250px; background: #080808; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .p-media img, .p-media video { width: 100%; object-fit: cover; }
+        .p-actions { padding: 12px 18px; display: flex; gap: 25px; font-size: 24px; color: #ccc; }
+        .p-caption { padding: 0 18px 15px; font-size: 14px; color: #eee; }
 
-        /* CHAT SYSTEMS */
-        .chat-list-item { padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .chat-list-item:active { background: #1a1a1a; }
-        .chat-bubble { padding: 10px 15px; border-radius: 18px; max-width: 80%; font-size: 14px; margin: 4px 15px; position: relative; }
-        .chat-bubble.me { background: var(--p); align-self: flex-end; border-bottom-right-radius: 2px; }
-        .chat-bubble.them { background: #262626; align-self: flex-start; border-bottom-left-radius: 2px; }
+        /* PRIVATE CHAT SYSTEM */
+        #dmOverlay { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; }
+        .chat-header { padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #222; }
+        #chatBox { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; background: #000; }
+        .bubble { padding: 12px 16px; border-radius: 20px; max-width: 75%; font-size: 14px; line-height: 1.4; }
+        .bubble.me { background: var(--accent); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .bubble.them { background: #222; align-self: flex-start; border-bottom-left-radius: 4px; }
 
-        /* NAV */
-        nav { position: absolute; bottom: 0; width: 100%; height: 75px; background: rgba(10,10,10,0.95); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .n-btn { font-size: 24px; color: #666; cursor: pointer; transition: 0.3s; }
-        .n-btn.active { color: var(--p); transform: translateY(-5px); }
+        /* NAV BAR */
+        nav { position: absolute; bottom: 0; width: 100%; height: 75px; background: rgba(0,0,0,0.9); border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .n-btn { font-size: 26px; color: #555; cursor: pointer; position: relative; }
+        .n-btn.active { color: #fff; }
+        .n-btn.active::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; background: #fff; border-radius: 50%; }
 
-        #chatDock { position: fixed; bottom: 75px; width: 100%; max-width: 500px; padding: 12px; background: #121212; display: none; gap: 10px; border-top: 1px solid var(--border); z-index: 2000; }
-        .msg-inp { flex: 1; padding: 12px 18px; border-radius: 25px; background: #222; border: none; color: #fff; outline: none; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
 <div id="authBox">
     <div class="auth-card">
-        <h1 style="color: var(--p); font-size: 40px; margin-bottom: 20px;">Infinity</h1>
-        <input type="text" id="uInp" class="auth-input" placeholder="Your Name">
-        <button onclick="login()" style="width: 100%; padding: 18px; border-radius: 15px; background: var(--p); border: none; color: #fff; font-weight: 800;">Get Started</button>
+        <h1>Infinity X</h1>
+        <p style="color: #666;">The Future of Social Connection</p>
+        <input type="text" id="uInp" class="auth-input" placeholder="Your Username">
+        <button onclick="login()" class="btn-join">Get Started</button>
     </div>
 </div>
 
-<div id="directChat" style="display:none; position:fixed; inset:0; background:black; z-index:5000; flex-direction:column;">
-    <header>
-        <div style="display:flex; align-items:center; gap:10px;">
-            <i class="fa-solid fa-arrow-left" onclick="closeDM()"></i>
-            <img id="dmPfp" src="" style="width:35px; height:35px; border-radius:50%;">
-            <b id="dmName">Chat</b>
-        </div>
-    </header>
-    <div id="dmBox" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; padding:10px 0;"></div>
+<div id="dmOverlay">
+    <div class="chat-header">
+        <i class="fa-solid fa-chevron-left" onclick="closeDM()" style="font-size: 20px;"></i>
+        <img id="dmPfp" src="" style="width:40px; height:40px; border-radius:50%; object-fit: cover;">
+        <b id="dmUser">Username</b>
+    </div>
+    <div id="chatBox"></div>
     <div style="padding:15px; display:flex; gap:10px; background:#111;">
-        <input type="text" id="dmInp" class="msg-inp" placeholder="Type message...">
-        <button onclick="sendDM()" style="background:var(--p); border:none; border-radius:50%; width:45px; height:45px; color:white;"><i class="fa-solid fa-paper-plane"></i></button>
+        <input type="text" id="dmMsg" class="auth-input" style="margin:0; flex:1;" placeholder="Message...">
+        <button onclick="sendDM()" style="background:var(--accent); border:none; width:55px; border-radius:20px; color:#fff;"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
 </div>
 
 <div class="app-shell">
     <header>
-        <h2 style="font-weight:900; letter-spacing:-1px;">INFINITY</h2>
-        <div style="display:flex; gap:20px; font-size:22px;">
-            <label for="fInp"><i class="fa-solid fa-plus-square"></i></label>
-            <input type="file" id="fInp" hidden onchange="upload(event)">
-            <i class="fa-solid fa-bell"></i>
+        <h2 style="font-style: italic;">Infinity X</h2>
+        <div style="display:flex; gap:22px; font-size:22px;">
+            <label for="postUp"><i class="fa-regular fa-square-plus"></i></label>
+            <input type="file" id="postUp" hidden accept="image/*,video/*" onchange="handlePost(event)">
+            <i class="fa-regular fa-paper-plane" onclick="tab('chat')"></i>
         </div>
     </header>
 
-    <div class="viewport" id="vPort">
-        <div id="v-home" class="view active"><div id="feedRow"></div></div>
-
-        <div id="v-chat" class="view">
-            <div onclick="openGroup()" class="chat-list-item" style="background: #1a1a1a; margin: 10px; border-radius: 15px; border: none;">
-                <div style="width:50px; height:50px; border-radius:50%; background:var(--wa); display:flex; align-items:center; justify-content:center; font-size:24px;"><i class="fa-solid fa-users"></i></div>
-                <div><b>Public Square</b><br><small style="color:var(--wa)">Join global discussion</small></div>
-            </div>
-            <div style="padding: 15px 20px; color: #666; font-size: 12px; font-weight: 800;">DIRECT MESSAGES</div>
+    <div class="viewport" id="mainPort">
+        <div id="v-home" class="view active"><div id="feed"></div></div>
+        
+        <div id="v-chat" class="view" style="padding: 10px 0;">
+            <div style="padding:15px; color:#666; font-weight:800; font-size:12px;">MESSAGES</div>
             <div id="usersList"></div>
         </div>
 
         <div id="v-profile" class="view" style="text-align:center; padding-top:40px;">
-            <label for="pfpInp"><img id="myPfp" src="" style="width:120px; height:120px; border-radius:50%; border:3px solid var(--p); object-fit:cover;"></label>
-            <input type="file" id="pfpInp" hidden onchange="updatePfp(event)">
-            <h2 id="myName" style="margin-top:15px;">User</h2>
-            <button onclick="localStorage.clear(); location.reload();" style="margin-top:50px; color:red; background:none; border:none; font-weight:800;">Log Out</button>
+            <label for="pfpUp"><img id="myPfp" src="" style="width:130px; height:130px; border-radius:50%; border:4px solid #fff; object-fit:cover;"></label>
+            <input type="file" id="pfpUp" hidden onchange="updatePfp(event)">
+            <h2 id="myName" style="margin:20px 0;">User</h2>
+            <div style="display:flex; justify-content:center; gap:30px; margin-top:30px;">
+                <div><b>502</b><br><small style="color:gray">Posts</small></div>
+                <div><b>12k</b><br><small style="color:gray">Followers</small></div>
+                <div><b>840</b><br><small style="color:gray">Following</small></div>
+            </div>
+            <button onclick="localStorage.clear(); location.reload();" style="margin-top:60px; color:#ff4d4d; border:none; background:none; font-weight:800;">LOGOUT</button>
         </div>
-    </div>
-
-    <div id="chatDock">
-        <input type="text" id="mInp" class="msg-inp" placeholder="Message to group...">
-        <i class="fa-solid fa-paper-plane" onclick="sendGroup()" style="color:var(--p); font-size:22px; padding:10px;"></i>
     </div>
 
     <nav>
         <div class="n-btn active" onclick="tab('home')"><i class="fa-solid fa-house"></i></div>
-        <div class="n-btn" onclick="tab('chat')"><i class="fa-solid fa-message"></i></div>
-        <div class="n-btn" onclick="tab('profile')"><i class="fa-solid fa-user-circle"></i></div>
+        <div class="n-btn"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <div class="n-btn" onclick="tab('chat')"><i class="fa-solid fa-comment"></i></div>
+        <div class="n-btn" onclick="tab('profile')"><i class="fa-solid fa-user"></i></div>
     </nav>
 </div>
 
@@ -127,122 +124,100 @@ import { getDatabase, ref, push, onValue, remove, runTransaction, set } from "ht
 const config = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
 const app = initializeApp(config);
 const db = getDatabase(app);
-let user = localStorage.getItem("inf_v6_user");
-let activeDM = null;
+let user = localStorage.getItem("inf_x_user");
+let targetDM = null;
 
-if(user) { document.getElementById("authBox").style.display="none"; start(); }
+if(user) { document.getElementById("authBox").style.display="none"; initApp(); }
 
 window.login = () => {
     const v = document.getElementById("uInp").value.trim();
-    if(v) { localStorage.setItem("inf_v6_user", v); location.reload(); }
+    if(v) { localStorage.setItem("inf_x_user", v); location.reload(); }
 };
 
-function start() {
+function initApp() {
     document.getElementById("myName").innerText = user;
-    
-    // 1. Sync PFP
+
+    // 1. Sync My PFP
     onValue(ref(db, `users/${user}/pfp`), (s) => {
         document.getElementById("myPfp").src = s.val() || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
     });
 
-    // 2. Sync Global Feed
-    onValue(ref(db, 'v6_feed'), (snap) => {
-        const row = document.getElementById("feedRow"); row.innerHTML = "";
+    // 2. Load Feed (Realtime)
+    onValue(ref(db, 'inf_x_feed'), (snap) => {
+        const row = document.getElementById("feed"); row.innerHTML = "";
         snap.forEach(s => {
             const p = s.val();
             row.innerHTML = `
                 <div class="post">
-                    <div class="p-info" onclick="openPrivate('${p.user}')">
-                        <img src="${p.uPfp}">
-                        <div><b>${p.user}</b><br><small style="color:gray">Just now</small></div>
+                    <div class="p-header" onclick="openDM('${p.user}', '${p.uPfp}')">
+                        <img src="${p.uPfp}" class="p-avatar">
+                        <b>${p.user}</b>
                     </div>
-                    <div class="media-box">
-                        ${p.type==='video' ? `<video src="${p.media}" controls></video>` : `<img src="${p.media}">`}
+                    <div class="p-media">
+                        ${p.type==='video' ? `<video src="${p.media}" controls loop muted autoplay></video>` : `<img src="${p.media}">`}
                     </div>
                     <div class="p-actions">
-                        <i class="fa-solid fa-heart react-btn" onclick="like('${s.key}')"> <small>${p.likes||0}</small></i>
-                        <i class="fa-solid fa-comment" onclick="addComment('${s.key}')"></i>
+                        <i class="fa-regular fa-heart" onclick="like('${s.key}')"></i>
+                        <i class="fa-regular fa-comment"></i>
+                        <i class="fa-regular fa-paper-plane"></i>
                     </div>
-                    <div class="p-text" style="padding:0 15px 10px;">${p.text}</div>
-                    <div class="comment-sec" id="comm-${s.key}">${renderComments(p.comments)}</div>
+                    <div class="p-caption"><b>${p.user}</b> ${p.text}</div>
                 </div>` + row.innerHTML;
         });
     });
 
-    // 3. User List for DMs
+    // 3. Sync All Users for Direct Chat
     onValue(ref(db, 'users'), (snap) => {
         const list = document.getElementById("usersList"); list.innerHTML = "";
         snap.forEach(s => {
             if(s.key !== user) {
                 list.innerHTML += `
-                <div class="chat-list-item" onclick="openPrivate('${s.key}')">
-                    <img src="${s.val().pfp || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" style="width:45px; height:45px; border-radius:50%;">
-                    <div><b>${s.key}</b><br><small style="color:gray">Online</small></div>
+                <div class="p-header" style="padding:15px; cursor:pointer;" onclick="openDM('${s.key}', '${s.val().pfp}')">
+                    <img src="${s.val().pfp || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="p-avatar">
+                    <div><b>${s.key}</b><br><small style="color:gray">Click to chat privately</small></div>
                 </div>`;
             }
         });
     });
 }
 
-// FEED ACTIONS
-window.upload = (e) => {
+// MEDIA UPLOAD
+window.handlePost = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
     const type = file.type.startsWith('video') ? 'video' : 'image';
     reader.onload = () => {
-        const t = prompt("Caption?");
+        const cap = prompt("Caption?");
         const pfp = document.getElementById("myPfp").src;
-        push(ref(db, 'v6_feed'), { user, text: t||"", media: reader.result, type, uPfp: pfp, likes: 0 });
+        push(ref(db, 'inf_x_feed'), { user, text: cap||"", media: reader.result, type, uPfp: pfp });
     };
     reader.readAsDataURL(file);
 };
-window.like = (id) => runTransaction(ref(db, `v6_feed/${id}/likes`), (c) => (c || 0) + 1);
-window.addComment = (id) => {
-    const c = prompt("Write comment...");
-    if(c) push(ref(db, `v6_feed/${id}/comments`), { user, text: c });
-};
-function renderComments(obj) {
-    if(!obj) return "";
-    return Object.values(obj).map(v => `<div><b>${v.user}:</b> ${v.text}</div>`).join("");
-}
 
-// PRIVATE MESSAGING SYSTEM
-window.openPrivate = (target) => {
-    activeDM = target;
-    document.getElementById("dmName").innerText = target;
-    document.getElementById("directChat").style.display = "flex";
-    const chatID = [user, target].sort().join("_");
-    onValue(ref(db, `v6_dms/${chatID}`), (snap) => {
-        const box = document.getElementById("dmBox"); box.innerHTML = "";
+// PRIVATE CHAT LOGIC
+window.openDM = (target, pfp) => {
+    targetDM = target;
+    document.getElementById("dmUser").innerText = target;
+    document.getElementById("dmPfp").src = pfp || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+    document.getElementById("dmOverlay").style.display = "flex";
+    const chatId = [user, target].sort().join("_");
+    onValue(ref(db, `inf_x_dms/${chatId}`), (snap) => {
+        const box = document.getElementById("chatBox"); box.innerHTML = "";
         snap.forEach(s => {
             const m = s.val(); const isMe = m.sender === user;
-            box.innerHTML += `<div class="chat-bubble ${isMe?'me':'them'}">${m.text}</div>`;
+            box.innerHTML += `<div class="bubble ${isMe?'me':'them'}">${m.text}</div>`;
         });
         box.scrollTop = box.scrollHeight;
     });
 };
 window.sendDM = () => {
-    const i = document.getElementById("dmInp");
-    if(!i.value || !activeDM) return;
-    const chatID = [user, activeDM].sort().join("_");
-    push(ref(db, `v6_dms/${chatID}`), { sender: user, text: i.value });
+    const i = document.getElementById("dmMsg");
+    if(!i.value || !targetDM) return;
+    const chatId = [user, targetDM].sort().join("_");
+    push(ref(db, `inf_x_dms/${chatId}`), { sender: user, text: i.value });
     i.value = "";
 };
-window.closeDM = () => document.getElementById("directChat").style.display = "none";
-
-// PUBLIC GROUP SYSTEM
-window.openGroup = () => {
-    tab('chat');
-    document.getElementById("chatDock").style.display = "flex";
-    onValue(ref(db, 'v6_public'), (snap) => {
-        const v = document.getElementById("vPort"); 
-        // Showing group messages in chat view when group is active
-    });
-};
-window.sendGroup = () => {
-    const i = document.getElementById("mInp");
-    if(i.value) { push(ref(db, 'v6_public'), { user, text: i.value }); i.value = ""; }
-};
+window.closeDM = () => document.getElementById("dmOverlay").style.display = "none";
 
 window.updatePfp = (e) => {
     const reader = new FileReader();
@@ -254,8 +229,7 @@ window.tab = (t) => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.n-btn').forEach(n => n.classList.remove('active'));
     document.getElementById('v-'+t).classList.add('active');
-    document.getElementById('chatDock').style.display = (t === 'chat' ? 'flex' : 'none');
-    const m = {'home':0, 'chat':1, 'profile':2};
+    const m = {'home':0, 'chat':2, 'profile':3};
     document.querySelectorAll('.n-btn')[m[t]].classList.add('active');
 };
 </script>
