@@ -2,162 +2,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect | Social</title>
+    <title>Live Connect | Ultimate</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --fb-blue: #1877F2; --fb-bg: #18191A; --fb-card: #242526; --fb-text: #E4E6EB; --border: #3E4042; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body, html { margin: 0; padding: 0; height: 100%; background: var(--fb-bg); color: var(--fb-text); overflow: hidden; }
+        :root { --fb-blue: #1877F2; --bg: #18191A; --card: #242526; --text: #E4E6EB; --border: #3E4042; --input: #3A3B3C; }
+        .light-mode { --bg: #F0F2F5; --card: #FFFFFF; --text: #050505; --border: #CED0D4; --input: #F0F2F5; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
 
-        /* HEADER */
-        header { padding: 10px 15px; background: var(--fb-card); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .app-shell { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; position: relative; }
+        header { padding: 12px 15px; background: var(--card); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         header h1 { color: var(--fb-blue); font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -1px; }
 
-        .viewport { height: 100vh; overflow-y: auto; padding: 65px 10px 100px 10px; display: none; }
-        .viewport.active { display: block; }
+        .viewport { flex: 1; overflow-y: auto; padding: 10px; padding-bottom: 90px; }
+        .post-card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .pfp { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #555; }
+        
+        /* POST ACTIONS */
+        .post-stats { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #b0b3b8; border-bottom: 1px solid var(--border); }
+        .post-actions { display: flex; justify-content: space-around; padding-top: 10px; }
+        .btn-action { background: none; border: none; color: #b0b3b8; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .btn-action.active { color: var(--fb-blue); }
 
-        /* STORIES */
-        .story-container { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-        .story-card { min-width: 100px; height: 160px; background: var(--fb-card); border-radius: 12px; position: relative; overflow: hidden; border: 1px solid var(--border); }
-        .story-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        .story-card b { position: absolute; bottom: 10px; left: 10px; font-size: 12px; }
+        /* COMMENTS SECTION */
+        .comment-box { margin-top: 10px; background: var(--input); border-radius: 15px; padding: 8px 12px; font-size: 13px; }
+        .comment-input-area { display: flex; gap: 8px; margin-top: 10px; }
+        .comment-input { flex: 1; background: var(--input); border: none; border-radius: 18px; padding: 8px 12px; color: var(--text); outline: none; font-size: 13px; }
 
-        /* POST CREATION */
-        .create-post { background: var(--fb-card); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .post-input-row { display: flex; gap: 10px; align-items: center; }
-        .user-pfp { width: 40px; height: 40px; border-radius: 50%; background: #555; }
-        .fake-input { flex: 1; background: #3A3B3C; padding: 10px 15px; border-radius: 20px; color: #B0B3B8; cursor: pointer; }
-
-        /* FEED POSTS */
-        .post-card { background: var(--fb-card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .post-header { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
-        .post-content { font-size: 15px; margin-bottom: 12px; line-height: 1.4; }
-        .post-img { width: calc(100% + 30px); margin-left: -15px; max-height: 300px; object-fit: cover; margin-bottom: 12px; }
-        .post-actions { display: flex; border-top: 1px solid var(--border); padding-top: 10px; justify-content: space-around; }
-        .action-btn { color: #B0B3B8; font-size: 14px; font-weight: 600; cursor: pointer; }
-        .action-btn i { margin-right: 5px; }
-
-        /* NAVIGATION BOTTOM */
-        nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: var(--fb-card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-link { color: #B0B3B8; font-size: 22px; cursor: pointer; position: relative; }
+        /* NAVIGATION */
+        nav { position: fixed; bottom: 0; width: 100%; max-width: 500px; height: 65px; background: var(--card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 2000; }
+        .nav-link { color: #8a8d91; text-align: center; cursor: pointer; font-size: 22px; }
         .nav-link.active { color: var(--fb-blue); }
-        .nav-link.active::after { content: ''; position: absolute; bottom: -18px; left: 0; width: 100%; height: 3px; background: var(--fb-blue); }
 
-        /* MODAL FOR POSTING */
-        #postModal { position: fixed; inset: 0; background: var(--fb-bg); z-index: 2000; display: none; flex-direction: column; padding: 20px; }
+        /* OVERLAYS */
+        #loginOverlay { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>liveconnect</h1>
-    <div style="display:flex; gap:15px;">
-        <i class="fa-solid fa-circle-plus"></i>
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <i class="fa-solid fa-bars"></i>
+<div id="loginOverlay">
+    <div style="background:var(--card); padding:30px; border-radius:20px; text-align:center; width:100%; max-width:350px;">
+        <h1 style="color:var(--fb-blue)">liveconnect</h1>
+        <input type="text" id="loginName" placeholder="Your Name" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); background:var(--input); color:var(--text); margin-top:20px;">
+        <button onclick="doLogin()" style="width:100%; padding:12px; border-radius:10px; border:none; background:var(--fb-blue); color:white; font-weight:700; margin-top:15px; cursor:pointer;">Join Now</button>
     </div>
-</header>
+</div>
 
-<div id="v-home" class="viewport active">
-    <div class="story-container">
-        <div class="story-card"><img src="https://picsum.photos/200/300?1"><b>Add Story</b></div>
-        <div class="story-card"><img src="https://picsum.photos/200/300?2"><b>John Doe</b></div>
-        <div class="story-card"><img src="https://picsum.photos/200/300?3"><b>Sarah Ali</b></div>
-    </div>
-
-    <div class="create-post">
-        <div class="post-input-row" onclick="openPostModal()">
-            <div class="user-pfp"></div>
-            <div class="fake-input">What's on your mind?</div>
+<div class="app-shell">
+    <header>
+        <h1>liveconnect</h1>
+        <div style="display:flex; gap:15px;">
+            <i class="fa-solid fa-moon" onclick="toggleTheme()" style="cursor:pointer"></i>
+            <i class="fa-solid fa-right-from-bracket" onclick="logout()" style="cursor:pointer"></i>
         </div>
+    </header>
+
+    <div class="viewport" id="feedScroll">
+        <div class="post-card">
+            <div style="display:flex; gap:10px; align-items:center;">
+                <div class="pfp" style="display:flex; align-items:center; justify-content:center; background:var(--fb-blue); color:white;"><i class="fa-solid fa-user"></i></div>
+                <div onclick="createPost()" style="flex:1; background:var(--input); padding:10px 15px; border-radius:20px; color:#b0b3b8; cursor:pointer;">What's on your mind?</div>
+            </div>
+        </div>
+        <div id="postsArea"></div>
     </div>
 
-    <div id="feedArea"></div>
+    <nav>
+        <div class="nav-link active"><i class="fa-solid fa-house"></i></div>
+        <div class="nav-link"><i class="fa-solid fa-user-group"></i></div>
+        <div class="nav-link"><i class="fa-solid fa-message"></i></div>
+        <div class="nav-link"><i class="fa-solid fa-bell"></i></div>
+    </nav>
 </div>
-
-<div id="v-chat" class="viewport">
-    <h2 style="padding-left:10px">Messages</h2>
-    <div id="chatList"></div>
-</div>
-
-<div id="postModal">
-    <div style="display:flex; justify-content:space-between; margin-bottom:20px">
-        <span onclick="closePostModal()">Cancel</span>
-        <button onclick="publishPost()" style="background:var(--fb-blue); color:white; border:none; padding:5px 15px; border-radius:5px">Post</button>
-    </div>
-    <textarea id="postText" style="flex:1; background:transparent; border:none; color:white; font-size:18px; outline:none" placeholder="What's on your mind?"></textarea>
-</div>
-
-<nav>
-    <div class="nav-link active" onclick="tab('home')"><i class="fa-solid fa-house"></i></div>
-    <div class="nav-link" onclick="tab('video')"><i class="fa-solid fa-tv"></i></div>
-    <div class="nav-link" onclick="tab('chat')"><i class="fa-solid fa-message"></i></div>
-    <div class="nav-link" onclick="tab('notify')"><i class="fa-solid fa-bell"></i></div>
-    <div class="nav-link" onclick="tab('profile')"><i class="fa-solid fa-circle-user"></i></div>
-</nav>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, push, onValue, set, update, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-const config = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
-const app = initializeApp(config);
+const conf = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
+const app = initializeApp(conf);
 const db = getDatabase(app);
 
-let user = "Guest_" + Math.floor(Math.random()*999);
+let user = localStorage.getItem("lc_user_v8");
 
-window.tab = (t) => {
-    document.querySelectorAll('.viewport').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    if(document.getElementById('v-'+t)) document.getElementById('v-'+t).classList.add('active');
-    event.currentTarget.classList.add('active');
+if(user) {
+    document.getElementById("loginOverlay").style.display = "none";
+    initFeed();
+}
+
+window.doLogin = () => {
+    const n = document.getElementById("loginName").value.trim();
+    if(n) { localStorage.setItem("lc_user_v8", n); location.reload(); }
 };
 
-window.openPostModal = () => document.getElementById('postModal').style.display = 'flex';
-window.closePostModal = () => document.getElementById('postModal').style.display = 'none';
-
-window.publishPost = () => {
-    const text = document.getElementById('postText').value;
-    if(!text.trim()) return;
-    push(ref(db, 'social_posts'), {
-        user: user,
-        content: text,
-        time: Date.now(),
-        likes: 0
-    });
-    document.getElementById('postText').value = "";
-    closePostModal();
+window.createPost = () => {
+    const txt = prompt("Write your post...");
+    if(txt) push(ref(db, 'posts_v8'), { user, text: txt, likes: 0, time: Date.now() });
 };
 
-// Sync Feed
-onValue(ref(db, 'social_posts'), (snap) => {
-    const area = document.getElementById('feedArea');
-    area.innerHTML = "";
-    let posts = [];
-    snap.forEach(p => posts.unshift({id: p.key, ...p.val()}));
-    
-    posts.forEach(p => {
-        const card = document.createElement('div');
-        card.className = "post-card";
-        card.innerHTML = `
-            <div class="post-header">
-                <div class="user-pfp" style="width:35px; height:35px"></div>
-                <div>
-                    <div style="font-weight:700; font-size:14px">${p.user}</div>
-                    <div style="font-size:11px; color:#B0B3B8">Just now</div>
+function initFeed() {
+    onValue(ref(db, 'posts_v8'), (snap) => {
+        const area = document.getElementById("postsArea");
+        area.innerHTML = "";
+        let posts = [];
+        snap.forEach(s => posts.unshift({id: s.key, ...s.val()}));
+        
+        posts.forEach(p => {
+            const card = document.createElement("div");
+            card.className = "post-card";
+            card.innerHTML = `
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                    <div class="pfp" style="background:#555"></div>
+                    <div>
+                        <div style="font-weight:700; font-size:14px">${p.user}</div>
+                        <div style="font-size:11px; color:#b0b3b8">${new Date(p.time).toLocaleTimeString()}</div>
+                    </div>
                 </div>
-            </div>
-            <div class="post-content">${p.content}</div>
-            <div class="post-actions">
-                <div class="action-btn"><i class="fa-regular fa-thumbs-up"></i> Like</div>
-                <div class="action-btn"><i class="fa-regular fa-comment"></i> Comment</div>
-                <div class="action-btn"><i class="fa-solid fa-share"></i> Share</div>
-            </div>
-        `;
-        area.appendChild(card);
+                <div style="font-size:15px; margin-bottom:10px;">${p.text}</div>
+                <div class="post-stats">
+                    <span>👍 ${p.likes || 0} Likes</span>
+                    <span>0 Comments</span>
+                </div>
+                <div class="post-actions">
+                    <button class="btn-action" onclick="likePost('${p.id}')"><i class="fa-regular fa-thumbs-up"></i> Like</button>
+                    <button class="btn-action" onclick="focusComment('${p.id}')"><i class="fa-regular fa-comment"></i> Comment</button>
+                    <button class="btn-action"><i class="fa-solid fa-share"></i> Share</button>
+                </div>
+                <div class="comment-input-area">
+                    <input type="text" class="comment-input" placeholder="Write a comment..." id="inp-${p.id}" onkeypress="addComment(event, '${p.id}')">
+                </div>
+                <div id="comments-${p.id}"></div>
+            `;
+            area.appendChild(card);
+            syncComments(p.id);
+        });
     });
-});
+}
+
+window.likePost = (id) => {
+    const postRef = ref(db, `posts_v8/${id}/likes`);
+    runTransaction(postRef, (currentLikes) => (currentLikes || 0) + 1);
+};
+
+window.addComment = (e, postId) => {
+    if(e.key === 'Enter') {
+        const val = e.target.value.trim();
+        if(val) {
+            push(ref(db, `comments_v8/${postId}`), { user, text: val });
+            e.target.value = "";
+        }
+    }
+};
+
+function syncComments(postId) {
+    onValue(ref(db, `comments_v8/${postId}`), (snap) => {
+        const cArea = document.getElementById(`comments-${postId}`);
+        cArea.innerHTML = "";
+        snap.forEach(s => {
+            const c = s.val();
+            cArea.innerHTML += `
+                <div class="comment-box">
+                    <b style="font-size:12px; color:var(--fb-blue)">${c.user}</b>: ${c.text}
+                </div>`;
+        });
+    });
+}
+
+window.toggleTheme = () => document.body.classList.toggle('light-mode');
+window.logout = () => { localStorage.clear(); location.reload(); };
 </script>
 </body>
 </html>
