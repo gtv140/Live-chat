@@ -1,171 +1,142 @@
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Connect 🚀</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-:root{
-  --bg:#0a0a0a;
-  --card:#111;
-  --text:#e5e5e5;
-  --muted:#aaa;
-  --primary:#6b5bff;
-  --accent:#ff5c8d;
-  --success:#22c55e;
-}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);transition:.3s;}
-body.light{--bg:#f1f1f1;--card:#fff;--text:#111;--muted:#555;}
-.app{max-width:480px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 3px 15px rgba(0,0,0,.7);}
-header h1{margin:0;font-size:22px;color:var(--primary);text-shadow:0 0 12px var(--accent);}
-header button{background:none;border:none;font-size:20px;color:var(--text);cursor:pointer;transition:.3s;}
-header button:hover{color:var(--accent);}
-.page{display:none;padding:16px;flex:1;transition:0.3s;}
-.page.active{display:block;}
-.hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff);color:#fff;padding:28px;border-radius:20px;text-align:center;text-shadow:0 0 12px #fff;box-shadow:0 0 15px #6b5bff;transition:.3s;}
-.hero h2{margin:0 0 10px;font-size:22px;}
-.hero p{margin:0;font-size:14px;opacity:.9;}
-.dashboard-stat{background:var(--card);padding:16px;margin-bottom:12px;border-radius:16px;box-shadow:0 0 12px var(--primary);display:flex;justify-content:space-between;align-items:center;transition:.3s;}
-.dashboard-stat:hover{box-shadow:0 0 15px var(--accent);}
-.dashboard-stat h4{margin:0;color:var(--accent);}
-.dashboard-stat span{font-weight:bold;}
-.chat-box{background:var(--card);border-radius:18px;padding:14px;height:36vh;overflow-y:auto;margin-bottom:12px;box-shadow:0 0 12px var(--primary);}
-.msg{background:#222;color:#fff;padding:10px 14px;border-radius:16px;margin-bottom:10px;font-size:14px;position:relative;box-shadow:0 0 6px var(--primary);transition:.3s;}
-.msg:hover{box-shadow:0 0 12px var(--accent);}
-.msg .actions{position:absolute;top:6px;right:8px;display:flex;gap:6px;font-size:13px;cursor:pointer;}
-.msg .comments{margin-top:8px;padding-left:14px;border-left:2px solid #444;}
-.input-row{display:flex;gap:10px;}
-.input-row input{flex:1;padding:14px;border-radius:14px;border:1px solid #444;background:#111;color:#fff;outline:none;}
-.input-row input:focus{border-color:var(--primary);}
-.input-row button{padding:14px 18px;border:none;border-radius:14px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 10px #ff5c8d;transition:.3s;}
-.input-row button:hover{box-shadow:0 0 15px #6b5bff;}
-.user,.group{display:flex;align-items:center;gap:10px;margin-bottom:12px;cursor:pointer;padding:12px;background:var(--card);border-radius:14px;box-shadow:0 0 8px var(--primary);transition:.3s;}
-.user:hover,.group:hover{background:#222;transform:translateY(-2px);}
-.dot{width:12px;height:12px;background:var(--success);border-radius:50%;}
-nav{display:flex;justify-content:space-around;background:var(--card);padding:12px 0;box-shadow:0 -3px 12px rgba(0,0,0,.7);}
-nav button{background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;transition:.3s;}
-nav button.active{color:var(--primary);}
-nav button:hover{color:var(--accent);}
-.login-card{background:var(--card);padding:20px;border-radius:18px;box-shadow:0 0 15px var(--primary);}
-.login-card input{width:100%;padding:14px;border-radius:14px;margin-bottom:12px;border:1px solid #444;background:#111;color:#fff;outline:none;}
-.login-card button{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;box-shadow:0 0 12px #ff5c8d;transition:.3s;}
-.login-card button:hover{box-shadow:0 0 15px #6b5bff;}
-.comment-input{margin-top:6px;display:flex;gap:6px;}
-.comment-input input{flex:1;padding:8px;border-radius:10px;border:1px solid #444;font-size:13px;background:#111;color:#fff;outline:none;}
-.comment-input button{padding:8px 10px;border:none;border-radius:10px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;font-size:13px;cursor:pointer;transition:.3s;}
-.comment-input button:hover{box-shadow:0 0 10px var(--primary);}
-.contact-card{display:flex;align-items:center;gap:14px;background:var(--card);padding:14px 18px;border-radius:14px;margin-bottom:14px;box-shadow:0 0 12px var(--accent);transition:0.3s;}
-.contact-card:hover{transform:translateY(-3px);box-shadow:0 0 18px var(--primary);}
-.contact-card h4{margin:0;color:var(--accent);text-shadow:0 0 6px var(--primary);}
-.contact-card p{margin:2px 0 0;font-size:14px;}
-.contact-card a{text-decoration:none;color:var(--primary);}
-.contact-card a:hover{text-decoration:underline;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Connect Pro 🚀</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: rgba(30, 41, 59, 0.7);
+            --primary: #8b5cf6;
+            --accent: #ec4899;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.05);
+            --success: #10b981;
+        }
+
+        body {
+            margin: 0; font-family: 'Segoe UI', system-ui, sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            color: var(--text); min-height: 100vh; transition: 0.3s;
+        }
+
+        body.light {
+            --bg: #f1f5f9; --card: rgba(255, 255, 255, 0.9);
+            --text: #1e293b; --muted: #64748b;
+            background: #e2e8f0;
+        }
+
+        .app { max-width: 500px; margin: auto; display: flex; flex-direction: column; min-height: 100vh; background: var(--glass); backdrop-filter: blur(10px); position: relative; }
+
+        header {
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            background: var(--card); border-bottom: 1px solid var(--glass); position: sticky; top: 0; z-index: 100;
+        }
+
+        header h1 { font-size: 20px; font-weight: 800; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
+
+        .page { display: none; padding: 20px; flex: 1; overflow-y: auto; animation: fadeIn 0.3s ease; }
+        .page.active { display: flex; flex-direction: column; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CHAT BUBBLES */
+        .chat-box { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 10px; overflow-y: auto; height: 60vh; }
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 14px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.2); line-height: 1.4; }
+        .msg.sent { align-self: flex-end; background: linear-gradient(135deg, var(--primary), #6366f1); color: white; border-bottom-right-radius: 2px; }
+        .msg.received { align-self: flex-start; background: var(--card); border-bottom-left-radius: 2px; border: 1px solid var(--glass); }
+        .msg b { display: block; font-size: 10px; margin-bottom: 4px; text-transform: uppercase; opacity: 0.8; }
+        .msg .actions { position: absolute; top: -10px; right: 0; display: none; cursor: pointer; background: var(--accent); border-radius: 50%; width: 20px; height: 20px; text-align: center; font-size: 12px; }
+        .msg:hover .actions { display: block; }
+
+        /* LISTS (Users/Groups) */
+        .list-item { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid var(--glass); transition: 0.2s; }
+        .list-item:hover { transform: scale(1.02); background: var(--glass); }
+        .dot { width: 10px; height: 10px; background: var(--success); border-radius: 50%; box-shadow: 0 0 10px var(--success); }
+
+        /* INPUTS */
+        .input-row { padding: 15px; background: var(--card); display: flex; gap: 10px; border-top: 1px solid var(--glass); }
+        .input-row input { flex: 1; padding: 12px 20px; border-radius: 25px; border: 1px solid var(--glass); background: rgba(0,0,0,0.2); color: inherit; outline: none; }
+        .input-row button { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--primary); color: white; cursor: pointer; }
+
+        /* NAV */
+        nav { display: flex; justify-content: space-around; background: var(--card); padding: 12px; border-top: 1px solid var(--glass); }
+        nav button { background: none; border: none; font-size: 18px; color: var(--muted); cursor: pointer; transition: 0.3s; }
+        nav button.active { color: var(--primary); transform: translateY(-3px); }
+
+        #typing-status { font-size: 11px; color: var(--primary); height: 15px; padding-left: 10px; font-style: italic; }
+    </style>
 </head>
 <body>
+
 <div class="app">
-<header>
-<h1>Live Connect</h1>
-<button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
-<button onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
-</header>
+    <header>
+        <h1>Live Connect</h1>
+        <div style="display:flex; gap:15px;">
+            <button onclick="toggleTheme()" style="background:none; border:none; color:inherit; cursor:pointer;"><i class="fa-solid fa-circle-half-stroke"></i></button>
+            <button onclick="logout()" style="background:none; border:none; color:inherit; cursor:pointer;"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+    </header>
 
-<!-- LOGIN -->
-<div id="loginPage" class="page active">
-<div class="login-card">
-<h3>Enter Username</h3>
-<input type="text" id="usernameInput" placeholder="Username">
-<button onclick="login()">Continue</button>
-</div>
-</div>
+    <div id="loginPage" class="page active">
+        <div style="text-align:center; padding:50px 0;">
+            <div style="font-size: 50px; margin-bottom: 20px;">🚀</div>
+            <h2>Welcome Back!</h2>
+            <input type="text" id="usernameInput" placeholder="Enter username..." style="width:90%; padding:15px; border-radius:15px; border:1px solid var(--glass); background:var(--card); color:white; margin-bottom:15px;">
+            <button onclick="login()" style="width:90%; padding:15px; border-radius:15px; border:none; background:var(--primary); color:white; font-weight:bold;">Login Now</button>
+        </div>
+    </div>
 
-<!-- DASHBOARD -->
-<div id="home" class="page">
-<div class="hero">
-<h2>Welcome <span id="dashUser"></span> 🚀</h2>
-<p>Real-Time Chat & Active Connections</p>
-</div>
-<div class="dashboard-stat"><h4>Total Users</h4><span id="onlineCount">0</span></div>
-<div class="dashboard-stat"><h4>Total Groups</h4><span id="groupCount">0</span></div>
-</div>
+    <div id="home" class="page">
+        <div style="background: linear-gradient(135deg, var(--primary), var(--accent)); padding: 30px; border-radius: 25px; margin-bottom: 20px;">
+            <h2 style="margin:0;">Hello, <span id="dashUser">User</span>!</h2>
+            <p style="opacity:0.8;">Everything looks good today.</p>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+            <div class="list-item" style="flex-direction:column; text-align:center;">
+                <h4 style="margin:0;">Online</h4>
+                <p id="onlineCount" style="font-size:24px; font-weight:bold; margin:5px 0;">0</p>
+            </div>
+            <div class="list-item" style="flex-direction:column; text-align:center;">
+                <h4 style="margin:0;">Groups</h4>
+                <p id="groupCount" style="font-size:24px; font-weight:bold; margin:5px 0;">0</p>
+            </div>
+        </div>
+    </div>
 
-<!-- CHAT -->
-<div id="chat" class="page">
-<div class="chat-box" id="chatBox"></div>
-<div class="input-row">
-<input id="msgInput" placeholder="Type message…"/>
-<button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
-</div>
-</div>
+    <div id="chat" class="page">
+        <div id="chatHeader" style="font-weight:bold; margin-bottom:10px; color:var(--primary);">Select a friend to chat</div>
+        <div class="chat-box" id="chatBox"></div>
+        <div id="typing-status"></div>
+        <div class="input-row">
+            <input id="msgInput" placeholder="Type message..." oninput="sendTyping()"/>
+            <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
 
-<!-- USERS & GROUPS -->
-<div id="users" class="page">
-<h3>Online Users</h3><div id="userList"></div>
-<h3 style="margin-top:16px;">Groups</h3><div id="groupList"></div>
-<div class="input-row" style="margin-top:6px;">
-<input id="groupInput" placeholder="Create group"/>
-<button onclick="createGroup()">➕</button>
-</div>
-</div>
+    <div id="users" class="page">
+        <h3>Active Friends</h3>
+        <div id="userList"></div>
+        <h3 style="margin-top:20px;">Community Groups</h3>
+        <div id="groupList"></div>
+        <div class="input-row" style="margin-top:10px; border-radius:15px;">
+            <input id="groupInput" placeholder="New Group Name"/>
+            <button onclick="createGroup()"><i class="fa-solid fa-plus"></i></button>
+        </div>
+    </div>
 
-<!-- ABOUT -->
-<div id="about" class="page">
-<h3>About Live Connect 🚀</h3>
-<p>Live Connect is developed by <b>WebHub Technologies</b>, a leading provider of real-time communication apps.</p>
-<ul>
-<li>Real-time private & group chats with comments</li>
-<li>Live user tracking & professional dashboard</li>
-<li>Dark/Light mode & modern UI design</li>
-<li>Customizable groups, notifications & admin controls</li>
-<li>Secure, fast & fully responsive</li>
-</ul>
-<p>Our mission is to connect people instantly with a safe, modern, and professional platform.</p>
-</div>
-
-<!-- CONTACT -->
-<div id="contact" class="page">
-<h3 style="color:var(--accent);text-shadow:0 0 8px var(--primary)">Contact & Support</h3>
-<p style="margin-bottom:12px;">Reach out via:</p>
-
-<div class="contact-card">
-<i class="fa-solid fa-envelope" style="font-size:24px;"></i>
-<div><h4>Email</h4><p><a href="mailto:webhub262@gmail.com">webhub262@gmail.com</a></p></div>
-</div>
-
-<div class="contact-card">
-<i class="fab fa-facebook" style="color:#3b5998;font-size:24px;"></i>
-<div><h4>Facebook</h4><p><a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank">Visit Profile</a></p></div>
-</div>
-
-<div class="contact-card">
-<i class="fab fa-instagram" style="color:#c13584;font-size:24px;"></i>
-<div><h4>Instagram</h4><p><a href="https://www.instagram.com/mr_nazim073?igsh=MXd4d2hmcWNvNjVsdQ==" target="_blank">Follow Us</a></p></div>
-</div>
-
-<div class="contact-card">
-<i class="fab fa-youtube" style="color:#ff0000;font-size:24px;"></i>
-<div><h4>YouTube</h4><p><a href="https://youtube.com/@CrazyKhanTV" target="_blank">Subscribe</a></p></div>
-</div>
-
-<div class="contact-card">
-<i class="fa-solid fa-phone" style="color:var(--success);font-size:24px;"></i>
-<div><h4>Phone</h4><p><a href="tel:+923001234567">+92 300 1234567</a></p></div>
-</div>
-</div>
-
-<nav>
-<button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
-<button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
-<button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
-<button onclick="openPage('about',this)"><i class="fa-solid fa-circle-info"></i></button>
-<button onclick="openPage('contact',this)"><i class="fa-solid fa-envelope"></i></button>
-</nav>
+    <nav id="navbar" style="display:none;">
+        <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
+        <button onclick="openPage('chat',this)"><i class="fa-solid fa-comment-dots"></i></button>
+        <button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
+    </nav>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -180,119 +151,144 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let currentUser=null;
-let curChat="";
-let isGroup=false;
+let currentUser = localStorage.getItem("chat_username");
+let curChat = "";
+let isGroup = false;
 
-const chatBox=document.getElementById("chatBox");
-const userList=document.getElementById("userList");
-const groupList=document.getElementById("groupList");
-const dashUser=document.getElementById("dashUser");
-const onlineCount=document.getElementById("onlineCount");
-const groupCount=document.getElementById("groupCount");
-
-window.login=()=>{
-  const uname=document.getElementById("usernameInput").value.trim();
-  if(!uname){alert("Enter username");return;}
-  currentUser=uname;
-  dashUser.textContent=currentUser;
-  const userRef=ref(db,"users/"+uname);
-  set(userRef,{name:uname,online:true});
-  onDisconnect(userRef).update({online:false});
-  document.getElementById("loginPage").classList.remove("active");
-  document.getElementById("home").classList.add("active");
-};
-
-window.logout=()=>{
-  if(!currentUser) return;
-  const userRef=ref(db,"users/"+currentUser);
-  set(userRef,{name:currentUser,online:false});
-  location.reload();
-};
-
-window.openPage=(id,btn)=>{
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-};
-
-window.toggleTheme=()=>{document.body.classList.toggle('light');};
-
-onValue(ref(db,"users"),snap=>{
-  let online=0;
-  userList.innerHTML="";
-  snap.forEach(u=>{
-    if(u.val().online){
-      online++;
-      if(u.key!==currentUser){
-        const d=document.createElement("div");
-        d.className="user";
-        d.innerHTML=`<div class="dot"></div>${u.val().name}`;
-        d.onclick=()=>{
-          curChat=u.key; isGroup=false; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));
-        };
-        userList.appendChild(d);
-      }
-    }
-  });
-  onlineCount.textContent=online;
-});
-
-onValue(ref(db,"groups"),snap=>{
-  groupList.innerHTML="";
-  groupCount.textContent=snap.size;
-  snap.forEach(g=>{
-    const d=document.createElement("div");
-    d.className="group";
-    d.textContent=g.key;
-    d.onclick=()=>{
-      curChat=g.key; isGroup=true; loadChat(); openPage('chat',document.querySelector('nav button:nth-child(2)'));
-    };
-    groupList.appendChild(d);
-  });
-});
-
-window.createGroup=()=>{
-  const g=document.getElementById("groupInput").value.trim();
-  if(!g){alert("Enter group name");return;}
-  set(ref(db,"groups/"+g),{createdBy:currentUser});
-  document.getElementById("groupInput").value='';
-};
-
-function loadChat(){
-  if(!curChat) return;
-  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
-  onValue(ref(db,path),snap=>{
-    chatBox.innerHTML="";
-    snap.forEach(m=>{
-      const div=document.createElement("div");
-      div.className="msg";
-      let actions=`<div class="actions"><span onclick="deleteMsg('${path}','${m.key}')">🗑️</span></div>`;
-      let commentsHTML='<div class="comments">'+(m.val().comments?Object.values(m.val().comments).map(c=>`<div><b>${c.from}:</b> ${c.text}</div>`).join(''):'')+'</div>';
-      let commentInput=`<div class="comment-input"><input placeholder="Comment"/><button onclick="addComment('${path}','${m.key}',this)">💬</button></div>`;
-      div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text} ${actions} ${commentsHTML} ${commentInput}`;
-      chatBox.appendChild(div);
-      chatBox.scrollTop=chatBox.scrollHeight;
-    });
-  });
+// Auto Login
+if(currentUser) {
+    setupUser();
 }
 
-window.sendMsg=()=>{
-  if(!curChat) return alert("Select a user/group first");
-  const input=document.getElementById('msgInput');
-  if(!input.value) return;
-  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
-  push(ref(db,path),{from:currentUser,text:input.value});
-  input.value='';
+window.login = () => {
+    const val = document.getElementById("usernameInput").value.trim();
+    if(!val) return alert("Enter Username");
+    currentUser = val;
+    localStorage.setItem("chat_username", val);
+    setupUser();
 };
 
-window.deleteMsg=(path,key)=>{remove(ref(db,path+"/"+key));};
-window.addComment=(path,key,btn)=>{
-  const input=btn.previousElementSibling;
-  if(!input.value) return;
-  push(ref(db,path+"/"+key+"/comments"),{from:currentUser,text:input.value});
-  input.value='';
+function setupUser() {
+    document.getElementById("loginPage").classList.remove("active");
+    document.getElementById("home").classList.add("active");
+    document.getElementById("navbar").style.display = "flex";
+    document.getElementById("dashUser").innerText = currentUser;
+    
+    const uRef = ref(db, "users/" + currentUser);
+    set(uRef, { name: currentUser, online: true });
+    onDisconnect(uRef).update({ online: false });
+    loadUpdates();
+}
+
+window.logout = () => {
+    localStorage.removeItem("chat_username");
+    location.reload();
+};
+
+window.toggleTheme = () => document.body.classList.toggle('light');
+
+window.openPage = (id, btn) => {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+};
+
+function loadUpdates() {
+    // Online Users
+    onValue(ref(db, "users"), snap => {
+        let count = 0;
+        const list = document.getElementById("userList");
+        list.innerHTML = "";
+        snap.forEach(u => {
+            if(u.val().online) {
+                count++;
+                if(u.key !== currentUser) {
+                    const item = document.createElement("div");
+                    item.className = "list-item";
+                    item.innerHTML = `<div class="dot"></div> ${u.key}`;
+                    item.onclick = () => startChat(u.key, false);
+                    list.appendChild(item);
+                }
+            }
+        });
+        document.getElementById("onlineCount").innerText = count;
+    });
+
+    // Groups
+    onValue(ref(db, "groups"), snap => {
+        const list = document.getElementById("groupList");
+        list.innerHTML = "";
+        document.getElementById("groupCount").innerText = snap.size;
+        snap.forEach(g => {
+            const item = document.createElement("div");
+            item.className = "list-item";
+            item.innerHTML = `<i class="fa-solid fa-hashtag"></i> ${g.key}`;
+            item.onclick = () => startChat(g.key, true);
+            list.appendChild(item);
+        });
+    });
+}
+
+function startChat(id, groupMode) {
+    curChat = id; isGroup = groupMode;
+    openPage('chat', document.querySelector('nav button:nth-child(2)'));
+    document.getElementById("chatHeader").innerText = (isGroup ? "Group: " : "Chat with: ") + id;
+    loadMessages();
+}
+
+function loadMessages() {
+    const chatID = isGroup ? curChat : [currentUser, curChat].sort().join("_");
+    const path = (isGroup ? "groupChats/" : "chats/") + chatID;
+    
+    onValue(ref(db, path), snap => {
+        const box = document.getElementById("chatBox");
+        box.innerHTML = "";
+        snap.forEach(m => {
+            const isMe = m.val().from === currentUser;
+            const div = document.createElement("div");
+            div.className = `msg ${isMe ? 'sent' : 'received'}`;
+            div.innerHTML = `<b>${m.val().from}</b>${m.val().text}
+                            <div class="actions" onclick="deleteMsg('${path}','${m.key}')">×</div>`;
+            box.appendChild(div);
+        });
+        box.scrollTop = box.scrollHeight;
+    });
+
+    // Typing Listen
+    onValue(ref(db, "typing/" + chatID), snap => {
+        const status = document.getElementById("typing-status");
+        let typers = [];
+        snap.forEach(t => { if(t.key !== currentUser) typers.push(t.key); });
+        status.innerText = typers.length > 0 ? typers.join(", ") + " is typing..." : "";
+    });
+}
+
+window.sendMsg = () => {
+    const inp = document.getElementById("msgInput");
+    if(!inp.value || !curChat) return;
+    const chatID = isGroup ? curChat : [currentUser, curChat].sort().join("_");
+    const path = (isGroup ? "groupChats/" : "chats/") + chatID;
+    push(ref(db, path), { from: currentUser, text: inp.value, time: serverTimestamp() });
+    inp.value = "";
+    set(ref(db, "typing/" + chatID + "/" + currentUser), null);
+};
+
+window.sendTyping = () => {
+    if(!curChat) return;
+    const chatID = isGroup ? curChat : [currentUser, curChat].sort().join("_");
+    set(ref(db, "typing/" + chatID + "/" + currentUser), true);
+    setTimeout(() => set(ref(db, "typing/" + chatID + "/" + currentUser), null), 3000);
+};
+
+window.createGroup = () => {
+    const val = document.getElementById("groupInput").value.trim();
+    if(val) set(ref(db, "groups/" + val), { createdBy: currentUser });
+    document.getElementById("groupInput").value = "";
+};
+
+window.deleteMsg = (path, key) => {
+    if(confirm("Delete this message?")) remove(ref(db, path + "/" + key));
 };
 </script>
 </body>
