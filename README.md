@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Live Connect | Admin Edition</title>
+<title>Live Connect | Magic Admin</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
@@ -28,59 +28,62 @@ nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
 .dock-input { flex: 1; background: transparent; border: none; color: #fff; }
 .send-btn { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--p); color: #fff; cursor: pointer; }
 #auth { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
-.admin-badge { background: #ff4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 5px; margin-left: 5px; vertical-align: middle; }
+.magic-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 10px; font-size: 10px; cursor: pointer; margin-top: 5px; }
 </style>
 </head>
 <body>
 <div class="mesh"></div>
 <div class="app">
   <header>
-    <h1>Live Connect <span id="adminTag" style="display:none;" class="admin-badge">ADMIN</span></h1>
+    <h1>Live Connect <span id="magicBadge" style="display:none; color: gold; font-size: 12px; margin-left: 10px;">✨ MAGICIAN</span></h1>
     <div onclick="logout()" style="color:var(--muted); cursor:pointer;"><i class="fa-solid fa-power-off"></i></div>
   </header>
+  
   <div id="auth">
-    <div style="font-size: 50px; color: var(--p); margin-bottom: 15px;"><i class="fa-solid fa-circle-nodes"></i></div>
-    <h2>Identify Yourself</h2>
-    <input type="text" id="userInput" style="width:100%; max-width:280px; padding:18px; border-radius:20px; background:var(--card); border:1px solid var(--border); color:#fff; text-align:center; margin-bottom:15px;" placeholder="Username">
-    <button onclick="login()" style="width:100%; max-width:280px; padding:18px; border-radius:20px; background:var(--p); border:none; color:#fff; font-weight:800;">JOIN CHAT</button>
+    <div style="font-size: 50px; color: var(--p); margin-bottom: 15px;"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+    <h2>Enter the Portal</h2>
+    <input type="text" id="userInput" style="width:100%; max-width:280px; padding:18px; border-radius:20px; background:var(--card); border:1px solid var(--border); color:#fff; text-align:center; margin-bottom:15px;" placeholder="Your Name">
+    <button onclick="login()" style="width:100%; max-width:280px; padding:18px; border-radius:20px; background:var(--p); border:none; color:#fff; font-weight:800;">CONNECT</button>
   </div>
+
   <div id="home" class="page active">
-    <div class="dash-card" style="background: linear-gradient(135deg, var(--p), #4a3aff);">
-        <h2 style="margin:0; font-size:28px;">Hello, <span id="uName">...</span></h2>
-        <p id="roleText" style="opacity:0.9; margin-top:5px; font-size:14px;">User Profile</p>
+    <div class="dash-card" style="background: linear-gradient(135deg, #7c4dff, #ff4081);">
+        <h2 style="margin:0; font-size:28px;">Master <span id="uName">...</span></h2>
+        <p id="magicInfo" style="opacity:0.9; margin-top:5px; font-size:14px;">Welcome to your Magic Dashboard.</p>
+    </div>
+    <div id="adminPanel" style="display:none;" class="dash-card">
+        <h4 style="margin:0; color: gold;">MAGICAL TOOLS</h4>
+        <p style="font-size: 11px; color: var(--muted);">Click a user in Terminal to BAN them.</p>
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-        <div class="dash-card" style="text-align:center;">
-            <h3 id="onlineCount" style="margin:0; font-size:24px;">0</h3>
-            <p style="margin:0; font-size:10px; color:var(--muted);">ACTIVE NODES</p>
-        </div>
-        <div class="dash-card" style="text-align:center;">
-            <h3 style="margin:0; font-size:24px; color:var(--a);">Locked</h3>
-            <p style="margin:0; font-size:10px; color:var(--muted);">E2E SECURE</p>
-        </div>
+        <div class="dash-card" style="text-align:center;"><h3 id="onlineCount" style="margin:0;">0</h3><p style="margin:0; font-size:10px;">ACTIVE NODES</p></div>
+        <div class="dash-card" style="text-align:center;"><h3 style="margin:0; color:var(--a);">Locked</h3><p style="margin:0; font-size:10px;">E2E SECURE</p></div>
     </div>
   </div>
+
   <div id="chat" class="page">
-    <div id="chatWith" style="font-size:11px; font-weight:800; color:var(--p); margin-bottom:12px;">CHANNEL</div>
+    <div id="chatWith" style="font-size:11px; font-weight:800; color:var(--p); margin-bottom:12px;">ACTIVE CHANNEL</div>
     <div class="chat-container" id="chatBox"></div>
     <div class="dock-bar">
       <label for="imgInp" style="color:var(--p); cursor:pointer;"><i class="fa-solid fa-image"></i></label>
       <input type="file" id="imgInp" hidden onchange="sendImg(event)">
-      <input id="msgInput" class="dock-input" placeholder="Type here..."/>
+      <input id="msgInput" class="dock-input" placeholder="Whisper something..."/>
       <button class="send-btn" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
   </div>
-  <div id="users" class="page"><div id="userList"></div><h4 style="font-size:10px; color:var(--muted); margin:25px 0 12px;">PUBLIC GROUPS</h4><div id="groupList"></div></div>
+
+  <div id="users" class="page"><div id="userList"></div><h4 style="font-size:10px; color:var(--muted); margin:25px 0 12px;">GLOBAL CHANNELS</h4><div id="groupList"></div></div>
+  
   <nav>
     <div class="nav-btn active" onclick="openPage('home',this)"><i class="fa-solid fa-house"></i></div>
     <div class="nav-btn" onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></div>
-    <div class="nav-btn" onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></div>
+    <div class="nav-btn" onclick="openPage('users',this)"><i class="fa-solid fa-terminal"></i></div>
   </nav>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove, onDisconnect, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove, onDisconnect, update, get } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
 const app = initializeApp(firebaseConfig);
@@ -90,27 +93,41 @@ let user = localStorage.getItem("lc_user");
 let role = localStorage.getItem("lc_role") || "user";
 let curChat = "", isGroup = false;
 
-// Secret Key check
-const ADMIN_KEY = "Admin786"; 
+const MAGIC_KEY = "Admin786"; // Sirf aapko pata hai!
 
-if(user) { document.getElementById("auth").style.display = "none"; start(); }
+if(user) { checkBanStatus(user); }
 
 window.login = () => {
     const n = document.getElementById("userInput").value.trim();
     if(n) {
-        user = n;
-        localStorage.setItem("lc_user", n);
-        if(n === ADMIN_KEY) { localStorage.setItem("lc_role", "admin"); }
-        else { localStorage.setItem("lc_role", "user"); }
-        location.reload();
+        checkBanStatus(n, true);
     }
 };
 
+async function checkBanStatus(name, isNew = false) {
+    const snapshot = await get(ref(db, "bannedUsers/" + name));
+    if (snapshot.exists()) {
+        alert("🚨 ACCESS DENIED: Your portal access has been revoked by the High Council.");
+        localStorage.clear();
+        location.reload();
+    } else {
+        if(isNew) {
+            user = name;
+            localStorage.setItem("lc_user", name);
+            if(name === MAGIC_KEY) localStorage.setItem("lc_role", "magician");
+            else localStorage.setItem("lc_role", "user");
+            location.reload();
+        }
+        document.getElementById("auth").style.display = "none";
+        start();
+    }
+}
+
 function start() {
     document.getElementById("uName").textContent = user;
-    if(role === "admin") {
-        document.getElementById("adminTag").style.display = "inline";
-        document.getElementById("roleText").textContent = "System Administrator";
+    if(role === "magician") {
+        document.getElementById("magicBadge").style.display = "inline";
+        document.getElementById("adminPanel").style.display = "block";
     }
     set(ref(db, "users/"+user), {name: user, online: true});
     onDisconnect(ref(db, "users/"+user)).update({online: false});
@@ -134,9 +151,11 @@ onValue(ref(db, "users"), snap => {
             count++;
             if(u.key !== user) {
                 const div = document.createElement("div"); div.className = "dash-card";
-                div.style.padding = "16px"; div.style.cursor = "pointer";
                 div.innerHTML = `<b>${d.name}</b>`;
-                div.onclick = () => { curChat=u.key; isGroup=false; document.getElementById("chatWith").innerText=d.name; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); };
+                if(role === "magician") {
+                    div.innerHTML += `<br><button class="magic-btn" onclick="banUser('${d.name}')">BAN USER</button>`;
+                }
+                div.onclick = (e) => { if(e.target.tagName !== 'BUTTON') { curChat=u.key; isGroup=false; document.getElementById("chatWith").innerText=d.name; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); }};
                 list.appendChild(div);
             }
         }
@@ -144,16 +163,20 @@ onValue(ref(db, "users"), snap => {
     document.getElementById("onlineCount").textContent = count;
 });
 
+window.banUser = (name) => {
+    if(confirm("Magically ban " + name + " forever?")) {
+        set(ref(db, "bannedUsers/" + name), true);
+        alert(name + " has been vanished from the portal!");
+    }
+};
+
 onValue(ref(db, "groups"), snap => {
     const list = document.getElementById("groupList"); list.innerHTML = "";
     snap.forEach(g => {
-        if(g.key && g.key !== "undefined") {
-            const div = document.createElement("div"); div.className = "dash-card";
-            div.style.padding = "16px";
-            div.innerHTML = `<i class="fa-solid fa-hashtag" style="color:var(--p); margin-right:10px;"></i><b>${g.key}</b>`;
-            div.onclick = () => { curChat=g.key; isGroup=true; document.getElementById("chatWith").innerText="Group: "+g.key; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); };
-            list.appendChild(div);
-        }
+        const div = document.createElement("div"); div.className = "dash-card";
+        div.innerHTML = `<i class="fa-solid fa-hashtag" style="color:var(--p);"></i> <b>${g.key}</b>`;
+        div.onclick = () => { curChat=g.key; isGroup=true; document.getElementById("chatWith").innerText="Group: "+g.key; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); };
+        list.appendChild(div);
     });
 });
 
@@ -167,11 +190,8 @@ function loadChat() {
                 const isMe = v.from === user;
                 const div = document.createElement("div"); div.className = "bubble " + (isMe ? "me" : "them");
                 let nTag = isGroup ? `<span class="sender-tag">${v.from}</span>` : "";
-                
-                // Admin Delete Icon
-                let adminTool = (role === "admin") ? `<i class="fa-solid fa-trash" style="color:#ff4444; font-size:10px; margin-left:10px; cursor:pointer;" onclick="deleteMsgAdmin('${path}', '${m.key}')"></i>` : "";
-                
-                div.innerHTML = `${nTag}${v.img ? `<img src="${v.img}" style="width:100%; border-radius:15px;">` : v.text} ${adminTool}`;
+                let magicDel = (role === "magician") ? `<i class="fa-solid fa-wand-sparkles" style="color:gold; font-size:10px; margin-left:10px; cursor:pointer;" onclick="deleteMsgMagic('${path}', '${m.key}')"></i>` : "";
+                div.innerHTML = `${nTag}${v.img ? `<img src="${v.img}" style="width:100%; border-radius:15px;">` : v.text} ${magicDel}`;
                 box.appendChild(div);
             }
         });
@@ -179,10 +199,8 @@ function loadChat() {
     });
 }
 
-window.deleteMsgAdmin = (path, msgId) => {
-    if(confirm("Admin, delete this message for everyone?")) {
-        update(ref(db, path + "/" + msgId), { deleted: true, text: "Deleted by Admin" });
-    }
+window.deleteMsgMagic = (path, msgId) => {
+    update(ref(db, path + "/" + msgId), { deleted: true });
 };
 
 window.sendMsg = () => {
