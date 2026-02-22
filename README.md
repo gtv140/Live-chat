@@ -2,112 +2,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Meta Infinity | Final Edition</title>
+    <title>Facebook Infinity</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #0084FF; --bg: #000; --card: #121212; --text: #fff; --border: #262626; --insta: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
-        body, html { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
+        :root { --fb-blue: #0866FF; --fb-bg: #F0F2F5; --fb-white: #FFFFFF; --fb-text: #050505; --fb-gray: #65676B; --fb-border: #ced0d4; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+        body, html { height: 100%; background: var(--fb-bg); color: var(--fb-text); overflow: hidden; }
 
         /* AUTH SCREEN */
-        #authBox { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 25px; }
-        .auth-card { width: 100%; max-width: 350px; text-align: center; }
-        .auth-card h1 { font-size: 45px; font-weight: 800; color: var(--p); margin-bottom: 30px; letter-spacing: -2px; }
-        .auth-input { width: 100%; padding: 18px; background: #1a1a1a; border: 1px solid var(--border); border-radius: 15px; color: #fff; margin-bottom: 15px; outline: none; font-size: 16px; }
-        .btn-join { width: 100%; padding: 18px; background: var(--p); border: none; border-radius: 15px; color: #fff; font-weight: 800; cursor: pointer; font-size: 16px; }
+        #authBox { position: fixed; inset: 0; background: var(--fb-bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { width: 100%; max-width: 400px; text-align: center; background: var(--fb-white); padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .auth-card h1 { color: var(--fb-blue); font-size: 40px; margin-bottom: 20px; font-weight: 800; }
+        .auth-input { width: 100%; padding: 14px; border: 1px solid var(--fb-border); border-radius: 6px; font-size: 16px; margin-bottom: 15px; outline: none; }
+        .btn-join { width: 100%; padding: 14px; background: var(--fb-blue); border: none; border-radius: 6px; color: #fff; font-weight: 700; font-size: 18px; cursor: pointer; }
 
-        /* MAIN APP */
-        .app-shell { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; position: relative; background: #000; }
-        header { padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #000; }
-        header h2 { font-style: italic; font-weight: 800; font-size: 24px; background: var(--insta); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* APP LAYOUT */
+        .app-shell { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; background: var(--fb-bg); position: relative; }
+        
+        header { background: var(--fb-white); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        header h2 { color: var(--fb-blue); font-size: 28px; font-weight: 800; letter-spacing: -1px; }
 
-        .viewport { flex: 1; overflow-y: auto; padding-bottom: 80px; scrollbar-width: none; }
+        nav { background: var(--fb-white); display: flex; border-bottom: 1px solid var(--fb-border); }
+        .nav-item { flex: 1; text-align: center; padding: 12px; font-size: 22px; color: var(--fb-gray); cursor: pointer; position: relative; }
+        .nav-item.active { color: var(--fb-blue); }
+        .nav-item.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--fb-blue); }
+
+        .viewport { flex: 1; overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; }
         .viewport::-webkit-scrollbar { display: none; }
         .view { display: none; }
         .view.active { display: block; }
 
-        /* POSTS STYLE */
-        .post-card { background: var(--card); border-bottom: 8px solid #000; }
-        .post-top { padding: 12px; display: flex; align-items: center; justify-content: space-between; }
-        .avatar { width: 35px; height: 35px; border-radius: 50%; background: var(--p); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
-        .post-img { width: 100%; max-height: 450px; object-fit: cover; background: #1a1a1a; }
-        .post-actions { padding: 15px; display: flex; gap: 20px; font-size: 24px; }
+        /* FB FEED STYLE */
+        .fb-composer { background: var(--fb-white); padding: 15px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; }
+        .composer-btn { background: #E4E6EB; padding: 10px 15px; border-radius: 20px; flex: 1; color: var(--fb-gray); cursor: pointer; text-align: left; }
+        
+        .post-card { background: var(--fb-white); margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .post-header { padding: 12px; display: flex; align-items: center; justify-content: space-between; }
+        .u-info { display: flex; align-items: center; gap: 10px; }
+        .pfp { width: 40px; height: 40px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; background-color: var(--fb-blue); }
+        .post-text { padding: 0 15px 12px; font-size: 15px; }
+        .post-img { width: 100%; max-height: 400px; object-fit: cover; border-top: 1px solid #f0f0f0; }
+        .post-stats { padding: 10px 15px; display: flex; justify-content: space-between; color: var(--fb-gray); font-size: 13px; border-bottom: 1px solid #f0f2f5; }
+        .post-actions { display: flex; padding: 5px; }
+        .act-btn { flex: 1; text-align: center; padding: 8px; color: var(--fb-gray); font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .act-btn:active { background: #f0f2f5; }
 
-        /* CHAT STYLE */
-        .chat-list { padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 12px 16px; border-radius: 20px; max-width: 80%; font-size: 14px; line-height: 1.4; }
-        .msg.me { background: var(--p); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg.them { background: #262626; align-self: flex-start; border-bottom-left-radius: 4px; }
+        /* MESSENGER STYLE */
+        .chat-view { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .bubble { padding: 10px 15px; border-radius: 18px; max-width: 75%; font-size: 14px; position: relative; }
+        .bubble.me { background: var(--fb-blue); color: white; align-self: flex-end; }
+        .bubble.them { background: #E4E6EB; color: black; align-self: flex-start; }
 
-        /* NAV */
-        nav { position: absolute; bottom: 0; width: 100%; height: 70px; background: #000; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 100; }
-        .nav-item { font-size: 26px; color: #fff; opacity: 0.4; cursor: pointer; }
-        .nav-item.active { opacity: 1; color: var(--p); }
+        #msgDock { background: var(--fb-white); padding: 10px; display: none; border-top: 1px solid var(--fb-border); gap: 10px; }
+        #msgDock.active { display: flex; }
+        .msg-input { flex: 1; padding: 10px 15px; border-radius: 20px; background: #F0F2F5; border: none; outline: none; }
 
-        #chatDock { position: absolute; bottom: 70px; width: 100%; padding: 12px; background: #000; border-top: 1px solid var(--border); display: none; gap: 10px; }
-        #chatDock.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div id="authBox">
     <div class="auth-card">
-        <h1>Meta</h1>
-        <input type="text" id="userInput" class="auth-input" placeholder="Enter Username...">
-        <button class="btn-join" id="joinBtn">Join Network</button>
+        <h1>facebook</h1>
+        <input type="text" id="userInput" class="auth-input" placeholder="Your name...">
+        <button class="btn-join" onclick="handleJoin()">Log In</button>
     </div>
 </div>
 
 <div class="app-shell">
     <header>
-        <h2>Meta</h2>
-        <div style="display:flex; gap:20px; font-size:22px;">
-            <label for="imgFile"><i class="fa-regular fa-square-plus"></i></label>
-            <input type="file" id="imgFile" hidden accept="image/*">
+        <h2>facebook</h2>
+        <div style="display:flex; gap:15px; font-size:20px; color: var(--fb-text);">
+            <i class="fa-solid fa-circle-plus" onclick="triggerPost()"></i>
+            <i class="fa-solid fa-magnifying-glass"></i>
             <i class="fa-brands fa-facebook-messenger" onclick="switchTab('chat')"></i>
         </div>
     </header>
 
-    <div class="viewport" id="mainScroll">
+    <nav>
+        <div class="nav-item active" onclick="switchTab('home')"><i class="fa-solid fa-house"></i></div>
+        <div class="nav-item"><i class="fa-solid fa-user-group"></i></div>
+        <div class="nav-item"><i class="fa-solid fa-tv"></i></div>
+        <div class="nav-item" onclick="switchTab('profile')"><i class="fa-solid fa-circle-user"></i></div>
+        <div class="nav-item"><i class="fa-solid fa-bell"></i></div>
+        <div class="nav-item"><i class="fa-solid fa-bars"></i></div>
+    </nav>
+
+    <div class="viewport" id="vPort">
         <div id="v-home" class="view active">
+            <div class="fb-composer">
+                <div class="pfp" id="cAvatar">?</div>
+                <div class="composer-btn" onclick="triggerPost()">What's on your mind?</div>
+                <label for="imgInp"><i class="fa-regular fa-image" style="color:#45bd62; font-size:22px;"></i></label>
+                <input type="file" id="imgInp" hidden accept="image/*" onchange="uploadPhoto(event)">
+            </div>
             <div id="postFeed"></div>
         </div>
 
         <div id="v-chat" class="view">
-            <div class="chat-list" id="chatList"></div>
+            <div class="chat-view" id="chatList"></div>
         </div>
 
-        <div id="v-profile" class="view" style="padding:40px 20px; text-align:center;">
-            <div class="avatar" style="width:100px; height:100px; margin:0 auto; font-size:40px; background:var(--insta);" id="myPfp">?</div>
-            <h2 id="myName" style="margin:15px 0;">User</h2>
-            <div style="display:flex; justify-content:space-around; margin:20px 0; border-top:1px solid #222; padding-top:20px;">
-                <div><b id="cPost">0</b><br><small>Posts</small></div>
-                <div><b>5.2k</b><br><small>Followers</small></div>
-                <div><b>940</b><br><small>Following</small></div>
+        <div id="v-profile" class="view" style="background:var(--fb-white); min-height:100%;">
+            <div style="height:150px; background:#ddd; position:relative;">
+                <div class="pfp" style="width:120px; height:120px; font-size:40px; border:4px solid white; position:absolute; bottom:-40px; left:20px;" id="profAvatar">?</div>
             </div>
-            <button onclick="logout()" style="color:red; background:none; border:none; font-weight:800; margin-top:20px;">Logout</button>
+            <div style="padding:50px 20px 20px;">
+                <h2 id="profName" style="font-size:24px;">Username</h2>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button style="flex:1; background:var(--fb-blue); color:white; border:none; padding:10px; border-radius:6px; font-weight:600;">Add to Story</button>
+                    <button style="background:#E4E6EB; border:none; padding:10px 15px; border-radius:6px;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="chatDock">
-        <input type="text" id="msgInp" style="flex:1; padding:12px; border-radius:25px; background:#1a1a1a; border:none; color:#fff; outline:none;" placeholder="Message...">
-        <i class="fa-solid fa-paper-plane" id="sendBtn" style="color:var(--p); font-size:22px;"></i>
+    <div id="msgDock">
+        <i class="fa-solid fa-circle-plus" style="color:var(--fb-blue); font-size:22px;"></i>
+        <input type="text" id="mInp" class="msg-input" placeholder="Aa">
+        <i class="fa-solid fa-paper-plane" onclick="sendMsg()" style="color:var(--fb-blue); font-size:22px;"></i>
     </div>
-
-    <nav>
-        <div class="nav-item active" onclick="switchTab('home')"><i class="fa-solid fa-house"></i></div>
-        <div class="nav-item"><i class="fa-solid fa-magnifying-glass"></i></div>
-        <div class="nav-item" onclick="switchTab('chat')"><i class="fa-solid fa-clapperboard"></i></div>
-        <div class="nav-item" onclick="switchTab('profile')"><i class="fa-solid fa-circle-user"></i></div>
-    </nav>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getDatabase, ref, push, onValue, remove, runTransaction } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-// AapkI REAL CONFIGURATION
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
   authDomain: "live-chat-b810c.firebaseapp.com",
@@ -120,96 +142,81 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-let user = localStorage.getItem("meta_final_v3");
+let user = localStorage.getItem("fb_infinity_user");
 
-if(user) {
-    document.getElementById("authBox").style.display = "none";
-    runApp();
-}
+if(user) { document.getElementById("authBox").style.display="none"; init(); }
 
-// JOIN LOGIC
-document.getElementById("joinBtn").onclick = () => {
-    const val = document.getElementById("userInput").value.trim();
-    if(val) {
-        localStorage.setItem("meta_final_v3", val);
-        window.location.reload();
-    }
+window.handleJoin = () => {
+    const n = document.getElementById("userInput").value.trim();
+    if(n) { localStorage.setItem("fb_infinity_user", n); location.reload(); }
 };
 
-function runApp() {
-    document.getElementById("myName").innerText = user;
-    document.getElementById("myPfp").innerText = user.charAt(0).toUpperCase();
+function init() {
+    document.getElementById("profName").innerText = user;
+    document.getElementById("profAvatar").innerText = user.charAt(0).toUpperCase();
+    document.getElementById("cAvatar").innerText = user.charAt(0).toUpperCase();
 
-    // Sync Posts
-    onValue(ref(db, 'posts_final'), (snap) => {
-        const feed = document.getElementById("postFeed");
-        feed.innerHTML = "";
-        let count = 0;
+    onValue(ref(db, 'fb_posts'), (snap) => {
+        const feed = document.getElementById("postFeed"); feed.innerHTML = "";
         snap.forEach(s => {
             const p = s.val();
-            if(p.user === user) count++;
             feed.innerHTML = `
                 <div class="post-card">
-                    <div class="post-top">
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <div class="avatar">${p.user.charAt(0)}</div><b>${p.user}</b>
-                        </div>
-                        ${p.user === user ? `<i class="fa-solid fa-trash" onclick="window.delPost('${s.key}')"></i>` : ''}
+                    <div class="post-header">
+                        <div class="u-info"><div class="pfp">${p.user.charAt(0)}</div><div><b>${p.user}</b><br><small style="color:gray">Just now • <i class="fa-solid fa-earth-americas"></i></small></div></div>
+                        ${p.user === user ? `<i class="fa-solid fa-ellipsis-h" onclick="del('fb_posts/${s.key}')"></i>` : ''}
                     </div>
+                    <div class="post-text">${p.text}</div>
                     ${p.img ? `<img src="${p.img}" class="post-img">` : ''}
-                    <div style="padding:15px;">${p.text}</div>
+                    <div class="post-stats"><span>👍 ${p.likes || 0}</span><span>0 Comments</span></div>
                     <div class="post-actions">
-                        <i class="fa-regular fa-heart" onclick="window.likePost('${s.key}')"></i>
-                        <span style="font-size:14px; margin-left:-12px; font-weight:700;">${p.likes || 0}</span>
-                        <i class="fa-regular fa-comment"></i>
+                        <div class="act-btn" onclick="like('${s.key}')"><i class="fa-regular fa-thumbs-up"></i> Like</div>
+                        <div class="act-btn"><i class="fa-regular fa-comment"></i> Comment</div>
+                        <div class="act-btn"><i class="fa-solid fa-share"></i> Share</div>
                     </div>
                 </div>` + feed.innerHTML;
         });
-        document.getElementById("cPost").innerText = count;
     });
 
-    // Sync Chat
-    onValue(ref(db, 'chat_final'), (snap) => {
-        const list = document.getElementById("chatList");
-        list.innerHTML = "";
+    onValue(ref(db, 'fb_chat'), (snap) => {
+        const c = document.getElementById("chatList"); c.innerHTML = "";
         snap.forEach(s => {
-            const m = s.val();
-            const isMe = m.user === user;
-            list.innerHTML += `<div class="msg ${isMe ? 'me' : 'them'}"><small style="display:block;font-size:9px;opacity:0.6">${m.user}</small>${m.text}</div>`;
+            const m = s.val(); const isMe = m.user === user;
+            c.innerHTML += `<div class="bubble ${isMe?'me':'them'}">${m.text}</div>`;
         });
     });
 }
 
-// Global Actions
-window.delPost = (id) => { if(confirm("Delete post?")) remove(ref(db, 'posts_final/'+id)); };
-window.likePost = (id) => runTransaction(ref(db, `posts_final/${id}/likes`), (c) => (c || 0) + 1);
+window.triggerPost = () => {
+    const t = prompt("What's on your mind?");
+    if(t) push(ref(db, 'fb_posts'), { user, text: t, likes: 0 });
+};
 
-document.getElementById("imgFile").onchange = (e) => {
-    const file = e.target.files[0];
+window.uploadPhoto = (e) => {
     const reader = new FileReader();
     reader.onload = () => {
-        const caption = prompt("Write a caption...");
-        push(ref(db, 'posts_final'), { user, text: caption || "", img: reader.result, likes: 0 });
+        const cap = prompt("Say something about this photo...");
+        push(ref(db, 'fb_posts'), { user, text: cap || "", img: reader.result, likes: 0 });
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(e.target.files[0]);
 };
 
-document.getElementById("sendBtn").onclick = () => {
-    const inp = document.getElementById("msgInp");
-    if(inp.value.trim()) {
-        push(ref(db, 'chat_final'), { user, text: inp.value });
-        inp.value = "";
-    }
+window.sendMsg = () => {
+    const i = document.getElementById("mInp");
+    if(i.value) { push(ref(db, 'fb_chat'), { user, text: i.value }); i.value = ""; }
 };
+
+window.like = (id) => runTransaction(ref(db, `fb_posts/${id}/likes`), (c) => (c || 0) + 1);
+window.del = (p) => { if(confirm("Delete this post?")) remove(ref(db, p)); };
 
 window.switchTab = (t) => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('v-'+t).classList.add('active');
-    document.getElementById('chatDock').classList.toggle('active', t === 'chat');
+    document.getElementById('msgDock').classList.toggle('active', t === 'chat');
     
-    const map = {'home':0, 'chat':2, 'profile':3};
-    document.querySelectorAll('.nav-item')[map[t]].classList.add('active');
+    const tabs = {'home':0, 'chat':1, 'profile':3};
+    if(tabs[t] !== undefined) document.querySelectorAll('.nav-item')[tabs[t]].classList.add('active');
 };
 
 window.logout = () => { localStorage.clear(); location.reload(); };
