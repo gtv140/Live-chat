@@ -1,133 +1,115 @@
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Infinity Ultra 🚀</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-:root {
-  --primary: #00f2fe; --secondary: #4facfe; --bg: #06080f;
-  --card: #121620; --glass: rgba(255, 255, 255, 0.05);
-  --text: #ffffff; --muted: #8e9297; --accent: #ff007a;
-}
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body, html { margin:0; padding:0; height:100%; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Infinity Ultra Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00f2fe; --secondary: #4facfe; --bg: #06080f;
+            --card: #121620; --glass: rgba(255, 255, 255, 0.08);
+            --text: #ffffff; --muted: #8e9297;
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body, html { margin:0; padding:0; height:100%; background: var(--bg); color: var(--text); overflow: hidden; }
 
-.app-wrapper { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; position: relative; background: var(--bg); border-right: 1px solid var(--glass); border-left: 1px solid var(--glass); }
+        .app-shell { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; position: relative; }
 
-/* Header */
-header { padding: 15px 20px; background: var(--card); display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-header h1 { font-size: 20px; font-weight: 700; background: linear-gradient(45deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
+        /* Header Fix */
+        header { padding: 15px 20px; background: var(--card); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass); z-index: 100; }
+        header h1 { font-size: 18px; font-weight: 800; background: linear-gradient(45deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
 
-/* Viewport Area */
-.viewport { flex: 1; overflow-y: auto; padding-bottom: 80px; position: relative; }
-.view { display: none; height: 100%; padding: 15px; overflow-y: auto; }
-.view.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        /* Scrollable Content */
+        .viewport { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 160px; scroll-behavior: smooth; }
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.3s ease; }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* Login Styling */
-#loginPage { text-align: center; padding-top: 20vh; }
-.login-card { background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid var(--glass); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-.input-field { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--glass); background: #1c222d; color: white; margin-bottom: 20px; outline: none; }
-.btn-main { width: 100%; padding: 15px; border-radius: 12px; background: linear-gradient(45deg, var(--primary), var(--secondary)); border: none; color: #000; font-weight: bold; cursor: pointer; font-size: 16px; }
+        /* Chat Bubbles */
+        .bubble { padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 14px; margin-bottom: 10px; position: relative; line-height: 1.4; }
+        .bubble.sent { align-self: flex-end; background: #005c4b; margin-left: auto; border-bottom-right-radius: 2px; }
+        .bubble.received { align-self: flex-start; background: var(--card); border: 1px solid var(--glass); border-bottom-left-radius: 2px; }
+        .bubble b { display: block; font-size: 10px; color: var(--primary); margin-bottom: 4px; }
 
-/* Dashboard & Status */
-.status-container { display: flex; gap: 15px; padding-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
-.status-circle { min-width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--primary); padding: 3px; cursor: pointer; position: relative; }
-.status-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-.status-circle::after { content: '+'; position: absolute; bottom: 0; right: 0; background: var(--secondary); width: 20px; height: 20px; border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center; color: black; border: 2px solid var(--bg); }
+        /* THE FIX: Floating Input Bar */
+        .input-dock { 
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            width: 95%; max-width: 480px; background: #1c222d; padding: 10px 15px; 
+            border-radius: 30px; display: flex; align-items: center; gap: 10px; 
+            border: 1px solid var(--glass); z-index: 999; box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+        }
+        .input-dock input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 15px; }
+        .input-dock i { color: var(--primary); font-size: 20px; cursor: pointer; transition: 0.2s; }
+        .input-dock i:active { transform: scale(0.9); }
 
-/* Chat Bubbles */
-.chat-window { display: flex; flex-direction: column; gap: 10px; padding-bottom: 100px; }
-.bubble { padding: 12px 16px; border-radius: 18px; max-width: 80%; font-size: 14px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-.bubble.sent { align-self: flex-end; background: #005c4b; color: white; border-bottom-right-radius: 4px; }
-.bubble.received { align-self: flex-start; background: var(--card); border: 1px solid var(--glass); border-bottom-left-radius: 4px; }
-.bubble b { display: block; font-size: 11px; color: var(--primary); margin-bottom: 3px; }
+        /* Navigation Fix */
+        nav { position: fixed; bottom: 0; width: 100%; max-width: 500px; height: 75px; background: var(--card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--glass); z-index: 1000; }
+        nav button { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+        nav button.active { color: var(--primary); }
+        nav button i { font-size: 22px; }
 
-/* Multimedia Input Bar */
-.input-bar { position: absolute; bottom: 85px; left: 10px; right: 10px; background: #1c222d; padding: 10px 15px; border-radius: 30px; display: flex; align-items: center; gap: 12px; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid var(--glass); }
-.input-bar input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 15px; }
-.input-bar i { color: var(--muted); font-size: 20px; cursor: pointer; transition: 0.2s; }
-.input-bar i:hover { color: var(--primary); }
-
-/* Bottom Tab Navigation */
-nav { position: absolute; bottom: 0; left: 0; right: 0; height: 75px; background: var(--card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--glass); z-index: 1001; }
-nav button { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; transition: 0.3s; }
-nav button.active { color: var(--primary); transform: translateY(-3px); }
-nav button i { font-size: 22px; }
-nav button span { font-size: 10px; font-weight: 600; }
-
-/* User List */
-.user-row { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
-.user-row:active { transform: scale(0.98); background: rgba(255,255,255,0.1); }
-.user-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(45deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; font-size: 18px; }
-</style>
+        /* Lists */
+        .row { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; cursor: pointer; border: 1px solid transparent; }
+        .row:hover { border-color: var(--primary); }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--glass); display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--primary); }
+    </style>
 </head>
 <body>
 
-<div class="app-wrapper">
+<div class="app-shell">
     <header>
         <h1>INFINITY ULTRA</h1>
-        <div style="display:flex; gap:18px;">
-            <i class="fa-solid fa-camera" onclick="alert('Camera functionality requires HTTPS')"></i>
-            <i class="fa-solid fa-search"></i>
-            <i class="fa-solid fa-ellipsis-vertical" onclick="toggleSettings()"></i>
+        <div style="display:flex; gap:15px;">
+            <i class="fa-solid fa-camera" onclick="document.getElementById('fileInp').click()"></i>
+            <i class="fa-solid fa-power-off" onclick="logout()" style="color:red"></i>
         </div>
     </header>
 
-    <div class="viewport" id="scrollContainer">
-        
-        <div id="view-login" class="view active">
-            <div class="login-card">
-                <i class="fa-solid fa-shield-cat" style="font-size: 60px; color: var(--primary); margin-bottom: 20px;"></i>
-                <h2>Secure Link</h2>
-                <input type="text" id="usernameInput" class="input-field" placeholder="Create your alias...">
-                <button class="btn-main" onclick="handleLogin()">START CONNECTION</button>
+    <div class="viewport" id="scrollArea">
+        <div id="v-login" class="view active">
+            <div style="text-align:center; padding-top:100px;">
+                <i class="fa-solid fa-user-astronaut" style="font-size:70px; color:var(--primary)"></i>
+                <h2>Welcome to Ultra</h2>
+                <input type="text" id="uInp" placeholder="Enter Username..." style="width:80%; padding:15px; border-radius:12px; background:var(--card); border:1px solid var(--primary); color:white; outline:none; margin-top:20px;">
+                <br>
+                <button onclick="login()" style="width:80%; padding:15px; border-radius:12px; background:var(--primary); color:black; font-weight:bold; border:none; margin-top:20px;">SYNC IDENTITY</button>
             </div>
         </div>
 
-        <div id="view-home" class="view">
-            <div class="status-container">
-                <div class="status-circle"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Me"></div>
-                <div class="status-circle" style="border-color: #555;"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=A"></div>
-                <div class="status-circle" style="border-color: #555;"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=B"></div>
+        <div id="v-home" class="view">
+            <div style="background: linear-gradient(45deg, #121620, #1c222d); padding: 25px; border-radius: 20px; text-align: center; margin-bottom: 20px;">
+                <h3 id="welcomeH">Hi Explorer!</h3>
+                <p>Status: <span style="color:var(--primary)">Secure & Live</span></p>
             </div>
-            <div style="background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; border-radius: 20px; margin-bottom: 20px;">
-                <h3 id="userGreet" style="margin:0">Welcome</h3>
-                <p style="margin:5px 0 0 0; opacity:0.7; font-size:14px;">Server: Global-Alpha-1</p>
-            </div>
-            <h3>Quick Connections</h3>
-            <div id="activeUserCards"></div>
+            <h3>Quick Connect</h3>
+            <div id="dashUsers"></div>
         </div>
 
-        <div id="view-chat" class="view">
-            <div style="position:sticky; top:0; background:var(--bg); padding:10px; z-index:10; border-bottom:1px solid var(--glass); display:flex; align-items:center; gap:10px;">
-                <i class="fa-solid fa-arrow-left" onclick="navigate('home')"></i>
-                <b id="chattingWith">Global Room</b>
-            </div>
-            <div class="chat-window" id="messageBox"></div>
+        <div id="v-chat" class="view">
+            <div style="text-align:center; padding-bottom:10px; color:var(--primary); font-weight:bold;" id="chatT">Global Room</div>
+            <div id="chatBox" style="display:flex; flex-direction:column;"></div>
         </div>
 
-        <div id="view-users" class="view">
-            <h3>Active Nodes</h3>
-            <div id="fullUserList"></div>
+        <div id="v-users" class="view">
+            <h3>Active Network</h3>
+            <div id="fullList"></div>
         </div>
-
     </div>
 
-    <div class="input-bar" id="inputDock" style="display:none;">
-        <i class="fa-solid fa-paperclip"></i>
-        <input type="text" id="mainInput" placeholder="Message...">
-        <i class="fa-solid fa-microphone"></i>
-        <i class="fa-solid fa-paper-plane" style="color:var(--primary);" onclick="handleSendMessage()"></i>
+    <div class="input-dock" id="typeDock" style="display:none;">
+        <input type="file" id="fileInp" style="display:none" onchange="alert('Image upload ready!')">
+        <i class="fa-solid fa-image" onclick="document.getElementById('fileInp').click()"></i>
+        <input type="text" id="mInp" placeholder="Type message here...">
+        <i class="fa-solid fa-microphone" onclick="alert('Recording...')"></i>
+        <i class="fa-solid fa-paper-plane" onclick="send()"></i>
     </div>
 
-    <nav id="bottomNav" style="display:none;">
-        <button onclick="navigate('home', this)" class="active"><i class="fa-solid fa-house"></i><span>Home</span></button>
-        <button onclick="navigate('chat', this)" id="chatTabBtn"><i class="fa-solid fa-comment-dots"></i><span>Chats</span></button>
-        <button onclick="navigate('users', this)"><i class="fa-solid fa-user-group"></i><span>Users</span></button>
-        <button onclick="logout()"><i class="fa-solid fa-gear"></i><span>Logout</span></button>
+    <nav id="footer" style="display:none;">
+        <button onclick="nav('home', this)" class="active"><i class="fa-solid fa-house"></i></button>
+        <button onclick="nav('chat', this)" id="cTab"><i class="fa-solid fa-comment-dots"></i></button>
+        <button onclick="nav('users', this)"><i class="fa-solid fa-user-group"></i></button>
+        <button onclick="alert('Profile Coming Soon')"><i class="fa-solid fa-circle-user"></i></button>
     </nav>
 </div>
 
@@ -135,123 +117,94 @@ nav button span { font-size: 10px; font-weight: 600; }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com"
-};
-
-const app = initializeApp(firebaseConfig);
+const conf = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
+const app = initializeApp(conf);
 const db = getDatabase(app);
 
-let currentUser = localStorage.getItem("inf_user");
-let activeRoom = "Global_Lobby";
-let isPrivate = false;
+let user = localStorage.getItem("u_name");
+let room = "Global_Lobby";
+let isP = false;
 
-// Initialization
-if(currentUser) initApp();
+if(user) startApp();
 
-window.handleLogin = () => {
-    const val = document.getElementById("usernameInput").value.trim();
-    if(!val) return alert("Please enter a name");
-    currentUser = val;
-    localStorage.setItem("inf_user", val);
-    initApp();
+window.login = () => {
+    const v = document.getElementById("uInp").value.trim();
+    if(!v) return;
+    user = v;
+    localStorage.setItem("u_name", v);
+    startApp();
 };
 
-function initApp() {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById("view-home").classList.add("active");
-    document.getElementById("bottomNav").style.display = "flex";
-    document.getElementById("userGreet").innerText = "Hi, " + currentUser + "!";
+function startApp() {
+    document.getElementById("v-login").classList.remove("active");
+    document.getElementById("v-home").classList.add("active");
+    document.getElementById("footer").style.display = "flex";
+    document.getElementById("welcomeH").innerText = "Hi, " + user + "!";
     
-    // Set Online Status
-    set(ref(db, "presence/" + currentUser), { status: "online", lastSeen: Date.now() });
-    onDisconnect(ref(db, "presence/" + currentUser)).set({ status: "offline", lastSeen: Date.now() });
-    
-    loadUserDirectory();
+    set(ref(db, "active_users/" + user), { online: true });
+    onDisconnect(ref(db, "active_users/" + user)).set({ online: false });
+    loadUsers();
 }
 
-window.navigate = (pageId, btn) => {
+window.nav = (id, btn) => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById("view-" + pageId).classList.add("active");
+    document.getElementById("v-" + id).classList.add("active");
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
     
-    if(btn) {
-        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
-
-    // Input Bar Logic
-    document.getElementById("inputDock").style.display = (pageId === 'chat') ? 'flex' : 'none';
-    if(pageId === 'chat') syncMessages();
+    document.getElementById("typeDock").style.display = (id === 'chat') ? 'flex' : 'none';
+    if(id === 'chat') sync();
 };
 
-function loadUserDirectory() {
-    onValue(ref(db, "presence"), (snap) => {
-        const list = document.getElementById("fullUserList");
-        const quickList = document.getElementById("activeUserCards");
-        list.innerHTML = ""; quickList.innerHTML = "";
-        
-        snap.forEach(child => {
-            if(child.key !== currentUser && child.val().status === "online") {
-                const userRow = `
-                    <div class="user-row" onclick="startPrivateChat('${child.key}')">
-                        <div class="user-avatar">${child.key[0].toUpperCase()}</div>
-                        <div><b>${child.key}</b><br><small style="color:var(--primary)">Online Now</small></div>
-                    </div>`;
-                list.innerHTML += userRow;
-                quickList.innerHTML += userRow;
+function loadUsers() {
+    onValue(ref(db, "active_users"), snap => {
+        const fl = document.getElementById("fullList");
+        const dl = document.getElementById("dashUsers");
+        fl.innerHTML = ""; dl.innerHTML = "";
+        snap.forEach(u => {
+            if(u.val().online && u.key !== user) {
+                const html = `<div class="row"><div class="avatar">${u.key[0]}</div><div><b>${u.key}</b><br><small>Online Now</small></div></div>`;
+                const div = document.createElement("div");
+                div.innerHTML = html;
+                div.onclick = () => {
+                    room = [user, u.key].sort().join("_");
+                    isP = true;
+                    document.getElementById("chatT").innerText = "Chat with " + u.key;
+                    nav('chat', document.getElementById('cTab'));
+                };
+                fl.appendChild(div.cloneNode(true));
+                dl.appendChild(div);
             }
         });
     });
 }
 
-window.startPrivateChat = (targetUser) => {
-    activeRoom = [currentUser, targetUser].sort().join("_");
-    isPrivate = true;
-    document.getElementById("chattingWith").innerText = targetUser;
-    navigate('chat', document.getElementById("chatTabBtn"));
-};
-
-function syncMessages() {
-    const chatRef = ref(db, "messages/" + activeRoom);
-    onValue(chatRef, (snap) => {
-        const box = document.getElementById("messageBox");
+function sync() {
+    const path = isP ? "p_chats/" + room : "g_chats/main";
+    onValue(ref(db, path), snap => {
+        const box = document.getElementById("chatBox");
         box.innerHTML = "";
-        snap.forEach(msg => {
-            const data = msg.val();
-            const align = data.user === currentUser ? "sent" : "received";
-            box.innerHTML += `
-                <div class="bubble ${align}">
-                    <b>${data.user}</b>
-                    ${data.text}
-                </div>`;
+        snap.forEach(m => {
+            const d = m.val();
+            const div = document.createElement("div");
+            div.className = "bubble " + (d.from === user ? "sent" : "received");
+            div.innerHTML = `<b>${d.from}</b>${d.text}`;
+            box.appendChild(div);
         });
-        const container = document.getElementById("scrollContainer");
-        container.scrollTop = container.scrollHeight;
+        const v = document.getElementById('scrollArea');
+        v.scrollTop = v.scrollHeight;
     });
 }
 
-window.handleSendMessage = () => {
-    const input = document.getElementById("mainInput");
-    if(!input.value.trim()) return;
-    
-    push(ref(db, "messages/" + activeRoom), {
-        user: currentUser,
-        text: input.value,
-        timestamp: Date.now()
-    });
-    input.value = "";
+window.send = () => {
+    const i = document.getElementById("mInp");
+    if(!i.value.trim()) return;
+    const path = isP ? "p_chats/" + room : "g_chats/main";
+    push(ref(db, path), { from: user, text: i.value });
+    i.value = "";
 };
 
-window.logout = () => {
-    set(ref(db, "presence/" + currentUser), { status: "offline" });
-    localStorage.removeItem("inf_user");
-    location.reload();
-};
-
-window.toggleSettings = () => {
-    alert("Pro Settings: \n- Encryption: AES-256\n- Protocol: Firebase Realtime\n- Build: v3.1.0");
-};
+window.logout = () => { localStorage.clear(); location.reload(); };
 </script>
 </body>
 </html>
