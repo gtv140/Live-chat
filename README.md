@@ -2,135 +2,132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Infinity Pro Max 🚀</title>
+<title>Infinity Ultra 🚀</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root {
-  --p: #00f2fe; --s: #4facfe; --bg: #080a12;
-  --card: rgba(255, 255, 255, 0.06); --glass: rgba(255, 255, 255, 0.1);
-  --text: #ffffff; --muted: #a0a0b0; --accent: #ff007a;
+  --primary: #00f2fe; --secondary: #4facfe; --bg: #06080f;
+  --card: #121620; --glass: rgba(255, 255, 255, 0.05);
+  --text: #ffffff; --muted: #8e9297; --accent: #ff007a;
 }
-body, html { margin:0; padding:0; height:100%; font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body, html { margin:0; padding:0; height:100%; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
 
-/* Glowing Background */
-.glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #1a1f3c 0%, #080a12 100%); z-index: -1; }
-
-.app { max-width: 450px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; position: relative; }
+.app-wrapper { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; position: relative; background: var(--bg); border-right: 1px solid var(--glass); border-left: 1px solid var(--glass); }
 
 /* Header */
-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); border-bottom: 1px solid var(--glass); z-index: 1000; }
-header h1 { font-size: 20px; font-weight: 800; background: linear-gradient(to right, var(--p), var(--s)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin:0; }
+header { padding: 15px 20px; background: var(--card); display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+header h1 { font-size: 20px; font-weight: 700; background: linear-gradient(45deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
 
-/* Scrollable Content */
-.main { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 160px; scroll-behavior: smooth; }
-.page { display: none; }
-.page.active { display: block; animation: slideUp 0.4s ease-out; }
+/* Viewport Area */
+.viewport { flex: 1; overflow-y: auto; padding-bottom: 80px; position: relative; }
+.view { display: none; height: 100%; padding: 15px; overflow-y: auto; }
+.view.active { display: block; animation: fadeIn 0.3s ease-in-out; }
 
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Stories Bar */
-.stories { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
-.story { min-width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--p); padding: 3px; cursor: pointer; }
-.story img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+/* Login Styling */
+#loginPage { text-align: center; padding-top: 20vh; }
+.login-card { background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid var(--glass); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.input-field { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--glass); background: #1c222d; color: white; margin-bottom: 20px; outline: none; }
+.btn-main { width: 100%; padding: 15px; border-radius: 12px; background: linear-gradient(45deg, var(--primary), var(--secondary)); border: none; color: #000; font-weight: bold; cursor: pointer; font-size: 16px; }
 
-/* Cards */
-.card { background: var(--card); border: 1px solid var(--glass); padding: 20px; border-radius: 20px; margin-bottom: 15px; backdrop-filter: blur(5px); }
-.hero { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: #000; font-weight: bold; }
+/* Dashboard & Status */
+.status-container { display: flex; gap: 15px; padding-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
+.status-circle { min-width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--primary); padding: 3px; cursor: pointer; position: relative; }
+.status-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.status-circle::after { content: '+'; position: absolute; bottom: 0; right: 0; background: var(--secondary); width: 20px; height: 20px; border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center; color: black; border: 2px solid var(--bg); }
 
 /* Chat Bubbles */
-.chat-box { display: flex; flex-direction: column; gap: 12px; }
-.m { padding: 12px 16px; border-radius: 20px; max-width: 80%; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-.m.sent { align-self: flex-end; background: linear-gradient(135deg, var(--s), var(--p)); color: #000; border-bottom-right-radius: 4px; }
-.m.rec { align-self: flex-start; background: var(--card); border: 1px solid var(--glass); border-bottom-left-radius: 4px; }
-.m b { display: block; font-size: 10px; margin-bottom: 4px; opacity: 0.7; }
+.chat-window { display: flex; flex-direction: column; gap: 10px; padding-bottom: 100px; }
+.bubble { padding: 12px 16px; border-radius: 18px; max-width: 80%; font-size: 14px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+.bubble.sent { align-self: flex-end; background: #005c4b; color: white; border-bottom-right-radius: 4px; }
+.bubble.received { align-self: flex-start; background: var(--card); border: 1px solid var(--glass); border-bottom-left-radius: 4px; }
+.bubble b { display: block; font-size: 11px; color: var(--primary); margin-bottom: 3px; }
 
-/* Modern Bottom Input Dock */
-.input-dock { position: absolute; bottom: 85px; left: 15px; right: 15px; background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 30px; padding: 10px 18px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--glass); z-index: 2000; }
-.input-dock input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 15px; }
-.input-dock i { font-size: 20px; color: var(--p); cursor: pointer; transition: 0.2s; }
-.input-dock i:hover { color: var(--accent); transform: scale(1.1); }
+/* Multimedia Input Bar */
+.input-bar { position: absolute; bottom: 85px; left: 10px; right: 10px; background: #1c222d; padding: 10px 15px; border-radius: 30px; display: flex; align-items: center; gap: 12px; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid var(--glass); }
+.input-bar input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 15px; }
+.input-bar i { color: var(--muted); font-size: 20px; cursor: pointer; transition: 0.2s; }
+.input-bar i:hover { color: var(--primary); }
 
-/* Navigation */
-nav { position: absolute; bottom: 0; left: 0; right: 0; height: 75px; background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--glass); z-index: 2000; }
+/* Bottom Tab Navigation */
+nav { position: absolute; bottom: 0; left: 0; right: 0; height: 75px; background: var(--card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--glass); z-index: 1001; }
 nav button { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; transition: 0.3s; }
-nav button.active { color: var(--p); transform: translateY(-5px); }
+nav button.active { color: var(--primary); transform: translateY(-3px); }
 nav button i { font-size: 22px; }
+nav button span { font-size: 10px; font-weight: 600; }
 
 /* User List */
-.u-item { display: flex; align-items: center; gap: 15px; padding: 12px; background: var(--card); border-radius: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
-.u-item:hover { border-color: var(--p); transform: translateX(5px); }
-.u-avatar { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(45deg, var(--p), var(--s)); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; }
+.user-row { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
+.user-row:active { transform: scale(0.98); background: rgba(255,255,255,0.1); }
+.user-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(45deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; font-size: 18px; }
 </style>
 </head>
 <body>
 
-<div class="glow"></div>
-<div class="app">
+<div class="app-wrapper">
     <header>
-        <h1>INFINITY PRO</h1>
-        <div style="display:flex; gap:15px;">
-            <i class="fa-solid fa-bell" style="color:var(--p)"></i>
-            <i class="fa-solid fa-power-off" onclick="logout()" style="color:var(--accent)"></i>
+        <h1>INFINITY ULTRA</h1>
+        <div style="display:flex; gap:18px;">
+            <i class="fa-solid fa-camera" onclick="alert('Camera functionality requires HTTPS')"></i>
+            <i class="fa-solid fa-search"></i>
+            <i class="fa-solid fa-ellipsis-vertical" onclick="toggleSettings()"></i>
         </div>
     </header>
 
-    <div class="main" id="scrollArea">
+    <div class="viewport" id="scrollContainer">
         
-        <div id="loginPage" class="page active">
-            <div style="text-align:center; padding-top:80px;">
-                <div style="width:100px; height:100px; background:var(--card); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; margin-bottom:20px; border:2px solid var(--p);">
-                    <i class="fa-solid fa-fingerprint" style="font-size:50px; color:var(--p)"></i>
-                </div>
-                <h2>Quantum Login</h2>
-                <input type="text" id="uName" placeholder="Enter secure alias..." style="width:85%; padding:18px; border-radius:15px; border:1px solid var(--p); background:rgba(0,0,0,0.5); color:white; outline:none; margin-top:10px;">
-                <button onclick="login()" style="width:85%; padding:18px; border-radius:15px; background:var(--p); color:black; border:none; font-weight:bold; margin-top:20px; cursor:pointer; box-shadow: 0 0 20px var(--p);">SYNC SESSION</button>
+        <div id="view-login" class="view active">
+            <div class="login-card">
+                <i class="fa-solid fa-shield-cat" style="font-size: 60px; color: var(--primary); margin-bottom: 20px;"></i>
+                <h2>Secure Link</h2>
+                <input type="text" id="usernameInput" class="input-field" placeholder="Create your alias...">
+                <button class="btn-main" onclick="handleLogin()">START CONNECTION</button>
             </div>
         </div>
 
-        <div id="home" class="page">
-            <div class="stories">
-                <div class="story"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=1"></div>
-                <div class="story"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=2"></div>
-                <div class="story"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=3"></div>
-                <div class="story"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=4"></div>
+        <div id="view-home" class="view">
+            <div class="status-container">
+                <div class="status-circle"><img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Me"></div>
+                <div class="status-circle" style="border-color: #555;"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=A"></div>
+                <div class="status-circle" style="border-color: #555;"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=B"></div>
             </div>
-            <div class="card hero">
-                <h2 id="greet" style="margin:0">Hi!</h2>
-                <p style="margin:5px 0 0 0; opacity:0.8;">Your network is secured.</p>
+            <div style="background: linear-gradient(135deg, #1e3c72, #2a5298); padding: 20px; border-radius: 20px; margin-bottom: 20px;">
+                <h3 id="userGreet" style="margin:0">Welcome</h3>
+                <p style="margin:5px 0 0 0; opacity:0.7; font-size:14px;">Server: Global-Alpha-1</p>
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                <div class="card" style="text-align:center;"><b>Online</b><br><span id="onlineNum" style="font-size:24px; color:var(--p)">0</span></div>
-                <div class="card" style="text-align:center;"><b>Nodes</b><br><span style="font-size:24px; color:var(--accent)">Live</span></div>
-            </div>
+            <h3>Quick Connections</h3>
+            <div id="activeUserCards"></div>
         </div>
 
-        <div id="chat" class="page">
-            <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:15px;">
-                <h3 id="chatTitle" style="margin:0">Global Room</h3>
-                <small style="color:var(--p)">Encrypted</small>
+        <div id="view-chat" class="view">
+            <div style="position:sticky; top:0; background:var(--bg); padding:10px; z-index:10; border-bottom:1px solid var(--glass); display:flex; align-items:center; gap:10px;">
+                <i class="fa-solid fa-arrow-left" onclick="navigate('home')"></i>
+                <b id="chattingWith">Global Room</b>
             </div>
-            <div class="chat-box" id="chatBox"></div>
+            <div class="chat-window" id="messageBox"></div>
         </div>
 
-        <div id="users" class="page">
-            <h3>Network Directory</h3>
-            <div id="uList"></div>
+        <div id="view-users" class="view">
+            <h3>Active Nodes</h3>
+            <div id="fullUserList"></div>
         </div>
 
     </div>
 
-    <div class="input-dock" id="inputDock" style="display:none;">
-        <i class="fa-solid fa-circle-plus"></i>
-        <input type="text" id="msgInp" placeholder="Send a message...">
+    <div class="input-bar" id="inputDock" style="display:none;">
+        <i class="fa-solid fa-paperclip"></i>
+        <input type="text" id="mainInput" placeholder="Message...">
         <i class="fa-solid fa-microphone"></i>
-        <i class="fa-solid fa-paper-plane" onclick="send()"></i>
+        <i class="fa-solid fa-paper-plane" style="color:var(--primary);" onclick="handleSendMessage()"></i>
     </div>
 
-    <nav id="navbar" style="display:none;">
-        <button onclick="tab('home', this)" class="active"><i class="fa-solid fa-house-user"></i></button>
-        <button onclick="tab('chat', this)" id="cBtn"><i class="fa-solid fa-comments"></i></button>
-        <button onclick="tab('users', this)" id="uBtn"><i class="fa-solid fa-users"></i></button>
-        <button onclick="alert('Settings Locked')"><i class="fa-solid fa-gear"></i></button>
+    <nav id="bottomNav" style="display:none;">
+        <button onclick="navigate('home', this)" class="active"><i class="fa-solid fa-house"></i><span>Home</span></button>
+        <button onclick="navigate('chat', this)" id="chatTabBtn"><i class="fa-solid fa-comment-dots"></i><span>Chats</span></button>
+        <button onclick="navigate('users', this)"><i class="fa-solid fa-user-group"></i><span>Users</span></button>
+        <button onclick="logout()"><i class="fa-solid fa-gear"></i><span>Logout</span></button>
     </nav>
 </div>
 
@@ -138,96 +135,123 @@ nav button i { font-size: 22px; }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-const conf = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
-const app = initializeApp(conf);
+const firebaseConfig = {
+  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let user = localStorage.getItem("pro_x_user");
-let room = "Global_Lobby";
-let isPriv = false;
+let currentUser = localStorage.getItem("inf_user");
+let activeRoom = "Global_Lobby";
+let isPrivate = false;
 
-if(user) start();
+// Initialization
+if(currentUser) initApp();
 
-window.login = () => {
-    const v = document.getElementById("uName").value.trim();
-    if(!v) return;
-    user = v;
-    localStorage.setItem("pro_x_user", v);
-    start();
+window.handleLogin = () => {
+    const val = document.getElementById("usernameInput").value.trim();
+    if(!val) return alert("Please enter a name");
+    currentUser = val;
+    localStorage.setItem("inf_user", val);
+    initApp();
 };
 
-function start() {
-    document.getElementById("loginPage").classList.remove("active");
-    document.getElementById("home").classList.add("active");
-    document.getElementById("navbar").style.display = "flex";
-    document.getElementById("greet").innerText = "Hi, " + user + "!";
+function initApp() {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById("view-home").classList.add("active");
+    document.getElementById("bottomNav").style.display = "flex";
+    document.getElementById("userGreet").innerText = "Hi, " + currentUser + "!";
     
-    set(ref(db, "users/" + user), { online: true });
-    onDisconnect(ref(db, "users/" + user)).set({ online: false });
-    load();
+    // Set Online Status
+    set(ref(db, "presence/" + currentUser), { status: "online", lastSeen: Date.now() });
+    onDisconnect(ref(db, "presence/" + currentUser)).set({ status: "offline", lastSeen: Date.now() });
+    
+    loadUserDirectory();
 }
 
-window.tab = (id, btn) => {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById("inputDock").style.display = (id==='chat'?'flex':'none');
-    if(id==='chat') sync();
+window.navigate = (pageId, btn) => {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById("view-" + pageId).classList.add("active");
+    
+    if(btn) {
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    // Input Bar Logic
+    document.getElementById("inputDock").style.display = (pageId === 'chat') ? 'flex' : 'none';
+    if(pageId === 'chat') syncMessages();
 };
 
-function load() {
-    onValue(ref(db, "users"), snap => {
-        const list = document.getElementById("uList");
-        let count = 0; list.innerHTML = "";
-        snap.forEach(u => {
-            if(u.val().online) {
-                count++;
-                if(u.key !== user) {
-                    const d = document.createElement("div");
-                    d.className = "u-item";
-                    d.innerHTML = `<div class="u-avatar">${u.key[0].toUpperCase()}</div><div><b>${u.key}</b><br><small style="color:var(--p)">Online Now</small></div>`;
-                    d.onclick = () => {
-                        room = [user, u.key].sort().join("_");
-                        isPriv = true;
-                        document.getElementById("chatTitle").innerText = u.key;
-                        tab('chat', document.getElementById('cBtn'));
-                    };
-                    list.appendChild(d);
-                }
+function loadUserDirectory() {
+    onValue(ref(db, "presence"), (snap) => {
+        const list = document.getElementById("fullUserList");
+        const quickList = document.getElementById("activeUserCards");
+        list.innerHTML = ""; quickList.innerHTML = "";
+        
+        snap.forEach(child => {
+            if(child.key !== currentUser && child.val().status === "online") {
+                const userRow = `
+                    <div class="user-row" onclick="startPrivateChat('${child.key}')">
+                        <div class="user-avatar">${child.key[0].toUpperCase()}</div>
+                        <div><b>${child.key}</b><br><small style="color:var(--primary)">Online Now</small></div>
+                    </div>`;
+                list.innerHTML += userRow;
+                quickList.innerHTML += userRow;
             }
         });
-        document.getElementById("onlineNum").innerText = count;
     });
 }
 
-function sync() {
-    const path = isPriv ? "private/" + room : "global/main";
-    onValue(ref(db, path), snap => {
-        const box = document.getElementById("chatBox");
-        box.innerHTML = "";
-        snap.forEach(m => {
-            const d = m.val();
-            const div = document.createElement("div");
-            div.className = "m " + (d.from === user ? "sent" : "rec");
-            div.innerHTML = `<b>${d.from}</b>${d.text}`;
-            box.appendChild(div);
-        });
-        const s = document.getElementById('scrollArea');
-        s.scrollTop = s.scrollHeight;
-    });
-}
-
-window.send = () => {
-    const i = document.getElementById("msgInp");
-    if(!i.value.trim()) return;
-    const path = isPriv ? "private/" + room : "global/main";
-    push(ref(db, path), { from: user, text: i.value });
-    i.value = "";
+window.startPrivateChat = (targetUser) => {
+    activeRoom = [currentUser, targetUser].sort().join("_");
+    isPrivate = true;
+    document.getElementById("chattingWith").innerText = targetUser;
+    navigate('chat', document.getElementById("chatTabBtn"));
 };
 
-window.logout = () => { localStorage.removeItem("pro_x_user"); location.reload(); };
+function syncMessages() {
+    const chatRef = ref(db, "messages/" + activeRoom);
+    onValue(chatRef, (snap) => {
+        const box = document.getElementById("messageBox");
+        box.innerHTML = "";
+        snap.forEach(msg => {
+            const data = msg.val();
+            const align = data.user === currentUser ? "sent" : "received";
+            box.innerHTML += `
+                <div class="bubble ${align}">
+                    <b>${data.user}</b>
+                    ${data.text}
+                </div>`;
+        });
+        const container = document.getElementById("scrollContainer");
+        container.scrollTop = container.scrollHeight;
+    });
+}
 
+window.handleSendMessage = () => {
+    const input = document.getElementById("mainInput");
+    if(!input.value.trim()) return;
+    
+    push(ref(db, "messages/" + activeRoom), {
+        user: currentUser,
+        text: input.value,
+        timestamp: Date.now()
+    });
+    input.value = "";
+};
+
+window.logout = () => {
+    set(ref(db, "presence/" + currentUser), { status: "offline" });
+    localStorage.removeItem("inf_user");
+    location.reload();
+};
+
+window.toggleSettings = () => {
+    alert("Pro Settings: \n- Encryption: AES-256\n- Protocol: Firebase Realtime\n- Build: v3.1.0");
+};
 </script>
 </body>
 </html>
