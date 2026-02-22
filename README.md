@@ -2,162 +2,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Infinity Apex | Secure</title>
+    <title>Infinity Apex | Ultimate</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #00e5ff; --s: #0077ff; --bg: #030508; --card: rgba(22, 28, 38, 0.95); --border: rgba(0, 229, 255, 0.2); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: #fff; overflow: hidden; }
+        :root { --p: #00e5ff; --s: #0077ff; --bg: #05070a; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; }
 
-        /* LOGIN MODAL */
-        #loginOverlay { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-box { background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid var(--border); width: 100%; max-width: 350px; text-align: center; box-shadow: 0 0 30px rgba(0,229,255,0.2); }
-        .login-box h2 { color: var(--p); margin-bottom: 20px; }
-        .login-box input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: #fff; margin-bottom: 20px; outline: none; }
-        .login-box button { background: var(--p); color: #000; border: none; padding: 12px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
+        /* WELCOME/LOGIN SCREEN */
+        #loginScreen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: var(--glass); backdrop-filter: blur(20px); padding: 40px 25px; border-radius: 30px; border: 1px solid var(--border); width: 100%; max-width: 360px; text-align: center; }
+        .login-card h1 { font-size: 28px; color: var(--p); margin-bottom: 10px; }
+        .login-input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: #fff; margin-bottom: 20px; outline: none; }
+        .login-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--p), var(--s)); color: #000; font-weight: 800; cursor: pointer; }
 
-        /* MAIN APP */
+        /* MAIN APP SHELL */
         .app-shell { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; position: relative; }
-        header { padding: 15px 20px; background: #030508; border-bottom: 1px solid var(--border); text-align: center; }
-        header h1 { font-size: 18px; font-weight: 800; color: var(--p); margin: 0; text-shadow: 0 0 10px var(--p); }
+        header { padding: 20px; background: rgba(5,7,10,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        header h2 { margin: 0; font-size: 20px; color: var(--p); }
 
-        .viewport { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 160px; scroll-behavior: smooth; }
-        #chatBox { display: flex; flex-direction: column; gap: 15px; }
-
-        .msg-node { display: flex; flex-direction: column; width: 100%; transition: 0.3s; }
-        .msg-node.me { align-items: flex-end; }
-        .msg-node.them { align-items: flex-start; }
-
-        .bubble { 
-            padding: 12px 16px; border-radius: 20px; font-size: 15px; max-width: 80%; 
-            position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.3); word-wrap: break-word;
-            user-select: none; transition: transform 0.1s;
-        }
-        .bubble:active { transform: scale(0.95); }
-        .me .bubble { background: linear-gradient(135deg, var(--p), var(--s)); color: #000; border-bottom-right-radius: 4px; font-weight: 600; }
-        .them .bubble { background: var(--card); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+        .viewport { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 120px; display: none; }
+        .viewport.active { display: block; }
         
-        .reaction-chip { position: absolute; bottom: -10px; background: #1a212c; border: 1px solid var(--p); border-radius: 12px; padding: 2px 6px; font-size: 11px; }
+        /* USER CARDS */
+        .user-card { background: var(--glass); padding: 18px; border-radius: 18px; border: 1px solid var(--border); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
+        .user-card:hover { border-color: var(--p); background: rgba(0, 229, 255, 0.05); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #00ff00; box-shadow: 0 0 10px #00ff00; }
 
-        .dock { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 440px; background: #1a212c; padding: 10px 18px; border-radius: 40px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px; z-index: 2000; }
-        .dock input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 16px; }
+        /* CHAT BUBBLES */
+        .msg-box { display: flex; flex-direction: column; gap: 12px; }
+        .msg { display: flex; flex-direction: column; max-width: 80%; }
+        .msg.me { align-self: flex-end; align-items: flex-end; }
+        .msg.them { align-self: flex-start; align-items: flex-start; }
+        .bubble { padding: 12px 16px; border-radius: 20px; font-size: 15px; position: relative; }
+        .me .bubble { background: linear-gradient(135deg, var(--p), var(--s)); color: #000; border-bottom-right-radius: 4px; font-weight: 600; }
+        .them .bubble { background: var(--glass); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+        .sender { font-size: 10px; opacity: 0.5; margin-bottom: 4px; padding: 0 8px; }
 
-        nav { position: fixed; bottom: 0; width: 100%; max-width: 500px; height: 75px; background: #030508; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 2000; }
-        .nav-link { color: #64748b; font-size: 11px; text-align: center; }
-        .nav-link.active { color: var(--p); }
-        .nav-link i { font-size: 22px; display: block; margin-bottom: 3px; }
+        /* FLOATING INPUT */
+        .input-area { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); width: 92%; background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); padding: 8px 15px; border-radius: 30px; border: 1px solid var(--border); display: none; align-items: center; gap: 10px; z-index: 2000; }
+        .input-area.active { display: flex; }
+        .input-area input { flex: 1; background: transparent; border: none; color: #fff; padding: 10px; font-size: 16px; outline: none; }
+        .send-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--p); border: none; color: #000; cursor: pointer; }
+
+        /* NAVIGATION */
+        nav { position: fixed; bottom: 0; width: 100%; max-width: 500px; height: 75px; background: #050710; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 2000; }
+        .nav-item { color: #64748b; text-align: center; cursor: pointer; transition: 0.3s; }
+        .nav-item.active { color: var(--p); }
+        .nav-item i { font-size: 22px; display: block; margin-bottom: 4px; }
+        .nav-item span { font-size: 11px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<div id="loginOverlay">
-    <div class="login-box">
-        <h2>INFINITY LOGIN</h2>
-        <input type="text" id="usernameInp" placeholder="Enter your name...">
-        <button onclick="handleLogin()">Start Chatting</button>
+<div id="loginScreen">
+    <div class="login-card">
+        <h1>INFINITY</h1>
+        <p style="opacity:0.6; margin-bottom:25px">Enter your alias to connect</p>
+        <input type="text" id="nickInp" class="login-input" placeholder="Your Name...">
+        <button class="login-btn" onclick="startApp()">CONNECT NODE</button>
     </div>
 </div>
 
 <div class="app-shell">
-    <header><h1>INFINITY APEX</h1></header>
+    <header>
+        <h2 id="headerTitle">INFINITY APEX</h2>
+        <i class="fa-solid fa-power-off" onclick="logout()" style="color:#ff4b2b; cursor:pointer"></i>
+    </header>
 
-    <div class="viewport" id="scrollArea">
-        <div id="v-home" class="view" style="display:none">
-            <h3 style="text-align:center">Active Users</h3>
-            <div id="uList"></div>
-        </div>
-        <div id="v-chat" class="view active">
-            <div id="chatBox"></div>
-        </div>
+    <div id="v-home" class="viewport active">
+        <h3 style="margin: 0 0 20px 5px">Online Nodes</h3>
+        <div id="userList"></div>
     </div>
 
-    <div class="dock" id="dock">
-        <i class="fa-solid fa-face-smile" style="color:var(--p)"></i>
-        <input type="text" id="mInp" placeholder="Type message..." onfocus="scrollToBottom()">
-        <i class="fa-solid fa-paper-plane" onclick="send()" style="color:var(--p); cursor:pointer;"></i>
+    <div id="v-chat" class="viewport">
+        <div id="chatMessages" class="msg-box"></div>
+    </div>
+
+    <div class="input-area" id="inputDock">
+        <i class="fa-solid fa-circle-plus" style="opacity:0.5"></i>
+        <input type="text" id="msgInp" placeholder="Send encrypted data..." onfocus="autoScroll()">
+        <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
 
     <nav>
-        <div class="nav-link" onclick="location.reload()"><i class="fa-solid fa-house"></i><span>Home</span></div>
-        <div class="nav-link active"><i class="fa-solid fa-comments"></i><span>Chats</span></div>
-        <div class="nav-link" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></div>
+        <div class="nav-item active" id="homeTab" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>Home</span></div>
+        <div class="nav-item" id="chatTab" onclick="switchTab('chat')"><i class="fa-solid fa-comments"></i><span>Lobby</span></div>
     </nav>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-const conf = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
-const app = initializeApp(conf);
+const config = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
+const app = initializeApp(config);
 const db = getDatabase(app);
 
-let user = localStorage.getItem("apex_user_v2");
-let room = "Global";
+let myName = localStorage.getItem("apex_v4_user");
+let currentRoom = "Global_Lobby";
 
-// LOGIN LOGIC
-if(user) {
-    document.getElementById("loginOverlay").style.display = "none";
-    initChat();
+if(myName) {
+    document.getElementById("loginScreen").style.display = "none";
+    initApp();
 }
 
-window.handleLogin = () => {
-    const name = document.getElementById("usernameInp").value.trim();
-    if(name.length < 3) return alert("Name too short!");
-    localStorage.setItem("apex_user_v2", name);
+window.startApp = () => {
+    const val = document.getElementById("nickInp").value.trim();
+    if(val.length < 2) return alert("Name too short");
+    localStorage.setItem("apex_v4_user", val);
     location.reload();
 };
 
-function initChat() {
-    set(ref(db, "online_v2/" + user), true);
-    syncMsgs();
+function initApp() {
+    // Online Status
+    const myStatusRef = ref(db, 'nodes/' + myName);
+    set(myStatusRef, { online: true, lastSeen: Date.now() });
+    onDisconnect(myStatusRef).remove();
+
+    // Listen for Users
+    onValue(ref(db, 'nodes'), (snap) => {
+        const list = document.getElementById("userList");
+        list.innerHTML = "";
+        snap.forEach(u => {
+            if(u.key !== myName) {
+                const card = document.createElement("div");
+                card.className = "user-card";
+                card.innerHTML = `<span>${u.key}</span><div class="status-dot"></div>`;
+                card.onclick = () => startPrivateChat(u.key);
+                list.appendChild(card);
+            }
+        });
+    });
+
+    syncChat();
 }
 
-function syncMsgs() {
-    onValue(ref(db, "msgs_v2/" + room), snap => {
-        const box = document.getElementById("chatBox");
+window.switchTab = (tab) => {
+    document.querySelectorAll('.viewport').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    
+    if(tab === 'home') {
+        document.getElementById('v-home').classList.add('active');
+        document.getElementById('homeTab').classList.add('active');
+        document.getElementById('inputDock').classList.remove('active');
+        document.getElementById('headerTitle').innerText = "INFINITY APEX";
+    } else {
+        currentRoom = "Global_Lobby";
+        document.getElementById('v-chat').classList.add('active');
+        document.getElementById('chatTab').classList.add('active');
+        document.getElementById('inputDock').classList.add('active');
+        document.getElementById('headerTitle').innerText = "GLOBAL LOBBY";
+        syncChat();
+    }
+};
+
+function startPrivateChat(otherUser) {
+    currentRoom = [myName, otherUser].sort().join("_");
+    document.getElementById('headerTitle').innerText = otherUser;
+    document.getElementById('v-home').classList.remove('active');
+    document.getElementById('v-chat').classList.add('active');
+    document.getElementById('inputDock').classList.add('active');
+    syncChat();
+}
+
+function syncChat() {
+    onValue(ref(db, 'v4_msgs/' + currentRoom), (snap) => {
+        const box = document.getElementById("chatMessages");
         box.innerHTML = "";
         snap.forEach(m => {
             const d = m.val();
-            const node = document.createElement("div");
-            node.className = "msg-node " + (d.from === user ? "me" : "them");
-            
-            // Double Tap to Like Logic
-            const bubble = document.createElement("div");
-            bubble.className = "bubble";
-            bubble.innerHTML = `${d.text} ${d.like ? '<div class="reaction-chip">❤️</div>' : ''}`;
-            
-            let lastTap = 0;
-            bubble.addEventListener('touchend', (e) => {
-                const now = new Date().getTime();
-                if (now - lastTap < 300) {
-                    update(ref(db, `msgs_v2/${room}/${m.key}`), { like: true });
-                }
-                lastTap = now;
-            });
-
-            node.appendChild(bubble);
-            box.appendChild(node);
+            const div = document.createElement("div");
+            div.className = `msg ${d.from === myName ? 'me' : 'them'}`;
+            div.innerHTML = `
+                <span class="sender">${d.from}</span>
+                <div class="bubble">${d.text}</div>
+            `;
+            box.appendChild(div);
         });
-        scrollToBottom();
+        autoScroll();
     });
 }
 
-window.scrollToBottom = () => {
-    const sc = document.getElementById('scrollArea');
-    setTimeout(() => { sc.scrollTop = sc.scrollHeight; }, 200);
+window.autoScroll = () => {
+    const v = document.getElementById('v-chat');
+    setTimeout(() => { v.scrollTop = v.scrollHeight; }, 100);
 };
 
-window.send = () => {
-    const i = document.getElementById("mInp");
-    if(!i.value.trim()) return;
-    push(ref(db, "msgs_v2/" + room), { from: user, text: i.value });
-    i.value = "";
-    scrollToBottom();
+window.sendMessage = () => {
+    const inp = document.getElementById("msgInp");
+    if(!inp.value.trim()) return;
+    push(ref(db, 'v4_msgs/' + currentRoom), { from: myName, text: inp.value, ts: Date.now() });
+    inp.value = "";
+    autoScroll();
 };
 
 window.logout = () => { localStorage.clear(); location.reload(); };
+
+document.getElementById("msgInp").addEventListener("keypress", (e) => {
+    if(e.key === "Enter") sendMessage();
+});
 </script>
 </body>
 </html>
