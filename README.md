@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Live Connect | God Mode</title>
+<title>Live Connect | Ultimate God Mode</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
@@ -12,7 +12,6 @@ body { margin: 0; background: var(--bg); color: var(--text); overflow: hidden; }
 .mesh { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 10% 10%, rgba(107,91,255,0.2) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(255,92,141,0.2) 0%, transparent 40%); filter: blur(40px); }
 .app { max-width: 480px; margin: auto; height: 100vh; display: flex; flex-direction: column; position: relative; }
 
-/* NEWS BAR */
 #newsBar { display: none; background: linear-gradient(90deg, #ff4444, #ff8c00); color: white; padding: 10px; font-size: 12px; font-weight: 800; text-align: center; z-index: 2000; position: absolute; top: 0; width: 100%; box-shadow: 0 5px 15px rgba(255,68,68,0.5); border-bottom: 1px solid rgba(255,255,255,0.2); animation: slideDown 0.5s ease; }
 @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
@@ -40,7 +39,7 @@ nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
 #auth { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
 #auth input { width: 100%; max-width: 280px; padding: 18px; border-radius: 20px; background: var(--card); border: 1px solid var(--border); color: #fff; text-align: center; margin-bottom: 15px; font-size: 16px; }
 
-.kick-btn { background: #ff4444; color: white; border: none; padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer; }
+.kick-btn { background: #ff4444; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -53,25 +52,25 @@ nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
   </header>
 
   <div id="auth">
-    <div style="font-size: 70px; color: var(--p); margin-bottom: 20px; filter: drop-shadow(0 0 20px var(--p));"><i class="fa-solid fa-user-secret"></i></div>
-    <h2 style="margin:0; letter-spacing: -1px;">System Access</h2>
-    <p style="color: var(--muted); font-size: 13px; margin: 10px 0 30px;">Initialize Secure Connection</p>
+    <div style="font-size: 70px; color: var(--p); margin-bottom: 20px; filter: drop-shadow(0 0 20px var(--p));"><i class="fa-solid fa-bolt"></i></div>
+    <h2 style="margin:0; letter-spacing: -1px;">Secure Access</h2>
+    <p style="color: var(--muted); font-size: 13px; margin: 10px 0 30px;">Initialize Private Protocol</p>
     <input type="text" id="userInput" placeholder="Enter Identity Name">
-    <button onclick="login()" style="width:100%; max-width:280px; padding:18px; border-radius:20px; background:var(--p); border:none; color:#fff; font-weight:800; cursor:pointer; box-shadow: 0 10px 20px rgba(107,91,255,0.3);">LOGIN TO NODE</button>
+    <button onclick="login()" style="width:100%; max-width:280px; padding:18px; border-radius:20px; background:var(--p); border:none; color:#fff; font-weight:800; cursor:pointer;">CONNECT TO NODE</button>
   </div>
 
   <div id="home" class="page active">
-    <div class="dash-card" style="background: linear-gradient(135deg, #6b5bff, #ff5c8d); border:none; box-shadow: 0 15px 30px rgba(107,91,255,0.2);">
+    <div class="dash-card" style="background: linear-gradient(135deg, #6b5bff, #ff5c8d); border:none;">
         <h2 style="margin:0; font-size: 26px;">Master <span id="uNameDisp">...</span></h2>
-        <p id="roleNote" style="opacity:0.8; font-size:14px; margin-top: 5px;">Secure Node Protocol Active.</p>
+        <p id="roleNote" style="opacity:0.8; font-size:14px; margin-top: 5px;">Secure Node Active.</p>
     </div>
 
     <div id="godConsole" style="display:none;">
         <h4 style="color:gold; font-size:10px; letter-spacing:2px; margin-bottom:10px; font-weight:800;">GOD MODE CONSOLE</h4>
         <div class="dash-card" style="border: 1px solid gold;">
-            <input type="text" id="newsInput" class="magic-input" placeholder="Broadcast message to everyone...">
+            <input type="text" id="newsInput" class="magic-input" placeholder="Broadcast to everyone...">
             <button class="magic-btn" style="background:gold; color:black;" onclick="broadcastNews()">EXECUTE BROADCAST</button>
-            <button class="magic-btn" style="background:#333; color:white; margin-top:8px;" onclick="stopNews()">TERMINATE NEWS</button>
+            <button class="magic-btn" style="background:#333; color:white; margin-top:8px;" onclick="stopNews()">STOP NEWS</button>
             <hr style="opacity:0.1; margin: 15px 0;">
             <button class="magic-btn" style="background:red; color:white;" onclick="wipeAll()">WIPE DATABASE</button>
         </div>
@@ -79,31 +78,31 @@ nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
 
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div class="dash-card" style="text-align:center;"><h3 id="onlineCount" style="margin:0; color:var(--p);">0</h3><p style="margin:0; font-size:10px; opacity:0.6;">LIVE USERS</p></div>
-        <div class="dash-card" style="text-align:center;"><h3 style="margin:0; color:var(--a);">99.9%</h3><p style="margin:0; font-size:10px; opacity:0.6;">UPTIME</p></div>
+        <div class="dash-card" style="text-align:center;"><h3 style="margin:0; color:var(--a);">Locked</h3><p style="margin:0; font-size:10px; opacity:0.6;">ENCRYPTION</p></div>
     </div>
   </div>
 
   <div id="chat" class="page">
-    <div id="chatWith" style="font-size:11px; font-weight:800; color:var(--p); margin-bottom:12px; letter-spacing:1px;">SECURE CHANNEL</div>
+    <div id="chatWith" style="font-size:11px; font-weight:800; color:var(--p); margin-bottom:12px; letter-spacing:1px;">PRIVATE TUNNEL</div>
     <div class="chat-container" id="chatBox"></div>
     <div class="dock-bar">
       <label for="imgInp" style="color:var(--p); cursor:pointer; font-size:22px;"><i class="fa-solid fa-circle-plus"></i></label>
       <input type="file" id="imgInp" hidden onchange="sendImg(event)">
-      <input id="msgInput" class="dock-input" placeholder="Whisper to the void..."/>
+      <input id="msgInput" class="dock-input" placeholder="Send a secure whisper..."/>
       <button class="send-btn" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
   </div>
 
   <div id="users" class="page">
     <div id="userList"></div>
-    <h4 style="font-size:10px; color:var(--muted); margin:25px 0 12px; letter-spacing:1px; font-weight:800;">GLOBAL NETWORKS</h4>
+    <h4 style="font-size:10px; color:var(--muted); margin:25px 0 12px; letter-spacing:1px; font-weight:800;">CHANNELS</h4>
     <div id="groupList"></div>
   </div>
   
   <nav>
-    <div class="nav-btn active" onclick="openPage('home',this)"><i class="fa-solid fa-house-user"></i></div>
+    <div class="nav-btn active" onclick="openPage('home',this)"><i class="fa-solid fa-house-crack"></i></div>
     <div class="nav-btn" onclick="openPage('chat',this)"><i class="fa-solid fa-message"></i></div>
-    <div class="nav-btn" onclick="openPage('users',this)"><i class="fa-solid fa-shield-halved"></i></div>
+    <div class="nav-btn" onclick="openPage('users',this)"><i class="fa-solid fa-user-shield"></i></div>
   </nav>
 </div>
 
@@ -119,22 +118,19 @@ let user = localStorage.getItem("lc_user");
 let role = localStorage.getItem("lc_role") || "user";
 let curChat = "", isGroup = false;
 
-// Aapki Secret Key
 const GOD_KEY = "Admin786";
 
-if(user) checkAccess(user);
+if(user) checkEntry(user);
 
 window.login = () => {
     const n = document.getElementById("userInput").value.trim();
-    if(n) checkAccess(n, true);
+    if(n) checkEntry(n, true);
 };
 
-async function checkAccess(name, isNew = false) {
+async function checkEntry(name, isNew = false) {
     const s = await get(ref(db, "bannedList/" + name));
-    if (s.exists()) { 
-        alert("🚨 ACCESS DENIED: Your node has been permanently blacklisted."); 
-        localStorage.clear(); location.reload(); 
-    } else {
+    if (s.exists()) { alert("❌ KICKED: Connection Refused."); localStorage.clear(); location.reload(); }
+    else {
         if(isNew) {
             user = name; localStorage.setItem("lc_user", name);
             role = (name === GOD_KEY) ? "admin" : "user";
@@ -151,18 +147,16 @@ function boot() {
     if(role === "admin") {
         document.getElementById("ghostBadge").style.display = "inline";
         document.getElementById("godConsole").style.display = "block";
-        document.getElementById("roleNote").textContent = "Ghost Mode Active: You are invisible to the public.";
+        document.getElementById("roleNote").textContent = "Ghost Protocol Active. You are invisible.";
     } else {
-        // Only public users are visible
         set(ref(db, "users/"+user), {name: user, online: true});
         onDisconnect(ref(db, "users/"+user)).update({online: false});
     }
 
-    // Global News Hook
     onValue(ref(db, "globalNews"), snap => {
         const bar = document.getElementById("newsBar");
         if(snap.exists() && snap.val().text) {
-            bar.innerText = "🚨 SYSTEM ALERT: " + snap.val().text;
+            bar.innerText = "🚨 BROADCAST: " + snap.val().text;
             bar.style.display = "block";
         } else { bar.style.display = "none"; }
     });
@@ -181,14 +175,15 @@ onValue(ref(db, "users"), snap => {
     let count = 0;
     snap.forEach(u => {
         const d = u.val();
-        if(d && d.online) {
+        // VALIDATION: Sirf asli names ko dikhana hai, undefined ko nahi
+        if(d && d.name && d.name !== "undefined" && d.online) {
             count++;
-            if(u.key !== user) {
+            if(u.key !== user && u.key !== GOD_KEY) {
                 const div = document.createElement("div"); div.className = "dash-card";
                 div.style.display="flex"; div.style.justifyContent="space-between"; div.style.alignItems="center";
                 div.innerHTML = `<b>${d.name}</b>`;
                 if(role === "admin") {
-                    const kBtn = document.createElement("button"); kBtn.className = "kick-btn"; kBtn.innerText = "KICK";
+                    const kBtn = document.createElement("button"); kBtn.className = "kick-btn"; kBtn.innerText = "BAN";
                     kBtn.onclick = (e) => { e.stopPropagation(); if(confirm("Ban "+d.name+"?")) set(ref(db, "bannedList/"+d.name), true); };
                     div.appendChild(kBtn);
                 }
@@ -200,18 +195,20 @@ onValue(ref(db, "users"), snap => {
     document.getElementById("onlineCount").textContent = count;
 });
 
-// ADMIN MAGIC
 window.broadcastNews = () => { const t = document.getElementById("newsInput").value; if(t) set(ref(db, "globalNews"), {text: t}); };
 window.stopNews = () => { remove(ref(db, "globalNews")); };
-window.wipeAll = () => { if(confirm("DESTROY ALL CHATS?")) { remove(ref(db, "chats")); remove(ref(db, "groupChats")); alert("Wipe Complete."); }};
+window.wipeAll = () => { if(confirm("Wipe all chats?")) { remove(ref(db, "chats")); remove(ref(db, "groupChats")); alert("System Cleaned."); }};
 
 onValue(ref(db, "groups"), snap => {
     const list = document.getElementById("groupList"); list.innerHTML = "";
     snap.forEach(g => {
-        const div = document.createElement("div"); div.className = "dash-card";
-        div.innerHTML = `<i class="fa-solid fa-hashtag" style="color:var(--p);"></i> <b>${g.key}</b>`;
-        div.onclick = () => { curChat=g.key; isGroup=true; document.getElementById("chatWith").innerText="Group: "+g.key; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); };
-        list.appendChild(div);
+        // VALIDATION for Groups
+        if(g.key && g.key !== "undefined") {
+            const div = document.createElement("div"); div.className = "dash-card";
+            div.innerHTML = `<i class="fa-solid fa-hashtag" style="color:var(--p);"></i> <b>${g.key}</b>`;
+            div.onclick = () => { curChat=g.key; isGroup=true; document.getElementById("chatWith").innerText="Group: "+g.key; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); };
+            list.appendChild(div);
+        }
     });
 });
 
@@ -225,7 +222,7 @@ function loadChat() {
                 const isMe = v.from === user;
                 const div = document.createElement("div"); div.className = "bubble " + (isMe ? "me" : "them");
                 let wand = (role === "admin") ? `<i class="fa-solid fa-wand-sparkles" style="color:gold; font-size:10px; margin-left:10px; cursor:pointer;" onclick="deleteMsg('${path}', '${m.key}')"></i>` : "";
-                div.innerHTML = `${isGroup?`<small style="display:block; font-size:9px; opacity:0.6; font-weight:800; color:var(--a);">${v.from}</small>`:''}${v.img ? `<img src="${v.img}" style="width:100%; border-radius:15px; margin-top:5px;">` : v.text} ${wand}`;
+                div.innerHTML = `${isGroup?`<small style="display:block; font-size:9px; opacity:0.6;">${v.from}</small>`:''}${v.img ? `<img src="${v.img}" style="width:100%; border-radius:15px; margin-top:5px;">` : v.text} ${wand}`;
                 box.appendChild(div);
             }
         });
