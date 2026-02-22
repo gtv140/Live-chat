@@ -2,128 +2,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Facebook Infinity</title>
+    <title>Live Connect | Next-Gen</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --fb-blue: #0866FF; --fb-bg: #F0F2F5; --fb-white: #FFFFFF; --fb-text: #050505; --fb-gray: #65676B; --fb-border: #ced0d4; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-        body, html { height: 100%; background: var(--fb-bg); color: var(--fb-text); overflow: hidden; }
+        :root { --p: #0084FF; --bg: #050505; --card: #18191a; --text: #e4e6eb; --border: #3e4042; --accent: #242526; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s ease; }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
 
-        /* AUTH SCREEN */
-        #authBox { position: fixed; inset: 0; background: var(--fb-bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { width: 100%; max-width: 400px; text-align: center; background: var(--fb-white); padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .auth-card h1 { color: var(--fb-blue); font-size: 40px; margin-bottom: 20px; font-weight: 800; }
-        .auth-input { width: 100%; padding: 14px; border: 1px solid var(--fb-border); border-radius: 6px; font-size: 16px; margin-bottom: 15px; outline: none; }
-        .btn-join { width: 100%; padding: 14px; background: var(--fb-blue); border: none; border-radius: 6px; color: #fff; font-weight: 700; font-size: 18px; cursor: pointer; }
+        /* NEON LOGIN */
+        #authBox { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 25px; }
+        .auth-card { width: 100%; max-width: 380px; text-align: center; }
+        .auth-card h1 { font-size: 45px; font-weight: 800; background: linear-gradient(to right, #0084FF, #00dfd8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 30px; }
+        .auth-input { width: 100%; padding: 18px; background: var(--accent); border: 1px solid var(--border); border-radius: 16px; color: #fff; margin-bottom: 20px; outline: none; font-size: 16px; }
+        .btn-join { width: 100%; padding: 18px; background: var(--p); border: none; border-radius: 16px; color: #fff; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(0,132,255,0.3); }
 
-        /* APP LAYOUT */
-        .app-shell { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; background: var(--fb-bg); position: relative; }
-        
-        header { background: var(--fb-white); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        header h2 { color: var(--fb-blue); font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+        /* APP SHELL */
+        .app-shell { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; background: var(--bg); position: relative; }
+        header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: rgba(5,5,5,0.8); backdrop-filter: blur(10px); z-index: 100; position: sticky; top:0; }
+        header h2 { font-weight: 800; font-size: 26px; color: var(--p); letter-spacing: -1px; }
 
-        nav { background: var(--fb-white); display: flex; border-bottom: 1px solid var(--fb-border); }
-        .nav-item { flex: 1; text-align: center; padding: 12px; font-size: 22px; color: var(--fb-gray); cursor: pointer; position: relative; }
-        .nav-item.active { color: var(--fb-blue); }
-        .nav-item.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--fb-blue); }
+        /* STORIES */
+        .stories { display: flex; gap: 12px; padding: 10px 15px; overflow-x: auto; scrollbar-width: none; background: var(--bg); }
+        .story-ring { min-width: 65px; height: 65px; border-radius: 50%; padding: 3px; border: 2px solid var(--p); position: relative; }
+        .story-pfp { width: 100%; height: 100%; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-weight: 800; }
 
-        .viewport { flex: 1; overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; }
-        .viewport::-webkit-scrollbar { display: none; }
+        /* VIEWPORT */
+        .viewport { flex: 1; overflow-y: auto; padding-bottom: 90px; scrollbar-width: none; }
         .view { display: none; }
-        .view.active { display: block; }
+        .view.active { display: block; animation: slideUp 0.4s ease-out; }
 
-        /* FB FEED STYLE */
-        .fb-composer { background: var(--fb-white); padding: 15px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; }
-        .composer-btn { background: #E4E6EB; padding: 10px 15px; border-radius: 20px; flex: 1; color: var(--fb-gray); cursor: pointer; text-align: left; }
-        
-        .post-card { background: var(--fb-white); margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .post-header { padding: 12px; display: flex; align-items: center; justify-content: space-between; }
-        .u-info { display: flex; align-items: center; gap: 10px; }
-        .pfp { width: 40px; height: 40px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; background-color: var(--fb-blue); }
-        .post-text { padding: 0 15px 12px; font-size: 15px; }
-        .post-img { width: 100%; max-height: 400px; object-fit: cover; border-top: 1px solid #f0f0f0; }
-        .post-stats { padding: 10px 15px; display: flex; justify-content: space-between; color: var(--fb-gray); font-size: 13px; border-bottom: 1px solid #f0f2f5; }
-        .post-actions { display: flex; padding: 5px; }
-        .act-btn { flex: 1; text-align: center; padding: 8px; color: var(--fb-gray); font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .act-btn:active { background: #f0f2f5; }
+        /* MODERN POSTS */
+        .post-card { background: var(--card); margin: 10px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+        .post-top { padding: 12px; display: flex; align-items: center; justify-content: space-between; }
+        .user-tag { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--p); display: flex; align-items: center; justify-content: center; font-weight: 800; border: 2px solid var(--bg); }
+        .post-img { width: 100%; max-height: 400px; object-fit: cover; }
+        .post-actions { padding: 12px 20px; display: flex; justify-content: space-between; border-top: 1px solid var(--border); }
+        .action-item { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #b0b3b8; font-size: 15px; }
+        .action-item.liked { color: var(--p); }
 
-        /* MESSENGER STYLE */
-        .chat-view { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
-        .bubble { padding: 10px 15px; border-radius: 18px; max-width: 75%; font-size: 14px; position: relative; }
-        .bubble.me { background: var(--fb-blue); color: white; align-self: flex-end; }
-        .bubble.them { background: #E4E6EB; color: black; align-self: flex-start; }
+        /* CHAT BUBBLES */
+        .chat-container { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 12px 18px; border-radius: 22px; max-width: 80%; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .msg.me { background: var(--p); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg.them { background: var(--accent); align-self: flex-start; border-bottom-left-radius: 4px; }
 
-        #msgDock { background: var(--fb-white); padding: 10px; display: none; border-top: 1px solid var(--fb-border); gap: 10px; }
-        #msgDock.active { display: flex; }
-        .msg-input { flex: 1; padding: 10px 15px; border-radius: 20px; background: #F0F2F5; border: none; outline: none; }
+        /* NAV BAR */
+        nav { position: absolute; bottom: 0; width: 100%; height: 75px; background: rgba(24,25,26,0.95); backdrop-filter: blur(15px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); }
+        .nav-btn { font-size: 24px; color: #b0b3b8; cursor: pointer; position: relative; }
+        .nav-btn.active { color: var(--p); transform: translateY(-5px); }
+        .nav-btn.active::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; background: var(--p); border-radius: 50%; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #chatDock { position: absolute; bottom: 75px; width: 100%; padding: 15px; background: var(--card); display: none; gap: 10px; align-items: center; border-top: 1px solid var(--border); }
+        #chatDock.active { display: flex; }
+
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div id="authBox">
     <div class="auth-card">
-        <h1>facebook</h1>
-        <input type="text" id="userInput" class="auth-input" placeholder="Your name...">
-        <button class="btn-join" onclick="handleJoin()">Log In</button>
+        <h1>Live Connect</h1>
+        <input type="text" id="uInput" class="auth-input" placeholder="Your Global Username...">
+        <button class="btn-join" onclick="joinNet()">Initialize Connection</button>
     </div>
 </div>
 
 <div class="app-shell">
     <header>
-        <h2>facebook</h2>
-        <div style="display:flex; gap:15px; font-size:20px; color: var(--fb-text);">
-            <i class="fa-solid fa-circle-plus" onclick="triggerPost()"></i>
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <i class="fa-brands fa-facebook-messenger" onclick="switchTab('chat')"></i>
+        <h2>Live Connect</h2>
+        <div style="display:flex; gap:20px; font-size:22px;">
+            <label for="pImg"><i class="fa-solid fa-plus-circle" style="color: var(--p);"></i></label>
+            <input type="file" id="pImg" hidden accept="image/*" onchange="uploadPost(event)">
+            <i class="fa-brands fa-facebook-messenger" onclick="tab('chat')"></i>
         </div>
     </header>
 
-    <nav>
-        <div class="nav-item active" onclick="switchTab('home')"><i class="fa-solid fa-house"></i></div>
-        <div class="nav-item"><i class="fa-solid fa-user-group"></i></div>
-        <div class="nav-item"><i class="fa-solid fa-tv"></i></div>
-        <div class="nav-item" onclick="switchTab('profile')"><i class="fa-solid fa-circle-user"></i></div>
-        <div class="nav-item"><i class="fa-solid fa-bell"></i></div>
-        <div class="nav-item"><i class="fa-solid fa-bars"></i></div>
-    </nav>
-
-    <div class="viewport" id="vPort">
+    <div class="viewport" id="scroll">
         <div id="v-home" class="view active">
-            <div class="fb-composer">
-                <div class="pfp" id="cAvatar">?</div>
-                <div class="composer-btn" onclick="triggerPost()">What's on your mind?</div>
-                <label for="imgInp"><i class="fa-regular fa-image" style="color:#45bd62; font-size:22px;"></i></label>
-                <input type="file" id="imgInp" hidden accept="image/*" onchange="uploadPhoto(event)">
+            <div class="stories">
+                <div class="story-ring"><div class="story-pfp">Me</div></div>
+                <div class="story-ring"><div class="story-pfp" style="background:var(--accent)">AD</div></div>
+                <div class="story-ring"><div class="story-pfp" style="background:var(--accent)">JD</div></div>
+                <div class="story-ring"><div class="story-pfp" style="background:var(--accent)">RK</div></div>
             </div>
-            <div id="postFeed"></div>
+            <div id="feedList"></div>
         </div>
 
         <div id="v-chat" class="view">
-            <div class="chat-view" id="chatList"></div>
+            <div class="chat-container" id="chatList"></div>
         </div>
 
-        <div id="v-profile" class="view" style="background:var(--fb-white); min-height:100%;">
-            <div style="height:150px; background:#ddd; position:relative;">
-                <div class="pfp" style="width:120px; height:120px; font-size:40px; border:4px solid white; position:absolute; bottom:-40px; left:20px;" id="profAvatar">?</div>
+        <div id="v-profile" class="view" style="padding:30px 20px; text-align:center;">
+            <div style="position:relative; width:110px; height:110px; margin:0 auto;">
+                <div class="avatar" style="width:110px; height:110px; font-size:45px; background:linear-gradient(45deg, #0084FF, #00dfd8);" id="myAvatar">?</div>
+                <div style="position:absolute; bottom:5px; right:5px; width:20px; height:20px; background:#45bd62; border:3px solid var(--bg); border-radius:50%;"></div>
             </div>
-            <div style="padding:50px 20px 20px;">
-                <h2 id="profName" style="font-size:24px;">Username</h2>
-                <div style="display:flex; gap:10px; margin-top:15px;">
-                    <button style="flex:1; background:var(--fb-blue); color:white; border:none; padding:10px; border-radius:6px; font-weight:600;">Add to Story</button>
-                    <button style="background:#E4E6EB; border:none; padding:10px 15px; border-radius:6px;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
-                </div>
+            <h2 id="myName" style="margin-top:15px; font-size:28px;">Username</h2>
+            <div style="display:flex; justify-content:space-around; margin:30px 0; background:var(--card); padding:20px; border-radius:20px;">
+                <div><b id="postCount">0</b><br><small>Posts</small></div>
+                <div><b>12.5k</b><br><small>Reach</small></div>
+                <div><b>100%</b><br><small>Active</small></div>
             </div>
+            <button onclick="logout()" style="width:100%; padding:15px; border-radius:15px; background:var(--accent); border:1px solid var(--border); color:#ff4d4d; font-weight:800;">Terminate Session</button>
         </div>
     </div>
 
-    <div id="msgDock">
-        <i class="fa-solid fa-circle-plus" style="color:var(--fb-blue); font-size:22px;"></i>
-        <input type="text" id="mInp" class="msg-input" placeholder="Aa">
-        <i class="fa-solid fa-paper-plane" onclick="sendMsg()" style="color:var(--fb-blue); font-size:22px;"></i>
+    <div id="chatDock">
+        <input type="text" id="mInput" style="flex:1; padding:15px; border-radius:30px; background:var(--accent); border:none; color:#fff; outline:none;" placeholder="Type a message...">
+        <div onclick="pushMsg()" style="background:var(--p); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i></div>
     </div>
+
+    <nav>
+        <div class="nav-btn active" onclick="tab('home')"><i class="fa-solid fa-house-chimney"></i></div>
+        <div class="nav-btn"><i class="fa-solid fa-compass"></i></div>
+        <div class="nav-btn" onclick="tab('chat')"><i class="fa-solid fa-message"></i></div>
+        <div class="nav-btn" onclick="tab('profile')"><i class="fa-solid fa-user-ninja"></i></div>
+    </nav>
 </div>
 
 <script type="module">
@@ -142,81 +139,79 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-let user = localStorage.getItem("fb_infinity_user");
+let me = localStorage.getItem("live_connect_session");
 
-if(user) { document.getElementById("authBox").style.display="none"; init(); }
+if(me) { document.getElementById("authBox").style.display="none"; start(); }
 
-window.handleJoin = () => {
-    const n = document.getElementById("userInput").value.trim();
-    if(n) { localStorage.setItem("fb_infinity_user", n); location.reload(); }
+window.joinNet = () => {
+    const v = document.getElementById("uInput").value.trim();
+    if(v) { localStorage.setItem("live_connect_session", v); location.reload(); }
 };
 
-function init() {
-    document.getElementById("profName").innerText = user;
-    document.getElementById("profAvatar").innerText = user.charAt(0).toUpperCase();
-    document.getElementById("cAvatar").innerText = user.charAt(0).toUpperCase();
+function start() {
+    document.getElementById("myName").innerText = me;
+    document.getElementById("myAvatar").innerText = me.charAt(0).toUpperCase();
 
-    onValue(ref(db, 'fb_posts'), (snap) => {
-        const feed = document.getElementById("postFeed"); feed.innerHTML = "";
+    // POSTS SYNC
+    onValue(ref(db, 'lc_posts'), (snap) => {
+        const feed = document.getElementById("feedList"); feed.innerHTML = "";
+        let count = 0;
         snap.forEach(s => {
-            const p = s.val();
+            const p = s.val(); if(p.user === me) count++;
             feed.innerHTML = `
                 <div class="post-card">
-                    <div class="post-header">
-                        <div class="u-info"><div class="pfp">${p.user.charAt(0)}</div><div><b>${p.user}</b><br><small style="color:gray">Just now • <i class="fa-solid fa-earth-americas"></i></small></div></div>
-                        ${p.user === user ? `<i class="fa-solid fa-ellipsis-h" onclick="del('fb_posts/${s.key}')"></i>` : ''}
+                    <div class="post-top">
+                        <div class="user-tag"><div class="avatar">${p.user.charAt(0)}</div><b>${p.user}</b></div>
+                        ${p.user === me ? `<i class="fa-solid fa-trash-can" onclick="delPost('${s.key}')" style="opacity:0.5"></i>` : ''}
                     </div>
-                    <div class="post-text">${p.text}</div>
                     ${p.img ? `<img src="${p.img}" class="post-img">` : ''}
-                    <div class="post-stats"><span>👍 ${p.likes || 0}</span><span>0 Comments</span></div>
+                    <div style="padding:15px; font-weight:300;">${p.text}</div>
                     <div class="post-actions">
-                        <div class="act-btn" onclick="like('${s.key}')"><i class="fa-regular fa-thumbs-up"></i> Like</div>
-                        <div class="act-btn"><i class="fa-regular fa-comment"></i> Comment</div>
-                        <div class="act-btn"><i class="fa-solid fa-share"></i> Share</div>
+                        <div class="action-item" onclick="like('${s.key}')"><i class="fa-solid fa-heart"></i> ${p.likes || 0}</div>
+                        <div class="action-item"><i class="fa-solid fa-comment-dots"></i> Reply</div>
+                        <div class="action-item"><i class="fa-solid fa-paper-plane-top"></i></div>
                     </div>
                 </div>` + feed.innerHTML;
         });
+        document.getElementById("postCount").innerText = count;
     });
 
-    onValue(ref(db, 'fb_chat'), (snap) => {
-        const c = document.getElementById("chatList"); c.innerHTML = "";
+    // CHAT SYNC
+    onValue(ref(db, 'lc_chat'), (snap) => {
+        const chat = document.getElementById("chatList"); chat.innerHTML = "";
         snap.forEach(s => {
-            const m = s.val(); const isMe = m.user === user;
-            c.innerHTML += `<div class="bubble ${isMe?'me':'them'}">${m.text}</div>`;
+            const m = s.val(); const isMe = m.user === me;
+            chat.innerHTML += `<div class="msg ${isMe?'me':'them'}"><small style="display:block;font-size:10px;opacity:0.6;margin-bottom:4px;">${m.user}</small>${m.text}</div>`;
         });
+        const port = document.getElementById("scroll"); port.scrollTop = port.scrollHeight;
     });
 }
 
-window.triggerPost = () => {
-    const t = prompt("What's on your mind?");
-    if(t) push(ref(db, 'fb_posts'), { user, text: t, likes: 0 });
-};
-
-window.uploadPhoto = (e) => {
+window.uploadPost = (e) => {
     const reader = new FileReader();
     reader.onload = () => {
-        const cap = prompt("Say something about this photo...");
-        push(ref(db, 'fb_posts'), { user, text: cap || "", img: reader.result, likes: 0 });
+        const cap = prompt("Express your thoughts...");
+        push(ref(db, 'lc_posts'), { user: me, text: cap || "", img: reader.result, likes: 0 });
     };
     reader.readAsDataURL(e.target.files[0]);
 };
 
-window.sendMsg = () => {
-    const i = document.getElementById("mInp");
-    if(i.value) { push(ref(db, 'fb_chat'), { user, text: i.value }); i.value = ""; }
+window.pushMsg = () => {
+    const i = document.getElementById("mInput");
+    if(i.value.trim()) { push(ref(db, 'lc_chat'), { user: me, text: i.value }); i.value = ""; }
 };
 
-window.like = (id) => runTransaction(ref(db, `fb_posts/${id}/likes`), (c) => (c || 0) + 1);
-window.del = (p) => { if(confirm("Delete this post?")) remove(ref(db, p)); };
+window.like = (id) => runTransaction(ref(db, `lc_posts/${id}/likes`), (c) => (c || 0) + 1);
+window.delPost = (id) => { if(confirm("Discard this post?")) remove(ref(db, 'lc_posts/'+id)); };
 
-window.switchTab = (t) => {
+window.tab = (t) => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
     document.getElementById('v-'+t).classList.add('active');
-    document.getElementById('msgDock').classList.toggle('active', t === 'chat');
+    document.getElementById('chatDock').classList.toggle('active', t === 'chat');
     
-    const tabs = {'home':0, 'chat':1, 'profile':3};
-    if(tabs[t] !== undefined) document.querySelectorAll('.nav-item')[tabs[t]].classList.add('active');
+    const map = {'home':0, 'chat':2, 'profile':3};
+    document.querySelectorAll('.nav-btn')[map[t]].classList.add('active');
 };
 
 window.logout = () => { localStorage.clear(); location.reload(); };
