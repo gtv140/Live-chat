@@ -2,119 +2,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Infinity Chat Pro</title>
+    <title>Infinity Ultra | Next-Gen</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #007AFF; --bg: #000000; --card: #121212; --border: #262626; --text: #ffffff; --sub: #8E8E93; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+        :root { 
+            --glow: #00f2ff; --p: #7000ff; --bg: #050505; --card: rgba(255,255,255,0.05); 
+            --border: rgba(255,255,255,0.1); --text: #fff; 
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Space Grotesk', sans-serif; }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
 
-        /* --- AUTH SCREEN --- */
-        #authBox { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 30px; }
-        .auth-card { width: 100%; max-width: 380px; text-align: center; }
-        .logo-icon { width: 70px; height: 70px; background: var(--primary); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 20px; box-shadow: 0 15px 30px rgba(0,122,255,0.4); }
-        .auth-input { width: 100%; padding: 20px; background: #1c1c1e; border: 1px solid var(--border); border-radius: 18px; color: #fff; margin-bottom: 15px; outline: none; text-align: center; font-size: 16px; }
-        .btn-start { width: 100%; padding: 18px; background: var(--primary); border: none; border-radius: 18px; color: #fff; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        /* --- QUANTUM LOGIN --- */
+        #authBox { position: fixed; inset: 0; background: radial-gradient(circle at center, #1a0033 0%, #000 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 40px; }
+        .auth-card { width: 100%; max-width: 400px; text-align: center; animation: float 3s infinite ease-in-out; }
+        .auth-input { width: 100%; padding: 22px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; color: #fff; margin-bottom: 20px; backdrop-filter: blur(20px); font-size: 18px; outline: none; transition: 0.4s; }
+        .auth-input:focus { border-color: var(--glow); box-shadow: 0 0 20px rgba(0,242,255,0.2); }
+        .btn-neon { width: 100%; padding: 22px; background: linear-gradient(45deg, var(--p), var(--glow)); border: none; border-radius: 20px; color: #fff; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* --- APP SHELL --- */
-        .app-shell { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; position: relative; }
-        header { padding: 50px 20px 15px; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-        header h1 { font-size: 24px; font-weight: 800; letter-spacing: -1px; margin: 0; }
+        /* --- MASTER LAYOUT --- */
+        .app-shell { max-width: 500px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; background: url('https://w0.peakpx.com/wallpaper/596/778/HD-wallpaper-black-abstract-dark-material-design-minimal-modern.jpg'); background-size: cover; }
+        
+        header { padding: 60px 25px 20px; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(30px); border-bottom: 1px solid var(--border); }
+        header h1 { font-size: 28px; font-weight: 800; background: linear-gradient(to right, #fff, var(--glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
 
-        .viewport { flex: 1; overflow-y: auto; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
+        .viewport { flex: 1; overflow-y: auto; padding: 10px 0 120px; scroll-behavior: smooth; }
         .viewport::-webkit-scrollbar { display: none; }
 
-        /* --- CHAT LIST ITEM --- */
-        .user-row { display: flex; align-items: center; gap: 15px; padding: 15px 20px; border-bottom: 0.5px solid #111; cursor: pointer; transition: 0.2s; }
-        .user-row:active { background: #1a1a1a; }
-        .u-pfp { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; background: #222; border: 2px solid var(--border); }
-        .u-meta { flex: 1; }
-        .u-meta b { font-size: 16px; display: block; margin-bottom: 2px; }
-        .u-meta p { margin: 0; font-size: 13px; color: var(--sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* --- CHAT LIST --- */
+        .chat-tile { margin: 10px 15px; padding: 18px; background: var(--card); border: 1px solid var(--border); border-radius: 24px; display: flex; align-items: center; gap: 15px; backdrop-filter: blur(15px); transition: 0.3s; }
+        .chat-tile:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
+        .tile-pfp { width: 60px; height: 60px; border-radius: 20px; object-fit: cover; border: 2px solid var(--p); }
+        .tile-info { flex: 1; }
+        .tile-info b { font-size: 18px; color: #fff; }
+        .tile-info p { margin: 5px 0 0; font-size: 13px; color: #aaa; }
 
-        /* --- PRIVATE CHAT OVERLAY --- */
-        #chatRoom { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; animation: slideUp 0.3s ease-out; }
-        .chat-nav { padding: 50px 15px 15px; display: flex; align-items: center; gap: 12px; border-bottom: 0.5px solid var(--border); background: #000; }
-        .chat-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; background: #0a0a0a; }
+        /* --- FULL SCREEN CHAT ENGINE --- */
+        #chatEngine { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; animation: slideX 0.4s cubic-bezier(0.19, 1, 0.22, 1); }
+        .chat-top { padding: 60px 20px 20px; display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.03); backdrop-filter: blur(40px); border-bottom: 1px solid var(--border); }
+        .chat-main { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 12px; background: radial-gradient(circle at top right, #110022, #000); }
 
-        .msg-bubble { padding: 12px 16px; border-radius: 20px; max-width: 80%; font-size: 15px; line-height: 1.4; position: relative; }
-        .msg-bubble.me { background: var(--primary); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg-bubble.them { background: #26262b; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .msg-time { font-size: 10px; opacity: 0.6; display: block; text-align: right; margin-top: 5px; }
-        .msg-img { width: 100%; border-radius: 12px; margin-top: 5px; }
+        .bubble { padding: 14px 20px; border-radius: 25px; max-width: 85%; font-size: 16px; position: relative; animation: pop 0.3s ease; line-height: 1.5; }
+        .bubble.me { background: linear-gradient(135deg, var(--p), #400080); align-self: flex-end; border-bottom-right-radius: 5px; box-shadow: 0 10px 20px rgba(112,0,255,0.3); }
+        .bubble.them { background: #1a1a1a; border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 5px; }
+        .bubble img { width: 100%; border-radius: 15px; margin-top: 8px; }
 
-        /* --- INPUT DOCK --- */
-        .input-dock { padding: 15px 15px 35px; background: #000; display: flex; align-items: center; gap: 10px; border-top: 0.5px solid var(--border); }
-        .main-input { flex: 1; padding: 14px 20px; background: #1c1c1e; border: none; border-radius: 25px; color: #fff; outline: none; font-size: 15px; }
-        .action-btn { width: 48px; height: 48px; border-radius: 50%; border: none; background: var(--primary); color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        /* --- NEON INPUT --- */
+        .dock { padding: 20px 20px 45px; display: flex; align-items: center; gap: 12px; background: #000; }
+        .dock-input { flex: 1; padding: 18px 25px; background: #111; border: 1px solid var(--border); border-radius: 30px; color: #fff; outline: none; font-size: 16px; }
+        .dock-input:focus { border-color: var(--p); }
+        .icon-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--card); border: 1px solid var(--border); color: #fff; font-size: 20px; cursor: pointer; transition: 0.3s; }
+        .send-active { background: var(--p); box-shadow: 0 0 20px var(--p); border: none; }
 
-        /* --- NAV BAR --- */
-        nav { position: absolute; bottom: 0; width: 100%; height: 85px; background: rgba(0,0,0,0.9); border-top: 0.5px solid var(--border); display: flex; justify-content: space-around; padding-top: 10px; z-index: 1000; }
-        .nav-link { display: flex; flex-direction: column; align-items: center; color: var(--sub); cursor: pointer; font-size: 11px; font-weight: 600; gap: 4px; }
-        .nav-link.active { color: var(--primary); }
-        .nav-link i { font-size: 24px; }
+        /* --- TAB NAVIGATION --- */
+        nav { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; height: 75px; background: rgba(255,255,255,0.08); backdrop-filter: blur(30px); border-radius: 35px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .n-link { color: #666; font-size: 24px; transition: 0.3s; }
+        .n-link.active { color: var(--glow); text-shadow: 0 0 15px var(--glow); transform: translateY(-5px); }
 
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes slideX { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div id="authBox">
     <div class="auth-card">
-        <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
-        <h1 style="font-size: 32px; margin-bottom: 5px;">Infinity Pro</h1>
-        <p style="color: var(--sub); margin-bottom: 30px;">Premium Real-time Messaging</p>
-        <input type="text" id="uName" class="auth-input" placeholder="What's your name?">
-        <button onclick="join()" class="btn-start">Connect Now</button>
+        <h1 style="font-size: 45px; margin-bottom: 10px; color: #fff;">INFINITY <span style="color:var(--glow)">X</span></h1>
+        <p style="color: #888; margin-bottom: 30px; letter-spacing: 3px;">QUANTUM MESSENGER</p>
+        <input type="text" id="uInp" class="auth-input" placeholder="ACCESS KEY (NAME)">
+        <button onclick="login()" class="btn-neon">Initialize Session</button>
     </div>
 </div>
 
-<div id="chatRoom">
-    <div class="chat-nav">
-        <i class="fa-solid fa-chevron-left" onclick="closeChat()" style="font-size: 22px; padding: 5px;"></i>
-        <img id="activePfp" src="" class="u-pfp" style="width:40px; height:40px;">
-        <div>
-            <b id="activeTitle" style="font-size: 17px; display: block;">Name</b>
-            <small style="color: var(--primary); font-weight: 700;">● Online</small>
+<div id="chatEngine">
+    <div class="chat-top">
+        <i class="fa-solid fa-chevron-left" onclick="closeChat()" style="font-size: 24px;"></i>
+        <img id="activePfp" src="" class="tile-pfp" style="width:45px; height:45px;">
+        <div style="flex:1">
+            <b id="activeTitle" style="font-size: 20px;">User</b>
+            <div style="display:flex; align-items:center; gap:5px; color:var(--glow); font-size:11px; font-weight:bold;">
+                <span style="width:6px; height:6px; background:var(--glow); border-radius:50%; display:inline-block;"></span> ENCRYPTED
+            </div>
         </div>
+        <i class="fa-solid fa-video" style="color:#aaa; font-size: 20px;"></i>
     </div>
-    <div class="chat-body" id="chatFlow"></div>
-    <div class="input-dock">
-        <label for="mediaFile"><i class="fa-solid fa-paperclip" style="color: var(--sub); font-size: 20px; padding: 10px;"></i></label>
-        <input type="file" id="mediaFile" hidden accept="image/*" onchange="sendImage(event)">
-        <input type="text" id="msgInp" class="main-input" placeholder="Type a message...">
-        <button onclick="send()" class="action-btn"><i class="fa-solid fa-paper-plane"></i></button>
+    <div class="chat-main" id="chatFlow"></div>
+    <div class="dock">
+        <label for="imgInp" class="icon-btn"><i class="fa-solid fa-plus"></i></label>
+        <input type="file" id="imgInp" hidden onchange="uploadMedia(event)">
+        <input type="text" id="msgInp" class="dock-input" placeholder="Type a message...">
+        <button id="sendBtn" onclick="send()" class="icon-btn"><i class="fa-solid fa-microphone" id="mic"></i></button>
     </div>
 </div>
 
 <div class="app-shell">
     <header>
-        <h1>Infinity</h1>
-        <div style="display:flex; gap:20px; font-size:20px;">
-            <i class="fa-solid fa-camera"></i>
-            <i class="fa-solid fa-pen-to-square"></i>
+        <h1>INFINITY</h1>
+        <div style="display:flex; gap:25px; font-size:22px;">
+            <i class="fa-solid fa-ghost" style="color:var(--glow)"></i>
+            <i class="fa-solid fa-gear"></i>
         </div>
     </header>
 
     <div class="viewport">
-        <div class="user-row" onclick="openChat('Global_Lounge', 'https://cdn-icons-png.flaticon.com/512/33/33308.png', true)">
-            <div class="u-pfp" style="background: var(--primary); display:flex; align-items:center; justify-content:center; border:none;"><i class="fa-solid fa-users"></i></div>
-            <div class="u-meta">
-                <b>Global Lounge</b>
-                <p>Public group for everyone...</p>
+        <div class="chat-tile" onclick="openChat('Global_Core', 'https://cdn-icons-png.flaticon.com/512/33/33308.png', true)">
+            <div class="tile-pfp" style="background:var(--p); display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-atom fa-spin"></i></div>
+            <div class="tile-info">
+                <b>Global Core</b>
+                <p>Public quantum frequency...</p>
             </div>
-            <small style="color: var(--sub);">Online</small>
+            <div style="background:var(--glow); color:#000; font-weight:900; padding:2px 8px; border-radius:10px; font-size:10px;">LIVE</div>
         </div>
 
-        <div style="padding: 15px 20px 5px; font-size: 11px; color: var(--sub); font-weight: 800; letter-spacing: 1px;">DIRECT MESSAGES</div>
-        <div id="contactsList"></div>
+        <div style="padding: 25px 20px 10px; font-size: 11px; color: #555; font-weight: 800; letter-spacing: 2px;">SECURE CHATS</div>
+        <div id="contacts"></div>
     </div>
 
     <nav>
-        <div class="nav-link active"><i class="fa-solid fa-comment-dots"></i><span>Chats</span></div>
-        <div class="nav-link"><i class="fa-solid fa-compass"></i><span>Explore</span></div>
-        <div class="nav-link" onclick="location.reload()"><i class="fa-solid fa-circle-user"></i><span>Profile</span></div>
+        <div class="n-link active"><i class="fa-solid fa-comment-nodes"></i></div>
+        <div class="n-link"><i class="fa-solid fa-fingerprint"></i></div>
+        <div class="n-link"><i class="fa-solid fa-user-astronaut"></i></div>
     </nav>
 </div>
 
@@ -126,30 +134,29 @@ const config = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL:
 const app = initializeApp(config);
 const db = getDatabase(app);
 
-let me = localStorage.getItem("pro_chat_user");
-let currentRoom = null;
+let user = localStorage.getItem("inf_ultra_user");
+let activeRoom = null;
 
-if(me) { document.getElementById("authBox").style.display="none"; init(); }
+if(user) { document.getElementById("authBox").style.display="none"; init(); }
 
-window.join = () => {
-    const n = document.getElementById("uName").value.trim();
+window.login = () => {
+    const n = document.getElementById("uInp").value.trim();
     if(n) { 
-        localStorage.setItem("pro_chat_user", n); 
-        set(ref(db, `pro_users/${n}`), { name: n, lastSeen: Date.now() });
+        localStorage.setItem("inf_ultra_user", n); 
+        set(ref(db, `ultra_users/${n}`), { name: n, status: 'online' });
         location.reload(); 
     }
 };
 
 function init() {
-    // Sync Users
-    onValue(ref(db, 'pro_users'), (snap) => {
-        const list = document.getElementById("contactsList"); list.innerHTML = "";
+    onValue(ref(db, 'ultra_users'), (snap) => {
+        const list = document.getElementById("contacts"); list.innerHTML = "";
         snap.forEach(s => {
-            if(s.key !== me) {
+            if(s.key !== user) {
                 list.innerHTML += `
-                <div class="user-row" onclick="openChat('${s.key}', 'https://cdn-icons-png.flaticon.com/512/149/149071.png')">
-                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="u-pfp">
-                    <div class="u-meta"><b>${s.key}</b><p>Active now</p></div>
+                <div class="chat-tile" onclick="openChat('${s.key}', 'https://cdn-icons-png.flaticon.com/512/149/149071.png')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="tile-pfp">
+                    <div class="tile-info"><b>${s.key}</b><p>Secure connection established</p></div>
                 </div>`;
             }
         });
@@ -157,21 +164,20 @@ function init() {
 }
 
 window.openChat = (target, pfp, isGroup = false) => {
-    currentRoom = isGroup ? target : [me, target].sort().join("_");
+    activeRoom = isGroup ? target : [user, target].sort().join("_");
     document.getElementById("activeTitle").innerText = target;
     document.getElementById("activePfp").src = pfp;
-    document.getElementById("chatRoom").style.display = "flex";
+    document.getElementById("chatEngine").style.display = "flex";
 
-    onValue(ref(db, `pro_rooms/${currentRoom}`), (snap) => {
+    onValue(ref(db, `ultra_rooms/${activeRoom}`), (snap) => {
         const flow = document.getElementById("chatFlow"); flow.innerHTML = "";
         snap.forEach(s => {
-            const m = s.val(); const isMe = m.sender === me;
-            const time = new Date(m.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+            const m = s.val(); const isMe = m.sender === user;
             flow.innerHTML += `
-                <div class="msg-bubble ${isMe?'me':'them'}">
-                    ${isGroup && !isMe ? `<small style="font-weight:700; color:var(--primary)">${m.sender}</small><br>` : ''}
-                    ${m.img ? `<img src="${m.img}" class="msg-img">` : m.text}
-                    <span class="msg-time">${time} ${isMe?'✓':''}</span>
+                <div class="bubble ${isMe?'me':'them'}">
+                    ${isGroup && !isMe ? `<small style="color:var(--glow); font-size:10px;">${m.sender}</small><br>` : ''}
+                    ${m.img ? `<img src="${m.img}">` : m.text}
+                    <div style="font-size:9px; opacity:0.6; text-align:right; margin-top:5px;">${new Date(m.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
                 </div>`;
         });
         flow.scrollTop = flow.scrollHeight;
@@ -180,24 +186,36 @@ window.openChat = (target, pfp, isGroup = false) => {
 
 window.send = () => {
     const i = document.getElementById("msgInp");
-    if(i.value.trim() && currentRoom) {
-        push(ref(db, `pro_rooms/${currentRoom}`), { sender: me, text: i.value, time: Date.now() });
+    if(i.value.trim()) {
+        push(ref(db, `ultra_rooms/${activeRoom}`), { sender: user, text: i.value, time: Date.now() });
         i.value = "";
     }
 };
 
-window.sendImage = (e) => {
+window.uploadMedia = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
-    reader.onload = () => {
-        push(ref(db, `pro_rooms/${currentRoom}`), { sender: me, img: reader.result, time: Date.now() });
-    };
+    reader.onload = () => push(ref(db, `ultra_rooms/${activeRoom}`), { sender: user, img: reader.result, time: Date.now() });
     reader.readAsDataURL(file);
 };
 
-window.closeChat = () => { document.getElementById("chatRoom").style.display = "none"; currentRoom = null; };
+window.closeChat = () => document.getElementById("chatEngine").style.display = "none";
 
-document.getElementById("msgInp").addEventListener("keypress", (e) => { if(e.key === "Enter") send(); });
+// Dynamic UI Logic
+const inp = document.getElementById("msgInp");
+const btn = document.getElementById("sendBtn");
+const mic = document.getElementById("mic");
+
+inp.oninput = () => {
+    if(inp.value.length > 0) {
+        btn.classList.add("send-active");
+        mic.className = "fa-solid fa-paper-plane";
+    } else {
+        btn.classList.remove("send-active");
+        mic.className = "fa-solid fa-microphone";
+    }
+};
+inp.onkeypress = (e) => { if(e.key === "Enter") send(); };
 </script>
 </body>
 </html>
