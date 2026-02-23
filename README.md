@@ -1,212 +1,132 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Ultimate God Mode | Private Console</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ultimate God Mode | V3.0</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
-:root { --p: #6b5bff; --a: #ff5c8d; --bg: #000000; --card: rgba(255,255,255,0.06); --text: #ffffff; --muted: #888; --border: rgba(255,255,255,0.1); }
-* { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+:root { --p: #6b5bff; --bg: #000; --text: #fff; --border: #222; }
+* { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: 0.3s; }
 body { margin: 0; background: var(--bg); color: var(--text); overflow: hidden; }
 
-/* OVERRIDE SCREEN */
-#maintenanceOverlay { display:none; position:fixed; inset:0; background:#000; z-index:10000; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px; }
-.glitch { font-size: 35px; font-weight: 800; color: red; text-shadow: 0 0 15px red; animation: shake 0.2s infinite; }
-@keyframes shake { 0% { transform: translate(2px, -2px); } 50% { transform: translate(-2px, 2px); } 100% { transform: translate(0); } }
-
-.app { max-width: 480px; margin: auto; height: 100vh; display: flex; flex-direction: column; position: relative; }
-#newsBar { display: none; background: linear-gradient(90deg, #ff4444, #ff8c00); color: white; padding: 12px; font-size: 13px; font-weight: 800; text-align: center; z-index: 2000; position: absolute; top: 0; width: 100%; }
-
-header { padding: 55px 25px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-header h1 { margin: 0; font-size: 22px; font-weight: 800; background: linear-gradient(90deg, #fff, var(--p)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; height: 75px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-.nav-btn { color: var(--muted); font-size: 24px; cursor: pointer; }
-.nav-btn.active { color: var(--p); transform: translateY(-8px); text-shadow: 0 0 20px var(--p); }
-
-.page { display: none; padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 130px; }
-.page.active { display: block; animation: slideUp 0.4s ease; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-.chat-container { background: rgba(255,255,255,0.02); border-radius: 30px; border: 1px solid var(--border); height: 50vh; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
-.bubble { padding: 12px 18px; border-radius: 22px; font-size: 14px; background: #181818; max-width: 85%; border: 1px solid var(--border); }
-.bubble.me { background: var(--p); align-self: flex-end; border: none; }
-
-.dash-card { background: var(--card); border-radius: 26px; padding: 24px; margin-bottom: 15px; border: 1px solid var(--border); }
-.magic-btn { width: 100%; padding: 16px; border-radius: 18px; border: none; font-weight: 800; cursor: pointer; margin-top: 12px; }
+/* HACKING OVERLAY */
+#hackOverlay { display:none; position:fixed; inset:0; background:#000; z-index:20000; color:#0f0; padding:20px; font-family:monospace; font-size:12px; overflow:hidden; }
 
 #auth { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
 #auth img { width: 200px; height: 200px; border-radius: 50%; margin-bottom: 25px; border: 3px solid var(--p); box-shadow: 0 0 50px var(--p); object-fit: cover; }
-#auth input { width: 100%; max-width: 320px; padding: 22px; border-radius: 25px; background: #111; border: 1px solid var(--border); color: #fff; text-align: center; margin-bottom: 15px; font-size: 16px; }
-#auth button { width: 100%; max-width: 320px; padding: 22px; border-radius: 25px; background: var(--p); border: none; color: #fff; font-weight: 800; cursor: pointer; font-size: 16px; box-shadow: 0 10px 30px rgba(107,91,255,0.4); }
+#auth input { width: 100%; max-width: 320px; padding: 20px; border-radius: 25px; background: #111; border: 1px solid var(--border); color: #fff; text-align: center; margin-bottom: 15px; }
+#auth button { width: 100%; max-width: 320px; padding: 20px; border-radius: 25px; background: var(--p); border: none; color: #fff; font-weight: 800; cursor: pointer; }
 
-.spy-badge { color: gold; font-size: 9px; border: 1px solid gold; padding: 2px 6px; border-radius: 5px; margin-right: 8px; }
+.app { max-width: 480px; margin: auto; height: 100vh; display: flex; flex-direction: column; }
+.page { display: none; padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 100px; }
+.page.active { display: block; }
+.dash-card { background: #111; border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
+
+nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; height: 70px; background: #0a0a0a; border-radius: 25px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; }
+.nav-btn { color: #555; font-size: 20px; }
+.nav-btn.active { color: var(--p); }
 </style>
 </head>
 <body>
 
-<div id="newsBar"></div>
+<div id="hackOverlay"></div>
 
-<div id="maintenanceOverlay">
-    <div class="glitch">SYSTEM OVERRIDE</div>
-    <p style="color:white; opacity:0.8;">Access locked by Ghost Admin.</p>
+<div id="auth">
+    <img src="http://googleusercontent.com/generated_image_content/0.png" alt="God Mode">
+    <h1>Ultimate God Mode</h1>
+    <p style="color:#555">Accessing Mainframe...</p>
+    <input type="text" id="userInput" placeholder="Identity Name">
+    <button onclick="startHack()">INITIATE ACCESS</button>
 </div>
 
 <div class="app">
-  <header>
-    <h1>Live Connect <span id="ghostBadge" style="display:none; color:gold; font-size:10px; border:1px solid gold; padding:2px 5px; border-radius:5px; margin-left:8px;">GHOST MODE</span></h1>
-    <div onclick="logout()" style="color:var(--muted); cursor:pointer;"><i class="fa-solid fa-power-off"></i></div>
-  </header>
+    <header style="padding:40px 20px 10px; border-bottom:1px solid #222;">
+        <h2 style="margin:0">Live Connect <small style="color:gold; font-size:10px;">GOD MODE</small></h2>
+    </header>
 
-  <div id="auth">
-    <img src="http://googleusercontent.com/generated_image_content/0.png" alt="God Mode Skull">
-    <h1 style="margin:0; font-size: 32px;">Ultimate God Mode</h1>
-    <p style="color: var(--muted); font-size: 14px; margin: 10px 0 35px;">Initialize Private Protocol</p>
-    <input type="text" id="userInput" placeholder="Identity Name">
-    <button onclick="login()">Initiate Access</button>
-  </div>
-
-  <div id="home" class="page active">
-    <div class="dash-card" style="background: linear-gradient(135deg, #6b5bff, #ff5c8d); border:none;">
-        <h2 style="margin:0;">Master <span id="uNameDisp">...</span></h2>
-        <p id="roleNote" style="opacity:0.9; font-size:13px;">Secure Node Connected</p>
+    <div id="home" class="page active">
+        <div class="dash-card" id="adminPanel" style="display:none; border:1px solid gold;">
+            <h4 style="color:gold; margin:0 0 10px;">ADMIN CONSOLE</h4>
+            <button onclick="wipeData()" style="background:red; color:white; width:100%; padding:10px; border-radius:10px; border:none;">SELF DESTRUCT (WIPE)</button>
+        </div>
+        <div class="dash-card">Welcome, <span id="uName">...</span></div>
     </div>
 
-    <div id="godConsole" style="display:none;">
-        <h4 style="color:gold; font-size:10px; letter-spacing:2px;">MASTER CONTROL UNIT</h4>
-        <div class="dash-card" style="border: 1px solid gold;">
-            <input type="text" id="newsInput" style="width:100%; padding:15px; background:rgba(0,0,0,0.5); border:1px solid var(--border); color:white; border-radius:12px;" placeholder="Broadcast Message...">
-            <button class="magic-btn" style="background:gold; color:black;" onclick="broadcastNews()">SEND BROADCAST</button>
-            <button id="overrideBtn" class="magic-btn" style="background:purple; color:white;" onclick="toggleOverride()">ACTIVATE OVERRIDE</button>
-            <button class="magic-btn" style="background:#ff4444; color:white;" onclick="wipeAll()">WIPE ALL DATA</button>
+    <div id="chat" class="page">
+        <div id="chatBox" style="height:60vh; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:10px;"></div>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <input id="msgInput" style="flex:1; background:#111; border:1px solid #222; color:white; padding:15px; border-radius:15px;" placeholder="Message..."/>
+            <button onclick="sendMsg()" style="background:var(--p); border:none; padding:15px; border-radius:15px; color:white;"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
-  </div>
 
-  <div id="chat" class="page">
-    <div id="chatWith" style="font-size:12px; font-weight:800; color:var(--p); margin-bottom:15px;">SELECT CHANNEL</div>
-    <div class="chat-container" id="chatBox"></div>
-    <div style="display:flex; gap:12px; padding-top:15px;">
-      <input id="msgInput" style="flex:1; background:var(--card); border:1px solid var(--border); color:white; padding:16px; border-radius:20px;" placeholder="Encrypted Message..."/>
-      <button onclick="sendMsg()" style="width:55px; height:55px; border-radius:50%; border:none; background:var(--p); color:white;"><i class="fa-solid fa-paper-plane"></i></button>
-    </div>
-  </div>
-
-  <div id="users" class="page">
-    <div id="userList"></div>
-    <div id="spySection" style="display:none;">
-        <h4 style="color:gold; font-size:10px; margin-top:30px;">GLOBAL SPY CHANNELS</h4>
-        <div id="spyList"></div>
-    </div>
-  </div>
-
-  <nav>
-    <div class="nav-btn active" onclick="openPage('home',this)"><i class="fa-solid fa-ghost"></i></div>
-    <div class="nav-btn" onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></div>
-    <div class="nav-btn" onclick="openPage('users',this)"><i class="fa-solid fa-user-shield"></i></div>
-  </nav>
+    <nav>
+        <div class="nav-btn active" onclick="openPage('home',this)"><i class="fa-solid fa-house"></i></div>
+        <div class="nav-btn" onclick="openPage('chat',this)"><i class="fa-solid fa-message"></i></div>
+    </nav>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let user = localStorage.getItem("lc_user");
-let role = localStorage.getItem("lc_role") || "user";
-let curChat = "", spyMode = false;
-
-if(user) boot();
-
-window.login = () => {
-    const n = document.getElementById("userInput").value.trim();
-    if(n) {
-        user = n; localStorage.setItem("lc_user", n);
-        role = (n === "Admin786") ? "admin" : "user";
-        localStorage.setItem("lc_role", role);
-        location.reload();
-    }
+window.startHack = () => {
+    const name = document.getElementById("userInput").value;
+    if(!name) return;
+    document.getElementById("hackOverlay").style.display = "block";
+    const overlay = document.getElementById("hackOverlay");
+    const lines = ["INITIALIZING EXPLOIT...", "BYPASSING FIREWALL...", "INJECTING PAYLOAD...", "EXTRACTING DATA...", "ENCRYPTING CONNECTION...", "ACCESS GRANTED!"];
+    let i = 0;
+    const interval = setInterval(() => {
+        overlay.innerHTML += `<p>> ${lines[i]}</p>`;
+        i++;
+        if(i >= lines.length) {
+            clearInterval(interval);
+            setTimeout(() => {
+                localStorage.setItem("user", name);
+                location.reload();
+            }, 1000);
+        }
+    }, 400);
 };
 
-function boot() {
+let user = localStorage.getItem("user");
+if(user) {
     document.getElementById("auth").style.display = "none";
-    document.getElementById("uNameDisp").textContent = user;
-    if(role === "admin") {
-        document.getElementById("godConsole").style.display = "block";
-        document.getElementById("ghostBadge").style.display = "inline";
-        document.getElementById("spySection").style.display = "block";
-    }
-    
-    onValue(ref(db, "systemState"), snap => {
-        const locked = snap.val()?.locked;
-        if(locked && role !== "admin") document.getElementById("maintenanceOverlay").style.display = "flex";
-        else document.getElementById("maintenanceOverlay").style.display = "none";
-        if(role === "admin") document.getElementById("overrideBtn").innerText = locked ? "RESTORE SYSTEM" : "ACTIVATE OVERRIDE";
-    });
-
-    onValue(ref(db, "globalNews"), snap => {
-        const bar = document.getElementById("newsBar");
-        if(snap.exists()) { bar.innerText = "🚨 " + snap.val().text; bar.style.display = "block"; }
-        else bar.style.display = "none";
-    });
-}
-
-onValue(ref(db, "users"), snap => {
-    const list = document.getElementById("userList"); list.innerHTML = "";
-    snap.forEach(u => {
-        if(u.key !== user && u.key !== "Admin786") {
-            const div = document.createElement("div"); div.className = "dash-card";
-            div.innerHTML = `<b>${u.val().name}</b>`;
-            div.onclick = () => { curChat=u.key; spyMode=false; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); };
-            list.appendChild(div);
-        }
-    });
-});
-
-if(role === "admin") {
-    onValue(ref(db, "chats"), snap => {
-        const list = document.getElementById("spyList"); list.innerHTML = "";
-        snap.forEach(c => {
-            const div = document.createElement("div"); div.className = "dash-card";
-            div.innerHTML = `<span class="spy-badge">SPY</span> <b>${c.key}</b>`;
-            div.onclick = () => { curChat=c.key; spyMode=true; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); };
-            list.appendChild(div);
-        });
-    });
+    document.getElementById("uName").innerText = user;
+    if(user === "Admin786") document.getElementById("adminPanel").style.display = "block";
+    loadChat();
 }
 
 function loadChat() {
-    const path = spyMode ? "chats/" + curChat : "chats/" + [user, curChat].sort().join("_");
-    onValue(ref(db, path), snap => {
+    onValue(ref(db, "globalChat"), snap => {
         const box = document.getElementById("chatBox"); box.innerHTML = "";
         snap.forEach(m => {
             const v = m.val();
-            const div = document.createElement("div"); div.className = "bubble " + (v.from === user ? "me" : "them");
-            div.innerHTML = `<small style="display:block;opacity:0.5;font-size:9px;">${v.from}</small>${v.text}`;
-            box.appendChild(div);
+            box.innerHTML += `<div style="padding:10px; background:${v.from===user?var(--p):'#222'}; border-radius:10px; align-self:${v.from===user?'flex-end':'flex-start'}"><b>${v.from}:</b> ${v.text}</div>`;
         });
         box.scrollTop = box.scrollHeight;
     });
 }
 
 window.sendMsg = () => {
-    const i = document.getElementById('msgInput'); if(!i.value || !curChat || spyMode) return;
-    push(ref(db, "chats/" + [user, curChat].sort().join("_")), { from: user, text: i.value });
-    i.value = '';
+    const i = document.getElementById("msgInput");
+    if(!i.value) return;
+    push(ref(db, "globalChat"), { from: user, text: i.value });
+    
+    // AUTO REPLY BOT
+    setTimeout(() => {
+        push(ref(db, "globalChat"), { from: "Ghost_Bot", text: "Admin is busy hacking the world. Stay tuned! 💀" });
+    }, 2000);
+    
+    i.value = "";
 };
 
-window.toggleOverride = async () => {
-    const s = await get(ref(db, "systemState"));
-    set(ref(db, "systemState"), { locked: !s.val()?.locked });
-};
-
-window.broadcastNews = () => set(ref(db, "globalNews"), {text: document.getElementById("newsInput").value});
-window.wipeAll = () => { if(confirm("Wipe everything?")) { remove(ref(db, "chats")); remove(ref(db, "users")); } };
-window.logout = () => { localStorage.clear(); location.reload(); };
+window.wipeData = () => { if(confirm("Destroy all data?")) remove(ref(db, "globalChat")); };
 window.openPage = (id, btn) => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
