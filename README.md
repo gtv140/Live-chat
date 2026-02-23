@@ -2,11 +2,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Live Connect | Ghost Admin Console</title>
+<title>Ultimate God Mode | Private Console</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
-:root { --p: #6b5bff; --a: #ff5c8d; --bg: #020202; --card: rgba(255,255,255,0.06); --text: #ffffff; --muted: #888; --border: rgba(255,255,255,0.1); }
+:root { --p: #6b5bff; --a: #ff5c8d; --bg: #000000; --card: rgba(255,255,255,0.06); --text: #ffffff; --muted: #888; --border: rgba(255,255,255,0.1); }
 * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 body { margin: 0; background: var(--bg); color: var(--text); overflow: hidden; }
 
@@ -36,9 +36,10 @@ nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
 .dash-card { background: var(--card); border-radius: 26px; padding: 24px; margin-bottom: 15px; border: 1px solid var(--border); }
 .magic-btn { width: 100%; padding: 16px; border-radius: 18px; border: none; font-weight: 800; cursor: pointer; margin-top: 12px; }
 
-#auth { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
-#auth img { width: 180px; height: 180px; border-radius: 50%; margin-bottom: 25px; border: 2px solid var(--p); box-shadow: 0 0 40px var(--p); object-fit: cover; }
-#auth input { width: 100%; max-width: 320px; padding: 20px; border-radius: 22px; background: var(--card); border: 1px solid var(--border); color: #fff; text-align: center; margin-bottom: 15px; }
+#auth { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
+#auth img { width: 200px; height: 200px; border-radius: 50%; margin-bottom: 25px; border: 3px solid var(--p); box-shadow: 0 0 50px var(--p); object-fit: cover; }
+#auth input { width: 100%; max-width: 320px; padding: 22px; border-radius: 25px; background: #111; border: 1px solid var(--border); color: #fff; text-align: center; margin-bottom: 15px; font-size: 16px; }
+#auth button { width: 100%; max-width: 320px; padding: 22px; border-radius: 25px; background: var(--p); border: none; color: #fff; font-weight: 800; cursor: pointer; font-size: 16px; box-shadow: 0 10px 30px rgba(107,91,255,0.4); }
 
 .spy-badge { color: gold; font-size: 9px; border: 1px solid gold; padding: 2px 6px; border-radius: 5px; margin-right: 8px; }
 </style>
@@ -59,11 +60,11 @@ nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
   </header>
 
   <div id="auth">
-    <img src="http://googleusercontent.com/generated_image_content/0.png" alt="Ghost Admin">
-    <h2 style="margin:0;">Secure Login</h2>
-    <p style="color: var(--muted); font-size: 12px; margin: 10px 0 25px;">Initialize Private Protocol</p>
+    <img src="http://googleusercontent.com/generated_image_content/0.png" alt="God Mode Skull">
+    <h1 style="margin:0; font-size: 32px;">Ultimate God Mode</h1>
+    <p style="color: var(--muted); font-size: 14px; margin: 10px 0 35px;">Initialize Private Protocol</p>
     <input type="text" id="userInput" placeholder="Identity Name">
-    <button onclick="login()" style="width:100%; max-width:320px; padding:20px; border-radius:22px; background:var(--p); border:none; color:#fff; font-weight:800; cursor:pointer;">INITIATE ACCESS</button>
+    <button onclick="login()">Initiate Access</button>
   </div>
 
   <div id="home" class="page active">
@@ -84,10 +85,10 @@ nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
   </div>
 
   <div id="chat" class="page">
-    <div id="chatWith" style="font-size:12px; font-weight:800; color:var(--p); margin-bottom:15px;">CHANNEL</div>
+    <div id="chatWith" style="font-size:12px; font-weight:800; color:var(--p); margin-bottom:15px;">SELECT CHANNEL</div>
     <div class="chat-container" id="chatBox"></div>
     <div style="display:flex; gap:12px; padding-top:15px;">
-      <input id="msgInput" style="flex:1; background:var(--card); border:1px solid var(--border); color:white; padding:16px; border-radius:20px;" placeholder="Type..."/>
+      <input id="msgInput" style="flex:1; background:var(--card); border:1px solid var(--border); color:white; padding:16px; border-radius:20px;" placeholder="Encrypted Message..."/>
       <button onclick="sendMsg()" style="width:55px; height:55px; border-radius:50%; border:none; background:var(--p); color:white;"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
   </div>
@@ -193,7 +194,7 @@ function loadChat() {
 }
 
 window.sendMsg = () => {
-    const i = document.getElementById('msgInput'); if(!i.value || spyMode) return;
+    const i = document.getElementById('msgInput'); if(!i.value || !curChat || spyMode) return;
     push(ref(db, "chats/" + [user, curChat].sort().join("_")), { from: user, text: i.value });
     i.value = '';
 };
