@@ -6,190 +6,269 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
-  --bg:#050505; --card:#121212; --text:#ffffff; --primary:#00d2ff; --accent:#ff007a; --success:#00ff88;
+  --bg:#08090a;
+  --card:#14161a;
+  --text:#f0f2f5;
+  --muted:#94a3b8;
+  --primary:#6366f1;
+  --accent:#f43f5e;
+  --success:#10b981;
+  --glass: rgba(255, 255, 255, 0.03);
 }
-body{margin:0;font-family:'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text); height: 100dvh; display: flex; flex-direction: column; overflow: hidden;}
+body{margin:0;font-family:'Inter', system-ui, -apple-system;background:var(--bg);color:var(--text);transition:.3s; height: 100dvh; display: flex; flex-direction: column; overflow: hidden;}
+body.light{--bg:#f8fafc;--card:#ffffff;--text:#1e293b;--muted:#64748b;--glass: rgba(0,0,0,0.03);}
 
-/* Header Style from Screenshot */
-header{padding:15px; background:var(--card); border-bottom:1px solid #333; display:flex; justify-content:space-between; align-items:center;}
-header h1{margin:0; font-size:24px; color:var(--primary); font-weight:bold;}
-header .icons{display:flex; gap:15px; align-items:center;}
+.app{max-width:480px;margin:auto;height:100%;display:flex;flex-direction:column; width: 100%; box-shadow: 0 0 50px rgba(0,0,0,0.5);}
 
-.page{display:none; padding:15px; flex:1; overflow-y:auto;}
-.page.active{display:block;}
+header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;background:var(--card);border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10;}
+header h1{margin:0;font-size:22px;font-weight:800; background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+header button{background:var(--glass); border:1px solid rgba(255,255,255,0.1); width:40px; height:40px; border-radius:12px; color:var(--text); cursor:pointer; transition:.3s;}
 
-/* Dashboard Card - Screenshot 3 */
-.welcome-card{
-    background: linear-gradient(135deg, #ff5c8d, #6b5bff);
-    padding: 30px 20px; border-radius: 25px; text-align: center;
-    box-shadow: 0 0 20px rgba(107, 91, 255, 0.5); margin-bottom: 20px;
-}
-.stat-card{
-    background: #111; border: 1px solid #222; padding: 18px;
-    border-radius: 20px; display: flex; justify-content: space-between;
-    margin-bottom: 12px; box-shadow: 0 0 10px rgba(0,210,255,0.1);
-}
-.stat-card h4{margin:0; color:var(--accent);}
+.page{display:none;padding:20px;flex:1;overflow-y:auto; transition: 0.3s ease-in-out;}
+.page.active{display:block; animation: fadeIn 0.4s ease;}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Admin UI - Screenshot 1 */
-.admin-box{background:#0f1115; border:1px solid #1f2229; padding:15px; border-radius:20px; margin-top:20px;}
-.broadcast-btn{width:100%; padding:15px; background:var(--primary); color:#000; border:none; border-radius:12px; font-weight:bold; margin-top:10px;}
-.ban-card{background:var(--card); padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center; margin-top:10px; border:1px solid #222;}
-.ban-btn{background:var(--accent); color:white; border:none; padding:8px 15px; border-radius:8px;}
+.hero{background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; padding:32px 20px; border-radius:24px; text-align:center; box-shadow:0 20px 40px rgba(99, 102, 241, 0.2); margin-bottom:24px;}
+.hero h2{margin:0 0 8px; font-size:24px; font-weight:800;}
+.hero p{margin:0; font-size:14px; opacity:.85; letter-spacing: 0.5px;}
 
-/* Chat Bubbles - Screenshot 2 */
-.chat-box{height:60vh; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:12px;}
-.msg{max-width:80%; padding:12px; border-radius:18px; font-size:14px; position:relative;}
-.msg.received{background:#26262b; align-self:flex-start; border-bottom-left-radius:2px;}
-.msg.sent{background:linear-gradient(to right, #00c6ff, #0072ff); align-self:flex-end; border-bottom-right-radius:2px;}
-.msg img{width:100%; border-radius:12px; margin-top:5px;}
-.msg .time{font-size:10px; opacity:0.6; display:block; text-align:right; margin-top:5px;}
+.dashboard-stat{background:var(--card); padding:20px; margin-bottom:16px; border-radius:20px; border: 1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center; transition:.3s;}
+.dashboard-stat h4{margin:0; color:var(--muted); font-size:14px; font-weight:500; text-transform: uppercase; letter-spacing: 1px;}
+.dashboard-stat span{font-weight:800; font-size:20px; color:var(--primary);}
 
-.input-area{background:var(--card); padding:12px; display:flex; gap:10px; align-items:center; border-top:1px solid #222;}
-.input-area input{flex:1; background:#000; border:1px solid #333; padding:12px; border-radius:12px; color:#fff; outline:none;}
-.input-area button{background:var(--primary); border:none; width:45px; height:45px; border-radius:12px; color:#000;}
+.chat-box{background:var(--card); border-radius:24px; padding:16px; height:50vh; overflow-y:auto; margin-bottom:16px; border: 1px solid rgba(255,255,255,0.05); scroll-behavior: smooth;}
+.msg{background:#1e293b; color:#fff; padding:12px 16px; border-radius:18px; border-bottom-left-radius: 4px; margin-bottom:12px; font-size:14px; position:relative; line-height: 1.5; max-width: 85%;}
+.msg b{color: var(--primary); font-size: 12px; display: block; margin-bottom: 4px;}
 
-/* Nav */
-nav{display:flex; justify-content:space-around; background:var(--card); padding:15px 0; border-top:1px solid #222;}
-nav i{font-size:22px; color:#666; cursor:pointer;}
-nav i.active{color:var(--primary);}
+.input-row{display:flex; gap:12px; background: var(--card); padding: 8px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);}
+.input-row input{flex:1; padding:12px 16px; border:none; background:transparent; color:var(--text); outline:none; font-size: 15px;}
+.input-row button{width: 48px; height: 48px; border:none; border-radius:16px; background:var(--primary); color:#fff; cursor:pointer; transition:.3s; display: grid; place-items: center;}
+.input-row button:hover{transform: scale(1.05); box-shadow: 0 0 20px var(--primary);}
+
+.user, .group{display:flex; align-items:center; gap:14px; margin-bottom:12px; padding:16px; background:var(--card); border-radius:20px; border: 1px solid rgba(255,255,255,0.05); transition:.3s;}
+.user:hover{border-color: var(--primary); background: rgba(99, 102, 241, 0.05);}
+.dot{width:10px; height:10px; background:var(--success); border-radius:50%; box-shadow: 0 0 10px var(--success);}
+
+nav{display:flex; justify-content:space-around; background:var(--card); padding:16px 0; border-top: 1px solid rgba(255,255,255,0.05); padding-bottom: env(safe-area-inset-bottom);}
+nav button{background:none; border:none; font-size:22px; color:var(--muted); cursor:pointer; transition:.3s; position: relative;}
+nav button.active{color:var(--primary);}
+nav button.active::after{content:''; position:absolute; bottom:-10px; left:50%; transform:translateX(-50%); width:5px; height:5px; background:var(--primary); border-radius:50%;}
+
+.login-card{background:var(--card); padding:32px 24px; border-radius:28px; text-align: center; border: 1px solid rgba(255,255,255,0.05);}
+.login-card h3{margin-top:0; font-size:22px;}
+.login-card input{width:100%; padding:16px; border-radius:16px; margin-bottom:16px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; outline:none; font-size: 16px;}
+.login-card button{width:100%; padding:16px; border:none; border-radius:16px; background:var(--primary); color:#fff; font-weight:700; font-size:16px; cursor:pointer;}
+
+.comment-input input{background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 12px;}
+.contact-card{background:var(--card); border: 1px solid rgba(255,255,255,0.05); padding: 16px; border-radius: 20px;}
 </style>
 </head>
 <body>
-
+<div class="app">
 <header>
-    <h1>Live-chat</h1>
-    <div class="icons">
-        <i class="fa-solid fa-moon"></i>
-        <i class="fa-solid fa-right-from-bracket" onclick="logout()"></i>
-    </div>
+<h1>Live Connect</h1>
+<div>
+    <button onclick="toggleTheme()" style="margin-right:8px;"><i class="fa-solid fa-circle-half-stroke"></i></button>
+    <button onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
+</div>
 </header>
 
-<div class="page active" id="home">
-    <div style="padding:10px;"><h2 style="color:var(--primary); border-bottom:2px solid #333; display:inline-block; padding-bottom:5px;">Live Connect</h2></div>
-    
-    <div class="welcome-card">
-        <h2 style="margin:0;">Welcome <span id="userNameDisp">User</span> 🚀</h2>
-        <p style="opacity:0.8; font-size:14px;">Real-Time Chat & Active Connections</p>
-    </div>
-
-    <div class="stat-card"><h4>Total Users</h4><span id="uCount">0</span></div>
-    <div class="stat-card"><h4>Total Groups</h4><span id="gCount">0</span></div>
-
-    <div id="adminArea" style="display:none;">
-        <p style="color:var(--primary); font-size:12px; font-weight:bold; margin-top:25px;">GLOBAL BROADCAST</p>
-        <div class="admin-box">
-            <input type="text" id="bcMsg" placeholder="Type alert..." style="width:100%; background:black; border:none; padding:15px; color:white; border-radius:10px;">
-            <button class="broadcast-btn" onclick="sendBC()">SEND TO ALL</button>
+<div id="loginPage" class="page active">
+    <div style="height:100%; display:flex; align-items:center; justify-content:center;">
+        <div class="login-card">
+            <div style="font-size:40px; margin-bottom:15px;">🛰️</div>
+            <h3>Terminal Access</h3>
+            <input type="text" id="usernameInput" placeholder="Enter Username">
+            <button onclick="login()">Initialize Sync</button>
         </div>
-        <p style="color:var(--primary); font-size:12px; font-weight:bold; margin-top:20px;">USER MANAGEMENT</p>
-        <div id="banList"></div>
     </div>
 </div>
 
-<div class="page" id="chat">
-    <div class="chat-box" id="msgBox"></div>
-    <div class="input-area">
-        <label for="fileInp"><i class="fa-solid fa-paperclip" style="color:var(--primary); cursor:pointer;"></i></label>
-        <input type="file" id="fileInp" hidden onchange="uploadPhoto(this)">
-        <input type="text" id="msgInp" placeholder="Message...">
-        <button onclick="send()"><i class="fa-solid fa-paper-plane"></i></button>
+<div id="home" class="page">
+    <div class="hero">
+        <h2>Hi, <span id="dashUser"></span>!</h2>
+        <p>Your secure communication hub is ready.</p>
+    </div>
+    <div class="dashboard-stat"><h4>Online Nodes</h4><span id="onlineCount">0</span></div>
+    <div class="dashboard-stat"><h4>Active Clusters</h4><span id="groupCount">0</span></div>
+</div>
+
+<div id="chat" class="page">
+    <div class="chat-box" id="chatBox"></div>
+    <div class="input-row">
+        <input id="msgInput" placeholder="Message…"/>
+        <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
 </div>
 
-<div class="page" id="usersList">
-    <h3 style="color:var(--primary)">Online Nodes</h3>
-    <div id="activeUsers"></div>
+<div id="users" class="page">
+    <h3 style="font-size:14px; color:var(--muted); text-transform:uppercase; margin-bottom:15px;">Network Users</h3>
+    <div id="userList"></div>
+    <h3 style="font-size:14px; color:var(--muted); text-transform:uppercase; margin-top:24px; margin-bottom:15px;">Groups</h3>
+    <div id="groupList"></div>
+    <div class="input-row" style="margin-top:20px;">
+        <input id="groupInput" placeholder="New group name"/>
+        <button onclick="createGroup()"><i class="fa-solid fa-plus"></i></button>
+    </div>
+</div>
+
+<div id="about" class="page">
+    <div class="contact-card" style="margin-top:10px;">
+        <h3>About System 🚀</h3>
+        <p style="font-size:14px; line-height:1.6; color:var(--muted);">Developed by <b>WebHub Technologies</b>. A robust architecture for real-time data streaming and private encrypted messaging.</p>
+        <ul style="padding-left:20px; font-size:14px; color:var(--muted);">
+            <li>Low-latency synchronization</li>
+            <li>Hybrid Dark/Light architecture</li>
+            <li>Fully responsive mobile experience</li>
+        </ul>
+    </div>
+</div>
+
+<div id="contact" class="page">
+    <h3 style="margin-bottom:20px;">Support Channels</h3>
+    <div class="contact-card" style="display:flex; align-items:center; gap:15px; margin-bottom:12px;">
+        <i class="fa-solid fa-envelope" style="color:var(--primary); font-size:20px;"></i>
+        <div><h4 style="margin:0; font-size:14px;">Support Email</h4><a href="mailto:webhub262@gmail.com" style="color:var(--muted); text-decoration:none; font-size:13px;">webhub262@gmail.com</a></div>
+    </div>
+    <div class="contact-card" style="display:flex; align-items:center; gap:15px; margin-bottom:12px;">
+        <i class="fa-brands fa-instagram" style="color:var(--accent); font-size:20px;"></i>
+        <div><h4 style="margin:0; font-size:14px;">Instagram</h4><a href="#" style="color:var(--muted); text-decoration:none; font-size:13px;">@mr_nazim073</a></div>
+    </div>
 </div>
 
 <nav>
-    <i class="fa-solid fa-house active" onclick="showP('home',this)"></i>
-    <i class="fa-solid fa-comments" onclick="showP('chat',this)"></i>
-    <i class="fa-solid fa-user-group" onclick="showP('usersList',this)"></i>
-    <i class="fa-solid fa-circle-info"></i>
-    <i class="fa-solid fa-envelope"></i>
+    <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house-user"></i></button>
+    <button onclick="openPage('chat',this)"><i class="fa-solid fa-comment-dots"></i></button>
+    <button onclick="openPage('users',this)"><i class="fa-solid fa-users-viewfinder"></i></button>
+    <button onclick="openPage('about',this)"><i class="fa-solid fa-shield-halved"></i></button>
+    <button onclick="openPage('contact',this)"><i class="fa-solid fa-headset"></i></button>
 </nav>
+</div>
 
 <script type="module">
+// --- SAARA JAVASCRIPT LOGIC WAHI HAI JO AAPNE BHEJA THA ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-const conf = {
+const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+  authDomain: "live-chat-b810c.firebaseapp.com",
   databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
   projectId: "live-chat-b810c",
+  storageBucket: "live-chat-b810c.appspot.com",
+  messagingSenderId: "555058795334",
+  appId: "1:555058795334:web:f668887409800c32970b47"
 };
 
-const app = initializeApp(conf);
+const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let user = localStorage.getItem("chat_user") || prompt("Username?");
-if(user) {
-    localStorage.setItem("chat_user", user);
-    document.getElementById("userNameDisp").textContent = user;
-    update(ref(db, "users/"+user), {online:true});
-    if(user === "Admin786") document.getElementById("adminArea").style.display = "block";
-}
+let currentUser=null;
+let curChat="";
+let isGroup=false;
 
-window.showP = (id, el) => {
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.querySelectorAll('nav i').forEach(i=>i.classList.remove('active'));
-    el.classList.add('active');
+const chatBox=document.getElementById("chatBox");
+const userList=document.getElementById("userList");
+const groupList=document.getElementById("groupList");
+const dashUser=document.getElementById("dashUser");
+const onlineCount=document.getElementById("onlineCount");
+const groupCount=document.getElementById("groupCount");
+
+window.login=()=>{
+  const uname=document.getElementById("usernameInput").value.trim();
+  if(!uname){alert("Enter username");return;}
+  currentUser=uname;
+  dashUser.textContent=currentUser;
+  const userRef=ref(db,"users/"+uname);
+  set(userRef,{name:uname,online:true});
+  onDisconnect(userRef).update({online:false});
+  document.getElementById("loginPage").classList.remove("active");
+  document.getElementById("home").classList.add("active");
 };
 
-// Listeners for Stats & Users
-onValue(ref(db, "users"), s => {
-    let count = 0; document.getElementById("activeUsers").innerHTML = "";
-    document.getElementById("banList").innerHTML = "";
-    s.forEach(u => {
-        if(u.val().online) count++;
-        if(u.key !== user){
-            document.getElementById("activeUsers").innerHTML += `<div class="ban-card" onclick="startChat('${u.key}')">${u.key} <div style="width:10px;height:10px;background:var(--success);border-radius:50%"></div></div>`;
-            document.getElementById("banList").innerHTML += `<div class="ban-card"><span>${u.key}</span><button class="ban-btn">BAN</button></div>`;
-        }
-    });
-    document.getElementById("uCount").textContent = count;
+window.logout=()=>{
+  if(!currentUser) return;
+  const userRef=ref(db,"users/"+currentUser);
+  set(userRef,{name:currentUser,online:false});
+  location.reload();
+};
+
+window.openPage=(id,btn)=>{
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+};
+
+window.toggleTheme=()=>{document.body.classList.toggle('light');};
+
+onValue(ref(db,"users"),snap=>{
+  let online=0;
+  userList.innerHTML="";
+  snap.forEach(u=>{
+    if(u.val().online){
+      online++;
+      if(u.key!==currentUser){
+        const d=document.createElement("div");
+        d.className="user";
+        d.innerHTML=`<div class="dot"></div>${u.val().name}`;
+        d.onclick=()=>{
+          curChat=u.key; isGroup=false; loadChat(); openPage('chat',document.querySelectorAll('nav button')[1]);
+        };
+        userList.appendChild(d);
+      }
+    }
+  });
+  onlineCount.textContent=online;
 });
 
-let currentTarget = "";
-window.startChat = (target) => {
-    currentTarget = target;
-    showP('chat', document.querySelectorAll('nav i')[1]);
-    const path = "chats/" + [user, target].sort().join("_");
-    onValue(ref(db, path), snap => {
-        const box = document.getElementById("msgBox"); box.innerHTML = "";
-        snap.forEach(m => {
-            const d = m.val();
-            const isMe = d.from === user;
-            const div = document.createElement("div");
-            div.className = `msg ${isMe ? 'sent' : 'received'}`;
-            let content = d.type === 'img' ? `<img src="${d.text}">` : d.text;
-            div.innerHTML = `<small style="font-size:10px; display:block; margin-bottom:3px; color:var(--primary)">${d.from}</small>${content}<span class="time">07:45 AM</span>`;
-            box.appendChild(div);
-        });
-        box.scrollTop = box.scrollHeight;
-    });
-};
-
-window.send = () => {
-    const inp = document.getElementById("msgInp");
-    if(!inp.value || !currentTarget) return;
-    const path = "chats/" + [user, currentTarget].sort().join("_");
-    push(ref(db, path), {from:user, text:inp.value, type:'text'});
-    inp.value = "";
-};
-
-window.uploadPhoto = (e) => {
-    const reader = new FileReader();
-    reader.onload = (f) => {
-        const path = "chats/" + [user, currentTarget].sort().join("_");
-        push(ref(db, path), {from:user, text:f.target.result, type:'img'});
+onValue(ref(db,"groups"),snap=>{
+  groupList.innerHTML="";
+  groupCount.textContent=snap.size || 0;
+  snap.forEach(g=>{
+    const d=document.createElement("div");
+    d.className="group";
+    d.textContent=g.key;
+    d.onclick=()=>{
+      curChat=g.key; isGroup=true; loadChat(); openPage('chat',document.querySelectorAll('nav button')[1]);
     };
-    reader.readAsDataURL(e.files[0]);
+    groupList.appendChild(d);
+  });
+});
+
+window.createGroup=()=>{
+  const g=document.getElementById("groupInput").value.trim();
+  if(!g){alert("Enter group name");return;}
+  set(ref(db,"groups/"+g),{createdBy:currentUser});
+  document.getElementById("groupInput").value='';
 };
 
-window.logout = () => { update(ref(db, "users/"+user), {online:false}).then(()=>location.reload()); };
+function loadChat(){
+  if(!curChat) return;
+  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
+  onValue(ref(db,path),snap=>{
+    chatBox.innerHTML="";
+    snap.forEach(m=>{
+      const div=document.createElement("div");
+      div.className="msg";
+      let actions=`<div class="actions" style="opacity:0.5; font-size:10px;"><span onclick="deleteMsg('${path}','${m.key}')">🗑️</span></div>`;
+      div.innerHTML=`<b>${m.val().from}</b> ${m.val().text} ${actions}`;
+      chatBox.appendChild(div);
+      chatBox.scrollTop=chatBox.scrollHeight;
+    });
+  });
+}
+
+window.sendMsg=()=>{
+  if(!curChat) return alert("Select a user/group first");
+  const input=document.getElementById('msgInput');
+  if(!input.value) return;
+  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
+  push(ref(db,path),{from:currentUser,text:input.value});
+  input.value='';
+};
+
+window.deleteMsg=(path,key)=>{ if(confirm("Delete message?")) remove(ref(db,path+"/"+key)); };
 </script>
 </body>
 </html>
