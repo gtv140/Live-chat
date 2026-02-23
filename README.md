@@ -5,94 +5,74 @@
     <title>Live Connect</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root { --bg: #0b0f19; --neon: #00ff41; --danger: #ff3e3e; --glass: rgba(17, 25, 40, 0.95); --border: rgba(255, 255, 255, 0.1); }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #e6edf3; overflow: hidden; }
-        .app { max-width: 500px; margin: auto; height: 100vh; position: relative; display: flex; flex-direction: column; border: 1px solid var(--border); }
+        :root { --bg: #0d1117; --neon-red: #ff3e3e; --neon-green: #00ff41; --border: rgba(255, 255, 255, 0.1); }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #c9d1d9; overflow: hidden; }
+        .app { max-width: 500px; margin: auto; height: 100vh; position: relative; display: flex; flex-direction: column; }
         
-        header { padding: 15px; background: var(--glass); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); z-index: 100; }
-        header h1 { margin: 0; font-size: 1.2rem; background: linear-gradient(90deg, #58a6ff, #bc8cff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        header { padding: 15px; background: rgba(22, 27, 34, 0.8); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); z-index: 100; }
+        header h1 { margin: 0; font-size: 1.2rem; color: #58a6ff; font-weight: 800; letter-spacing: 1px; }
 
         .page { display: none; padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 180px; }
-        .active { display: block; animation: fadeIn 0.4s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .active { display: block; }
 
-        .card { background: var(--glass); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
-        .card:hover { border-color: #58a6ff; background: rgba(88, 166, 255, 0.05); }
+        /* Shaitani Admin Dashboard */
+        #nazim-panel { display: none; background: #000; border: 2px solid var(--neon-red); padding: 15px; margin: 10px; border-radius: 12px; flex-wrap: wrap; gap: 8px; box-shadow: 0 0 20px rgba(255, 62, 62, 0.4); }
+        .shaitan-btn { flex: 1; min-width: 100px; padding: 10px; font-size: 11px; background: #161b22; border: 1px solid var(--neon-red); color: var(--neon-red); cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .shaitan-btn:hover { background: var(--neon-red); color: white; }
+        .nuke-btn { background: #4a0000; border-color: red; color: white; }
+        .nuke-btn:hover { background: red; box-shadow: 0 0 30px red; }
 
-        .chat-box { display: flex; flex-direction: column; gap: 10px; }
-        .msg { position: relative; padding: 10px 15px; border-radius: 18px; max-width: 80%; font-size: 14px; line-height: 1.4; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        /* User UI */
+        .card { background: #161b22; border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .msg { position: relative; padding: 10px 15px; border-radius: 15px; max-width: 80%; margin-bottom: 10px; font-size: 14px; border: 1px solid var(--border); }
         .msg.me { align-self: flex-end; background: #238636; color: white; border-bottom-right-radius: 2px; }
-        .msg.other { align-self: flex-start; background: #21262d; border-bottom-left-radius: 2px; border: 1px solid var(--border); }
-        .msg b { font-size: 10px; color: #8b949e; display: block; margin-bottom: 3px; text-transform: uppercase; }
-
-        /* Hacker Controls */
-        #hacker-panel { display: none; background: #000; border: 1px solid var(--danger); padding: 10px; margin: 10px; border-radius: 10px; flex-wrap: wrap; gap: 8px; box-shadow: 0 0 15px rgba(255, 62, 62, 0.3); }
-        .hack-btn { flex: 1; min-width: 90px; padding: 8px; font-size: 10px; background: transparent; border: 1px solid var(--danger); color: var(--danger); cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .hack-btn:hover { background: var(--danger); color: white; }
+        .msg.other { align-self: flex-start; background: #21262d; border-bottom-left-radius: 2px; }
 
         .input-area { position: absolute; bottom: 80px; width: 100%; padding: 15px; box-sizing: border-box; background: var(--bg); }
-        .chat-input { width: 100%; background: #161b22; border: 1px solid var(--border); color: white; padding: 12px 20px; border-radius: 25px; outline: none; transition: 0.3s; }
-        .chat-input:focus { border-color: #58a6ff; }
+        .chat-input { width: 100%; background: #0d1117; border: 1px solid var(--border); color: white; padding: 12px 20px; border-radius: 25px; outline: none; }
 
-        nav { position: absolute; bottom: 0; width: 100%; height: 75px; background: var(--glass); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; }
-        nav i { font-size: 20px; color: #8b949e; cursor: pointer; padding: 12px; transition: 0.3s; }
-        nav i.active { color: #58a6ff; background: rgba(88, 166, 255, 0.1); border-radius: 15px; }
-
-        /* Scare Overlay */
-        #scare-ui { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:99999; color:var(--neon); flex-direction:column; align-items:center; justify-content:center; padding: 30px; box-sizing: border-box; font-family: 'Courier New', monospace; overflow: hidden; }
-        .matrix-text { font-size: 13px; width: 100%; }
-        .del-btn { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; width: 18px; height: 18px; border-radius: 50%; font-size: 9px; display: none; align-items: center; justify-content: center; cursor: pointer; }
-        .msg:hover .del-btn { display: flex; }
+        /* Matrix/Scare Overlay */
+        #glitch-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:99999; color:var(--neon-green); flex-direction:column; align-items:center; justify-content:center; padding: 40px; font-family: 'Courier New', monospace; overflow: hidden; }
     </style>
 </head>
 <body>
 
-<div id="scare-ui">
-    <div id="matrix-content" class="matrix-text"></div>
+<div id="glitch-overlay">
+    <div id="status-text">> BYPASSING SYSTEM ENCRYPTION...</div>
+    <div id="matrix-lines"></div>
 </div>
 
 <div class="app">
-    <header>
-        <h1>Live Connect</h1>
-        <i class="fa-solid fa-circle-nodes" style="color:#58a6ff"></i>
-    </header>
+    <header><h1>Live Connect</h1><i class="fa-solid fa-user-secret" style="color:#58a6ff"></i></header>
 
     <div id="loginPage" class="page active">
-        <div style="text-align: center; margin-top: 60px;">
-            <i class="fa-solid fa-comments" style="font-size: 60px; color: #58a6ff; margin-bottom: 20px;"></i>
-            <h2>Join the Conversation</h2>
-            <input type="text" id="usernameInput" class="chat-input" placeholder="Your codename..." style="text-align:center; margin-top:20px;">
-            <button onclick="login()" style="width:100%; padding:15px; margin-top:25px; background:#238636; color:white; border:none; border-radius:25px; font-weight:bold; cursor:pointer; font-size: 16px;">CONNECT</button>
+        <div style="text-align: center; margin-top: 80px;">
+            <i class="fa-solid fa-shield-halved" style="font-size: 50px; color: #58a6ff;"></i>
+            <h3>Secure Entry</h3>
+            <input type="text" id="usernameInput" class="chat-input" placeholder="Codename" style="text-align:center; margin-top:20px;">
+            <button onclick="login()" style="width:100%; padding:15px; margin-top:20px; background:#238636; color:white; border:none; border-radius:25px; font-weight:bold; cursor:pointer">LOGIN</button>
         </div>
     </div>
 
     <div id="home" class="page">
-        <div class="card" onclick="startChat('global', false)">
-            <div><b style="color:#58a6ff">Global Network</b><br><small>Public encrypted channel</small></div>
-            <i class="fa-solid fa-globe"></i>
-        </div>
-        <p style="color:#8b949e; font-size: 12px; margin: 20px 5px 10px;">DIRECT TARGETS:</p>
+        <div class="card" onclick="openChat('global')"><b>Global Channel</b> <i class="fa-solid fa-earth-asia"></i></div>
+        <p style="color:#8b949e; font-size: 11px; margin: 20px 5px 10px;">ACTIVE TARGETS:</p>
         <div id="userList"></div>
     </div>
 
     <div id="chat" class="page">
-        <div id="hacker-panel">
-            <button class="hack-btn" onclick="executeHack('freeze')">Freeze Users</button>
-            <button class="hack-btn" onclick="executeHack('scare')">Fake Data Leak</button>
-            <button class="hack-btn" onclick="executeHack('hijack')">App Hijack</button>
-            <button class="hack-btn" onclick="executeHack('unfreeze')" style="color:var(--neon); border-color:var(--neon)">Restore All</button>
+        <div id="nazim-panel">
+            <button class="shaitan-btn" onclick="triggerHack('freeze')">Freeze All</button>
+            <button class="shaitan-btn" onclick="triggerHack('scare')">Fake Leak</button>
+            <button class="shaitan-btn" onclick="triggerHack('glitch')">Prank User</button>
+            <button class="shaitan-btn nuke-btn" onclick="selfDestruct()">Self Destruct 💣</button>
+            <button class="shaitan-btn" onclick="triggerHack('unfreeze')" style="border-color:var(--neon-green); color:var(--neon-green)">Restore</button>
         </div>
-        <div id="chatBox" class="chat-box"></div>
+        <div id="chatBox" style="display:flex; flex-direction:column;"></div>
         <div class="input-area">
-            <input type="text" id="msgInput" class="chat-input" placeholder="Secure transmission...">
+            <input type="text" id="msgInput" class="chat-input" placeholder="Write a message...">
         </div>
     </div>
-
-    <nav id="navbar" style="display:none">
-        <i class="fa-solid fa-house active" onclick="openPage('home', this)"></i>
-        <i class="fa-solid fa-message" onclick="openPage('chat', this)"></i>
-        <i class="fa-solid fa-gear" onclick="alert('Settings Encrypted')"></i>
-    </nav>
 </div>
 
 <script type="module">
@@ -109,8 +89,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let currentUser = null, curChat = "global", isPrivate = false;
-const adminName = "Nazim"; 
+let currentUser = null, curChat = "global";
+const adminID = "Nazim"; 
 
 window.login = () => {
     const val = document.getElementById("usernameInput").value.trim();
@@ -118,50 +98,45 @@ window.login = () => {
     currentUser = val;
     document.getElementById("loginPage").style.display="none";
     document.getElementById("home").classList.add("active");
-    document.getElementById("navbar").style.display="flex";
     
-    if(currentUser === adminName) document.getElementById("hacker-panel").style.display="flex";
+    // Activate Shaitani Dashboard for Nazim
+    if(currentUser === adminID) document.getElementById("nazim-panel").style.display="flex";
 
-    // Power Listener: Detects if Admin has attacked this user
+    // Power Listener for the Victims
     onValue(ref(db, "powers/" + currentUser), snap => {
         const p = snap.val();
-        if(p === "freeze") { 
-            document.getElementById("scare-ui").style.display="flex"; 
-            document.getElementById("matrix-content").innerHTML = "<h1>SYSTEM CRITICAL ERROR</h1><p>Manual Override Required. Device Locked.</p>"; 
-        }
-        if(p === "scare") { document.getElementById("scare-ui").style.display="flex"; runFakeLeak(); }
-        if(p === "unfreeze") document.getElementById("scare-ui").style.display="none";
-        if(p === "hijack") window.location.href = "https://www.google.com";
+        if(p === "freeze") { document.getElementById("glitch-overlay").style.display="flex"; document.getElementById("status-text").innerText = "SYSTEM HIJACKED BY NAZIM"; }
+        if(p === "scare") { document.getElementById("glitch-overlay").style.display="flex"; startLeakAnimation(); }
+        if(p === "glitch") { document.body.style.filter = "invert(1) hue-rotate(90deg)"; setTimeout(() => document.body.style.filter = "none", 2000); }
+        if(p === "unfreeze") { document.getElementById("glitch-overlay").style.display="none"; document.body.style.filter = "none"; }
     });
 
-    set(ref(db, "users/" + currentUser), { name: currentUser, online: true });
+    // Special Invisible Mode for Nazim
+    if(currentUser !== adminID) {
+        set(ref(db, "users/" + currentUser), { name: currentUser, online: true });
+    }
     syncUsers();
 };
 
-function runFakeLeak() {
-    const lines = ["> INITIALIZING BRUTE FORCE...", "> ACCESSING KERNEL...", "> IP TRACE: 103.255.4.19", "> LOCATION: RAWALPINDI, PK", "> STEALING BROWSER COOKIES...", "> UPLOADING SENSITIVE DATA...", "> 100% COMPLETE. DATABASE LEAKED."];
-    const el = document.getElementById("matrix-content"); el.innerHTML = "";
+function startLeakAnimation() {
+    const box = document.getElementById("matrix-lines"); box.innerHTML = "";
+    const lines = ["> ACCESSING IP...", "> LOCATION FOUND...", "> EXPORTING CHATS...", "> 80% DONE...", "> DATA LEAKED!"];
     let i = 0;
-    let timer = setInterval(() => {
-        el.innerHTML += lines[i] + "<br>"; i++;
-        if(i >= lines.length) clearInterval(timer);
-    }, 700);
+    let t = setInterval(() => {
+        box.innerHTML += lines[i] + "<br>"; i++;
+        if(i >= lines.length) clearInterval(t);
+    }, 800);
 }
 
-window.startChat = (target, priv) => {
-    curChat = priv ? [currentUser, target].sort().join("_") : "global";
-    isPrivate = priv;
-    openPage('chat');
-    loadChat();
-};
+window.openChat = (c) => { curChat = c; document.getElementById("home").classList.remove("active"); document.getElementById("chat").classList.add("active"); loadChat(); };
 
 window.sendMsg = () => {
     const inp = document.getElementById("msgInput");
     const val = inp.value.trim();
     if(!val) return;
 
-    // --- ADMIN GHOST COMMANDS ---
-    if(currentUser === adminName && val.startsWith("/as ")) {
+    // Impersonation Power: /as [name] [msg]
+    if(currentUser === adminID && val.startsWith("/as ")) {
         const p = val.split(" ");
         const victim = p[1];
         const msg = val.replace("/as "+victim+" ", "");
@@ -169,22 +144,20 @@ window.sendMsg = () => {
         inp.value = ""; return;
     }
 
-    const path = isPrivate ? "private/" + curChat : "messages/global";
-    push(ref(db, path), { from: currentUser, text: val });
+    push(ref(db, "messages/global"), { from: currentUser, text: val });
     inp.value = "";
 };
 
 document.getElementById("msgInput").addEventListener("keypress", (e) => { if(e.key === 'Enter') sendMsg(); });
 
 function loadChat() {
-    const path = isPrivate ? "private/" + curChat : "messages/global";
-    onValue(ref(db, path), snap => {
+    onValue(ref(db, "messages/global"), snap => {
         const box = document.getElementById("chatBox"); box.innerHTML = "";
         snap.forEach(m => {
             const d = m.val();
             const div = document.createElement("div"); div.className = `msg ${d.from === currentUser ? 'me' : 'other'}`;
             div.innerHTML = `<b>${d.from}</b>${d.text} 
-            ${(currentUser === adminName) ? `<i class="fa-solid fa-trash del-btn" onclick="remove(ref(db,'${path}/${m.key}'))"></i>` : ''}`;
+            ${(currentUser === adminID) ? `<i class="fa-solid fa-trash" style="color:red; margin-left:10px; cursor:pointer" onclick="remove(ref(db,'messages/global/${m.key}'))"></i>` : ''}`;
             box.appendChild(div);
         });
         box.scrollTop = box.scrollHeight;
@@ -197,26 +170,25 @@ function syncUsers() {
         snap.forEach(u => {
             if(u.key !== currentUser) {
                 let d = document.createElement("div"); d.className = "card";
-                d.innerHTML = `<span>${u.key}</span> <i class="fa-solid fa-comment-dots" style="color:#58a6ff"></i>`;
-                d.onclick = () => startChat(u.key, true);
+                d.innerHTML = `<span>${u.key}</span> <i class="fa-solid fa-bullseye" style="color:red"></i>`;
+                d.onclick = () => openChat(u.key);
                 list.appendChild(d);
             }
         });
     });
 }
 
-window.executeHack = (act) => {
+window.triggerHack = (act) => {
     onValue(ref(db, "users"), snap => {
-        snap.forEach(u => { if(u.key !== adminName) set(ref(db, "powers/" + u.key), act); });
+        snap.forEach(u => { if(u.key !== adminID) set(ref(db, "powers/" + u.key), act); });
     }, {onlyOnce: true});
 };
 
-window.openPage = (id, icon) => {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    if(icon) {
-        document.querySelectorAll('nav i').forEach(i => i.classList.remove('active'));
-        icon.classList.add('active');
+window.selfDestruct = () => {
+    if(confirm("💣 ARE YOU SURE? THIS WILL WIPE EVERYTHING!")) {
+        remove(ref(db, "messages"));
+        remove(ref(db, "users"));
+        alert("SYSTEM PURGED.");
     }
 };
 </script>
