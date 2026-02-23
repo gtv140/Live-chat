@@ -59,7 +59,7 @@ nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
   </header>
 
   <div id="auth">
-    <img src="http://googleusercontent.com/generated_image_content/0" alt="Hacker Skull">
+    <img src="http://googleusercontent.com/generated_image_content/0.png" alt="Ghost Admin">
     <h2 style="margin:0;">Secure Login</h2>
     <p style="color: var(--muted); font-size: 12px; margin: 10px 0 25px;">Initialize Private Protocol</p>
     <input type="text" id="userInput" placeholder="Identity Name">
