@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Live Connect | Ultimate God Mode</title>
+<title>Live Connect | Ghost Admin Console</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
@@ -12,16 +12,16 @@ body { margin: 0; background: var(--bg); color: var(--text); overflow: hidden; }
 
 /* OVERRIDE SCREEN */
 #maintenanceOverlay { display:none; position:fixed; inset:0; background:#000; z-index:10000; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px; }
-.glitch { font-size: 40px; font-weight: 800; color: red; text-shadow: 0 0 15px red; animation: shake 0.2s infinite; }
-@keyframes shake { 0% { transform: translate(0); } 25% { transform: translate(2px, -2px); } 50% { transform: translate(-2px, 2px); } 100% { transform: translate(0); } }
+.glitch { font-size: 35px; font-weight: 800; color: red; text-shadow: 0 0 15px red; animation: shake 0.2s infinite; }
+@keyframes shake { 0% { transform: translate(2px, -2px); } 50% { transform: translate(-2px, 2px); } 100% { transform: translate(0); } }
 
 .app { max-width: 480px; margin: auto; height: 100vh; display: flex; flex-direction: column; position: relative; }
-#newsBar { display: none; background: linear-gradient(90deg, #ff4444, #ff8c00); color: white; padding: 12px; font-size: 13px; font-weight: 800; text-align: center; z-index: 2000; position: absolute; top: 0; width: 100%; box-shadow: 0 5px 20px rgba(255,68,68,0.5); }
+#newsBar { display: none; background: linear-gradient(90deg, #ff4444, #ff8c00); color: white; padding: 12px; font-size: 13px; font-weight: 800; text-align: center; z-index: 2000; position: absolute; top: 0; width: 100%; }
 
-header { padding: 55px 25px 15px; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+header { padding: 55px 25px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
 header h1 { margin: 0; font-size: 22px; font-weight: 800; background: linear-gradient(90deg, #fff, var(--p)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; height: 75px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 10px 40px rgba(0,0,0,1); }
+nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; height: 75px; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
 .nav-btn { color: var(--muted); font-size: 24px; cursor: pointer; }
 .nav-btn.active { color: var(--p); transform: translateY(-8px); text-shadow: 0 0 20px var(--p); }
 
@@ -29,19 +29,18 @@ nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
 .page.active { display: block; animation: slideUp 0.4s ease; }
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-.chat-container { background: rgba(255,255,255,0.02); border-radius: 30px; border: 1px solid var(--border); height: 55vh; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none; }
-.bubble { padding: 12px 18px; border-radius: 22px; font-size: 14px; background: #181818; max-width: 85%; position: relative; border: 1px solid var(--border); line-height: 1.5; }
-.bubble.me { background: linear-gradient(135deg, var(--p), #4a3aff); align-self: flex-end; border-bottom-right-radius: 4px; border: none; box-shadow: 0 5px 15px rgba(107,91,255,0.3); }
+.chat-container { background: rgba(255,255,255,0.02); border-radius: 30px; border: 1px solid var(--border); height: 50vh; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.bubble { padding: 12px 18px; border-radius: 22px; font-size: 14px; background: #181818; max-width: 85%; border: 1px solid var(--border); }
+.bubble.me { background: var(--p); align-self: flex-end; border: none; }
 
 .dash-card { background: var(--card); border-radius: 26px; padding: 24px; margin-bottom: 15px; border: 1px solid var(--border); }
-.magic-btn { width: 100%; padding: 16px; border-radius: 18px; border: none; font-weight: 800; cursor: pointer; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-top: 12px; }
+.magic-btn { width: 100%; padding: 16px; border-radius: 18px; border: none; font-weight: 800; cursor: pointer; margin-top: 12px; }
 
-#auth { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
-#auth img { width: 170px; height: 170px; border-radius: 50%; margin-bottom: 25px; border: 2px solid var(--p); box-shadow: 0 0 40px var(--p); animation: pulse 2s infinite; }
-@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-#auth input { width: 100%; max-width: 320px; padding: 20px; border-radius: 22px; background: var(--card); border: 1px solid var(--border); color: #fff; text-align: center; margin-bottom: 15px; font-size: 16px; }
+#auth { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
+#auth img { width: 180px; height: 180px; border-radius: 50%; margin-bottom: 25px; border: 2px solid var(--p); box-shadow: 0 0 40px var(--p); object-fit: cover; }
+#auth input { width: 100%; max-width: 320px; padding: 20px; border-radius: 22px; background: var(--card); border: 1px solid var(--border); color: #fff; text-align: center; margin-bottom: 15px; }
 
-.spy-badge { color: gold; font-size: 9px; border: 1px solid gold; padding: 2px 6px; border-radius: 5px; margin-right: 8px; vertical-align: middle; }
+.spy-badge { color: gold; font-size: 9px; border: 1px solid gold; padding: 2px 6px; border-radius: 5px; margin-right: 8px; }
 </style>
 </head>
 <body>
@@ -50,56 +49,53 @@ nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
 
 <div id="maintenanceOverlay">
     <div class="glitch">SYSTEM OVERRIDE</div>
-    <p style="color:white; font-size:18px; margin-top:20px; opacity:0.8;">The core firewall has been breached.<br>Access locked by Ghost Admin.</p>
-    <div style="margin-top:40px; color:#444; font-family:monospace; letter-spacing:2px;">CODE: 0xGHOST_MASTER_786</div>
+    <p style="color:white; opacity:0.8;">Access locked by Ghost Admin.</p>
 </div>
 
 <div class="app">
   <header>
     <h1>Live Connect <span id="ghostBadge" style="display:none; color:gold; font-size:10px; border:1px solid gold; padding:2px 5px; border-radius:5px; margin-left:8px;">GHOST MODE</span></h1>
-    <div onclick="logout()" style="color:var(--muted); cursor:pointer; font-size:20px;"><i class="fa-solid fa-power-off"></i></div>
+    <div onclick="logout()" style="color:var(--muted); cursor:pointer;"><i class="fa-solid fa-power-off"></i></div>
   </header>
 
   <div id="auth">
-    <img src="https://i.ibb.co/Xfq9r9n/skull-logo.png" alt="Hacker Mask">
-    <h2 style="margin:0; font-size: 32px; letter-spacing: -1px;">Secure Login</h2>
-    <p style="color: var(--muted); margin: 10px 0 30px;">Initialize Private Protocol</p>
+    <img src="http://googleusercontent.com/generated_image_content/0" alt="Hacker Skull">
+    <h2 style="margin:0;">Secure Login</h2>
+    <p style="color: var(--muted); font-size: 12px; margin: 10px 0 25px;">Initialize Private Protocol</p>
     <input type="text" id="userInput" placeholder="Identity Name">
-    <button onclick="login()" style="width:100%; max-width:320px; padding:20px; border-radius:22px; background:var(--p); border:none; color:#fff; font-weight:800; cursor:pointer; box-shadow: 0 10px 30px rgba(107,91,255,0.4);">INITIATE ACCESS</button>
+    <button onclick="login()" style="width:100%; max-width:320px; padding:20px; border-radius:22px; background:var(--p); border:none; color:#fff; font-weight:800; cursor:pointer;">INITIATE ACCESS</button>
   </div>
 
   <div id="home" class="page active">
-    <div class="dash-card" style="background: linear-gradient(135deg, #6b5bff, #ff5c8d); border:none; box-shadow: 0 15px 35px rgba(107,91,255,0.3);">
-        <h2 style="margin:0; font-size: 28px;">Master <span id="uNameDisp">...</span></h2>
-        <p id="roleNote" style="opacity:0.9; font-size:14px; margin-top: 5px;">Secure Node: Connected</p>
+    <div class="dash-card" style="background: linear-gradient(135deg, #6b5bff, #ff5c8d); border:none;">
+        <h2 style="margin:0;">Master <span id="uNameDisp">...</span></h2>
+        <p id="roleNote" style="opacity:0.9; font-size:13px;">Secure Node Connected</p>
     </div>
 
     <div id="godConsole" style="display:none;">
-        <h4 style="color:gold; font-size:11px; letter-spacing:3px; margin:25px 0 12px; font-weight:800;">GOD MODE CONSOLE</h4>
-        <div class="dash-card" style="border: 1px solid gold; background: rgba(255,215,0,0.03);">
-            <input type="text" id="newsInput" style="width:100%; padding:15px; background:rgba(0,0,0,0.5); border:1px solid var(--border); color:white; border-radius:12px;" placeholder="Global Broadcast...">
+        <h4 style="color:gold; font-size:10px; letter-spacing:2px;">MASTER CONTROL UNIT</h4>
+        <div class="dash-card" style="border: 1px solid gold;">
+            <input type="text" id="newsInput" style="width:100%; padding:15px; background:rgba(0,0,0,0.5); border:1px solid var(--border); color:white; border-radius:12px;" placeholder="Broadcast Message...">
             <button class="magic-btn" style="background:gold; color:black;" onclick="broadcastNews()">SEND BROADCAST</button>
             <button id="overrideBtn" class="magic-btn" style="background:purple; color:white;" onclick="toggleOverride()">ACTIVATE OVERRIDE</button>
-            <button class="magic-btn" style="background:#222; color:white;" onclick="stopNews()">STOP NEWS</button>
-            <hr style="opacity:0.1; margin: 20px 0;">
-            <button class="magic-btn" style="background:#ff4444; color:white;" onclick="wipeAll()">WIPE DATABASE</button>
+            <button class="magic-btn" style="background:#ff4444; color:white;" onclick="wipeAll()">WIPE ALL DATA</button>
         </div>
     </div>
   </div>
 
   <div id="chat" class="page">
-    <div id="chatWith" style="font-size:12px; font-weight:800; color:var(--p); margin-bottom:15px; text-transform:uppercase; letter-spacing:1px;">Channel Tunnel</div>
+    <div id="chatWith" style="font-size:12px; font-weight:800; color:var(--p); margin-bottom:15px;">CHANNEL</div>
     <div class="chat-container" id="chatBox"></div>
-    <div style="display:flex; gap:12px; padding-top:15px; align-items:center;">
-      <input id="msgInput" style="flex:1; background:var(--card); border:1px solid var(--border); color:white; padding:16px; border-radius:20px; font-size:15px;" placeholder="Whisper something..."/>
-      <button onclick="sendMsg()" style="width:55px; height:55px; border-radius:50%; border:none; background:var(--p); color:white; cursor:pointer; font-size:18px;"><i class="fa-solid fa-paper-plane"></i></button>
+    <div style="display:flex; gap:12px; padding-top:15px;">
+      <input id="msgInput" style="flex:1; background:var(--card); border:1px solid var(--border); color:white; padding:16px; border-radius:20px;" placeholder="Type..."/>
+      <button onclick="sendMsg()" style="width:55px; height:55px; border-radius:50%; border:none; background:var(--p); color:white;"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
   </div>
 
   <div id="users" class="page">
     <div id="userList"></div>
     <div id="spySection" style="display:none;">
-        <h4 style="color:gold; font-size:11px; margin:35px 0 15px; letter-spacing:2px;">GLOBAL SPY CHANNELS</h4>
+        <h4 style="color:gold; font-size:10px; margin-top:30px;">GLOBAL SPY CHANNELS</h4>
         <div id="spyList"></div>
     </div>
   </div>
@@ -113,7 +109,7 @@ nav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); 
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove, get, update, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
 const app = initializeApp(firebaseConfig);
@@ -121,9 +117,9 @@ const db = getDatabase(app);
 
 let user = localStorage.getItem("lc_user");
 let role = localStorage.getItem("lc_role") || "user";
-let curChat = "", isGroup = false, spyMode = false;
+let curChat = "", spyMode = false;
 
-if(user) bootApp();
+if(user) boot();
 
 window.login = () => {
     const n = document.getElementById("userInput").value.trim();
@@ -135,48 +131,36 @@ window.login = () => {
     }
 };
 
-function bootApp() {
+function boot() {
     document.getElementById("auth").style.display = "none";
     document.getElementById("uNameDisp").textContent = user;
-    
     if(role === "admin") {
         document.getElementById("godConsole").style.display = "block";
         document.getElementById("ghostBadge").style.display = "inline";
         document.getElementById("spySection").style.display = "block";
-        document.getElementById("roleNote").textContent = "Ghost Protocol Active. Invisible to users.";
-    } else {
-        set(ref(db, "users/"+user), {name: user, online: true});
-        onDisconnect(ref(db, "users/"+user)).update({online: false});
     }
-
+    
     onValue(ref(db, "systemState"), snap => {
         const locked = snap.val()?.locked;
         if(locked && role !== "admin") document.getElementById("maintenanceOverlay").style.display = "flex";
         else document.getElementById("maintenanceOverlay").style.display = "none";
-        
-        const btn = document.getElementById("overrideBtn");
-        if(btn) {
-            btn.innerText = locked ? "DEACTIVATE OVERRIDE" : "ACTIVATE SYSTEM OVERRIDE";
-            btn.style.background = locked ? "green" : "purple";
-        }
+        if(role === "admin") document.getElementById("overrideBtn").innerText = locked ? "RESTORE SYSTEM" : "ACTIVATE OVERRIDE";
     });
 
     onValue(ref(db, "globalNews"), snap => {
         const bar = document.getElementById("newsBar");
-        if(snap.exists()) { bar.innerText = "🚨 BROADCAST: " + snap.val().text; bar.style.display = "block"; }
+        if(snap.exists()) { bar.innerText = "🚨 " + snap.val().text; bar.style.display = "block"; }
         else bar.style.display = "none";
     });
 }
 
-// USER LIST & SPY LIST
 onValue(ref(db, "users"), snap => {
     const list = document.getElementById("userList"); list.innerHTML = "";
     snap.forEach(u => {
-        const d = u.val();
-        if(d && d.name && d.name !== "undefined" && d.online && u.key !== user && u.key !== "Admin786") {
+        if(u.key !== user && u.key !== "Admin786") {
             const div = document.createElement("div"); div.className = "dash-card";
-            div.innerHTML = `<b>${d.name}</b>`;
-            div.onclick = () => { curChat=u.key; isGroup=false; spyMode=false; document.getElementById("chatWith").innerText=d.name; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); };
+            div.innerHTML = `<b>${u.val().name}</b>`;
+            div.onclick = () => { curChat=u.key; spyMode=false; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); };
             list.appendChild(div);
         }
     });
@@ -187,22 +171,21 @@ if(role === "admin") {
         const list = document.getElementById("spyList"); list.innerHTML = "";
         snap.forEach(c => {
             const div = document.createElement("div"); div.className = "dash-card";
-            div.style.border = "1px solid rgba(255,215,0,0.3)";
-            div.innerHTML = `<span class="spy-badge">LIVE SPY</span> <b>Chat: ${c.key}</b>`;
-            div.onclick = () => { curChat=c.key; spyMode=true; isGroup=false; document.getElementById("chatWith").innerText="SPYING: " + c.key; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); };
+            div.innerHTML = `<span class="spy-badge">SPY</span> <b>${c.key}</b>`;
+            div.onclick = () => { curChat=c.key; spyMode=true; loadChat(); openPage('chat', document.querySelectorAll('.nav-btn')[1]); };
             list.appendChild(div);
         });
     });
 }
 
 function loadChat() {
-    const path = spyMode ? "chats/" + curChat : (isGroup ? "groupChats/" : "chats/") + [user, curChat].sort().join("_");
+    const path = spyMode ? "chats/" + curChat : "chats/" + [user, curChat].sort().join("_");
     onValue(ref(db, path), snap => {
         const box = document.getElementById("chatBox"); box.innerHTML = "";
         snap.forEach(m => {
             const v = m.val();
             const div = document.createElement("div"); div.className = "bubble " + (v.from === user ? "me" : "them");
-            div.innerHTML = `<small style="display:block; font-size:9px; opacity:0.5; margin-bottom:3px;">${v.from}</small>${v.text}`;
+            div.innerHTML = `<small style="display:block;opacity:0.5;font-size:9px;">${v.from}</small>${v.text}`;
             box.appendChild(div);
         });
         box.scrollTop = box.scrollHeight;
@@ -210,9 +193,8 @@ function loadChat() {
 }
 
 window.sendMsg = () => {
-    const i = document.getElementById('msgInput'); if(!i.value || !curChat || spyMode) return;
-    const path = (isGroup ? "groupChats/" : "chats/") + [user, curChat].sort().join("_");
-    push(ref(db, path), { from: user, text: i.value, time: Date.now() });
+    const i = document.getElementById('msgInput'); if(!i.value || spyMode) return;
+    push(ref(db, "chats/" + [user, curChat].sort().join("_")), { from: user, text: i.value });
     i.value = '';
 };
 
@@ -221,10 +203,8 @@ window.toggleOverride = async () => {
     set(ref(db, "systemState"), { locked: !s.val()?.locked });
 };
 
-window.broadcastNews = () => { set(ref(db, "globalNews"), {text: document.getElementById("newsInput").value}); };
-window.stopNews = () => { remove(ref(db, "globalNews")); };
-window.wipeAll = () => { if(confirm("Clean all data?")) { remove(ref(db, "chats")); remove(ref(db, "users")); location.reload(); } };
-
+window.broadcastNews = () => set(ref(db, "globalNews"), {text: document.getElementById("newsInput").value});
+window.wipeAll = () => { if(confirm("Wipe everything?")) { remove(ref(db, "chats")); remove(ref(db, "users")); } };
 window.logout = () => { localStorage.clear(); location.reload(); };
 window.openPage = (id, btn) => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
