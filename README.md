@@ -1,88 +1,101 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Connect 🚀</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Live Connect Pro 🚀</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{
-  --bg:#0a0a0a; --card:#111; --text:#e5e5e5; --muted:#aaa; --primary:#6b5bff; --accent:#ff5c8d; --success:#22c55e;
+:root {
+  --bg: #0d0d0f; --card: #1a1a1d; --text: #f0f0f0;
+  --primary: #6366f1; --accent: #f43f5e; --glass: rgba(255,255,255,0.05);
 }
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);transition:.3s;}
-body.light{--bg:#f1f1f1;--card:#fff;--text:#111;--muted:#555;}
-.app{max-width:480px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 3px 15px rgba(0,0,0,.7);}
-header h1{margin:0;font-size:22px;color:var(--primary);text-shadow:0 0 12px var(--accent);}
-header button{background:none;border:none;font-size:20px;color:var(--text);cursor:pointer;transition:.3s;}
-.page{display:none;padding:16px;flex:1;}
-.page.active{display:block;}
-.hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff);color:#fff;padding:28px;border-radius:20px;text-align:center;box-shadow:0 0 15px #6b5bff;}
-.dashboard-stat{background:var(--card);padding:16px;margin-bottom:12px;border-radius:16px;box-shadow:0 0 12px var(--primary);display:flex;justify-content:space-between;align-items:center;}
-.chat-box{background:var(--card);border-radius:18px;padding:14px;height:36vh;overflow-y:auto;margin-bottom:12px;box-shadow:0 0 12px var(--primary);}
-.msg{background:#222;color:#fff;padding:10px 14px;border-radius:16px;margin-bottom:10px;font-size:14px;position:relative;box-shadow:0 0 6px var(--primary);}
-.msg .actions{position:absolute;top:6px;right:8px;display:flex;gap:6px;font-size:13px;cursor:pointer;}
-.input-row{display:flex;gap:10px;}
-.input-row input{flex:1;padding:14px;border-radius:14px;border:1px solid #444;background:#111;color:#fff;outline:none;}
-.input-row button{padding:14px 18px;border:none;border-radius:14px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;}
-.user,.group{display:flex;align-items:center;gap:10px;margin-bottom:12px;cursor:pointer;padding:12px;background:var(--card);border-radius:14px;box-shadow:0 0 8px var(--primary);}
-.dot{width:12px;height:12px;background:var(--success);border-radius:50%;}
-nav{display:flex;justify-content:space-around;background:var(--card);padding:12px 0;box-shadow:0 -3px 12px rgba(0,0,0,.7);}
-nav button{background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;}
-nav button.active{color:var(--primary);}
-.login-card{background:var(--card);padding:20px;border-radius:18px;box-shadow:0 0 15px var(--primary);}
-.login-card input{width:100%;padding:14px;border-radius:14px;margin-bottom:12px;border:1px solid #444;background:#111;color:#fff;}
-.login-card button{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;}
+* { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+body { margin:0; background: var(--bg); color: var(--text); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
 
-/* Admin Extra Style */
-.admin-only{display:none; border:2px solid var(--accent); padding:10px; border-radius:15px; margin-top:15px;}
+/* Header */
+header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--card); border-bottom: 1px solid var(--glass); z-index: 10; }
+header h1 { margin: 0; font-size: 20px; font-weight: 800; background: linear-gradient(90deg, #6366f1, #f43f5e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* Pages */
+.app { flex: 1; overflow: hidden; display: flex; flex-direction: column; max-width: 500px; margin: auto; width: 100%; }
+.page { display: none; padding: 15px; flex: 1; overflow-y: auto; animation: fadeIn 0.3s; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+/* Modern Cards */
+.card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--glass); }
+.hero { background: linear-gradient(135deg, var(--primary), #8b5cf6); color: white; border: none; }
+
+/* Chat Box */
+.chat-box { height: 55vh; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
+.msg { max-width: 80%; padding: 12px; border-radius: 18px; position: relative; font-size: 14px; background: #252529; border-bottom-left-radius: 4px; align-self: flex-start; }
+.msg.me { align-self: flex-end; background: var(--primary); border-bottom-left-radius: 18px; border-bottom-right-radius: 4px; }
+.msg img { width: 100%; border-radius: 12px; margin-top: 5px; }
+.reaction-bar { font-size: 12px; margin-top: 5px; opacity: 0.8; }
+
+/* Inputs */
+.input-area { background: var(--card); padding: 12px; display: flex; gap: 10px; border-top: 1px solid var(--glass); align-items: center; }
+.input-area input { flex: 1; background: #000; border: 1px solid var(--glass); padding: 12px; border-radius: 25px; color: white; outline: none; }
+.input-area i { font-size: 20px; color: var(--primary); cursor: pointer; }
+
+/* Navigation */
+nav { display: flex; justify-content: space-around; background: var(--card); padding: 15px 0; border-top: 1px solid var(--glass); }
+nav i { font-size: 22px; color: #555; cursor: pointer; transition: 0.3s; }
+nav i.active { color: var(--primary); transform: scale(1.1); }
+
+/* Admin Badge */
+.admin-badge { background: gold; color: black; font-size: 10px; padding: 2px 6px; border-radius: 5px; font-weight: bold; margin-left: 5px; }
 </style>
 </head>
 <body>
+
 <div class="app">
-<header>
-<h1>Live Connect</h1>
-<button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
-<button onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
-</header>
+    <header>
+        <h1>Live Connect 🚀</h1>
+        <div style="display:flex; gap:15px;">
+            <i class="fa-solid fa-moon" onclick="document.body.classList.toggle('light')"></i>
+            <i class="fa-solid fa-power-off" onclick="logout()"></i>
+        </div>
+    </header>
 
-<div id="loginPage" class="page active">
-<div class="login-card"><h3>Enter Username</h3><input type="text" id="usernameInput" placeholder="Username"><button onclick="login()">Continue</button></div>
-</div>
-
-<div id="home" class="page">
-<div class="hero"><h2>Welcome <span id="dashUser"></span> 🚀</h2><p>Real-Time Chat & Active Connections</p></div>
-<div class="dashboard-stat"><h4>Total Users</h4><span id="onlineCount">0</span></div>
-<div class="dashboard-stat"><h4>Total Groups</h4><span id="groupCount">0</span></div>
-
-<div id="adminPanel" class="admin-only">
-    <h3 style="color:var(--accent)">Admin Dashboard</h3>
-    <div class="input-row">
-        <input id="bcInput" placeholder="Global Broadcast Message...">
-        <button onclick="sendBroadcast()">📢</button>
+    <div id="home" class="page active">
+        <div class="card hero">
+            <h3>Welcome, <span id="dashUser">User</span>!</h3>
+            <p>Admin Status: <span id="adminStatus">Member</span></p>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div class="card" style="text-align:center;"><h4>Online</h4><h2 id="onlineCount" style="color:var(--primary)">0</h2></div>
+            <div class="card" style="text-align:center;"><h4>Groups</h4><h2 id="groupCount" style="color:var(--accent)">0</h2></div>
+        </div>
+        <div id="adminArea" style="display:none;" class="card">
+            <h4 style="color:var(--accent); margin-top:0;">🛡️ Admin Dashboard</h4>
+            <input id="bcMsg" placeholder="Global Broadcast..." style="width:100%; padding:10px; border-radius:10px; border:none; background:#000; color:white;">
+            <button onclick="sendBC()" style="width:100%; margin-top:10px; padding:10px; border-radius:10px; background:var(--primary); color:white; border:none;">Send Broadcast</button>
+        </div>
     </div>
-    <div id="adminUserList" style="margin-top:10px;"></div>
-</div>
-</div>
 
-<div id="chat" class="page">
-<div class="chat-box" id="chatBox"></div>
-<div class="input-row">
-    <input id="msgInput" placeholder="Type message…"/>
-    <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
-</div>
-</div>
+    <div id="chat" class="page">
+        <div id="chatName" style="padding-bottom:10px; font-weight:bold; color:var(--primary)">Select a Chat</div>
+        <div class="chat-box" id="chatBox"></div>
+        <div id="replyPreview" style="display:none; padding:5px; background:var(--glass); font-size:12px; border-left:3px solid var(--primary);"></div>
+        <div class="input-area">
+            <label for="fileInp"><i class="fa-solid fa-paperclip"></i></label>
+            <input type="file" id="fileInp" hidden accept="image/*" onchange="upImage(this)">
+            <input id="msgInput" placeholder="Write message...">
+            <i class="fa-solid fa-paper-plane" onclick="sendMsg()"></i>
+        </div>
+    </div>
 
-<div id="users" class="page">
-<h3>Online Users</h3><div id="userList"></div>
-<h3 style="margin-top:16px;">Groups</h3><div id="groupList"></div>
-<div class="input-row" style="margin-top:6px;"><input id="groupInput" placeholder="Create group"/><button onclick="createGroup()">➕</button></div>
-</div>
+    <div id="users" class="page">
+        <h4>People</h4><div id="userList"></div>
+        <h4 style="margin-top:20px;">Groups</h4><div id="groupList"></div>
+    </div>
 
-<nav>
-<button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
-<button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
-<button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
-</nav>
+    <nav>
+        <i class="fa-solid fa-house active" onclick="openPage('home',this)"></i>
+        <i class="fa-solid fa-comment-dots" onclick="openPage('chat',this)"></i>
+        <i class="fa-solid fa-users" onclick="openPage('users',this)"></i>
+    </nav>
 </div>
 
 <script type="module">
@@ -91,115 +104,138 @@ import { getDatabase, ref, set, push, onValue, remove, update, onDisconnect } fr
 
 const firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-  authDomain: "live-chat-b810c.firebaseapp.com",
   databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
   projectId: "live-chat-b810c",
-  storageBucket: "live-chat-b810c.appspot.com",
-  messagingSenderId: "555058795334",
-  appId: "1:555058795334:web:f668887409800c32970b47"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let currentUser=null;
-let curChat="";
-let isGroup=false;
+let user = localStorage.getItem("chat_user") || prompt("Enter Username:");
+if(!user) location.reload();
+localStorage.setItem("chat_user", user);
 
-// ADMIN LIST (ID YAHA ADD KREIN)
 const admins = ["Muhammad Nazim", "Admin786"];
+const isAdmin = admins.includes(user);
 
-window.login=()=>{
-  const uname=document.getElementById("usernameInput").value.trim();
-  if(!uname){alert("Enter username");return;}
-  currentUser=uname;
-  dashUser.textContent=currentUser;
-  
-  // Show Admin Panel if user is admin
-  if(admins.includes(currentUser)){ document.getElementById("adminPanel").style.display="block"; }
-
-  const userRef=ref(db,"users/"+uname);
-  set(userRef,{name:uname,online:true});
-  onDisconnect(userRef).update({online:false});
-  document.getElementById("loginPage").classList.remove("active");
-  document.getElementById("home").classList.add("active");
-};
-
-// ... Rest of your original functions (openPage, logout, toggleTheme, createGroup) ...
-window.logout=()=>{ if(!currentUser) return; update(ref(db,"users/"+currentUser),{online:false}); location.reload(); };
-window.openPage=(id,btn)=>{
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-};
-window.toggleTheme=()=>{document.body.classList.toggle('light');};
-
-onValue(ref(db,"users"),snap=>{
-  let online=0; userList.innerHTML="";
-  if(admins.includes(currentUser)){ adminUserList.innerHTML = "<h4>Ban Users:</h4>"; }
-  snap.forEach(u=>{
-    if(u.val().online){
-      online++;
-      if(u.key!==currentUser){
-        const d=document.createElement("div"); d.className="user";
-        d.innerHTML=`<div class="dot"></div>${u.val().name}`;
-        d.onclick=()=>{ curChat=u.key; isGroup=false; loadChat(); openPage('chat',document.querySelectorAll('nav button')[1]); };
-        userList.appendChild(d);
-      }
-    }
-    // Admin Ban List Logic
-    if(admins.includes(currentUser) && u.key !== currentUser){
-        adminUserList.innerHTML += `<div class="dashboard-stat">${u.key} <button onclick="banUser('${u.key}')" style="background:red; color:white; border:none; padding:5px; border-radius:5px;">Ban</button></div>`;
-    }
-  });
-  onlineCount.textContent=online;
-});
-
-// Broadcast Logic
-window.sendBroadcast=()=>{
-    const msg = document.getElementById("bcInput").value;
-    if(msg){ set(ref(db,"broadcast"), {text:msg, from:currentUser}); alert("Sent!"); }
-};
-onValue(ref(db,"broadcast"), snap=>{
-    if(snap.exists()){ alert("📢 BROADCAST: " + snap.val().text); }
-});
-
-// Ban User Logic
-window.banUser=(target)=>{ if(confirm("Ban this user?")){ remove(ref(db,"users/"+target)); } };
-
-// Original Chat Logic
-function loadChat(){
-  if(!curChat) return;
-  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
-  onValue(ref(db,path),snap=>{
-    chatBox.innerHTML="";
-    snap.forEach(m=>{
-      const div=document.createElement("div"); div.className="msg";
-      div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text} <div class="actions" onclick="deleteMsg('${path}','${m.key}')">🗑️</div>`;
-      chatBox.appendChild(div);
-      chatBox.scrollTop=chatBox.scrollHeight;
-    });
-  });
+document.getElementById("dashUser").textContent = user;
+if(isAdmin) {
+    document.getElementById("adminArea").style.display = "block";
+    document.getElementById("adminStatus").textContent = "Grand Admin 👑";
 }
-window.sendMsg=()=>{
-  if(!curChat) return;
-  const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
-  push(ref(db,path),{from:currentUser,text:document.getElementById('msgInput').value});
-  document.getElementById('msgInput').value='';
+
+// Online Status
+const statusRef = ref(db, "users/" + user);
+set(statusRef, {name: user, online: true});
+onDisconnect(statusRef).update({online: false});
+
+window.openPage = (id, el) => {
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav i').forEach(i=>i.classList.remove('active'));
+    el.classList.add('active');
 };
-window.deleteMsg=(path,key)=>{ remove(ref(db,path+"/"+key)); };
-window.createGroup=()=>{
-  const g=document.getElementById("groupInput").value.trim();
-  if(g){ set(ref(db,"groups/"+g),{createdBy:currentUser}); document.getElementById("groupInput").value=''; }
+
+let curChat = "";
+let isGroup = false;
+let replyTo = null;
+
+// Load Users & Groups
+onValue(ref(db, "users"), snap => {
+    let count = 0; userList.innerHTML = "";
+    snap.forEach(u => {
+        if(u.val().online) {
+            count++;
+            if(u.key !== user) {
+                userList.innerHTML += `<div class="card" onclick="startChat('${u.key}', false)" style="padding:15px; margin-bottom:10px;">🟢 ${u.key} ${admins.includes(u.key)?'<span class="admin-badge">ADMIN</span>':''} ${isAdmin?`<button onclick="event.stopPropagation();banUser('${u.key}')" style="float:right; background:red; border:none; color:white; border-radius:5px;">Ban</button>`:''}</div>`;
+            }
+        }
+    });
+    document.getElementById("onlineCount").textContent = count;
+});
+
+window.startChat = (target, groupFlag) => {
+    curChat = target; isGroup = groupFlag;
+    document.getElementById("chatName").textContent = target;
+    openPage('chat', document.querySelectorAll('nav i')[1]);
+    loadMsgs();
 };
-onValue(ref(db,"groups"),snap=>{
-  groupList.innerHTML=""; groupCount.textContent=snap.size;
-  snap.forEach(g=>{
-    const d=document.createElement("div"); d.className="group"; d.textContent=g.key;
-    d.onclick=()=>{ curChat=g.key; isGroup=true; loadChat(); openPage('chat',document.querySelectorAll('nav button')[1]); };
-    groupList.appendChild(d);
-  });
+
+function loadMsgs() {
+    const path = (isGroup ? "groupChats/" : "chats/") + [user, curChat].sort().join("_");
+    onValue(ref(db, path), snap => {
+        chatBox.innerHTML = "";
+        snap.forEach(m => {
+            const d = m.val();
+            const div = document.createElement("div");
+            div.className = `msg ${d.from === user ? 'me' : ''}`;
+            let reactionStr = d.reactions ? Object.values(d.reactions).join(" ") : "";
+            div.innerHTML = `
+                <div style="font-size:10px; opacity:0.6;">${d.from}</div>
+                ${d.replyTo ? `<div style="background:rgba(0,0,0,0.2); padding:5px; font-size:11px; margin-bottom:5px;">🔙 ${d.replyTo}</div>` : ''}
+                <div>${d.type === 'img' ? `<img src="${d.text}">` : d.text}</div>
+                <div class="reaction-bar">${reactionStr}</div>
+                <div style="font-size:10px; margin-top:5px; display:flex; gap:10px;">
+                    <span onclick="setReply('${d.text}')">Reply</span>
+                    <span onclick="react('${path}','${m.key}','❤️')">❤️</span>
+                    <span onclick="react('${path}','${m.key}','👍')">👍</span>
+                    ${isAdmin || d.from === user ? `<span onclick="deleteMsg('${path}','${m.key}')">🗑️</span>` : ''}
+                </div>
+            `;
+            chatBox.appendChild(div);
+        });
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
+}
+
+window.sendMsg = () => {
+    const inp = document.getElementById("msgInput");
+    if(!inp.value || !curChat) return;
+    const path = (isGroup ? "groupChats/" : "chats/") + [user, curChat].sort().join("_");
+    push(ref(db, path), {from: user, text: inp.value, type: 'text', replyTo: replyTo});
+    inp.value = ""; setReply(null);
+};
+
+window.setReply = (txt) => {
+    replyTo = txt;
+    const pre = document.getElementById("replyPreview");
+    if(txt) { pre.style.display="block"; pre.textContent = "Replying to: " + txt; }
+    else { pre.style.display="none"; }
+};
+
+window.react = (path, key, emoji) => {
+    set(ref(db, path + "/" + key + "/reactions/" + user), emoji);
+};
+
+window.upImage = (e) => {
+    const reader = new FileReader();
+    reader.onload = (f) => {
+        const path = (isGroup ? "groupChats/" : "chats/") + [user, curChat].sort().join("_");
+        push(ref(db, path), {from: user, text: f.target.result, type: 'img'});
+    };
+    reader.readAsDataURL(e.files[0]);
+};
+
+window.sendBC = () => {
+    const m = document.getElementById("bcMsg").value;
+    if(m) set(ref(db, "broadcast"), {msg: m, from: user});
+};
+
+onValue(ref(db, "broadcast"), snap => {
+    if(snap.exists()) alert("📢 BROADCAST: " + snap.val().msg);
+});
+
+window.banUser = (t) => { if(confirm("Ban " + t + "?")) remove(ref(db, "users/" + t)); };
+window.deleteMsg = (p, k) => { if(confirm("Delete?")) remove(ref(db, p + "/" + k)); };
+window.logout = () => { localStorage.removeItem("chat_user"); location.reload(); };
+
+// Groups Listener
+onValue(ref(db, "groups"), snap => {
+    groupCount.textContent = snap.size || 0;
+    groupList.innerHTML = "";
+    snap.forEach(g => {
+        groupList.innerHTML += `<div class="card" onclick="startChat('${g.key}', true)"># ${g.key}</div>`;
+    });
 });
 </script>
 </body>
