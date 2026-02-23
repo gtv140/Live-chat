@@ -6,54 +6,71 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0a0f1e;
-            --card: rgba(23, 32, 53, 0.8);
-            --border: rgba(255, 255, 255, 0.1);
-            --text: #f1f5f9;
-            --primary: #6366f1;
-            --accent: #f43f5e;
-            --success: #10b981;
+            --bg: #0d1117;
+            --card: #161b22;
+            --header-bg: #161b22;
+            --border: #30363d;
+            --text: #c9d1d9;
+            --primary: #58a6ff;
+            --accent: #f85149;
+            --msg-me: #388bfd;
+            --msg-other: #21262d;
         }
         body.light {
-            --bg: #f8fafc;
-            --card: rgba(255, 255, 255, 0.9);
-            --border: rgba(0, 0, 0, 0.1);
-            --text: #1e293b;
+            --bg: #f6f8fa;
+            --card: #ffffff;
+            --header-bg: #ffffff;
+            --border: #d0d7de;
+            --text: #24292f;
+            --msg-me: #0969da;
+            --msg-other: #ebf0f4;
         }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); transition: .3s; }
-        .app { max-width: 480px; margin: auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; overflow: hidden; }
         
-        header { padding: 16px; display: flex; justify-content: space-between; align-items: center; background: var(--card); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        header h1 { margin: 0; font-size: 20px; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        .app { max-width: 500px; margin: auto; height: 100vh; display: flex; flex-direction: column; position: relative; border-right: 1px solid var(--border); border-left: 1px solid var(--border); }
         
-        .page { display: none; padding: 16px; flex: 1; animation: slideUp 0.3s ease; padding-bottom: 80px; }
-        .page.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Fixed Header from Screenshot */
+        header { padding: 20px; background: var(--header-bg); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        header h1 { margin: 0; font-size: 24px; font-weight: 800; background: linear-gradient(90deg, #79c0ff, #ff7b72); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header .nav-icons { display: flex; gap: 15px; font-size: 20px; }
+        header i { cursor: pointer; transition: 0.2s; }
+        header i:hover { color: var(--primary); }
 
-        .hero { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; padding: 25px; border-radius: 24px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.2); margin-bottom: 20px; }
-        
-        .chat-box { height: calc(100vh - 220px); overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 15px; }
-        .msg { background: var(--card); padding: 12px; border-radius: 18px; border: 1px solid var(--border); position: relative; max-width: 80%; align-self: flex-start; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .msg.me { align-self: flex-end; background: var(--primary); color: white; border: none; }
-        .msg img { width: 100%; border-radius: 12px; margin-top: 8px; cursor: pointer; }
-        .actions { position: absolute; top: 8px; right: 10px; font-size: 12px; cursor: pointer; opacity: 0.5; }
-        .actions:hover { opacity: 1; color: var(--accent); }
+        .page { display: none; padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 100px; }
+        .page.active { display: flex; flex-direction: column; }
 
-        .comment-box { margin-top: 8px; font-size: 11px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 8px; }
-        
-        .input-container { position: fixed; bottom: 70px; width: 100%; max-width: 480px; padding: 10px; background: var(--bg); }
-        .input-row { display: flex; gap: 8px; padding: 8px 12px; background: var(--card); border-radius: 30px; border: 1px solid var(--border); align-items: center; }
-        .input-row input { flex: 1; background: transparent; border: none; color: var(--text); outline: none; }
-        
-        .btn-icon { background: var(--primary); color: white; border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; flex-shrink: 0; }
-        
-        .list-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--card); border-radius: 16px; margin-bottom: 8px; border: 1px solid var(--border); cursor: pointer; }
-        
-        nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; display: flex; justify-content: space-around; background: var(--card); padding: 12px 0 20px; border-top: 1px solid var(--border); }
-        nav button { background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer; }
-        nav button.active { color: var(--primary); }
+        /* Dashboard & Lists */
+        .hero { background: linear-gradient(135deg, #238636, #2ea043); color: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
+        .stat-item { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
-        .contact-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); text-decoration: none; color: inherit; }
+        /* Chat UI Improvements */
+        .chat-box { flex: 1; display: flex; flex-direction: column; gap: 15px; padding: 10px; }
+        .msg { position: relative; max-width: 75%; padding: 12px 16px; border-radius: 20px; font-size: 15px; line-height: 1.4; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .msg.me { align-self: flex-end; background: var(--msg-me); color: white; border-bottom-right-radius: 4px; }
+        .msg.other { align-self: flex-start; background: var(--msg-other); color: var(--text); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+        
+        .msg b { font-size: 13px; display: block; margin-bottom: 4px; opacity: 0.9; }
+        .msg img { width: 100%; border-radius: 10px; margin: 8px 0; border: 1px solid rgba(255,255,255,0.1); }
+        .msg .delete-btn { position: absolute; top: -10px; right: 0; font-size: 12px; cursor: pointer; display: none; background: var(--accent); color: white; padding: 2px 6px; border-radius: 10px; }
+        .msg:hover .delete-btn { display: block; }
+
+        /* Comments Styling */
+        .comment-area { margin-top: 8px; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px; }
+        .comment-item { margin-bottom: 4px; opacity: 0.8; }
+        .comment-input-wrap { display: flex; gap: 5px; margin-top: 8px; background: rgba(0,0,0,0.2); border-radius: 15px; padding: 4px 10px; }
+        .comment-input-wrap input { background: transparent; border: none; color: white; font-size: 11px; flex: 1; outline: none; }
+
+        /* Modern Bottom Input */
+        .input-container { position: absolute; bottom: 70px; left: 0; width: 100%; padding: 10px; box-sizing: border-box; background: var(--bg); }
+        .input-bar { background: var(--card); border: 1px solid var(--border); border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; gap: 10px; }
+        .input-bar input { flex: 1; background: transparent; border: none; color: var(--text); padding: 10px 0; outline: none; font-size: 15px; }
+        .icon-btn { color: var(--primary); font-size: 20px; cursor: pointer; transition: 0.2s; }
+        .send-btn { background: var(--primary); color: white; width: 40px; height: 40px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        /* Navbar from Screenshot */
+        nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; }
+        nav i { font-size: 22px; color: #8b949e; cursor: pointer; transition: 0.3s; }
+        nav i.active { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -61,61 +78,59 @@
 <div class="app">
     <header>
         <h1>Live Connect</h1>
-        <div>
-            <button onclick="toggleTheme()" style="background:none;border:none;color:var(--text);font-size:18px;"><i class="fa-solid fa-moon"></i></button>
-            <button onclick="logout()" style="background:none;border:none;color:var(--accent);font-size:18px;margin-left:12px;"><i class="fa-solid fa-power-off"></i></button>
+        <div class="nav-icons">
+            <i class="fa-solid fa-moon" onclick="toggleTheme()"></i>
+            <i class="fa-solid fa-power-off" style="color:var(--accent)" onclick="logout()"></i>
         </div>
     </header>
 
-    <div id="loginPage" class="page active">
-        <div style="text-align:center; padding: 40px 20px;">
-            <div class="hero"><h2>Welcome 🚀</h2><p>Experience real-time modern chat.</p></div>
-            <div class="input-row">
-                <input type="text" id="usernameInput" placeholder="Your name...">
-                <button class="btn-icon" onclick="login()"><i class="fa-solid fa-arrow-right"></i></button>
-            </div>
+    <div id="loginPage" class="page active" style="justify-content: center;">
+        <div class="hero"><h2>Welcome 🚀</h2><p>Sign in to connect</p></div>
+        <div class="input-bar">
+            <input type="text" id="usernameInput" placeholder="Enter Username">
+            <i class="fa-solid fa-circle-right icon-btn" onclick="login()"></i>
         </div>
     </div>
 
     <div id="home" class="page">
-        <div class="hero"><h2>Hi, <span id="dashUser"></span>! 👋</h2><p>Connecting you to the world.</p></div>
-        <div class="list-item"><h4>Online Users: <span id="onlineCount" style="color:var(--success)">0</span></h4></div>
-        <div class="list-item"><h4>Total Groups: <span id="groupCount" style="color:var(--primary)">0</span></h4></div>
+        <div class="hero"><h2>Hello, <span id="dashUser"></span>! 👋</h2></div>
+        <div class="stat-item"><b>Online Members</b> <span id="onlineCount" style="color:var(--primary)">0</span></div>
+        <div class="stat-item"><b>Active Groups</b> <span id="groupCount" style="color:var(--primary)">0</span></div>
     </div>
 
     <div id="chat" class="page">
         <div id="chatBox" class="chat-box"></div>
         <div class="input-container">
-            <div class="input-row">
-                <label for="fileInput" class="btn-icon" style="background:none; color:var(--primary); width:30px;"><i class="fa-solid fa-camera"></i></label>
-                <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="uploadImage(this)">
-                <input id="msgInput" placeholder="Type message..."/>
-                <button onclick="sendMsg()" class="btn-icon"><i class="fa-solid fa-paper-plane"></i></button>
+            <div class="input-bar">
+                <label for="imgUpload"><i class="fa-solid fa-camera icon-btn"></i></label>
+                <input type="file" id="imgUpload" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
+                <input type="text" id="msgInput" placeholder="Type message...">
+                <button class="send-btn" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
 
     <div id="users" class="page">
-        <h3>Live Users</h3><div id="userList"></div>
-        <h3>Communities</h3><div id="groupList"></div>
-        <div class="input-row">
-            <input id="groupInput" placeholder="Create group name..."/>
-            <button class="btn-icon" onclick="createGroup()"><i class="fa-solid fa-plus"></i></button>
+        <h3>Members</h3><div id="userList"></div>
+        <h3 style="margin-top:20px">Groups</h3><div id="groupList"></div>
+        <div class="input-bar" style="margin-top:10px">
+            <input type="text" id="groupInput" placeholder="Group Name">
+            <i class="fa-solid fa-plus icon-btn" onclick="createGroup()"></i>
         </div>
     </div>
 
     <div id="contact" class="page">
-        <h3>Support & Social</h3>
-        <a href="mailto:webhub262@gmail.com" class="contact-card"><i class="fa-solid fa-envelope"></i> webhub262@gmail.com</a>
-        <a href="#" class="contact-card"><i class="fab fa-facebook"></i> Facebook</a>
-        <a href="#" class="contact-card"><i class="fab fa-instagram"></i> Instagram</a>
+        <h3>Support</h3>
+        <div class="stat-item" onclick="location.href='mailto:webhub262@gmail.com'"><i class="fa-solid fa-envelope"></i> Email Us</div>
+        <div class="stat-item"><i class="fa-brands fa-facebook"></i> Facebook</div>
+        <div class="stat-item"><i class="fa-brands fa-instagram"></i> Instagram</div>
     </div>
 
-    <nav id="navbar" style="display:none;">
-        <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
-        <button onclick="openPage('chat',this)"><i class="fa-solid fa-comment"></i></button>
-        <button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
-        <button onclick="openPage('contact',this)"><i class="fa-solid fa-address-book"></i></button>
+    <nav id="navbar" style="display:none">
+        <i class="fa-solid fa-house active" onclick="openPage('home', this)"></i>
+        <i class="fa-solid fa-comment" onclick="openPage('chat', this)"></i>
+        <i class="fa-solid fa-user-group" onclick="openPage('users', this)"></i>
+        <i class="fa-solid fa-address-book" onclick="openPage('contact', this)"></i>
     </nav>
 </div>
 
@@ -141,100 +156,93 @@ let curChat = "";
 let isGroup = false;
 
 window.login = () => {
-    const uname = document.getElementById("usernameInput").value.trim();
-    if(!uname) return;
-    currentUser = uname;
+    const val = document.getElementById("usernameInput").value.trim();
+    if(!val) return;
+    currentUser = val;
     document.getElementById("dashUser").textContent = currentUser;
-    set(ref(db, "users/" + uname), { name: uname, online: true });
-    onDisconnect(ref(db, "users/" + uname)).update({ online: false });
+    set(ref(db, "users/"+currentUser), {name: currentUser, online: true});
+    onDisconnect(ref(db, "users/"+currentUser)).update({online: false});
+    
     document.getElementById("loginPage").style.display = "none";
     document.getElementById("home").classList.add("active");
     document.getElementById("navbar").style.display = "flex";
 };
 
-window.logout = () => { location.reload(); };
-
-window.openPage = (id, btn) => {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-};
+window.logout = () => location.reload();
 
 window.toggleTheme = () => document.body.classList.toggle('light');
 
-// Sync Users & Groups
+window.openPage = (id, icon) => {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav i').forEach(i => i.classList.remove('active'));
+    icon.classList.add('active');
+};
+
+// Database Logic
 onValue(ref(db, "users"), snap => {
-    let online = 0; document.getElementById("userList").innerHTML = "";
+    let count = 0; document.getElementById("userList").innerHTML = "";
     snap.forEach(u => {
         if(u.val().online) {
-            online++;
+            count++;
             if(u.key !== currentUser) {
-                const d = document.createElement("div");
-                d.className = "list-item";
-                d.innerHTML = `<div style="width:8px;height:8px;background:var(--success);border-radius:50%"></div> ${u.val().name}`;
-                d.onclick = () => { startChat(u.key, false); };
+                let d = document.createElement("div");
+                d.className = "stat-item";
+                d.innerHTML = `<span><i class="fa-solid fa-circle" style="color:#3fb950;font-size:10px"></i> ${u.val().name}</span> <i class="fa-solid fa-message icon-btn"></i>`;
+                d.onclick = () => { curChat = u.key; isGroup = false; loadChat(); openPage('chat', document.querySelectorAll('nav i')[1]); };
                 document.getElementById("userList").appendChild(d);
             }
         }
     });
-    document.getElementById("onlineCount").textContent = online;
+    document.getElementById("onlineCount").textContent = count;
 });
 
 onValue(ref(db, "groups"), snap => {
     document.getElementById("groupList").innerHTML = "";
     document.getElementById("groupCount").textContent = snap.size || 0;
     snap.forEach(g => {
-        const d = document.createElement("div");
-        d.className = "list-item";
-        d.innerHTML = `<i class="fa-solid fa-hashtag"></i> ${g.key}`;
-        d.onclick = () => { startChat(g.key, true); };
+        let d = document.createElement("div");
+        d.className = "stat-item";
+        d.innerHTML = `<span># ${g.key}</span> <i class="fa-solid fa-users icon-btn"></i>`;
+        d.onclick = () => { curChat = g.key; isGroup = true; loadChat(); openPage('chat', document.querySelectorAll('nav i')[1]); };
         document.getElementById("groupList").appendChild(d);
     });
 });
 
-function startChat(id, group) {
-    curChat = id; isGroup = group;
-    loadChat();
-    openPage('chat', document.querySelectorAll('nav button')[1]);
-}
-
-window.uploadImage = (input) => {
+window.uploadPhoto = (input) => {
     const file = input.files[0];
-    if (!file) return;
-    if (file.size > 500000) { alert("Photo size 500kb se kam honi chahiye!"); return; }
-
+    if(!file || !curChat) return;
     const reader = new FileReader();
     reader.onload = (e) => {
         const path = (isGroup ? "groupChats/" : "chats/") + (isGroup ? curChat : [currentUser, curChat].sort().join("_"));
-        push(ref(db, path), { from: currentUser, text: "📷 Photo", image: e.target.result });
+        push(ref(db, path), {from: currentUser, text: "📷 Photo", image: e.target.result});
     };
     reader.readAsDataURL(file);
 };
 
 function loadChat() {
-    if(!curChat) return;
     const path = (isGroup ? "groupChats/" : "chats/") + (isGroup ? curChat : [currentUser, curChat].sort().join("_"));
     onValue(ref(db, path), snap => {
         const box = document.getElementById("chatBox");
         box.innerHTML = "";
         snap.forEach(m => {
-            const val = m.val();
-            const isMe = val.from === currentUser;
+            const data = m.val();
+            const isMe = data.from === currentUser;
             const div = document.createElement("div");
-            div.className = `msg ${isMe ? 'me' : ''}`;
+            div.className = `msg ${isMe ? 'me' : 'other'}`;
             
-            let imgPart = val.image ? `<img src="${val.image}" onclick="window.open('${val.image}')">` : '';
-            let comms = val.comments ? Object.values(val.comments).map(c=>`<div class="comment-box"><b>${c.from}:</b> ${c.text}</div>`).join('') : '';
+            let img = data.image ? `<img src="${data.image}">` : "";
+            let comms = data.comments ? Object.values(data.comments).map(c => `<div class="comment-item"><b>${c.from}:</b> ${c.text}</div>`).join('') : "";
 
             div.innerHTML = `
-                <div class="actions" onclick="deleteMsg('${path}','${m.key}')">🗑️</div>
-                <b>${val.from}</b><br>${val.text}
-                ${imgPart}
-                ${comms}
-                <div style="display:flex; margin-top:5px; gap:5px;">
-                    <input id="c-${m.key}" placeholder="Comment..." style="font-size:10px; flex:1; background:rgba(255,255,255,0.1); border:none; color:white; border-radius:5px;">
-                    <button onclick="addComment('${path}','${m.key}')" style="font-size:10px; border:none; background:var(--accent); color:white; border-radius:5px;">💬</button>
+                <span class="delete-btn" onclick="deleteMsg('${path}','${m.key}')">🗑️</span>
+                <b>${data.from}</b>
+                ${data.text}
+                ${img}
+                <div class="comment-area">${comms}</div>
+                <div class="comment-input-wrap">
+                    <input id="in-${m.key}" placeholder="Reply...">
+                    <i class="fa-solid fa-paper-plane" style="font-size:12px;cursor:pointer" onclick="addComment('${path}','${m.key}')"></i>
                 </div>`;
             box.appendChild(div);
         });
@@ -243,19 +251,20 @@ function loadChat() {
 }
 
 window.sendMsg = () => {
-    const inp = document.getElementById('msgInput');
+    const inp = document.getElementById("msgInput");
     if(!inp.value || !curChat) return;
     const path = (isGroup ? "groupChats/" : "chats/") + (isGroup ? curChat : [currentUser, curChat].sort().join("_"));
     push(ref(db, path), {from: currentUser, text: inp.value});
-    inp.value = '';
+    inp.value = "";
 };
 
-window.deleteMsg = (path, key) => { if(confirm("Delete this message?")) remove(ref(db, path+"/"+key)); };
 window.addComment = (path, key) => {
-    const inp = document.getElementById("c-"+key);
+    const inp = document.getElementById("in-"+key);
     if(inp.value) push(ref(db, path+"/"+key+"/comments"), {from: currentUser, text: inp.value});
     inp.value = "";
 };
+
+window.deleteMsg = (path, key) => remove(ref(db, path+"/"+key));
 window.createGroup = () => {
     const g = document.getElementById("groupInput").value.trim();
     if(g) set(ref(db, "groups/"+g), {createdBy: currentUser});
