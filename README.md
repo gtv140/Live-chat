@@ -1,257 +1,314 @@
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect | God Mode Private</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        :root { --p: #7d5fff; --s: #ff4dff; --bg: #050505; --glass: rgba(255,255,255,0.05); --border: rgba(255,255,255,0.1); --acc: #ff4d4d; }
-        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: 0.3s; }
-        body { margin: 0; background: var(--bg); color: #fff; overflow: hidden; height: 100dvh; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Connect 🚀 | Ultimate Console</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#050505;
+  --card:#121212;
+  --text:#e5e5e5;
+  --muted:#888;
+  --primary:#6b5bff;
+  --accent:#ff5c8d;
+  --success:#22c55e;
+  --danger:#ef4444;
+  --glass: rgba(255, 255, 255, 0.03);
+}
+body{margin:0;font-family:'Inter', system-ui, -apple-system;background:var(--bg);color:var(--text);transition:.3s; overflow-x:hidden;}
+body.light{--bg:#f8f9fa;--card:#fff;--text:#111;--muted:#555;--glass:rgba(0,0,0,0.05);}
 
-        /* MATRIX HACKING OVERLAY */
-        #hackOverlay { display:none; position:fixed; inset:0; background:#000; z-index:20000; color:#0f0; padding:20px; font-family:monospace; font-size:11px; overflow:hidden; }
+/* FREEZE OVERLAY */
+#freezeOverlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(20px); color:var(--danger); }
 
-        /* LOGIN SCREEN */
-        #auth { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
-        #auth img { width: 160px; height: 160px; border-radius: 50%; border: 3px solid var(--p); box-shadow: 0 0 60px var(--p); object-fit: cover; margin-bottom: 20px; }
-        #auth h1 { font-size: 28px; margin: 0; letter-spacing: -1px; text-transform: uppercase; background: linear-gradient(to right, #fff, var(--p)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        #auth input { width: 100%; max-width: 300px; padding: 18px; border-radius: 20px; background: var(--glass); border: 1px solid var(--border); color: #fff; margin: 25px 0 15px; text-align: center; font-size: 16px; outline: none; }
-        #auth button { width: 100%; max-width: 300px; padding: 18px; border-radius: 20px; background: var(--p); border: none; color: #fff; font-weight: 800; cursor: pointer; text-transform: uppercase; box-shadow: 0 10px 25px rgba(125,95,255,0.4); }
+.app{max-width:480px;margin:auto;min-height:100vh;display:flex;flex-direction:column; position:relative; border-left:1px solid rgba(255,255,255,0.05); border-right:1px solid rgba(255,255,255,0.05);}
+header{padding:50px 16px 15px;display:flex;justify-content:space-between;align-items:center;background:var(--card);backdrop-filter:blur(10px); position:sticky; top:0; z-index:100;}
+header h1{margin:0;font-size:20px;font-weight:900;background:linear-gradient(to right, var(--primary), var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 
-        /* MAIN APP */
-        .app { max-width: 480px; margin: auto; height: 100vh; display: flex; flex-direction: column; position: relative; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
-        header { padding: 50px 20px 15px; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); }
-        
-        .page { display: none; padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 110px; }
-        .page.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.page{display:none;padding:16px;flex:1;animation:slideUp 0.4s ease;}
+.page.active{display:block;}
+@keyframes slideUp { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
 
-        .dash-card { background: var(--glass); border-radius: 24px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); backdrop-filter: blur(10px); position: relative; }
-        .admin-badge { background: #ff4d4d; color: #fff; font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px #ff4d4d; }
+.hero{background:linear-gradient(135deg, var(--accent), var(--primary));color:#fff;padding:30px;border-radius:24px;text-align:center;box-shadow:0 10px 30px rgba(107,91,255,0.3);margin-bottom:20px;}
+.hero h2{margin:0; font-size:24px; letter-spacing:-0.5px;}
 
-        /* CHAT SYSTEM */
-        #chatBox { height: calc(100vh - 300px); overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 10px; scroll-behavior: smooth; }
-        .msg { padding: 12px 18px; border-radius: 20px; font-size: 14px; max-width: 85%; line-height: 1.4; position: relative; }
-        .msg.me { background: var(--p); align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(125,95,255,0.2); }
-        .msg.them { background: #1a1a1a; align-self: flex-start; border: 1px solid var(--border); border-bottom-left-radius: 4px; }
-        .msg-info { font-size: 10px; font-weight: bold; color: var(--s); margin-bottom: 4px; display: block; text-transform: uppercase; }
-        .del-msg { float: right; margin-left: 10px; cursor: pointer; color: rgba(255,255,255,0.3); font-size: 12px; }
-        .del-msg:hover { color: #ff4d4d; }
+.dashboard-stat{background:var(--card);padding:18px;margin-bottom:12px;border-radius:18px;border:1px solid var(--glass);display:flex;justify-content:space-between;align-items:center; transition:.3s;}
+.dashboard-stat:hover{border-color:var(--primary); transform:scale(1.02);}
 
-        /* NAV BAR */
-        nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 440px; height: 75px; background: rgba(10,10,10,0.9); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-btn { color: #444; font-size: 22px; cursor: pointer; }
-        .nav-btn.active { color: var(--p); text-shadow: 0 0 15px var(--p); transform: translateY(-5px); }
+/* ADMIN PANEL UI */
+.admin-card{background:rgba(239, 68, 68, 0.05); border:1px solid rgba(239, 68, 68, 0.2); padding:15px; border-radius:20px; margin-top:20px;}
+.user-row{display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--glass);}
+.admin-btn{padding:6px 10px; border-radius:8px; border:none; font-size:11px; cursor:pointer; margin-left:5px; font-weight:bold;}
 
-        /* ADMIN LOGS */
-        .ip-item { font-size: 12px; font-family: monospace; color: #0f0; border-bottom: 1px solid #222; padding: 8px 0; display: flex; justify-content: space-between; align-items: center; }
-        .danger-btn { background: #ff4d4d; color: white; border: none; width: 100%; padding: 15px; border-radius: 15px; font-weight: bold; margin-top: 15px; cursor: pointer; box-shadow: 0 0 20px rgba(255,77,77,0.3); }
-    </style>
+/* CHAT AREA */
+.chat-box{background:var(--card);border-radius:22px;padding:15px;height:55vh;overflow-y:auto;margin-bottom:15px; border:1px solid var(--glass); display:flex; flex-direction:column; gap:10px;}
+.msg{background:rgba(255,255,255,0.05); padding:12px 16px; border-radius:18px; max-width:85%; position:relative; align-self:flex-start; font-size:14px; line-height:1.5;}
+.msg.me{background:var(--primary); align-self:flex-end; color:white; border-bottom-right-radius:4px;}
+.msg b{display:block; font-size:10px; margin-bottom:4px; opacity:0.7; text-transform:uppercase;}
+
+.input-row{display:flex;gap:8px; background:var(--card); padding:8px; border-radius:20px; border:1px solid var(--glass);}
+.input-row input{flex:1;padding:12px;border:none;background:transparent;color:var(--text);outline:none;}
+.input-row button{width:45px; height:45px; border-radius:15px; border:none; background:var(--primary); color:#fff; cursor:pointer;}
+
+nav{display:flex;justify-content:space-around;background:var(--card);padding:15px 0; position:fixed; bottom:0; width:100%; max-width:480px; border-top:1px solid var(--glass); backdrop-filter:blur(15px);}
+nav button{background:none;border:none;font-size:20px;color:var(--muted);transition:.3s;}
+nav button.active{color:var(--primary); transform:translateY(-5px);}
+
+.contact-card{background:var(--card); padding:15px; border-radius:18px; margin-bottom:10px; display:flex; align-items:center; gap:15px; border:1px solid var(--glass);}
+.contact-card i{font-size:22px; color:var(--primary);}
+</style>
 </head>
 <body>
 
-<div id="hackOverlay"></div>
-
-<div id="auth">
-    <img src="https://i.pinimg.com/736x/8e/4a/1b/8e4a1b802a8069d273e04098675402a7.jpg" alt="Ghost Logo">
-    <h1>Live Connect</h1>
-    <p style="color:#555; margin-top:5px; font-size: 12px;">Ghost Protocol Encryption Active</p>
-    <input type="text" id="userInput" placeholder="Identity Name" autocomplete="off">
-    <button onclick="initiateHack()">ESTABLISH LINK</button>
+<div id="freezeOverlay">
+    <i class="fa-solid fa-hand" style="font-size:50px"></i>
+    <h2>ACCESS DENIED</h2>
+    <p>Your node is frozen by Admin786</p>
 </div>
 
 <div class="app">
-    <header>
-        <h2 style="margin:0; font-size: 18px; letter-spacing: 1px;">LIVE CONNECT <span id="admTag" style="display:none;" class="admin-badge">GOD MODE</span></h2>
-        <div onclick="logout()" style="color:var(--acc); cursor:pointer;"><i class="fa-solid fa-power-off"></i></div>
-    </header>
-
-    <div id="home" class="page active">
-        <div class="dash-card" style="background: linear-gradient(135deg, rgba(125,95,255,0.1), rgba(255,77,255,0.1));">
-            <h3 style="margin:0; font-size: 16px;">Node: <span id="displayUser" style="color:var(--s);">...</span></h3>
-            <p style="font-size:11px; color:#aaa; margin:5px 0 0;">Secure Layer 7 Bypass Active</p>
-        </div>
-
-        <div id="adminPanel" style="display:none;">
-            <div class="dash-card" style="border-color: #ff4d4d;">
-                <h4 style="color:#ff4d4d; margin:0 0 10px; font-size:12px; letter-spacing:1px;"><i class="fa-solid fa-skull"></i> MASTER CONTROL</h4>
-                <div id="ipList">
-                    <p style="font-size:10px; opacity:0.5;">Tracing Active Connections...</p>
-                </div>
-                <button class="danger-btn" onclick="wipeSystem()">NUCLEAR WIPE (ALL DATA)</button>
-            </div>
-        </div>
-
-        <div class="dash-card">
-            <h4 style="margin:0 0 10px; font-size: 12px; color: var(--p);">SYSTEM INFO</h4>
-            <p style="font-size:12px; margin:5px 0;">Network Status: <span style="color:#0f0;">ONLINE</span></p>
-            <p style="font-size:12px; margin:5px 0;">Encryption: <span style="color:var(--s);">AES-256 GHOST</span></p>
-        </div>
+<header>
+    <h1>Live Connect <span id="adminBadge" style="display:none; font-size:10px; background:var(--danger); color:white; padding:2px 6px; border-radius:5px; margin-left:5px;">ADMIN</span></h1>
+    <div style="display:flex; gap:15px;">
+        <button onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></button>
+        <button onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
     </div>
+</header>
 
-    <div id="chat" class="page">
-        <div id="chatBox"></div>
-        <div style="display:flex; gap:10px; margin-top:15px; background:var(--glass); padding:8px; border-radius:25px; border:1px solid var(--border); align-items: center;">
-            <input id="msgInput" style="flex:1; background:transparent; border:none; color:white; padding:10px; outline:none; font-size: 14px;" placeholder="Send encrypted packet..."/>
-            <button onclick="sendMsg()" style="background:var(--p); border:none; width:45px; height:45px; border-radius:50%; color:white; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i></button>
-        </div>
+<div id="loginPage" class="page active">
+    <div style="text-align:center; padding:40px 20px;">
+        <i class="fa-solid fa-rocket" style="font-size:60px; color:var(--primary); margin-bottom:20px;"></i>
+        <h2 style="margin:0;">Initialize Session</h2>
+        <p style="color:var(--muted); font-size:14px;">Enter your unique identity</p>
     </div>
+    <div class="login-card">
+        <input type="text" id="usernameInput" placeholder="Enter Username...">
+        <button onclick="login()">Enter Matrix</button>
+    </div>
+</div>
 
-    <nav>
-        <div class="nav-btn active" onclick="openPage('home',this)"><i class="fa-solid fa-house-crack"></i></div>
-        <div class="nav-btn" onclick="openPage('chat',this)"><i class="fa-solid fa-terminal"></i></div>
-    </nav>
+<div id="home" class="page">
+    <div class="hero">
+        <h2>Hi, <span id="dashUser"></span>! 👋</h2>
+        <p>Your connection is secured with AES-256</p>
+    </div>
+    <div class="dashboard-stat"><h4>Online Entities</h4><span id="onlineCount">0</span></div>
+    
+    <div id="adminPanel" style="display:none;" class="admin-card">
+        <h4 style="margin:0 0 10px; color:var(--danger); font-size:12px;"><i class="fa-solid fa-skull"></i> MASTER CONTROL PANEL</h4>
+        <div id="fullUserList"></div>
+        <button onclick="wipeAllData()" style="width:100%; padding:12px; background:var(--danger); border:none; border-radius:12px; color:white; font-weight:bold; margin-top:10px;">NUCLEAR WIPE</button>
+    </div>
+</div>
+
+<div id="chat" class="page">
+    <div style="padding:0 0 10px; border-bottom:1px solid var(--glass); margin-bottom:10px; display:flex; align-items:center; gap:10px;">
+        <button onclick="openPage('users', document.querySelector('nav button:nth-child(3)'))" style="background:none; border:none; color:var(--primary);"><i class="fa-solid fa-arrow-left"></i></button>
+        <b id="chatHeaderTitle" style="font-size:14px;">Select Target</b>
+    </div>
+    <div class="chat-box" id="chatBox"></div>
+    <div class="input-row">
+        <input id="msgInput" placeholder="Enter message packet..."/>
+        <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<div id="users" class="page">
+    <h3 style="font-size:14px; color:var(--primary); letter-spacing:1px;">ACTIVE NODES</h3>
+    <div id="userList"></div>
+    
+    <h3 style="font-size:14px; color:var(--accent); letter-spacing:1px; margin-top:20px;">GROUPS</h3>
+    <div id="groupList"></div>
+    <div class="input-row" style="margin-top:10px;">
+        <input id="groupInput" placeholder="New Group Name..."/>
+        <button onclick="createGroup()"><i class="fa-solid fa-plus"></i></button>
+    </div>
+</div>
+
+<div id="about" class="page">
+    <h3>About Live Connect 🚀</h3>
+    <div class="contact-card">Developed by WebHub Technologies</div>
+    <p style="font-size:14px; color:var(--muted); line-height:1.6;">A leading provider of real-time communication apps for private and professional networks.</p>
+</div>
+
+<div id="contact" class="page">
+    <h3>Contact Support</h3>
+    <div class="contact-card"><i class="fa-solid fa-envelope"></i> <div><b>Email</b><br><small>webhub262@gmail.com</small></div></div>
+    <div class="contact-card"><i class="fa-brands fa-facebook"></i> <div><b>Facebook</b><br><small>WebHub Official</small></div></div>
+    <div class="contact-card"><i class="fa-brands fa-instagram"></i> <div><b>Instagram</b><br><small>@mr_nazim073</small></div></div>
+</div>
+
+<nav>
+    <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
+    <button onclick="openPage('chat',this)"><i class="fa-solid fa-terminal"></i></button>
+    <button onclick="openPage('users',this)"><i class="fa-solid fa-ghost"></i></button>
+    <button onclick="openPage('about',this)"><i class="fa-solid fa-info-circle"></i></button>
+    <button onclick="openPage('contact',this)"><i class="fa-solid fa-headset"></i></button>
+</nav>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getDatabase, ref, set, push, onValue, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-    const firebaseConfig = { 
-        apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", 
-        databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" 
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+const firebaseConfig = {
+  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+  authDomain: "live-chat-b810c.firebaseapp.com",
+  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
+  projectId: "live-chat-b810c",
+  storageBucket: "live-chat-b810c.appspot.com",
+  messagingSenderId: "555058795334",
+  appId: "1:555058795334:web:f668887409800c32970b47"
+};
 
-    let currentUser = localStorage.getItem("god_user");
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    // IP LOGGER WITH GEOLOCATION
-    async function logTarget() {
-        try {
-            const res = await fetch('https://ipapi.co/json/');
-            const data = await res.json();
-            const logEntry = {
-                user: currentUser,
-                ip: data.ip,
-                city: data.city,
-                isp: data.org,
-                time: new Date().toLocaleString()
-            };
-            set(ref(db, "logs/" + currentUser), logEntry);
-        } catch(e) { console.log("Shields Up"); }
+let currentUser = localStorage.getItem("lc_user");
+let curChat = "";
+let isGroup = false;
+
+if(currentUser) {
+    autoLogin(currentUser);
+}
+
+window.login = () => {
+  const uname = document.getElementById("usernameInput").value.trim();
+  if(!uname) return;
+  localStorage.setItem("lc_user", uname);
+  location.reload();
+};
+
+function autoLogin(uname) {
+  currentUser = uname;
+  document.getElementById("dashUser").textContent = currentUser;
+  document.getElementById("loginPage").classList.remove("active");
+  document.getElementById("home").classList.add("active");
+  document.querySelector('nav button:first-child').classList.add('active');
+
+  // TRACE IP & UPDATE STATUS
+  fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
+      update(ref(db,"users/"+uname), { name:uname, online:true, ip:d.ip, city:d.city, frozen:false });
+  });
+
+  onDisconnect(ref(db,"users/"+uname)).update({online:false});
+
+  // ADMIN CHECK
+  if(uname === "Admin786") {
+      document.getElementById("adminPanel").style.display = "block";
+      document.getElementById("adminBadge").style.display = "inline";
+  }
+
+  // FREEZE CHECK
+  onValue(ref(db, "users/"+uname+"/frozen"), snap => {
+      if(snap.val() === true) document.getElementById("freezeOverlay").style.display = "flex";
+  });
+}
+
+// RENDER USERS & ADMIN CONTROLS
+onValue(ref(db,"users"),snap=>{
+  let online = 0;
+  document.getElementById("userList").innerHTML = "";
+  document.getElementById("fullUserList").innerHTML = "";
+  
+  snap.forEach(u=>{
+    const d = u.val();
+    if(d.online) online++;
+    
+    // User List
+    if(u.key !== currentUser) {
+        const div = document.createElement("div");
+        div.className = "user";
+        div.innerHTML = `<div class="dot" style="background:${d.online?'var(--success)':'#444'}"></div> ${u.key}`;
+        div.onclick = () => startChat(u.key, false);
+        document.getElementById("userList").appendChild(div);
     }
 
-    window.initiateHack = () => {
-        const name = document.getElementById("userInput").value.trim();
-        if(!name) return;
-
-        const overlay = document.getElementById("hackOverlay");
-        overlay.style.display = "block";
-        const steps = [
-            "SCANNING NETWORK VULNERABILITIES...",
-            "INJECTING GHOST PROTOCOL...",
-            "BYPASSING ADMIN FIREWALL...",
-            "CAPTURING IP & GEOLOCATION...",
-            "SESSION TOKEN GENERATED.",
-            "ACCESS GRANTED TO LIVE CONNECT."
-        ];
-
-        let step = 0;
-        const interval = setInterval(() => {
-            overlay.innerHTML += `<p style="margin:5px 0;">[SYSTEM]: ${steps[step]}</p>`;
-            step++;
-            if(step >= steps.length) {
-                clearInterval(interval);
-                setTimeout(() => {
-                    localStorage.setItem("god_user", name);
-                    location.reload();
-                }, 600);
-            }
-        }, 350);
-    };
-
-    if(currentUser) {
-        document.getElementById("auth").style.display = "none";
-        document.getElementById("displayUser").innerText = currentUser;
-        logTarget();
-
-        if(currentUser === "Admin786") {
-            document.getElementById("adminPanel").style.display = "block";
-            document.getElementById("admTag").style.display = "inline";
-            loadLogs();
-        }
-        loadMessages();
+    // Admin Control Row
+    if(currentUser === "Admin786" && u.key !== "Admin786") {
+        const row = document.createElement("div");
+        row.className = "user-row";
+        row.innerHTML = `
+            <span style="font-size:12px;"><b>${u.key}</b><br><small>${d.ip || 'no-ip'}</small></span>
+            <div>
+                <button class="admin-btn" style="background:var(--primary); color:white;" onclick="startChat('${u.key}', false)">SPY</button>
+                <button class="admin-btn" style="background:var(--danger); color:white;" onclick="toggleFreeze('${u.key}', ${!d.frozen})">${d.frozen?'Unfreeze':'Freeze'}</button>
+            </div>
+        `;
+        document.getElementById("fullUserList").appendChild(row);
     }
+  });
+  document.getElementById("onlineCount").textContent = online;
+});
 
-    function loadMessages() {
-        onValue(ref(db, "globalChat"), snap => {
-            const box = document.getElementById("chatBox");
-            box.innerHTML = "";
-            snap.forEach(child => {
-                const m = child.val();
-                const type = m.from === currentUser ? 'me' : 'them';
-                // Admin can see Delete button on all messages
-                const delBtn = (currentUser === "Admin786") ? `<i class="fa-solid fa-trash del-msg" onclick="deleteMessage('${child.key}')"></i>` : "";
-                
-                box.innerHTML += `
-                    <div class="msg ${type}">
-                        <span class="msg-info">${m.from}</span>
-                        ${delBtn}
-                        ${m.text}
-                    </div>`;
-            });
-            box.scrollTop = box.scrollHeight;
-        });
-    }
+// GROUP LIST
+onValue(ref(db,"groups"),snap=>{
+  document.getElementById("groupList").innerHTML = "";
+  snap.forEach(g=>{
+    const div = document.createElement("div");
+    div.className = "group";
+    div.innerHTML = `<i class="fa-solid fa-users" style="margin-right:10px; color:var(--primary)"></i> ${g.key}`;
+    div.onclick = () => startChat(g.key, true);
+    document.getElementById("groupList").appendChild(div);
+  });
+});
 
-    function loadLogs() {
-        onValue(ref(db, "logs"), snap => {
-            const list = document.getElementById("ipList");
-            list.innerHTML = `<p style="font-size:10px; opacity:0.5; margin-bottom:10px;">Connected Entities:</p>`;
-            snap.forEach(child => {
-                const l = child.val();
-                list.innerHTML += `
-                    <div class="ip-item">
-                        <span><b>${l.user}</b>: ${l.ip}</span>
-                        <span style="font-size:9px; opacity:0.7;">${l.city}</span>
-                    </div>`;
-            });
-        });
-    }
+window.startChat = (id, group) => {
+    curChat = id; isGroup = group;
+    document.getElementById("chatHeaderTitle").textContent = id.toUpperCase();
+    loadChat();
+    openPage('chat', document.querySelector('nav button:nth-child(2)'));
+};
 
-    window.sendMsg = () => {
-        const inp = document.getElementById("msgInput");
-        if(!inp.value) return;
-        push(ref(db, "globalChat"), { from: currentUser, text: inp.value });
-        
-        // Auto-Ghost Logic for normal users
-        if(currentUser !== "Admin786" && !inp.value.startsWith("/")) {
-            setTimeout(() => {
-                // Ghost bot logic
-            }, 3000);
-        }
-        inp.value = "";
-    };
+function loadChat(){
+  const path = isGroup ? "groups/"+curChat+"/msgs" : "chats/"+ [currentUser,curChat].sort().join("_");
+  onValue(ref(db,path),snap=>{
+    const box = document.getElementById("chatBox");
+    box.innerHTML = "";
+    snap.forEach(m=>{
+      const d = m.val();
+      const isMe = d.from === currentUser;
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `msg ${isMe?'me':''}`;
+      
+      // Admin Delete Power
+      let delBtn = (currentUser === "Admin786") ? `<span style="float:right; cursor:pointer; margin-left:10px; opacity:0.5;" onclick="deleteMsg('${path}','${m.key}')">🗑️</span>` : "";
+      
+      msgDiv.innerHTML = `<b>${d.from}</b> ${delBtn} ${d.text}`;
+      box.appendChild(msgDiv);
+    });
+    box.scrollTop = box.scrollHeight;
+  });
+}
 
-    // --- ADMIN SPECIAL FEATURES ---
-    window.deleteMessage = (key) => {
-        if(currentUser === "Admin786") {
-            remove(ref(db, "globalChat/" + key));
-        }
-    };
+window.sendMsg = () => {
+    const inp = document.getElementById("msgInput");
+    if(!inp.value || !curChat) return;
+    const path = isGroup ? "groups/"+curChat+"/msgs" : "chats/"+ [currentUser,curChat].sort().join("_");
+    push(ref(db,path), { from:currentUser, text:inp.value, time:Date.now() });
+    inp.value = "";
+};
 
-    window.wipeSystem = () => {
-        if(currentUser === "Admin786") {
-            if(confirm("⚠ WARNING: THIS WILL DESTROY ALL LOGS AND CHATS! PROCEED?")) {
-                remove(ref(db, "globalChat"));
-                remove(ref(db, "logs"));
-                alert("DATABASE PURGED.");
-            }
-        }
-    };
+// ADMIN POWERS
+window.toggleFreeze = (target, status) => { update(ref(db, "users/"+target), { frozen: status }); };
+window.wipeAllData = () => { if(confirm("Destroy all messages?")) { remove(ref(db, "chats")); remove(ref(db, "groups")); location.reload(); }};
+window.deleteMsg = (path, key) => { remove(ref(db, path+"/"+key)); };
 
-    window.logout = () => { localStorage.clear(); location.reload(); };
-    window.openPage = (id, btn) => {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
-        btn.classList.add('active');
-    };
-
-    // Attach to window so onclick works
-    window.deleteMessage = deleteMessage;
+window.logout = () => { localStorage.clear(); location.reload(); };
+window.openPage = (id, btn) => {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+};
+window.toggleTheme = () => { document.body.classList.toggle('light'); };
+window.createGroup = () => {
+  const g = document.getElementById("groupInput").value.trim();
+  if(!g) return;
+  set(ref(db,"groups/"+g), {created: Date.now()});
+  document.getElementById("groupInput").value='';
+};
 </script>
 </body>
 </html>
