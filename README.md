@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root { --bg: #05070a; --card: #0d1117; --primary: #00d2ff; --accent: #ff0055; --text: #e6edf3; --success: #00ff88; --glass: rgba(13, 17, 23, 0.85); }
-body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); height: 100dvh; overflow: hidden; }
+body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); height: 100dvh; overflow: hidden; }
 
 /* LOGIN */
 #loginPage { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
@@ -18,7 +18,6 @@ body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 header { padding: 50px 20px 15px; display: flex; justify-content: space-between; align-items: center; background: var(--glass); backdrop-filter: blur(15px); border-bottom: 1px solid #30363d; z-index: 100; }
 header h1 { margin: 0; font-size: 22px; background: linear-gradient(to right, #00d2ff, #9d50bb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
 
-/* UI ELEMENTS */
 .page { display: none; padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 180px; animation: fadeIn 0.4s ease; }
 .page.active { display: flex; flex-direction: column; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -28,13 +27,13 @@ header h1 { margin: 0; font-size: 22px; background: linear-gradient(to right, #0
 .stat-box { background: var(--card); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #30363d; }
 .stat-box span { display: block; font-size: 24px; font-weight: bold; color: var(--primary); }
 
-/* CHAT */
+/* CHAT AREA */
 #chatBox { flex: 1; display: flex; flex-direction: column; gap: 12px; }
 .msg { padding: 12px 16px; border-radius: 18px; max-width: 80%; font-size: 14px; position: relative; }
 .msg.me { align-self: flex-end; background: var(--primary); color: #000; border-bottom-right-radius: 2px; }
 .msg.other { align-self: flex-start; background: #21262d; border-bottom-left-radius: 2px; }
 .msg b { display: block; font-size: 10px; opacity: 0.7; margin-bottom: 4px; }
-.msg img { max-width: 100%; border-radius: 12px; margin-top: 8px; }
+.msg img { max-width: 100%; border-radius: 12px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.1); }
 
 .input-area { position: fixed; bottom: 85px; width: 90%; max-width: 440px; left: 50%; transform: translateX(-50%); background: #161b22; padding: 10px 15px; border-radius: 30px; display: flex; align-items: center; gap: 10px; border: 1px solid #30363d; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 .input-area input { flex: 1; background: none; border: none; color: white; outline: none; padding: 10px; }
@@ -44,13 +43,13 @@ header h1 { margin: 0; font-size: 22px; background: linear-gradient(to right, #0
 .online { background: var(--success); box-shadow: 0 0 10px var(--success); }
 .offline { background: #30363d; }
 
-/* NAV */
+/* FLOATING NAV */
 nav { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 440px; background: var(--glass); backdrop-filter: blur(20px); height: 70px; border-radius: 25px; display: flex; justify-content: space-around; align-items: center; border: 1px solid #30363d; z-index: 1000; }
 nav button { background: none; border: none; color: #484f58; font-size: 22px; cursor: pointer; transition: 0.3s; }
 nav button.active { color: var(--primary); transform: translateY(-5px); }
 
-/* HIJACK OVERLAY */
-#hjkScreen { display: none; position: fixed; inset: 0; background: #000; z-index: 100000; flex-direction: column; align-items: center; justify-content: center; color: var(--accent); text-align: center; font-family: monospace; }
+/* HIJACK SCREEN */
+#hjkScreen { display: none; position: fixed; inset: 0; background: #000; z-index: 100000; flex-direction: column; align-items: center; justify-content: center; color: var(--accent); text-align: center; }
 </style>
 </head>
 <body>
@@ -85,8 +84,8 @@ nav button.active { color: var(--primary); transform: translateY(-5px); }
             <p style="font-size:12px; opacity:0.8;">Protocol v30.0 Established</p>
         </div>
         <div class="stats-grid">
-            <div class="stat-box"><span>0</span><h5>ONLINE</h5></div>
-            <div class="stat-box"><span>0</span><h5>CLUSTERS</h5></div>
+            <div class="stat-box"><span id="onStats">0</span><h5>ONLINE</h5></div>
+            <div class="stat-box"><span id="grStats">0</span><h5>CLUSTERS</h5></div>
         </div>
     </div>
 
@@ -96,7 +95,7 @@ nav button.active { color: var(--primary); transform: translateY(-5px); }
             <label for="imgInp"><i class="fa-solid fa-camera" style="color:var(--primary);"></i></label>
             <input type="file" id="imgInp" hidden accept="image/*" onchange="upImg(this)">
             <input id="msgInp" placeholder="Secure packet...">
-            <i class="fa-solid fa-paper-plane" style="color:var(--primary);" onclick="send()"></i>
+            <i class="fa-solid fa-paper-plane" style="color:var(--primary); cursor:pointer;" onclick="send()"></i>
         </div>
     </div>
 
@@ -127,8 +126,18 @@ nav button.active { color: var(--primary); transform: translateY(-5px); }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-const conf = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
-const app = initializeApp(conf);
+// YOUR FIREBASE CONFIG APPLIED
+const firebaseConfig = {
+  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+  authDomain: "live-chat-b810c.firebaseapp.com",
+  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
+  projectId: "live-chat-b810c",
+  storageBucket: "live-chat-b810c.firebasestorage.app",
+  messagingSenderId: "555058795334",
+  appId: "1:555058795334:web:f668887409800c32970b47"
+};
+
+const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 let user = localStorage.getItem("lc_u");
@@ -142,7 +151,7 @@ window.login = () => {
 function start(u) {
     document.getElementById("welcome").innerText = "Welcome, " + u;
     const myRef = ref(db, "users/"+u);
-    update(myRef, { online: true, frozen: false, lastSeen: Date.now() });
+    update(myRef, { online: true, frozen: false });
     onDisconnect(myRef).update({ online: false });
 
     if(u === "Admin786") document.getElementById("admIco").style.display = "block";
@@ -160,17 +169,17 @@ function start(u) {
                 ul.innerHTML += `<div style="background:var(--card); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between;" onclick="joinChat('${n.key}', false)">
                     <span><span class="dot ${d.online?'online':'offline'}"></span>${n.key}</span><i class="fa-solid fa-chevron-right" style="opacity:0.2"></i>
                 </div>`;
-                if(u === "Admin786") al.innerHTML += `<div style="background:#161b22; padding:12px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between;">
-                    <span>${n.key}</span><button onclick="hjk('${n.key}', ${!d.frozen})" style="background:${d.frozen?var(--success):var(--accent)}; color:white; border:none; border-radius:8px; padding:4px 10px; font-size:10px;">${d.frozen?'FREE':'HJK'}</button>
+                if(u === "Admin786") al.innerHTML += `<div style="background:#161b22; padding:12px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>${n.key}</span><button onclick="hjk('${n.key}', ${!d.frozen})" style="background:${d.frozen?var(--success):var(--accent)}; color:white; border:none; border-radius:8px; padding:6px 12px; font-size:10px; font-weight:bold;">${d.frozen?'RESTORE':'HIJACK'}</button>
                 </div>`;
             }
         });
-        document.querySelectorAll(".stat-box span")[0].innerText = on;
+        document.getElementById("onStats").innerText = on;
     });
 
     onValue(ref(db, "groups"), s => {
         const gl = document.getElementById("gList"); gl.innerHTML = "";
-        document.querySelectorAll(".stat-box span")[1].innerText = s.size;
+        document.getElementById("grStats").innerText = s.size;
         s.forEach(g => { gl.innerHTML += `<div style="background:var(--card); padding:15px; border-radius:15px; margin-bottom:10px;" onclick="joinChat('${g.key}', true)"># ${g.key}</div>`; });
     });
 }
@@ -211,7 +220,7 @@ window.nav = (p, b) => {
 
 window.hjk = (t, s) => update(ref(db, "users/"+t), { frozen: s });
 window.delM = (p, k) => remove(ref(db, p+"/"+k));
-window.nuke = () => { if(confirm("NUCLEAR WIPE?")) remove(ref(db)); location.reload(); };
+window.nuke = () => { if(confirm("NUCLEAR WIPE? DATA CANNOT BE RECOVERED.")) { remove(ref(db)); location.reload(); } };
 window.mkGr = () => { let n = prompt("Cluster Name:"); if(n) set(ref(db, "groups/"+n), { c: Date.now() }); };
 window.logout = () => { localStorage.clear(); location.reload(); };
 </script>
