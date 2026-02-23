@@ -5,148 +5,201 @@
 <title>Live Connect 🚀</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{
-  --bg:#08090a;
-  --card:#14161a;
-  --text:#f0f2f5;
-  --muted:#94a3b8;
-  --primary:#6366f1;
-  --accent:#f43f5e;
-  --success:#10b981;
+:root {
+  --bg: #0a0a0c;
+  --card: #16161e;
+  --text: #e2e8f0;
+  --primary: #6366f1; /* Modern Indigo */
+  --accent: #f43f5e;  /* Rose accent */
+  --success: #10b981;
   --glass: rgba(255, 255, 255, 0.03);
 }
-body{margin:0;font-family:'Inter', system-ui, -apple-system;background:var(--bg);color:var(--text);transition:.3s; height: 100dvh; display: flex; flex-direction: column; overflow: hidden;}
-body.light{--bg:#f8fafc;--card:#ffffff;--text:#1e293b;--muted:#64748b;--glass: rgba(0,0,0,0.03);}
 
-.app{max-width:480px;margin:auto;height:100%;display:flex;flex-direction:column; width: 100%; box-shadow: 0 0 50px rgba(0,0,0,0.5);}
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 
-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;background:var(--card);border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10;}
-header h1{margin:0;font-size:22px;font-weight:800; background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
-header button{background:var(--glass); border:1px solid rgba(255,255,255,0.1); width:40px; height:40px; border-radius:12px; color:var(--text); cursor:pointer; transition:.3s;}
+/* Header Styling */
+header {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+header h1 {
+  margin: 0;
+  font-size: 20px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+header button {
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
 
-.page{display:none;padding:20px;flex:1;overflow-y:auto; transition: 0.3s ease-in-out;}
-.page.active{display:block; animation: fadeIn 0.4s ease;}
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+/* Page Transitions */
+.page { display: none; padding: 20px; flex: 1; overflow-y: auto; }
+.page.active { display: block; animation: slideUp 0.3s ease; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.hero{background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; padding:32px 20px; border-radius:24px; text-align:center; box-shadow:0 20px 40px rgba(99, 102, 241, 0.2); margin-bottom:24px;}
-.hero h2{margin:0 0 8px; font-size:24px; font-weight:800;}
-.hero p{margin:0; font-size:14px; opacity:.85; letter-spacing: 0.5px;}
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  padding: 30px 20px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+  margin-bottom: 20px;
+}
+.hero h2 { margin: 0; font-size: 22px; }
+.hero p { margin: 5px 0 0; font-size: 13px; opacity: 0.8; }
 
-.dashboard-stat{background:var(--card); padding:20px; margin-bottom:16px; border-radius:20px; border: 1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center; transition:.3s;}
-.dashboard-stat h4{margin:0; color:var(--muted); font-size:14px; font-weight:500; text-transform: uppercase; letter-spacing: 1px;}
-.dashboard-stat span{font-weight:800; font-size:20px; color:var(--primary);}
+/* Dashboard Stats */
+.dashboard-stat {
+  background: var(--card);
+  padding: 18px;
+  margin-bottom: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dashboard-stat h4 { margin: 0; color: var(--accent); font-size: 14px; }
+.dashboard-stat span { font-weight: 800; font-size: 18px; color: var(--primary); }
 
-.chat-box{background:var(--card); border-radius:24px; padding:16px; height:50vh; overflow-y:auto; margin-bottom:16px; border: 1px solid rgba(255,255,255,0.05); scroll-behavior: smooth;}
-.msg{background:#1e293b; color:#fff; padding:12px 16px; border-radius:18px; border-bottom-left-radius: 4px; margin-bottom:12px; font-size:14px; position:relative; line-height: 1.5; max-width: 85%;}
-.msg b{color: var(--primary); font-size: 12px; display: block; margin-bottom: 4px;}
+/* Chat Box */
+.chat-box {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 15px;
+  height: 50vh;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.msg {
+  background: #23232e;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+.msg b { color: var(--primary); display: block; margin-bottom: 3px; font-size: 12px; }
 
-.input-row{display:flex; gap:12px; background: var(--card); padding: 8px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);}
-.input-row input{flex:1; padding:12px 16px; border:none; background:transparent; color:var(--text); outline:none; font-size: 15px;}
-.input-row button{width: 48px; height: 48px; border:none; border-radius:16px; background:var(--primary); color:#fff; cursor:pointer; transition:.3s; display: grid; place-items: center;}
-.input-row button:hover{transform: scale(1.05); box-shadow: 0 0 20px var(--primary);}
+/* Input Styling */
+.input-row { display: flex; gap: 10px; background: var(--card); padding: 5px; border-radius: 15px; }
+.input-row input {
+  flex: 1; padding: 12px; border: none; background: transparent; color: white; outline: none;
+}
+.input-row button {
+  background: var(--primary); border: none; padding: 12px 20px; border-radius: 12px; color: white; cursor: pointer;
+}
 
-.user, .group{display:flex; align-items:center; gap:14px; margin-bottom:12px; padding:16px; background:var(--card); border-radius:20px; border: 1px solid rgba(255,255,255,0.05); transition:.3s;}
-.user:hover{border-color: var(--primary); background: rgba(99, 102, 241, 0.05);}
-.dot{width:10px; height:10px; background:var(--success); border-radius:50%; box-shadow: 0 0 10px var(--success);}
+/* User & Group List */
+.user, .group {
+  display: flex; align-items: center; gap: 12px; padding: 15px;
+  background: var(--card); border-radius: 16px; margin-bottom: 10px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.05); transition: 0.2s;
+}
+.user:hover { border-color: var(--primary); }
+.dot { width: 10px; height: 10px; background: var(--success); border-radius: 50%; box-shadow: 0 0 8px var(--success); }
 
-nav{display:flex; justify-content:space-around; background:var(--card); padding:16px 0; border-top: 1px solid rgba(255,255,255,0.05); padding-bottom: env(safe-area-inset-bottom);}
-nav button{background:none; border:none; font-size:22px; color:var(--muted); cursor:pointer; transition:.3s; position: relative;}
-nav button.active{color:var(--primary);}
-nav button.active::after{content:''; position:absolute; bottom:-10px; left:50%; transform:translateX(-50%); width:5px; height:5px; background:var(--primary); border-radius:50%;}
+/* Navigation */
+nav {
+  display: flex; justify-content: space-around; background: var(--card);
+  padding: 15px 0; border-top: 1px solid rgba(255,255,255,0.05);
+}
+nav button { background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer; }
+nav button.active { color: var(--primary); }
 
-.login-card{background:var(--card); padding:32px 24px; border-radius:28px; text-align: center; border: 1px solid rgba(255,255,255,0.05);}
-.login-card h3{margin-top:0; font-size:22px;}
-.login-card input{width:100%; padding:16px; border-radius:16px; margin-bottom:16px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; outline:none; font-size: 16px;}
-.login-card button{width:100%; padding:16px; border:none; border-radius:16px; background:var(--primary); color:#fff; font-weight:700; font-size:16px; cursor:pointer;}
-
-.comment-input input{background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 12px;}
-.contact-card{background:var(--card); border: 1px solid rgba(255,255,255,0.05); padding: 16px; border-radius: 20px;}
+/* Login Card */
+.login-card { background: var(--card); padding: 30px; border-radius: 25px; text-align: center; }
+.login-card input {
+  width: 100%; padding: 14px; border-radius: 12px; margin-bottom: 15px;
+  background: #000; border: 1px solid #333; color: white; outline: none;
+}
+.login-card button {
+  width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: white; font-weight: bold;
+}
 </style>
 </head>
 <body>
-<div class="app">
-<header>
-<h1>Live Connect</h1>
-<div>
-    <button onclick="toggleTheme()" style="margin-right:8px;"><i class="fa-solid fa-circle-half-stroke"></i></button>
-    <button onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
-</div>
-</header>
 
-<div id="loginPage" class="page active">
-    <div style="height:100%; display:flex; align-items:center; justify-content:center;">
-        <div class="login-card">
-            <div style="font-size:40px; margin-bottom:15px;">🛰️</div>
-            <h3>Terminal Access</h3>
-            <input type="text" id="usernameInput" placeholder="Enter Username">
-            <button onclick="login()">Initialize Sync</button>
+<div class="app">
+    <header>
+        <h1>Live Connect</h1>
+        <div>
+            <button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+            <button onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
+        </div>
+    </header>
+
+    <div id="loginPage" class="page active">
+        <div style="height: 100%; display: flex; align-items: center; justify-content: center;">
+            <div class="login-card">
+                <h3>Welcome Back</h3>
+                <input type="text" id="usernameInput" placeholder="Enter Username">
+                <button onclick="login()">Get Started</button>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="home" class="page">
-    <div class="hero">
-        <h2>Hi, <span id="dashUser"></span>!</h2>
-        <p>Your secure communication hub is ready.</p>
+    <div id="home" class="page">
+        <div class="hero">
+            <h2>Hello, <span id="dashUser"></span> 🚀</h2>
+            <p>Your connections are live and secure.</p>
+        </div>
+        <div class="dashboard-stat"><h4>Online Users</h4><span id="onlineCount">0</span></div>
+        <div class="dashboard-stat"><h4>Active Groups</h4><span id="groupCount">0</span></div>
     </div>
-    <div class="dashboard-stat"><h4>Online Nodes</h4><span id="onlineCount">0</span></div>
-    <div class="dashboard-stat"><h4>Active Clusters</h4><span id="groupCount">0</span></div>
-</div>
 
-<div id="chat" class="page">
-    <div class="chat-box" id="chatBox"></div>
-    <div class="input-row">
-        <input id="msgInput" placeholder="Message…"/>
-        <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+    <div id="chat" class="page">
+        <div class="chat-box" id="chatBox"></div>
+        <div class="input-row">
+            <input id="msgInput" placeholder="Type a message..."/>
+            <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
     </div>
-</div>
 
-<div id="users" class="page">
-    <h3 style="font-size:14px; color:var(--muted); text-transform:uppercase; margin-bottom:15px;">Network Users</h3>
-    <div id="userList"></div>
-    <h3 style="font-size:14px; color:var(--muted); text-transform:uppercase; margin-top:24px; margin-bottom:15px;">Groups</h3>
-    <div id="groupList"></div>
-    <div class="input-row" style="margin-top:20px;">
-        <input id="groupInput" placeholder="New group name"/>
-        <button onclick="createGroup()"><i class="fa-solid fa-plus"></i></button>
+    <div id="users" class="page">
+        <h3 style="font-size: 14px; color: var(--accent); text-transform: uppercase;">Direct Messages</h3>
+        <div id="userList"></div>
+        <h3 style="font-size: 14px; color: var(--accent); text-transform: uppercase; margin-top: 20px;">Channels</h3>
+        <div id="groupList"></div>
+        <div class="input-row" style="margin-top: 15px;">
+            <input id="groupInput" placeholder="Group name..."/>
+            <button onclick="createGroup()"><i class="fa-solid fa-plus"></i></button>
+        </div>
     </div>
-</div>
 
-<div id="about" class="page">
-    <div class="contact-card" style="margin-top:10px;">
-        <h3>About System 🚀</h3>
-        <p style="font-size:14px; line-height:1.6; color:var(--muted);">Developed by <b>WebHub Technologies</b>. A robust architecture for real-time data streaming and private encrypted messaging.</p>
-        <ul style="padding-left:20px; font-size:14px; color:var(--muted);">
-            <li>Low-latency synchronization</li>
-            <li>Hybrid Dark/Light architecture</li>
-            <li>Fully responsive mobile experience</li>
-        </ul>
-    </div>
-</div>
-
-<div id="contact" class="page">
-    <h3 style="margin-bottom:20px;">Support Channels</h3>
-    <div class="contact-card" style="display:flex; align-items:center; gap:15px; margin-bottom:12px;">
-        <i class="fa-solid fa-envelope" style="color:var(--primary); font-size:20px;"></i>
-        <div><h4 style="margin:0; font-size:14px;">Support Email</h4><a href="mailto:webhub262@gmail.com" style="color:var(--muted); text-decoration:none; font-size:13px;">webhub262@gmail.com</a></div>
-    </div>
-    <div class="contact-card" style="display:flex; align-items:center; gap:15px; margin-bottom:12px;">
-        <i class="fa-brands fa-instagram" style="color:var(--accent); font-size:20px;"></i>
-        <div><h4 style="margin:0; font-size:14px;">Instagram</h4><a href="#" style="color:var(--muted); text-decoration:none; font-size:13px;">@mr_nazim073</a></div>
-    </div>
-</div>
-
-<nav>
-    <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house-user"></i></button>
-    <button onclick="openPage('chat',this)"><i class="fa-solid fa-comment-dots"></i></button>
-    <button onclick="openPage('users',this)"><i class="fa-solid fa-users-viewfinder"></i></button>
-    <button onclick="openPage('about',this)"><i class="fa-solid fa-shield-halved"></i></button>
-    <button onclick="openPage('contact',this)"><i class="fa-solid fa-headset"></i></button>
-</nav>
+    <nav>
+        <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
+        <button onclick="openPage('chat',this)"><i class="fa-solid fa-comment"></i></button>
+        <button onclick="openPage('users',this)"><i class="fa-solid fa-users"></i></button>
+        <button onclick="openPage('contact',this)"><i class="fa-solid fa-envelope"></i></button>
+    </nav>
 </div>
 
 <script type="module">
-// --- SAARA JAVASCRIPT LOGIC WAHI HAI JO AAPNE BHEJA THA ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
@@ -195,7 +248,8 @@ window.logout=()=>{
 
 window.openPage=(id,btn)=>{
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const target = document.getElementById(id);
+  if(target) target.classList.add('active');
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 };
@@ -251,8 +305,7 @@ function loadChat(){
     snap.forEach(m=>{
       const div=document.createElement("div");
       div.className="msg";
-      let actions=`<div class="actions" style="opacity:0.5; font-size:10px;"><span onclick="deleteMsg('${path}','${m.key}')">🗑️</span></div>`;
-      div.innerHTML=`<b>${m.val().from}</b> ${m.val().text} ${actions}`;
+      div.innerHTML=`<b>${m.val().from}</b> ${m.val().text}`;
       chatBox.appendChild(div);
       chatBox.scrollTop=chatBox.scrollHeight;
     });
@@ -267,8 +320,6 @@ window.sendMsg=()=>{
   push(ref(db,path),{from:currentUser,text:input.value});
   input.value='';
 };
-
-window.deleteMsg=(path,key)=>{ if(confirm("Delete message?")) remove(ref(db,path+"/"+key)); };
 </script>
 </body>
 </html>
