@@ -1,205 +1,101 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Connect 🚀</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root {
-  --bg: #0a0a0c;
-  --card: #16161e;
-  --text: #e2e8f0;
-  --primary: #6366f1; /* Modern Indigo */
-  --accent: #f43f5e;  /* Rose accent */
-  --success: #10b981;
-  --glass: rgba(255, 255, 255, 0.03);
+/* CSS ko thora saaf aur modern kiya hai, layout wahi hai */
+:root{
+  --bg:#0a0a0a; --card:#121212; --text:#e5e5e5; --primary:#6b5bff; --accent:#ff5c8d; --success:#22c55e;
 }
+body{margin:0; font-family:system-ui,-apple-system; background:var(--bg); color:var(--text); transition:.3s;}
+body.light{--bg:#f1f1f1; --card:#fff; --text:#111;}
 
-body {
-  margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+.app{max-width:480px; margin:auto; min-height:100vh; display:flex; flex-direction:column;}
+header{padding:14px 16px; display:flex; justify-content:space-between; align-items:center; background:var(--card); border-bottom:1px solid #222;}
+header h1{margin:0; font-size:22px; color:var(--primary); text-shadow:0 0 10px var(--primary);}
 
-/* Header Styling */
-header {
-  padding: 16px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--card);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-header h1 {
-  margin: 0;
-  font-size: 20px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 800;
-}
-header button {
-  background: var(--glass);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--text);
-  padding: 8px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-}
+.page{display:none; padding:16px; flex:1;}
+.page.active{display:block;}
 
-/* Page Transitions */
-.page { display: none; padding: 20px; flex: 1; overflow-y: auto; }
-.page.active { display: block; animation: slideUp 0.3s ease; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff); color:#fff; padding:25px; border-radius:20px; text-align:center; margin-bottom:15px;}
+.dashboard-stat{background:var(--card); padding:16px; margin-bottom:12px; border-radius:16px; border:1px solid #222; display:flex; justify-content:space-between;}
 
-/* Hero Section */
-.hero {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  padding: 30px 20px;
-  border-radius: 24px;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-  margin-bottom: 20px;
-}
-.hero h2 { margin: 0; font-size: 22px; }
-.hero p { margin: 5px 0 0; font-size: 13px; opacity: 0.8; }
+.chat-box{background:var(--card); border-radius:18px; padding:14px; height:45vh; overflow-y:auto; margin-bottom:12px; border:1px solid #222;}
+.msg{background:#1a1a1a; color:#fff; padding:10px 14px; border-radius:15px; margin-bottom:10px; font-size:14px; position:relative; border-left:3px solid var(--primary);}
+.msg .actions{position:absolute; top:6px; right:8px; cursor:pointer; opacity:0.6;}
 
-/* Dashboard Stats */
-.dashboard-stat {
-  background: var(--card);
-  padding: 18px;
-  margin-bottom: 12px;
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.dashboard-stat h4 { margin: 0; color: var(--accent); font-size: 14px; }
-.dashboard-stat span { font-weight: 800; font-size: 18px; color: var(--primary); }
+.input-row{display:flex; gap:10px;}
+.input-row input{flex:1; padding:14px; border-radius:12px; border:1px solid #333; background:#000; color:#fff; outline:none;}
+.input-row button{padding:14px 20px; border:none; border-radius:12px; background:var(--primary); color:#fff; cursor:pointer;}
 
-/* Chat Box */
-.chat-box {
-  background: var(--card);
-  border-radius: 20px;
-  padding: 15px;
-  height: 50vh;
-  overflow-y: auto;
-  margin-bottom: 15px;
-  border: 1px solid rgba(255,255,255,0.05);
-}
-.msg {
-  background: #23232e;
-  padding: 12px 16px;
-  border-radius: 16px;
-  border-bottom-left-radius: 4px;
-  margin-bottom: 12px;
-  font-size: 14px;
-  position: relative;
-  border: 1px solid rgba(255,255,255,0.03);
-}
-.msg b { color: var(--primary); display: block; margin-bottom: 3px; font-size: 12px; }
+.user, .group{display:flex; align-items:center; gap:10px; margin-bottom:12px; cursor:pointer; padding:12px; background:var(--card); border-radius:14px; border:1px solid #222;}
+.dot{width:10px; height:10px; background:var(--success); border-radius:50%;}
 
-/* Input Styling */
-.input-row { display: flex; gap: 10px; background: var(--card); padding: 5px; border-radius: 15px; }
-.input-row input {
-  flex: 1; padding: 12px; border: none; background: transparent; color: white; outline: none;
-}
-.input-row button {
-  background: var(--primary); border: none; padding: 12px 20px; border-radius: 12px; color: white; cursor: pointer;
-}
+nav{display:flex; justify-content:space-around; background:var(--card); padding:12px 0; border-top:1px solid #222;}
+nav button{background:none; border:none; font-size:22px; color:#666; cursor:pointer;}
+nav button.active{color:var(--primary);}
 
-/* User & Group List */
-.user, .group {
-  display: flex; align-items: center; gap: 12px; padding: 15px;
-  background: var(--card); border-radius: 16px; margin-bottom: 10px; cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.05); transition: 0.2s;
-}
-.user:hover { border-color: var(--primary); }
-.dot { width: 10px; height: 10px; background: var(--success); border-radius: 50%; box-shadow: 0 0 8px var(--success); }
-
-/* Navigation */
-nav {
-  display: flex; justify-content: space-around; background: var(--card);
-  padding: 15px 0; border-top: 1px solid rgba(255,255,255,0.05);
-}
-nav button { background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer; }
-nav button.active { color: var(--primary); }
-
-/* Login Card */
-.login-card { background: var(--card); padding: 30px; border-radius: 25px; text-align: center; }
-.login-card input {
-  width: 100%; padding: 14px; border-radius: 12px; margin-bottom: 15px;
-  background: #000; border: 1px solid #333; color: white; outline: none;
-}
-.login-card button {
-  width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: white; font-weight: bold;
-}
+.login-card{background:var(--card); padding:25px; border-radius:20px; border:1px solid #333;}
+.login-card input{width:100%; padding:14px; border-radius:12px; margin-bottom:12px; background:#000; border:1px solid #333; color:#fff;}
+.login-card button{width:100%; padding:14px; border:none; border-radius:12px; background:var(--primary); color:#fff; font-weight:bold;}
 </style>
 </head>
 <body>
-
 <div class="app">
-    <header>
-        <h1>Live Connect</h1>
-        <div>
-            <button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
-            <button onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
-        </div>
-    </header>
+<header>
+<h1>Live Connect</h1>
+<div style="display:flex; gap:10px;">
+    <button onclick="toggleTheme()" style="background:none; border:none; color:white; font-size:18px;"><i class="fa-solid fa-moon"></i></button>
+    <button onclick="logout()" style="background:none; border:none; color:white; font-size:18px;"><i class="fa-solid fa-right-from-bracket"></i></button>
+</div>
+</header>
 
-    <div id="loginPage" class="page active">
-        <div style="height: 100%; display: flex; align-items: center; justify-content: center;">
-            <div class="login-card">
-                <h3>Welcome Back</h3>
-                <input type="text" id="usernameInput" placeholder="Enter Username">
-                <button onclick="login()">Get Started</button>
-            </div>
-        </div>
-    </div>
+<div id="loginPage" class="page active">
+<div class="login-card">
+<h3>Enter Username</h3>
+<input type="text" id="usernameInput" placeholder="Username">
+<button onclick="login()">Continue</button>
+</div>
+</div>
 
-    <div id="home" class="page">
-        <div class="hero">
-            <h2>Hello, <span id="dashUser"></span> 🚀</h2>
-            <p>Your connections are live and secure.</p>
-        </div>
-        <div class="dashboard-stat"><h4>Online Users</h4><span id="onlineCount">0</span></div>
-        <div class="dashboard-stat"><h4>Active Groups</h4><span id="groupCount">0</span></div>
-    </div>
+<div id="home" class="page">
+<div class="hero">
+<h2>Welcome <span id="dashUser"></span> 🚀</h2>
+<p>Real-Time Chat & Active Connections</p>
+</div>
+<div class="dashboard-stat"><h4>Total Users</h4><span id="onlineCount">0</span></div>
+<div class="dashboard-stat"><h4>Total Groups</h4><span id="groupCount">0</span></div>
+</div>
 
-    <div id="chat" class="page">
-        <div class="chat-box" id="chatBox"></div>
-        <div class="input-row">
-            <input id="msgInput" placeholder="Type a message..."/>
-            <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
-        </div>
-    </div>
+<div id="chat" class="page">
+<div class="chat-box" id="chatBox"></div>
+<div class="input-row">
+<input id="msgInput" placeholder="Type message…"/>
+<button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+</div>
+</div>
 
-    <div id="users" class="page">
-        <h3 style="font-size: 14px; color: var(--accent); text-transform: uppercase;">Direct Messages</h3>
-        <div id="userList"></div>
-        <h3 style="font-size: 14px; color: var(--accent); text-transform: uppercase; margin-top: 20px;">Channels</h3>
-        <div id="groupList"></div>
-        <div class="input-row" style="margin-top: 15px;">
-            <input id="groupInput" placeholder="Group name..."/>
-            <button onclick="createGroup()"><i class="fa-solid fa-plus"></i></button>
-        </div>
-    </div>
+<div id="users" class="page">
+<h3>Online Users</h3><div id="userList"></div>
+<h3 style="margin-top:16px;">Groups</h3><div id="groupList"></div>
+<div class="input-row" style="margin-top:6px;">
+<input id="groupInput" placeholder="Create group"/>
+<button onclick="createGroup()">➕</button>
+</div>
+</div>
 
-    <nav>
-        <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
-        <button onclick="openPage('chat',this)"><i class="fa-solid fa-comment"></i></button>
-        <button onclick="openPage('users',this)"><i class="fa-solid fa-users"></i></button>
-        <button onclick="openPage('contact',this)"><i class="fa-solid fa-envelope"></i></button>
-    </nav>
+<nav>
+<button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
+<button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
+<button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
+<button onclick="openPage('home',this)"><i class="fa-solid fa-circle-info"></i></button>
+</nav>
 </div>
 
 <script type="module">
+/* --- AAPKA ORIGINAL FIREBASE LOGIC --- */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
@@ -248,8 +144,7 @@ window.logout=()=>{
 
 window.openPage=(id,btn)=>{
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const target = document.getElementById(id);
-  if(target) target.classList.add('active');
+  document.getElementById(id).classList.add('active');
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 };
@@ -305,7 +200,7 @@ function loadChat(){
     snap.forEach(m=>{
       const div=document.createElement("div");
       div.className="msg";
-      div.innerHTML=`<b>${m.val().from}</b> ${m.val().text}`;
+      div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text} <div class="actions" onclick="deleteMsg('${path}','${m.key}')">🗑️</div>`;
       chatBox.appendChild(div);
       chatBox.scrollTop=chatBox.scrollHeight;
     });
@@ -320,6 +215,8 @@ window.sendMsg=()=>{
   push(ref(db,path),{from:currentUser,text:input.value});
   input.value='';
 };
+
+window.deleteMsg=(path,key)=>{ if(confirm("Delete?")) remove(ref(db,path+"/"+key)); };
 </script>
 </body>
 </html>
