@@ -6,88 +6,107 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
-  --bg:#0a0a0a; --card:#111; --text:#e5e5e5; --muted:#aaa;
-  --primary:#6b5bff; --accent:#ff5c8d; --success:#22c55e;
+  --bg:#05070a; --card:#12141d; --text:#fafafa; --muted:#8b949e;
+  --primary:#6366f1; --accent:#f43f5e; --success:#10b981;
 }
-/* Mobile Height Fix */
-body{margin:0;font-family:system-ui,-apple-system;background:var(--bg);color:var(--text); height: 100dvh; display: flex; flex-direction: column; overflow: hidden;}
-body.light{--bg:#f1f1f1;--card:#fff;--text:#111;--muted:#555;}
+body{margin:0;font-family:'Inter',system-ui,-apple-system;background:var(--bg);color:var(--text);transition:.3s; height: 100dvh; display: flex; flex-direction: column; overflow: hidden;}
+body.light{--bg:#f8fafc;--card:#ffffff;--text:#0f172a;--muted:#64748b;}
 
-.app{max-width:480px;margin:auto;height:100%;display:flex;flex-direction:column;}
-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);box-shadow:0 3px 15px rgba(0,0,0,.7);z-index:10;}
-header h1{margin:0;font-size:22px;color:var(--primary);text-shadow:0 0 12px var(--accent);}
+.app{max-width:480px;margin:auto;height:100%;display:flex;flex-direction:column;width:100%;}
+header{padding:16px;display:flex;justify-content:space-between;align-items:center;background:var(--card);border-bottom:1px solid rgba(255,255,255,0.05);z-index:100;}
+header h1{margin:0;font-size:20px;font-weight:800;background:linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
 
-.page{display:none;padding:16px;flex:1;overflow-y:auto;transition:0.3s;}
+.page{display:none;padding:16px;flex:1;overflow-y:auto; animation: fadeIn 0.3s ease;}
 .page.active{display:block;}
+@keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
 
-/* Chat Box Area Fix for Mobile */
+.hero{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;padding:24px;border-radius:24px;text-align:center;box-shadow:0 10px 30px rgba(99,102,241,0.3);margin-bottom:20px;}
+.dashboard-stat{background:var(--card);padding:18px;margin-bottom:12px;border-radius:20px;border:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;}
+.dashboard-stat h4{margin:0; color:var(--muted); font-size:14px;}
+
+/* CHAT AREA FIX */
 #chat.page { display:none; flex-direction:column; padding:10px; height:100%; }
 #chat.page.active { display:flex; }
-.chat-box{background:var(--card);border-radius:18px;padding:14px;flex:1;overflow-y:auto;margin-bottom:10px;box-shadow:0 0 12px var(--primary);}
+.chat-box{background:var(--card);border-radius:24px;padding:15px;flex:1;overflow-y:auto;margin-bottom:12px;border:1px solid rgba(255,255,255,0.05);}
+.msg{background:#1e293b;color:#fff;padding:12px 16px;border-radius:18px;margin-bottom:12px;font-size:14px;position:relative;max-width:85%;}
+.msg.me{background:var(--primary); margin-left:auto; border-bottom-right-radius:2px;}
+.msg img{width:100%; border-radius:12px; margin-top:8px;}
 
-.msg{background:#222;color:#fff;padding:10px 14px;border-radius:16px;margin-bottom:10px;font-size:14px;position:relative;box-shadow:0 0 6px var(--primary);}
-.msg img{width:100%; border-radius:10px; margin-top:5px;}
-.time{font-size:9px; opacity:0.5; display:block; text-align:right; margin-top:4px;}
+.input-row{display:flex;gap:10px;background:var(--card);padding:10px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);}
+.input-row input{flex:1;padding:12px;border:none;background:transparent;color:var(--text);outline:none;font-size:15px;}
+.input-row button{width:45px; height:45px; border:none;border-radius:15px;background:var(--primary);color:#fff;cursor:pointer;}
 
-.input-row{display:flex;gap:8px;background:var(--card);padding:8px;border-radius:14px;align-items:center;}
-.input-row input{flex:1;padding:12px;border-radius:10px;border:1px solid #444;background:#111;color:#fff;outline:none;}
-.input-row button{padding:12px 16px;border:none;border-radius:10px;background:linear-gradient(90deg,#ff5c8d,#6b5bff);color:#fff;cursor:pointer;}
+.user, .group{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:14px;background:var(--card);border-radius:18px;border:1px solid rgba(255,255,255,0.05);}
+.dot{width:10px;height:10px;background:var(--success);border-radius:50%;box-shadow:0 0 10px var(--success);}
 
-nav{display:flex;justify-content:space-around;background:var(--card);padding:10px 0;border-top:1px solid #333;}
-nav button{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;}
-nav button.active{color:var(--primary);}
+nav{display:flex;justify-content:space-around;background:var(--card);padding:12px 0;border-top:1px solid rgba(255,255,255,0.05);padding-bottom:env(safe-area-inset-bottom);}
+nav button{background:none;border:none;font-size:22px;color:var(--muted);transition:.3s;}
+nav button.active{color:var(--primary); transform:scale(1.2);}
 
-.user,.group{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:12px;background:var(--card);border-radius:12px;box-shadow:0 0 8px var(--primary);}
+/* ADMIN PANEL */
+.ban-btn{background:rgba(244,63,94,0.1); color:var(--accent); border:none; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:bold;}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
 <h1 id="topTitle">Live Connect</h1>
-<div>
-    <button onclick="toggleTheme()" style="background:none;border:none;color:white;"><i class="fa-solid fa-moon"></i></button>
-    <button onclick="logout()" style="background:none;border:none;color:var(--accent);"><i class="fa-solid fa-right-from-bracket"></i></button>
+<div style="display:flex; gap:12px;">
+    <button onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></button>
+    <button onclick="logout()" style="color:var(--accent)"><i class="fa-solid fa-power-off"></i></button>
 </div>
 </header>
 
 <div id="loginPage" class="page active">
-    <div style="text-align:center; padding:20px; background:var(--card); border-radius:20px;">
-        <h3>Welcome Back</h3>
-        <input type="text" id="usernameInput" placeholder="Enter Name" style="width:100%; padding:14px; margin:15px 0; border-radius:10px; background:#000; color:white; border:1px solid #444;">
-        <button onclick="login()" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold;">Continue</button>
+    <div style="text-align:center; padding:20px; margin-top:30%;">
+        <div style="font-size:50px; margin-bottom:10px;">🛡️</div>
+        <h2>Access Terminal</h2>
+        <input type="text" id="usernameInput" placeholder="Enter Username" style="width:100%; padding:16px; border-radius:16px; border:1px solid #333; background:#111; color:white; margin:20px 0;">
+        <button onclick="login()" style="width:100%; padding:16px; border-radius:16px; background:var(--primary); color:white; border:none; font-weight:bold; box-shadow:0 10px 20px rgba(99,102,241,0.3);">Initialize Connection</button>
     </div>
 </div>
 
 <div id="home" class="page">
-    <div style="background:linear-gradient(135deg,#ff5c8d,#6b5bff); padding:25px; border-radius:20px; text-align:center; color:white;">
-        <h2>Hi, <span id="dashUser"></span> 👋</h2>
-        <p>Online: <span id="onlineCount">0</span> | Groups: <span id="groupCount">0</span></p>
+    <div class="hero">
+        <h2 style="margin:0">Welcome, <span id="dashUser"></span></h2>
+        <p style="font-size:13px; opacity:0.8;">Status: Secure Connection Active</p>
+    </div>
+    <div id="bcShow"></div>
+    <div class="dashboard-stat"><h4>Total Network Users</h4><span id="onlineCount">0</span></div>
+    <div class="dashboard-stat"><h4>Encrypted Groups</h4><span id="groupCount">0</span></div>
+    <div id="adminPanel" style="display:none; margin-top:20px;">
+        <h3 style="color:var(--accent)">Admin Control</h3>
+        <div class="input-row">
+            <input id="bcInput" placeholder="Broadcast message..."/>
+            <button onclick="sendBC()"><i class="fa-solid fa-bullhorn"></i></button>
+        </div>
+        <div id="allUsers" style="margin-top:10px;"></div>
     </div>
 </div>
 
 <div id="chat" class="page">
     <div class="chat-box" id="chatBox"></div>
     <div class="input-row">
-        <label for="imgInp"><i class="fa-solid fa-paperclip" style="color:var(--primary); cursor:pointer;"></i></label>
+        <label for="imgInp"><i class="fa-solid fa-paperclip" style="color:var(--muted); margin-left:10px; cursor:pointer;"></i></label>
         <input type="file" id="imgInp" hidden onchange="upImg(this)" accept="image/*">
-        <input id="msgInput" placeholder="Message…"/>
+        <input id="msgInput" placeholder="Secure message…"/>
         <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
 </div>
 
 <div id="users" class="page">
-    <h3>Online Users</h3><div id="userList"></div>
-    <h3 style="margin-top:16px;">Groups</h3><div id="groupList"></div>
-    <div class="input-row" style="margin-top:10px;">
-        <input id="groupInput" placeholder="New group name"/>
+    <h3 style="font-size:14px; color:var(--muted)">ACTIVE NODES</h3><div id="userList"></div>
+    <h3 style="font-size:14px; color:var(--muted); margin-top:20px;">CLUSTERS</h3><div id="groupList"></div>
+    <div class="input-row" style="margin-top:15px;">
+        <input id="groupInput" placeholder="Cluster name..."/>
         <button onclick="createGroup()">➕</button>
     </div>
 </div>
 
 <nav>
-    <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
-    <button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
-    <button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
+    <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house-chimney-window"></i></button>
+    <button onclick="openPage('chat',this)"><i class="fa-solid fa-message-code"></i></button>
+    <button onclick="openPage('users',this)"><i class="fa-solid fa-users-viewfinder"></i></button>
 </nav>
 </div>
 
@@ -108,53 +127,48 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let currentUser=localStorage.getItem("lc_user");
+let currentUser=localStorage.getItem("lc_u");
 let curChat="";
 let isGroup=false;
 
-if(currentUser){ 
-    document.getElementById("loginPage").classList.remove("active");
-    document.getElementById("home").classList.add("active");
-    initApp(); 
-}
+if(currentUser){ loginSuccess(currentUser); }
 
 window.login=()=>{
   const uname=document.getElementById("usernameInput").value.trim();
   if(!uname) return;
   currentUser=uname;
-  localStorage.setItem("lc_user", uname);
-  initApp();
-  document.getElementById("loginPage").classList.remove("active");
-  document.getElementById("home").classList.add("active");
+  localStorage.setItem("lc_u", uname);
+  loginSuccess(uname);
 };
 
-function initApp(){
-    document.getElementById("dashUser").textContent=currentUser;
-    const userRef=ref(db,"users/"+currentUser);
-    update(userRef,{online:true});
+function loginSuccess(uname){
+    document.getElementById("dashUser").textContent=uname;
+    const userRef=ref(db,"users/"+uname);
+    update(userRef,{online:true, banned:false});
     onDisconnect(userRef).update({online:false});
-    loadLists();
+    document.getElementById("loginPage").classList.remove("active");
+    document.getElementById("home").classList.add("active");
+    if(uname==="Admin786") document.getElementById("adminPanel").style.display="block";
+    initData();
 }
 
-window.logout=()=>{
-    update(ref(db,"users/"+currentUser),{online:false}).then(()=>{
-        localStorage.clear();
-        location.reload();
-    });
-};
-
-function loadLists(){
+function initData(){
     onValue(ref(db,"users"),snap=>{
-        let online=0; document.getElementById("userList").innerHTML="";
+        let online=0; document.getElementById("userList").innerHTML=""; 
+        const adminList = document.getElementById("allUsers"); if(adminList) adminList.innerHTML="";
         snap.forEach(u=>{
+            if(u.val().banned && u.key===currentUser) logout();
             if(u.val().online){
                 online++;
                 if(u.key!==currentUser){
                     let d=document.createElement("div"); d.className="user";
-                    d.innerHTML=`<div style="width:10px;height:10px;background:var(--success);border-radius:50%"></div> ${u.key}`;
-                    d.onclick=()=>{ curChat=u.key; isGroup=false; openPage('chat',document.querySelectorAll('nav button')[1]); loadChat(); };
+                    d.innerHTML=`<div class="dot"></div><b>${u.key}</b>`;
+                    d.onclick=()=>{ curChat=u.key; isGroup=false; openChat(); };
                     document.getElementById("userList").appendChild(d);
                 }
+            }
+            if(currentUser==="Admin786" && u.key!==currentUser){
+                adminList.innerHTML += `<div class="dashboard-stat"><span>${u.key}</span><button class="ban-btn" onclick="banUser('${u.key}')">BAN</button></div>`;
             }
         });
         document.getElementById("onlineCount").textContent=online;
@@ -164,24 +178,28 @@ function loadLists(){
         document.getElementById("groupList").innerHTML="";
         document.getElementById("groupCount").textContent=snap.size || 0;
         snap.forEach(g=>{
-            let d=document.createElement("div"); d.className="group"; d.textContent=g.key;
-            d.onclick=()=>{ curChat=g.key; isGroup=true; openPage('chat',document.querySelectorAll('nav button')[1]); loadChat(); };
+            let d=document.createElement("div"); d.className="group"; d.innerHTML=`<i class="fa-solid fa-hashtag" style="color:var(--primary)"></i> <b>${g.key}</b>`;
+            d.onclick=()=>{ curChat=g.key; isGroup=true; openChat(); };
             document.getElementById("groupList").appendChild(d);
         });
     });
+
+    onValue(ref(db,"broadcast"),s=>{
+        if(s.val()) document.getElementById("bcShow").innerHTML=`<div class="dashboard-stat" style="border-color:var(--accent); background:rgba(244,63,94,0.05); color:var(--accent)"><span><i class="fa-solid fa-bullhorn"></i> ${s.val()}</span></div>`;
+    });
 }
 
-function loadChat(){
-    if(!curChat) return;
+function openChat(){
     document.getElementById("topTitle").textContent = curChat;
+    openPage('chat',document.querySelectorAll('nav button')[1]);
     const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
     onValue(ref(db,path),snap=>{
         const box=document.getElementById("chatBox"); box.innerHTML="";
         snap.forEach(m=>{
-            const d=m.val();
-            const div=document.createElement("div"); div.className="msg";
-            let content = d.type === 'img' ? `<img src="${d.text}">` : d.text;
-            div.innerHTML=`<small style="color:var(--primary)">${d.from}</small><br>${content}<span class="time">12:00 PM</span>`;
+            const d=m.val(); const isMe = d.from===currentUser;
+            const div=document.createElement("div"); div.className=`msg ${isMe?'me':''}`;
+            let content = d.type==='img' ? `<img src="${d.text}">` : d.text;
+            div.innerHTML=`<small style="font-size:10px; opacity:0.6">${d.from}</small><br>${content}`;
             box.appendChild(div);
         });
         box.scrollTop=box.scrollHeight;
@@ -189,36 +207,29 @@ function loadChat(){
 }
 
 window.sendMsg=()=>{
-    const input=document.getElementById('msgInput');
-    if(!input.value || !curChat) return;
+    const inp=document.getElementById('msgInput'); if(!inp.value || !curChat) return;
     const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
-    push(ref(db,path),{from:currentUser, text:input.value, type:'text'});
-    input.value='';
+    push(ref(db,path),{from:currentUser, text:inp.value, type:'text'});
+    inp.value='';
 };
 
 window.upImg=(e)=>{
-    const file = e.files[0];
-    const reader = new FileReader();
-    reader.onload=(f)=>{
+    const reader = new FileReader(); reader.onload=(f)=>{
         const path=(isGroup?"groupChats/":"chats/")+ [currentUser,curChat].sort().join("_");
         push(ref(db,path),{from:currentUser, text:f.target.result, type:'img'});
-    };
-    reader.readAsDataURL(file);
+    }; reader.readAsDataURL(e.files[0]);
 };
 
-window.createGroup=()=>{
-    const g=document.getElementById("groupInput").value.trim();
-    if(g) set(ref(db,"groups/"+g),{owner:currentUser});
-    document.getElementById("groupInput").value="";
-};
-
+window.sendBC=()=>{ const m=document.getElementById("bcInput").value; if(m) set(ref(db,"broadcast"),m); };
+window.banUser=(u)=>{ if(confirm("Ban "+u+"?")) update(ref(db,"users/"+u),{banned:true, online:false}); };
+window.createGroup=()=>{ const g=document.getElementById("groupInput").value; if(g) set(ref(db,"groups/"+g),{by:currentUser}); };
 window.openPage=(id,btn)=>{
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
 };
-
+window.logout=()=>{ update(ref(db,"users/"+currentUser),{online:false}).then(()=>{ localStorage.clear(); location.reload(); }); };
 window.toggleTheme=()=>{document.body.classList.toggle('light');};
 </script>
 </body>
