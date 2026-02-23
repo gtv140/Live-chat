@@ -2,136 +2,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Connect Pro 🚀</title>
+    <title>Live Connect Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0d1117;
-            --card: #161b22;
-            --border: #30363d;
-            --text: #c9d1d9;
+            --bg: #0a0e17;
+            --glass: rgba(22, 27, 34, 0.8);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #e6edf3;
             --primary: #58a6ff;
-            --accent: #f85149;
-            --msg-me: #388bfd;
-            --msg-other: #21262d;
-            --hero-grad: linear-gradient(135deg, #238636, #2ea043);
+            --accent: #ff7b72;
+            --secondary: #238636;
+            --grad: linear-gradient(135deg, #58a6ff, #bc8cff);
         }
         body.light {
-            --bg: #f6f8fa;
-            --card: #ffffff;
-            --border: #d0d7de;
-            --text: #24292f;
-            --msg-me: #0969da;
-            --msg-other: #ebf0f4;
-            --hero-grad: linear-gradient(135deg, #54a3ff, #005cc5);
+            --bg: #f0f2f5;
+            --glass: rgba(255, 255, 255, 0.9);
+            --border: rgba(0, 0, 0, 0.1);
+            --text: #1c1e21;
+            --primary: #0084ff;
         }
-        body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; transition: 0.3s; }
-        .app { max-width: 500px; margin: auto; height: 100vh; display: flex; flex-direction: column; position: relative; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+        body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; transition: 0.4s; }
+        
+        .app-container { max-width: 500px; margin: auto; height: 100vh; position: relative; display: flex; flex-direction: column; background: radial-gradient(circle at top right, rgba(88, 166, 255, 0.1), transparent); }
 
-        /* Header */
-        header { padding: 20px; background: var(--card); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        header h1 { margin: 0; font-size: 24px; font-weight: 800; background: linear-gradient(90deg, #79c0ff, #ff7b72); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .nav-icons { display: flex; gap: 15px; font-size: 20px; }
-        i { cursor: pointer; }
+        /* Header Modernized */
+        header { padding: 25px 20px; background: var(--glass); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        header h1 { margin: 0; font-size: 26px; font-weight: 900; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
+        .head-btns i { font-size: 22px; margin-left: 15px; cursor: pointer; transition: 0.3s; opacity: 0.8; }
+        .head-btns i:hover { transform: scale(1.2); opacity: 1; }
 
-        /* Page Content */
-        .page { display: none; padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 120px; animation: fadeIn 0.3s; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Smooth Pages */
+        .page { display: none; padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 150px; scroll-behavior: smooth; }
+        .page.active { display: block; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Dashboard UI */
-        .hero { background: var(--hero-grad); color: white; padding: 30px 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .stat-card { background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .stat-card b { font-size: 16px; }
-        .stat-value { color: var(--primary); font-weight: bold; font-size: 18px; }
+        /* Modern Cards */
+        .hero-banner { background: var(--grad); padding: 35px 20px; border-radius: 25px; color: white; text-align: center; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(88, 166, 255, 0.3); }
+        .card { background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 20px; margin-bottom: 15px; backdrop-filter: blur(10px); transition: 0.3s; }
+        .card:hover { border-color: var(--primary); transform: translateY(-3px); }
 
-        /* Chat UI */
-        .chat-box { display: flex; flex-direction: column; gap: 15px; }
-        .msg { max-width: 80%; padding: 12px 16px; border-radius: 20px; position: relative; font-size: 15px; }
-        .msg.me { align-self: flex-end; background: var(--msg-me); color: white; border-bottom-right-radius: 4px; }
-        .msg.other { align-self: flex-start; background: var(--msg-other); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
-        .msg img { width: 100%; border-radius: 10px; margin-top: 8px; }
-        .del-msg { position: absolute; top: -8px; right: -8px; background: var(--accent); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: center; visibility: hidden; }
-        .msg:hover .del-msg { visibility: visible; }
+        /* Chat Bubbles like Screenshot */
+        .chat-box { display: flex; flex-direction: column; gap: 20px; }
+        .msg { position: relative; max-width: 85%; padding: 15px; border-radius: 22px; line-height: 1.5; font-size: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .msg.me { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 5px; }
+        .msg.other { align-self: flex-start; background: var(--glass); border: 1px solid var(--border); border-bottom-left-radius: 5px; }
+        .msg b { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; opacity: 0.9; }
+        .msg img { width: 100%; border-radius: 15px; margin-top: 10px; cursor: pointer; }
 
-        /* Inputs */
-        .bottom-input { position: absolute; bottom: 80px; left: 0; width: 100%; padding: 10px; box-sizing: border-box; }
-        .input-bar { background: var(--card); border: 1px solid var(--border); border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; }
-        .input-bar input { flex: 1; background: transparent; border: none; color: var(--text); padding: 10px; outline: none; }
-        .send-btn { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        /* Reply/Comment System */
+        .comment-pill { background: rgba(0,0,0,0.1); padding: 8px 12px; border-radius: 12px; margin-top: 8px; font-size: 13px; border-left: 3px solid var(--accent); }
+        .reply-input { display: flex; gap: 8px; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+        .reply-input input { background: rgba(255,255,255,0.05); border: none; border-radius: 10px; color: white; padding: 5px 10px; flex: 1; font-size: 12px; }
 
-        /* Navbar */
-        nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 75px; background: var(--card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; }
-        nav i { font-size: 22px; color: #8b949e; transition: 0.3s; }
-        nav i.active { color: var(--primary); transform: translateY(-3px); }
+        /* Floating Bottom Input Bar */
+        .input-wrapper { position: absolute; bottom: 85px; left: 0; width: 100%; padding: 0 15px; box-sizing: border-box; }
+        .modern-input { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 40px; padding: 8px 10px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modern-input input { flex: 1; background: transparent; border: none; color: var(--text); padding: 10px; outline: none; font-size: 16px; }
+        .circle-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--primary); color: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; transition: 0.3s; }
+        .circle-btn:active { transform: scale(0.9); }
 
-        /* Lists */
-        .list-item { background: var(--card); padding: 15px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        /* Navigation Bar */
+        nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 75px; background: var(--glass); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; backdrop-filter: blur(15px); }
+        nav i { font-size: 24px; color: #8b949e; transition: 0.3s; padding: 10px; border-radius: 15px; }
+        nav i.active { color: var(--primary); background: rgba(88, 166, 255, 0.1); }
+
+        /* Delete Button */
+        .del-msg { position: absolute; top: -10px; right: -5px; background: var(--accent); width: 24px; height: 24px; border-radius: 50%; font-size: 12px; color: white; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; cursor: pointer; }
+        .msg:hover .del-msg { opacity: 1; top: -5px; }
     </style>
 </head>
 <body>
 
-<div class="app">
+<div class="app-container">
     <header>
         <h1>Live Connect</h1>
-        <div class="nav-icons">
+        <div class="head-btns">
             <i class="fa-solid fa-circle-half-stroke" onclick="toggleTheme()"></i>
             <i class="fa-solid fa-power-off" style="color:var(--accent)" onclick="logout()"></i>
         </div>
     </header>
 
-    <div id="loginPage" class="page active">
-        <div class="hero"><h2>Welcome 🚀</h2><p>Please enter your name to start chatting</p></div>
-        <div class="input-bar"><input type="text" id="usernameInput" placeholder="Username..."><i class="fa-solid fa-arrow-right" onclick="login()" style="color:var(--primary)"></i></div>
+    <div id="loginPage" class="page active" style="display: flex; flex-direction: column; justify-content: center;">
+        <div class="hero-banner"><h2>Ready to Connect?</h2><p>Join the conversation instantly.</p></div>
+        <div class="card">
+            <input type="text" id="usernameInput" placeholder="Enter your name..." style="width:100%; background:transparent; border:none; border-bottom:2px solid var(--primary); color:var(--text); font-size:18px; padding:10px; outline:none;">
+            <button class="circle-btn" style="width:100%; border-radius:15px; margin-top:20px;" onclick="login()">Enter Chat <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
     </div>
 
     <div id="home" class="page">
-        <div class="hero"><h2>Hello, <span id="dashUser"></span>! 👋</h2></div>
-        <div class="stat-card"><b>Online Members</b> <span class="stat-value" id="onlineCount">0</span></div>
-        <div class="stat-card"><b>Active Groups</b> <span class="stat-value" id="groupCount">0</span></div>
+        <div class="hero-banner"><h2>Hello, <span id="dashUser"></span>! 👋</h2></div>
+        <div class="card"><b>Online Members</b> <span style="float:right; color:var(--primary)" id="onlineCount">0</span></div>
+        <div class="card"><b>Active Groups</b> <span style="float:right; color:var(--primary)" id="groupCount">0</span></div>
     </div>
 
     <div id="chat" class="page">
         <div id="chatBox" class="chat-box"></div>
-        <div class="bottom-input">
-            <div class="input-bar">
-                <label for="imgIn"><i class="fa-solid fa-camera" style="color:var(--primary)"></i></label>
+        <div class="input-wrapper">
+            <div class="modern-input">
+                <label for="imgIn"><i class="fa-solid fa-camera circle-btn" style="background:none; color:var(--primary)"></i></label>
                 <input type="file" id="imgIn" accept="image/*" style="display:none" onchange="uploadImg(this)">
-                <input type="text" id="msgInput" placeholder="Message...">
-                <button class="send-btn" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+                <input type="text" id="msgInput" placeholder="Write a message...">
+                <button class="circle-btn" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
 
     <div id="users" class="page">
-        <h3>Members</h3><div id="userList"></div>
-        <h3 style="margin-top:20px">Groups</h3><div id="groupList"></div>
-        <div class="input-bar" style="margin-top:10px">
-            <input type="text" id="groupInput" placeholder="Group Name">
-            <i class="fa-solid fa-plus" onclick="createGroup()" style="color:var(--primary)"></i>
+        <h3 style="margin-bottom:15px;">Available Contacts</h3><div id="userList"></div>
+        <h3 style="margin:25px 0 15px;">Groups</h3><div id="groupList"></div>
+        <div class="modern-input" style="margin-top:10px">
+            <input type="text" id="groupInput" placeholder="New Group Name">
+            <i class="fa-solid fa-plus circle-btn" onclick="createGroup()"></i>
         </div>
     </div>
 
     <div id="about" class="page">
-        <h3>About Live Connect 🚀</h3>
-        <p>Developed by <b>WebHub Technologies</b>.</p>
-        <div class="list-item">Real-time Messaging</div>
-        <div class="list-item">Photo Sharing Support</div>
-        <div class="list-item">Group Communities</div>
+        <h3>About This App</h3>
+        <div class="card"><h4>WebHub Technologies</h4><p>High-speed real-time engine with modern UI aesthetics.</p></div>
+        <div class="card"><h4>Features</h4><p>Photo Gallery, Admin Controls, and End-to-End Visuals.</p></div>
     </div>
 
     <div id="contact" class="page">
-        <h3>Support</h3>
-        <div class="list-item" onclick="location.href='mailto:webhub262@gmail.com'"><i class="fa-solid fa-envelope"></i> webhub262@gmail.com</div>
-        <div class="list-item"><i class="fa-brands fa-facebook"></i> Muhammad Nazim</div>
-        <div class="list-item"><i class="fa-brands fa-instagram"></i> Instagram Profile</div>
+        <h3>Contact Support</h3>
+        <a href="mailto:webhub262@gmail.com" class="card" style="display:block; text-decoration:none;"><i class="fa-solid fa-envelope"></i> Email Support</a>
+        <div class="card"><i class="fa-brands fa-facebook"></i> Facebook Admin</div>
+        <div class="card"><i class="fa-brands fa-instagram"></i> Instagram</div>
     </div>
 
     <nav id="navbar" style="display:none">
         <i class="fa-solid fa-house active" onclick="openPage('home', this)"></i>
         <i class="fa-solid fa-comment" onclick="openPage('chat', this)"></i>
         <i class="fa-solid fa-user-group" onclick="openPage('users', this)"></i>
-        <i class="fa-solid fa-circle-info" onclick="openPage('about', this)"></i>
+        <i class="fa-solid fa-info-circle" onclick="openPage('about', this)"></i>
         <i class="fa-solid fa-address-book" onclick="openPage('contact', this)"></i>
     </nav>
 </div>
@@ -164,7 +168,7 @@ window.login = () => {
     document.getElementById("dashUser").textContent = currentUser;
     set(ref(db, "users/"+currentUser), {name: currentUser, online: true});
     onDisconnect(ref(db, "users/"+currentUser)).update({online: false});
-    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("loginPage").classList.remove("active");
     document.getElementById("home").classList.add("active");
     document.getElementById("navbar").style.display = "flex";
 };
@@ -185,8 +189,8 @@ onValue(ref(db, "users"), snap => {
         if(u.val().online) {
             count++;
             if(u.key !== currentUser) {
-                let d = document.createElement("div"); d.className = "list-item";
-                d.innerHTML = `<span><i class="fa-solid fa-circle" style="color:#3fb950;font-size:10px"></i> ${u.val().name}</span>`;
+                let d = document.createElement("div"); d.className = "card";
+                d.innerHTML = `<span><i class="fa-solid fa-circle" style="color:#2ea043; font-size:10px;"></i> ${u.val().name}</span>`;
                 d.onclick = () => { curChat = u.key; isGroup = false; loadChat(); openPage('chat', document.querySelectorAll('nav i')[1]); };
                 document.getElementById("userList").appendChild(d);
             }
@@ -199,7 +203,7 @@ onValue(ref(db, "groups"), snap => {
     document.getElementById("groupList").innerHTML = "";
     document.getElementById("groupCount").textContent = snap.size || 0;
     snap.forEach(g => {
-        let d = document.createElement("div"); d.className = "list-item";
+        let d = document.createElement("div"); d.className = "card";
         d.innerHTML = `<span># ${g.key}</span>`;
         d.onclick = () => { curChat = g.key; isGroup = true; loadChat(); openPage('chat', document.querySelectorAll('nav i')[1]); };
         document.getElementById("groupList").appendChild(d);
@@ -212,7 +216,7 @@ window.uploadImg = (input) => {
     const reader = new FileReader();
     reader.onload = (e) => {
         const path = (isGroup ? "groupChats/" : "chats/") + (isGroup ? curChat : [currentUser, curChat].sort().join("_"));
-        push(ref(db, path), {from: currentUser, text: "📷 Photo", image: e.target.result});
+        push(ref(db, path), {from: currentUser, text: "📷 Sent a photo", image: e.target.result});
     };
     reader.readAsDataURL(file);
 };
@@ -224,16 +228,18 @@ function loadChat() {
         snap.forEach(m => {
             const data = m.val(); const isMe = data.from === currentUser;
             const div = document.createElement("div"); div.className = `msg ${isMe ? 'me' : 'other'}`;
-            div.innerHTML = `<span class="del-msg" onclick="deleteMsg('${path}','${m.key}')">X</span>
-                             <b>${data.from}</b>${data.text}
-                             ${data.image ? `<img src="${data.image}">` : ''}
-                             <div style="font-size:10px; margin-top:5px; opacity:0.7">
-                                ${data.comments ? Object.values(data.comments).map(c=>`<div>${c.from}: ${c.text}</div>`).join('') : ''}
-                             </div>
-                             <div style="display:flex;gap:5px;margin-top:5px">
-                                <input id="c-${m.key}" placeholder="Reply" style="font-size:10px; flex:1; background:rgba(0,0,0,0.1); border:none; color:white;">
-                                <button onclick="addComment('${path}','${m.key}')" style="font-size:10px; border:none; background:var(--accent); color:white; border-radius:4px;">💬</button>
-                             </div>`;
+            
+            let imgPart = data.image ? `<img src="${data.image}" onclick="window.open('${data.image}')">` : '';
+            let comms = data.comments ? Object.values(data.comments).map(c=>`<div class="comment-pill"><b>${c.from}</b> ${c.text}</div>`).join('') : '';
+
+            div.innerHTML = `
+                <div class="del-msg" onclick="deleteMsg('${path}','${m.key}')">✕</div>
+                <b>${data.from}</b>${data.text} ${imgPart}
+                <div style="margin-top:10px;">${comms}</div>
+                <div class="reply-input">
+                    <input id="r-${m.key}" placeholder="Reply...">
+                    <i class="fa-solid fa-paper-plane" onclick="addReply('${path}','${m.key}')"></i>
+                </div>`;
             box.appendChild(div);
         });
         box.scrollTop = box.scrollHeight;
@@ -248,13 +254,13 @@ window.sendMsg = () => {
     inp.value = "";
 };
 
-window.addComment = (path, key) => {
-    const inp = document.getElementById("c-"+key);
+window.addReply = (path, key) => {
+    const inp = document.getElementById("r-"+key);
     if(inp.value) push(ref(db, path+"/"+key+"/comments"), {from: currentUser, text: inp.value});
     inp.value = "";
 };
 
-window.deleteMsg = (p, k) => remove(ref(db, p+"/"+k));
+window.deleteMsg = (p, k) => { if(confirm("Delete?")) remove(ref(db, p+"/"+k)); };
 window.createGroup = () => {
     const g = document.getElementById("groupInput").value.trim();
     if(g) set(ref(db, "groups/"+g), {createdBy: currentUser});
