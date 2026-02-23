@@ -1,314 +1,208 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Connect 🚀 | Ultimate Console</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Live Connect | Pro V13</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{
-  --bg:#050505;
-  --card:#121212;
-  --text:#e5e5e5;
-  --muted:#888;
-  --primary:#6b5bff;
-  --accent:#ff5c8d;
-  --success:#22c55e;
-  --danger:#ef4444;
-  --glass: rgba(255, 255, 255, 0.03);
-}
-body{margin:0;font-family:'Inter', system-ui, -apple-system;background:var(--bg);color:var(--text);transition:.3s; overflow-x:hidden;}
-body.light{--bg:#f8f9fa;--card:#fff;--text:#111;--muted:#555;--glass:rgba(0,0,0,0.05);}
+:root{ --p:#6b5bff; --s:#ff5c8d; --bg:#050505; --card:#111; --text:#eee; --glass:rgba(255,255,255,0.05); }
+body{ margin:0; font-family:'Segoe UI', sans-serif; background:var(--bg); color:var(--text); overflow:hidden; height:100dvh; }
+.app{ max-width:480px; margin:auto; height:100dvh; display:flex; flex-direction:column; position:relative; background:var(--bg); }
 
-/* FREEZE OVERLAY */
-#freezeOverlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(20px); color:var(--danger); }
+/* HEADER */
+header{ padding:45px 15px 15px; display:flex; justify-content:space-between; align-items:center; background:var(--card); border-bottom:1px solid var(--glass); z-index:100; }
+header h1{ margin:0; font-size:18px; background:linear-gradient(90deg, var(--p), var(--s)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:900; }
 
-.app{max-width:480px;margin:auto;min-height:100vh;display:flex;flex-direction:column; position:relative; border-left:1px solid rgba(255,255,255,0.05); border-right:1px solid rgba(255,255,255,0.05);}
-header{padding:50px 16px 15px;display:flex;justify-content:space-between;align-items:center;background:var(--card);backdrop-filter:blur(10px); position:sticky; top:0; z-index:100;}
-header h1{margin:0;font-size:20px;font-weight:900;background:linear-gradient(to right, var(--primary), var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+/* CHAT BOX */
+.chat-container{ flex:1; display:flex; flex-direction:column; overflow:hidden; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; }
+#chatBox{ flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column; gap:12px; }
+.msg{ background:var(--card); padding:10px 14px; border-radius:18px; max-width:75%; position:relative; font-size:14px; border:1px solid var(--glass); animation: pop 0.3s ease; }
+.msg.me{ align-self:flex-end; background:var(--p); border-bottom-right-radius:2px; border:none; }
+.msg b{ display:block; font-size:10px; margin-bottom:3px; opacity:0.8; text-transform:uppercase; color:var(--s); }
+.msg img{ max-width:100%; border-radius:10px; margin-top:5px; }
+.msg .meta{ font-size:10px; float:right; margin-top:5px; opacity:0.6; margin-left:8px; }
+@keyframes pop { from{transform:scale(0.8); opacity:0;} to{transform:scale(1); opacity:1;} }
 
-.page{display:none;padding:16px;flex:1;animation:slideUp 0.4s ease;}
-.page.active{display:block;}
-@keyframes slideUp { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+/* INPUT AREA */
+.input-area{ background:var(--card); padding:10px 15px 35px; border-top:1px solid var(--glass); display:flex; align-items:center; gap:10px; }
+.input-row{ flex:1; background:var(--glass); border-radius:30px; padding:5px 15px; display:flex; align-items:center; border:1px solid var(--glass); }
+.input-row input{ flex:1; background:none; border:none; color:#fff; padding:10px; outline:none; }
+.btn-icon{ background:none; border:none; color:var(--text); font-size:18px; cursor:pointer; opacity:0.7; }
 
-.hero{background:linear-gradient(135deg, var(--accent), var(--primary));color:#fff;padding:30px;border-radius:24px;text-align:center;box-shadow:0 10px 30px rgba(107,91,255,0.3);margin-bottom:20px;}
-.hero h2{margin:0; font-size:24px; letter-spacing:-0.5px;}
+/* LIVE STATUS & ADMIN */
+.live-dot{ width:8px; height:8px; background:#22c55e; border-radius:50%; display:inline-block; margin-right:8px; box-shadow:0 0 8px #22c55e; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%, 100%{opacity:1;} 50%{opacity:0.3;} }
+.admin-badge{ background:var(--s); color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; font-weight:900; margin-left:5px; }
 
-.dashboard-stat{background:var(--card);padding:18px;margin-bottom:12px;border-radius:18px;border:1px solid var(--glass);display:flex;justify-content:space-between;align-items:center; transition:.3s;}
-.dashboard-stat:hover{border-color:var(--primary); transform:scale(1.02);}
+/* NAV */
+nav{ position:fixed; bottom:0; width:100%; max-width:480px; display:flex; justify-content:space-around; background:var(--card); padding:12px 0; border-top:1px solid var(--glass); }
+nav button{ background:none; border:none; font-size:20px; color:#555; transition:0.3s; }
+nav button.active{ color:var(--p); transform:translateY(-3px); }
 
-/* ADMIN PANEL UI */
-.admin-card{background:rgba(239, 68, 68, 0.05); border:1px solid rgba(239, 68, 68, 0.2); padding:15px; border-radius:20px; margin-top:20px;}
-.user-row{display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--glass);}
-.admin-btn{padding:6px 10px; border-radius:8px; border:none; font-size:11px; cursor:pointer; margin-left:5px; font-weight:bold;}
-
-/* CHAT AREA */
-.chat-box{background:var(--card);border-radius:22px;padding:15px;height:55vh;overflow-y:auto;margin-bottom:15px; border:1px solid var(--glass); display:flex; flex-direction:column; gap:10px;}
-.msg{background:rgba(255,255,255,0.05); padding:12px 16px; border-radius:18px; max-width:85%; position:relative; align-self:flex-start; font-size:14px; line-height:1.5;}
-.msg.me{background:var(--primary); align-self:flex-end; color:white; border-bottom-right-radius:4px;}
-.msg b{display:block; font-size:10px; margin-bottom:4px; opacity:0.7; text-transform:uppercase;}
-
-.input-row{display:flex;gap:8px; background:var(--card); padding:8px; border-radius:20px; border:1px solid var(--glass);}
-.input-row input{flex:1;padding:12px;border:none;background:transparent;color:var(--text);outline:none;}
-.input-row button{width:45px; height:45px; border-radius:15px; border:none; background:var(--primary); color:#fff; cursor:pointer;}
-
-nav{display:flex;justify-content:space-around;background:var(--card);padding:15px 0; position:fixed; bottom:0; width:100%; max-width:480px; border-top:1px solid var(--glass); backdrop-filter:blur(15px);}
-nav button{background:none;border:none;font-size:20px;color:var(--muted);transition:.3s;}
-nav button.active{color:var(--primary); transform:translateY(-5px);}
-
-.contact-card{background:var(--card); padding:15px; border-radius:18px; margin-bottom:10px; display:flex; align-items:center; gap:15px; border:1px solid var(--glass);}
-.contact-card i{font-size:22px; color:var(--primary);}
+.page{ display:none; padding:15px; height:calc(100dvh - 160px); overflow-y:auto; }
+.page.active{ display:block; }
 </style>
 </head>
 <body>
 
-<div id="freezeOverlay">
-    <i class="fa-solid fa-hand" style="font-size:50px"></i>
-    <h2>ACCESS DENIED</h2>
-    <p>Your node is frozen by Admin786</p>
+<div id="freezeOverlay" style="display:none; position:fixed; inset:0; background:#000; z-index:10000; flex-direction:column; align-items:center; justify-content:center; color:red;">
+    <i class="fa-solid fa-ban" style="font-size:50px"></i><h2>ACCOUNT FROZEN</h2>
 </div>
 
 <div class="app">
-<header>
-    <h1>Live Connect <span id="adminBadge" style="display:none; font-size:10px; background:var(--danger); color:white; padding:2px 6px; border-radius:5px; margin-left:5px;">ADMIN</span></h1>
+  <header>
+    <h1>Live Connect <span id="admTag" class="admin-badge" style="display:none">GOD MODE</span></h1>
     <div style="display:flex; gap:15px;">
-        <button onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></button>
-        <button onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
+        <i class="fa-solid fa-shield-halved" style="color:var(--p)"></i>
+        <i class="fa-solid fa-power-off" onclick="logout()" style="color:var(--s)"></i>
     </div>
-</header>
+  </header>
 
-<div id="loginPage" class="page active">
-    <div style="text-align:center; padding:40px 20px;">
-        <i class="fa-solid fa-rocket" style="font-size:60px; color:var(--primary); margin-bottom:20px;"></i>
-        <h2 style="margin:0;">Initialize Session</h2>
-        <p style="color:var(--muted); font-size:14px;">Enter your unique identity</p>
+  <div id="home" class="page active">
+    <div style="background:linear-gradient(135deg, var(--p), var(--s)); padding:30px; border-radius:25px; margin-bottom:20px; text-align:center;">
+        <h2 id="dashUser">...</h2>
+        <p style="font-size:12px; opacity:0.8;">End-to-End Encrypted Session</p>
     </div>
-    <div class="login-card">
-        <input type="text" id="usernameInput" placeholder="Enter Username...">
-        <button onclick="login()">Enter Matrix</button>
-    </div>
-</div>
-
-<div id="home" class="page">
-    <div class="hero">
-        <h2>Hi, <span id="dashUser"></span>! 👋</h2>
-        <p>Your connection is secured with AES-256</p>
-    </div>
-    <div class="dashboard-stat"><h4>Online Entities</h4><span id="onlineCount">0</span></div>
     
-    <div id="adminPanel" style="display:none;" class="admin-card">
-        <h4 style="margin:0 0 10px; color:var(--danger); font-size:12px;"><i class="fa-solid fa-skull"></i> MASTER CONTROL PANEL</h4>
-        <div id="fullUserList"></div>
-        <button onclick="wipeAllData()" style="width:100%; padding:12px; background:var(--danger); border:none; border-radius:12px; color:white; font-weight:bold; margin-top:10px;">NUCLEAR WIPE</button>
+    <div id="adminPanel" style="display:none; background:rgba(255,0,0,0.05); border:1px solid rgba(255,0,0,0.2); padding:15px; border-radius:20px;">
+        <h3 style="color:var(--s); font-size:14px;"><i class="fa-solid fa-terminal"></i> MASTER CONSOLE</h3>
+        <div id="admUserList"></div>
+        <button onclick="wipeAll()" style="width:100%; padding:12px; background:var(--s); border:none; border-radius:12px; color:#fff; font-weight:bold; margin-top:10px;">NUCLEAR WIPE</button>
     </div>
-</div>
+  </div>
 
-<div id="chat" class="page">
-    <div style="padding:0 0 10px; border-bottom:1px solid var(--glass); margin-bottom:10px; display:flex; align-items:center; gap:10px;">
-        <button onclick="openPage('users', document.querySelector('nav button:nth-child(3)'))" style="background:none; border:none; color:var(--primary);"><i class="fa-solid fa-arrow-left"></i></button>
-        <b id="chatHeaderTitle" style="font-size:14px;">Select Target</b>
+  <div id="chat" class="page" style="padding:0;">
+    <div class="chat-container">
+        <div style="padding:10px 15px; background:var(--card); font-size:13px; border-bottom:1px solid var(--glass);">
+            <span id="targetName">Global Terminal</span>
+        </div>
+        <div id="chatBox"></div>
+        <div class="input-area">
+            <div class="input-row">
+                <label for="imgIn" class="btn-icon"><i class="fa-solid fa-image"></i></label>
+                <input type="file" id="imgIn" hidden accept="image/*" onchange="sendMedia(this, 'img')">
+                <input id="msgInput" placeholder="Write message...">
+                <button class="btn-icon" onclick="startVoice()"><i class="fa-solid fa-microphone"></i></button>
+            </div>
+            <button class="send-btn" onclick="sendMsg()" style="width:45px; height:45px; border-radius:50%; background:var(--p); border:none; color:#fff;"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
     </div>
-    <div class="chat-box" id="chatBox"></div>
-    <div class="input-row">
-        <input id="msgInput" placeholder="Enter message packet..."/>
-        <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
-    </div>
-</div>
+  </div>
 
-<div id="users" class="page">
-    <h3 style="font-size:14px; color:var(--primary); letter-spacing:1px;">ACTIVE NODES</h3>
-    <div id="userList"></div>
-    
-    <h3 style="font-size:14px; color:var(--accent); letter-spacing:1px; margin-top:20px;">GROUPS</h3>
-    <div id="groupList"></div>
-    <div class="input-row" style="margin-top:10px;">
-        <input id="groupInput" placeholder="New Group Name..."/>
-        <button onclick="createGroup()"><i class="fa-solid fa-plus"></i></button>
-    </div>
-</div>
+  <div id="users" class="page">
+    <h4 style="opacity:0.5; font-size:12px; letter-spacing:1px;">ACTIVE NETWORK NODES</h4>
+    <div id="uList"></div>
+  </div>
 
-<div id="about" class="page">
-    <h3>About Live Connect 🚀</h3>
-    <div class="contact-card">Developed by WebHub Technologies</div>
-    <p style="font-size:14px; color:var(--muted); line-height:1.6;">A leading provider of real-time communication apps for private and professional networks.</p>
-</div>
-
-<div id="contact" class="page">
-    <h3>Contact Support</h3>
-    <div class="contact-card"><i class="fa-solid fa-envelope"></i> <div><b>Email</b><br><small>webhub262@gmail.com</small></div></div>
-    <div class="contact-card"><i class="fa-brands fa-facebook"></i> <div><b>Facebook</b><br><small>WebHub Official</small></div></div>
-    <div class="contact-card"><i class="fa-brands fa-instagram"></i> <div><b>Instagram</b><br><small>@mr_nazim073</small></div></div>
-</div>
-
-<nav>
+  <nav>
     <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
-    <button onclick="openPage('chat',this)"><i class="fa-solid fa-terminal"></i></button>
+    <button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
     <button onclick="openPage('users',this)"><i class="fa-solid fa-ghost"></i></button>
-    <button onclick="openPage('about',this)"><i class="fa-solid fa-info-circle"></i></button>
-    <button onclick="openPage('contact',this)"><i class="fa-solid fa-headset"></i></button>
-</nav>
+  </nav>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-  authDomain: "live-chat-b810c.firebaseapp.com",
-  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
-  projectId: "live-chat-b810c",
-  storageBucket: "live-chat-b810c.appspot.com",
-  messagingSenderId: "555058795334",
-  appId: "1:555058795334:web:f668887409800c32970b47"
-};
-
+const firebaseConfig = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let currentUser = localStorage.getItem("lc_user");
-let curChat = "";
-let isGroup = false;
+let user = localStorage.getItem("lc_user") || prompt("Identity:");
+if(user) localStorage.setItem("lc_user", user); else location.reload();
 
-if(currentUser) {
-    autoLogin(currentUser);
+document.getElementById("dashUser").textContent = user;
+const myRef = ref(db, "users/"+user);
+update(myRef, { online:true, last:Date.now(), frozen:false });
+onDisconnect(myRef).update({ online:false });
+
+if(user === "Admin786") {
+    document.getElementById("admTag").style.display = "inline";
+    document.getElementById("adminPanel").style.display = "block";
 }
 
-window.login = () => {
-  const uname = document.getElementById("usernameInput").value.trim();
-  if(!uname) return;
-  localStorage.setItem("lc_user", uname);
-  location.reload();
-};
-
-function autoLogin(uname) {
-  currentUser = uname;
-  document.getElementById("dashUser").textContent = currentUser;
-  document.getElementById("loginPage").classList.remove("active");
-  document.getElementById("home").classList.add("active");
-  document.querySelector('nav button:first-child').classList.add('active');
-
-  // TRACE IP & UPDATE STATUS
-  fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
-      update(ref(db,"users/"+uname), { name:uname, online:true, ip:d.ip, city:d.city, frozen:false });
-  });
-
-  onDisconnect(ref(db,"users/"+uname)).update({online:false});
-
-  // ADMIN CHECK
-  if(uname === "Admin786") {
-      document.getElementById("adminPanel").style.display = "block";
-      document.getElementById("adminBadge").style.display = "inline";
-  }
-
-  // FREEZE CHECK
-  onValue(ref(db, "users/"+uname+"/frozen"), snap => {
-      if(snap.val() === true) document.getElementById("freezeOverlay").style.display = "flex";
-  });
-}
-
-// RENDER USERS & ADMIN CONTROLS
-onValue(ref(db,"users"),snap=>{
-  let online = 0;
-  document.getElementById("userList").innerHTML = "";
-  document.getElementById("fullUserList").innerHTML = "";
-  
-  snap.forEach(u=>{
-    const d = u.val();
-    if(d.online) online++;
-    
-    // User List
-    if(u.key !== currentUser) {
-        const div = document.createElement("div");
-        div.className = "user";
-        div.innerHTML = `<div class="dot" style="background:${d.online?'var(--success)':'#444'}"></div> ${u.key}`;
-        div.onclick = () => startChat(u.key, false);
-        document.getElementById("userList").appendChild(div);
-    }
-
-    // Admin Control Row
-    if(currentUser === "Admin786" && u.key !== "Admin786") {
-        const row = document.createElement("div");
-        row.className = "user-row";
-        row.innerHTML = `
-            <span style="font-size:12px;"><b>${u.key}</b><br><small>${d.ip || 'no-ip'}</small></span>
-            <div>
-                <button class="admin-btn" style="background:var(--primary); color:white;" onclick="startChat('${u.key}', false)">SPY</button>
-                <button class="admin-btn" style="background:var(--danger); color:white;" onclick="toggleFreeze('${u.key}', ${!d.frozen})">${d.frozen?'Unfreeze':'Freeze'}</button>
-            </div>
-        `;
-        document.getElementById("fullUserList").appendChild(row);
-    }
-  });
-  document.getElementById("onlineCount").textContent = online;
+onValue(ref(db, "users/"+user+"/frozen"), snap => {
+    if(snap.val()) document.getElementById("freezeOverlay").style.display = "flex";
 });
 
-// GROUP LIST
-onValue(ref(db,"groups"),snap=>{
-  document.getElementById("groupList").innerHTML = "";
-  snap.forEach(g=>{
-    const div = document.createElement("div");
-    div.className = "group";
-    div.innerHTML = `<i class="fa-solid fa-users" style="margin-right:10px; color:var(--primary)"></i> ${g.key}`;
-    div.onclick = () => startChat(g.key, true);
-    document.getElementById("groupList").appendChild(div);
-  });
-});
+// LIST USERS & ADMIN POWER
+onValue(ref(db, "users"), snap => {
+    const list = document.getElementById("uList");
+    const adm = document.getElementById("admUserList");
+    list.innerHTML = ""; adm.innerHTML = "";
+    snap.forEach(u => {
+        const d = u.val();
+        if(u.key === user) return;
+        list.innerHTML += `<div onclick="startChat('${u.key}')" style="background:var(--card); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between;">
+            <span>${d.online ? '<span class="live-dot"></span>' : ''}${u.key}</span><i class="fa-solid fa-chevron-right" style="opacity:0.2"></i>
+        </div>`;
 
-window.startChat = (id, group) => {
-    curChat = id; isGroup = group;
-    document.getElementById("chatHeaderTitle").textContent = id.toUpperCase();
-    loadChat();
-    openPage('chat', document.querySelector('nav button:nth-child(2)'));
-};
-
-function loadChat(){
-  const path = isGroup ? "groups/"+curChat+"/msgs" : "chats/"+ [currentUser,curChat].sort().join("_");
-  onValue(ref(db,path),snap=>{
-    const box = document.getElementById("chatBox");
-    box.innerHTML = "";
-    snap.forEach(m=>{
-      const d = m.val();
-      const isMe = d.from === currentUser;
-      const msgDiv = document.createElement("div");
-      msgDiv.className = `msg ${isMe?'me':''}`;
-      
-      // Admin Delete Power
-      let delBtn = (currentUser === "Admin786") ? `<span style="float:right; cursor:pointer; margin-left:10px; opacity:0.5;" onclick="deleteMsg('${path}','${m.key}')">🗑️</span>` : "";
-      
-      msgDiv.innerHTML = `<b>${d.from}</b> ${delBtn} ${d.text}`;
-      box.appendChild(msgDiv);
+        if(user === "Admin786") {
+            adm.innerHTML += `<div style="padding:10px; border-bottom:1px solid var(--glass); display:flex; justify-content:space-between; font-size:12px;">
+                <span>${u.key}</span>
+                <button onclick="freezeUser('${u.key}', ${!d.frozen})" style="background:var(--s); border:none; color:#fff; border-radius:5px; padding:4px 8px;">${d.frozen?'Unfreeze':'Freeze'}</button>
+            </div>`;
+        }
     });
-    box.scrollTop = box.scrollHeight;
-  });
+});
+
+let target = "Global";
+window.startChat = (t) => {
+    target = t; document.getElementById("targetName").textContent = "Chatting with: " + t;
+    openPage('chat', document.querySelector('nav button:nth-child(2)'));
+    loadMessages();
+};
+
+function loadMessages() {
+    const path = target === "Global" ? "global" : "pvt/"+[user,target].sort().join("_");
+    onValue(ref(db, path), snap => {
+        const box = document.getElementById("chatBox"); box.innerHTML = "";
+        snap.forEach(m => {
+            const d = m.val();
+            const isMe = d.from === user;
+            let body = d.type === 'img' ? `<img src="${d.text}">` : d.text;
+            let del = (user === "Admin786") ? `<i class="fa-solid fa-trash" onclick="delMsg('${path}','${m.key}')" style="font-size:10px; margin-left:10px; opacity:0.3;"></i>` : "";
+            
+            box.innerHTML += `<div class="msg ${isMe?'me':''}">
+                <b>${d.from}</b>${body}${del}
+                <div class="meta">${new Date(d.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${isMe ? '✓✓' : ''}</div>
+            </div>`;
+        });
+        box.scrollTop = box.scrollHeight;
+    });
 }
+loadMessages();
 
 window.sendMsg = () => {
-    const inp = document.getElementById("msgInput");
-    if(!inp.value || !curChat) return;
-    const path = isGroup ? "groups/"+curChat+"/msgs" : "chats/"+ [currentUser,curChat].sort().join("_");
-    push(ref(db,path), { from:currentUser, text:inp.value, time:Date.now() });
+    const inp = document.getElementById("msgInput"); if(!inp.value) return;
+    const path = target === "Global" ? "global" : "pvt/"+[user,target].sort().join("_");
+    push(ref(db, path), { from:user, text:inp.value, type:'text', time:Date.now() });
     inp.value = "";
 };
 
-// ADMIN POWERS
-window.toggleFreeze = (target, status) => { update(ref(db, "users/"+target), { frozen: status }); };
-window.wipeAllData = () => { if(confirm("Destroy all messages?")) { remove(ref(db, "chats")); remove(ref(db, "groups")); location.reload(); }};
-window.deleteMsg = (path, key) => { remove(ref(db, path+"/"+key)); };
+window.sendMedia = (input, type) => {
+    const file = input.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const path = target === "Global" ? "global" : "pvt/"+[user,target].sort().join("_");
+        push(ref(db, path), { from:user, text:e.target.result, type:type, time:Date.now() });
+    };
+    reader.readAsDataURL(file);
+};
 
+// ADMIN & UI
+window.freezeUser = (id, s) => update(ref(db, "users/"+id), { frozen:s });
+window.delMsg = (p, k) => remove(ref(db, p+"/"+k));
+window.wipeAll = () => { if(confirm("Wipe System?")) remove(ref(db)); location.reload(); };
 window.logout = () => { localStorage.clear(); location.reload(); };
-window.openPage = (id, btn) => {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+window.openPage = (p, b) => {
+    document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+    document.getElementById(p).classList.add('active');
+    document.querySelectorAll('nav button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
 };
-window.toggleTheme = () => { document.body.classList.toggle('light'); };
-window.createGroup = () => {
-  const g = document.getElementById("groupInput").value.trim();
-  if(!g) return;
-  set(ref(db,"groups/"+g), {created: Date.now()});
-  document.getElementById("groupInput").value='';
-};
+window.startVoice = () => alert("Voice Recording Started... (Firebase Storage required for audio files)");
 </script>
 </body>
 </html>
