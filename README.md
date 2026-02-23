@@ -4,7 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Live Connect Pro 🚀</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -18,21 +17,20 @@
         
         /* LOGIN UI */
         #loginPage { position: fixed; inset: 0; background: radial-gradient(circle at top, #1a1a2e, #000); z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: var(--card); padding: 40px; border-radius: 35px; width: 85%; max-width: 380px; text-align: center; border: 1px solid #30363d; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .login-card { background: var(--card); padding: 40px; border-radius: 35px; width: 85%; max-width: 380px; text-align: center; border: 1px solid #30363d; }
         .login-card i { font-size: 60px; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
         .login-card input { width: 100%; padding: 18px; margin: 20px 0; border-radius: 15px; border: 1px solid #30363d; background: #010409; color: #fff; text-align: center; font-size: 16px; outline: none; box-sizing: border-box; }
-        .login-card button { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--grad); color: white; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(0,210,255,0.3); }
+        .login-card button { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--grad); color: white; font-weight: 800; cursor: pointer; }
 
-        /* APP HEADER */
-        header { padding: 45px 20px 15px; display: flex; justify-content: space-between; align-items: center; background: var(--glass); backdrop-filter: blur(10px); border-bottom: 1px solid #30363d; }
+        /* HEADER */
+        header { padding: 45px 20px 15px; display: flex; justify-content: space-between; align-items: center; background: var(--glass); border-bottom: 1px solid #30363d; }
         header h1 { margin: 0; font-size: 24px; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
 
-        .page { display: none; padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 180px; animation: slideUp 0.3s ease; }
+        .page { display: none; padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 180px; }
         .page.active { display: flex; flex-direction: column; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* DASHBOARD */
-        .hero { background: var(--grad); padding: 35px 20px; border-radius: 30px; text-align: center; margin-bottom: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+        .hero { background: var(--grad); padding: 35px 20px; border-radius: 30px; text-align: center; margin-bottom: 25px; }
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .stat-box { background: var(--card); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #30363d; }
         .stat-box span { display: block; font-size: 26px; font-weight: 800; color: var(--primary); }
@@ -46,16 +44,16 @@
         .msg img { max-width: 100%; border-radius: 12px; margin-top: 8px; }
 
         .input-bar { position: fixed; bottom: 95px; width: 92%; max-width: 450px; left: 50%; transform: translateX(-50%); background: #161b22; padding: 10px 15px; border-radius: 35px; display: flex; align-items: center; gap: 10px; border: 1px solid #30363d; }
-        .input-bar input { flex: 1; background: none; border: none; color: white; outline: none; padding: 8px; }
+        .input-bar input { flex: 1; background: none; border: none; color: white; outline: none; }
 
         /* NAV */
         nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; background: var(--glass); backdrop-filter: blur(20px); height: 75px; border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
         nav button { background: none; border: none; color: #484f58; font-size: 22px; cursor: pointer; transition: 0.3s; }
         nav button.active { color: var(--primary); transform: translateY(-5px); }
 
-        /* ADMIN CARDS */
-        .admin-item { background: #1a1a2e; border: 1px solid #30363d; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .ban-btn { background: var(--accent); color: white; border: none; padding: 8px 15px; border-radius: 10px; font-weight: bold; }
+        /* BROADCAST BOX */
+        .broadcast-card { background: #1a1a2e; border: 1px solid var(--primary); padding: 15px; border-radius: 15px; margin-bottom: 20px; }
+        .broadcast-card input { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #333; background: #000; color: #fff; margin-bottom: 10px; }
         
         #hjkScreen { display: none; position: fixed; inset: 0; background: #000; z-index: 100000; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--accent); }
     </style>
@@ -66,7 +64,6 @@
     <div class="login-card">
         <i class="fa-solid fa-satellite-dish"></i>
         <h1>Live Connect</h1>
-        <p style="color:var(--primary); font-size:11px; letter-spacing:2px;">SECURE TERMINAL V60.0</p>
         <input type="text" id="uInp" placeholder="Enter Username...">
         <button id="lBtn" onclick="doLogin()">Initialize Link</button>
     </div>
@@ -90,7 +87,7 @@
     <div id="home" class="page active">
         <div class="hero">
             <h2 id="welcome">Welcome</h2>
-            <p style="font-size:12px; opacity:0.7;">Network Status: Operational</p>
+            <p style="font-size:12px; opacity:0.7;">V70.0 Fully Operational</p>
         </div>
         <div class="stat-grid">
             <div class="stat-box"><span id="onStats">0</span><p style="font-size:10px; margin:5px 0;">NODES</p></div>
@@ -109,19 +106,19 @@
     </div>
 
     <div id="nodes" class="page">
-        <h4 style="font-size:11px; opacity:0.4; letter-spacing:1px;">ONLINE USERS</h4>
         <div id="uList"></div>
-        <div style="display:flex; justify-content:space-between; margin-top:25px; align-items:center;">
-            <h4 style="font-size:11px; opacity:0.4; letter-spacing:1px;">CLUSTERS</h4>
-            <button onclick="mkGr()" style="background:none; border:1px solid var(--primary); color:var(--primary); padding:3px 10px; border-radius:5px; font-size:10px;">+ NEW</button>
-        </div>
-        <div id="gList"></div>
+        <div id="gList" style="margin-top:20px;"></div>
     </div>
 
     <div id="admin" class="page">
-        <h3 style="color:var(--primary);">ADMIN CONTROL</h3>
+        <h3 style="color:var(--primary);">GLOBAL BROADCAST</h3>
+        <div class="broadcast-card">
+            <input type="text" id="bcMsg" placeholder="Type global alert...">
+            <button onclick="sendBC()" style="width:100%; padding:10px; background:var(--primary); border:none; border-radius:10px; font-weight:bold;">SEND TO ALL</button>
+        </div>
+        <h3 style="color:var(--primary);">USER CONTROL</h3>
         <div id="aList"></div>
-        <button onclick="nuke()" style="width:100%; padding:20px; background:var(--accent); color:white; border:none; border-radius:15px; font-weight:bold; margin-top:20px;">NUCLEAR WIPE (ALL DATA)</button>
+        <button onclick="nuke()" style="width:100%; padding:20px; background:var(--accent); color:white; border:none; border-radius:15px; font-weight:bold; margin-top:20px;">NUCLEAR WIPE</button>
     </div>
 
     <nav>
@@ -132,7 +129,7 @@
 </div>
 
 <script>
-// CONFIG
+// YOUR CONFIG
 var firebaseConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
   authDomain: "live-chat-b810c.firebaseapp.com",
@@ -147,25 +144,24 @@ firebase.initializeApp(firebaseConfig);
 var db = firebase.database();
 
 var currentUser = localStorage.getItem("lc_u");
-if(currentUser) {
-    document.getElementById("loginPage").style.display = "none";
-    initApp(currentUser);
-}
+if(currentUser) { document.getElementById("loginPage").style.display = "none"; initApp(currentUser); }
 
 function doLogin() {
     var u = document.getElementById("uInp").value.trim();
-    if(!u) return alert("Username likho!");
-    document.getElementById("lBtn").innerText = "Connecting...";
-    
+    if(!u) return;
     db.ref("users/" + u).update({ online: true, frozen: false, lastSeen: Date.now() }, function(err){
-        if(err) alert("Firebase Error: Rules check karein!");
-        else { localStorage.setItem("lc_u", u); location.reload(); }
+        if(!err) { localStorage.setItem("lc_u", u); location.reload(); }
     });
 }
 
 function initApp(u) {
     document.getElementById("welcome").innerText = "Welcome, " + u;
     if(u === "Admin786") document.getElementById("admIco").style.display = "block";
+
+    // Listen for Broadcast
+    db.ref("broadcast").on("value", s => {
+        if(s.val() && s.val().msg) alert("📢 GLOBAL ALERT:\n\n" + s.val().msg);
+    });
 
     db.ref("users/" + u + "/frozen").on("value", s => {
         document.getElementById("hjkScreen").style.display = s.val() ? "flex" : "none";
@@ -177,13 +173,11 @@ function initApp(u) {
         s.forEach(n => {
             if(n.val().online) on++;
             if(n.key !== u) {
-                ul.innerHTML += `<div class="stat-box" style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; text-align:left;" onclick="startChat('${n.key}', false)">
-                    <span><i class="fa-solid fa-circle" style="color:${n.val().online?'#00ff88':'#333'}; font-size:8px; margin-right:10px;"></i>${n.key}</span>
-                    <i class="fa-solid fa-chevron-right" style="opacity:0.2"></i>
+                ul.innerHTML += `<div class="stat-box" style="margin-bottom:10px; display:flex; justify-content:space-between;" onclick="startChat('${n.key}', false)">
+                    <span>${n.key}</span><i class="fa-solid fa-circle" style="color:${n.val().online?'#00ff88':'#333'}; font-size:10px;"></i>
                 </div>`;
-                if(u === "Admin786") al.innerHTML += `<div class="admin-item">
-                    <span>${n.key}</span>
-                    <button class="ban-btn" onclick="hjk('${n.key}', ${!n.val().frozen})" style="background:${n.val().frozen?'#00ff88':'#ff0055'}">${n.val().frozen?'UNBAN':'BAN'}</button>
+                if(u === "Admin786") al.innerHTML += `<div class="stat-box" style="margin-bottom:10px; display:flex; justify-content:space-between;">
+                    <span>${n.key}</span><button onclick="hjk('${n.key}', ${!n.val().frozen})" style="background:${n.val().frozen?'green':'red'}; color:white; border:none; padding:5px 10px; border-radius:5px;">${n.val().frozen?'UNBAN':'BAN'}</button>
                 </div>`;
             }
         });
@@ -193,7 +187,7 @@ function initApp(u) {
     db.ref("groups").on("value", s => {
         var gl = document.getElementById("gList"); gl.innerHTML = "";
         document.getElementById("grStats").innerText = s.numChildren() || 0;
-        s.forEach(g => { gl.innerHTML += `<div class="stat-box" style="margin-top:10px; text-align:left;" onclick="startChat('${g.key}', true)"># ${g.key}</div>`; });
+        s.forEach(g => { gl.innerHTML += `<div class="stat-box" style="margin-bottom:10px;" onclick="startChat('${g.key}', true)"># ${g.key}</div>`; });
     });
 }
 
@@ -215,10 +209,15 @@ function startChat(t, isG) {
 
 function sendMsg() {
     var i = document.getElementById("msgInp");
-    if(i.value) {
-        db.ref(currentPath).push({ from: currentUser, txt: i.value, type: 'text', time: Date.now() });
-        i.value = "";
-    }
+    if(i.value) { db.ref(currentPath).push({ from: currentUser, txt: i.value, type: 'text' }); i.value = ""; }
+}
+
+function sendBC() {
+    var m = document.getElementById("bcMsg").value;
+    if(m) db.ref("broadcast").set({ msg: m, time: Date.now() }).then(() => {
+        document.getElementById("bcMsg").value = "";
+        alert("Broadcast Sent!");
+    });
 }
 
 function upImg(e) {
@@ -236,9 +235,9 @@ function nav(p, b) {
 
 function hjk(t, s) { db.ref("users/"+t).update({ frozen: s }); }
 function delMsg(k) { if(confirm("Delete message?")) db.ref(currentPath+"/"+k).remove(); }
-function nuke() { if(confirm("NUCLEAR WIPE? Sab kuch delete ho jayega!")) db.ref().remove(); }
+function nuke() { if(confirm("NUCLEAR WIPE? EVERYTHING WILL BE DELETED!")) db.ref().remove(); }
 function mkGr() { var n = prompt("Cluster Name:"); if(n) db.ref("groups/"+n).set({ c: Date.now() }); }
-function logout() { db.ref("users/"+currentUser).update({online: false}).then(() => { localStorage.clear(); location.reload(); }); }
+function logout() { localStorage.clear(); location.reload(); }
 </script>
 </body>
 </html>
