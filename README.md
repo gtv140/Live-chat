@@ -2,217 +2,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect Infinity 🚀</title>
+    <title>Live Connect Omega</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap');
         
         :root {
-            --accent: #6366f1; --accent-glow: rgba(99, 102, 241, 0.4);
-            --bg: #050505; --surface: #121214; --border: #27272a;
-            --text: #ffffff; --text-dim: #a1a1aa;
+            --primary: #8b5cf6; --secondary: #ec4899;
+            --bg: #030303; --surface: #0f1015; --border: #1f212a;
+            --text: #ffffff; --dim: #94a3b8;
         }
 
-        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; background: var(--bg); color: var(--text); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
 
+        /* Animated Background */
+        body::before {
+            content: ''; position: absolute; width: 300px; height: 300px; background: var(--primary);
+            filter: blur(150px); opacity: 0.15; top: -50px; left: -50px; z-index: -1;
+        }
+
+        /* Top Navigation */
         header { 
             padding: 20px; display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(18, 18, 20, 0.8); backdrop-filter: blur(10px); 
-            border-bottom: 1px solid var(--border); z-index: 100;
+            background: rgba(15, 16, 21, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
         }
-        header h1 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -1px; }
-        header span { color: var(--accent); }
+        header h1 { margin: 0; font-size: 22px; font-weight: 800; background: linear-gradient(to right, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .main-container { flex: 1; position: relative; width: 100%; max-width: 500px; margin: auto; overflow: hidden; display: flex; flex-direction: column; }
-        .page { display: none; flex: 1; padding: 20px; overflow-y: auto; height: 100%; padding-bottom: 100px; }
-        .page.active { display: block; }
+        /* Main Viewport */
+        .viewport { flex: 1; position: relative; width: 100%; max-width: 500px; margin: auto; overflow: hidden; display: flex; flex-direction: column; }
+        .page { display: none; flex: 1; padding: 20px; overflow-y: auto; height: 100%; padding-bottom: 120px; }
+        .page.active { display: block; animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        .premium-card { 
-            background: linear-gradient(145deg, #1e1e22, #121214); 
-            border-radius: 24px; padding: 25px; border: 1px solid var(--border);
-            margin-bottom: 20px; position: relative; overflow: hidden;
+        /* Cards & Components */
+        .glass-card { background: var(--surface); border-radius: 28px; padding: 25px; border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .status-pill { display: flex; align-items: center; justify-content: space-between; background: #1a1b23; padding: 15px 20px; border-radius: 20px; margin-top: 10px; border: 1px solid var(--border); }
+        .status-pill b { color: var(--primary); font-size: 18px; }
+
+        /* Chat System */
+        #chatBox { display: flex; flex-direction: column; gap: 12px; }
+        .bubble { max-width: 85%; padding: 14px 18px; border-radius: 22px; font-size: 14px; line-height: 1.4; position: relative; border: 1px solid var(--border); }
+        .bubble.me { background: var(--primary); align-self: flex-end; border-bottom-right-radius: 4px; border: none; box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3); }
+        .bubble.them { background: var(--surface); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .bubble small { display: block; font-size: 10px; margin-bottom: 5px; opacity: 0.6; font-weight: bold; }
+        .bubble .del-btn { position: absolute; top: -10px; right: -10px; background: red; color: white; width: 20px; height: 20px; border-radius: 50%; display: none; place-items: center; font-size: 10px; cursor: pointer; }
+        .bubble:hover .del-btn { display: grid; }
+
+        /* Floating Controls */
+        .input-bar { 
+            position: absolute; bottom: 25px; left: 15px; right: 15px; background: rgba(26, 27, 35, 0.95);
+            backdrop-filter: blur(15px); padding: 10px; border-radius: 35px; border: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.6);
         }
+        .input-bar input { flex: 1; background: transparent; border: none; color: white; padding: 10px; outline: none; font-size: 15px; }
+        .action-btn { width: 45px; height: 45px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; transition: 0.3s; }
+        .btn-send { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .stat-pill { background: var(--surface); padding: 15px; border-radius: 18px; border: 1px solid var(--border); text-align: center; }
-
-        #chatBox { display: flex; flex-direction: column; gap: 15px; padding: 10px 0; }
-        .message { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 14px; position: relative; animation: pop 0.2s ease; }
-        .msg-left { background: var(--surface); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border); }
-        .msg-right { background: var(--accent); align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px var(--accent-glow); }
-        
-        .input-wrapper { 
-            position: absolute; bottom: 20px; left: 15px; right: 15px; 
-            background: rgba(30, 30, 34, 0.9); backdrop-filter: blur(15px);
-            padding: 8px; border-radius: 30px; border: 1px solid var(--border);
-            display: flex; align-items: center; gap: 10px;
+        /* Bottom Nav */
+        nav { 
+            position: fixed; bottom: 0; width: 100%; max-width: 500px; background: #000;
+            padding: 15px 0; display: flex; justify-content: space-around; border-top: 1px solid var(--border);
         }
-        .input-wrapper input { flex: 1; background: transparent; border: none; color: white; padding: 10px 5px; outline: none; }
-        .btn-icon { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; }
+        nav i { color: var(--dim); font-size: 22px; cursor: pointer; transition: 0.3s; }
+        nav i.active { color: var(--primary); transform: translateY(-5px); }
 
-        .nav-bar { 
-            position: fixed; bottom: 0; width: 100%; max-width: 500px;
-            background: rgba(10, 10, 12, 0.9); padding: 15px 0; 
-            display: flex; justify-content: space-around; border-top: 1px solid var(--border);
-        }
-        .nav-item { color: var(--text-dim); font-size: 20px; cursor: pointer; }
-        .nav-item.active { color: var(--accent); }
-
-        .admin-term { border: 1px solid #ef4444; padding: 15px; border-radius: 20px; background: rgba(239, 68, 68, 0.05); margin-top: 20px; }
+        /* Admin HUD */
+        .admin-hud { border: 2px solid var(--secondary); padding: 20px; border-radius: 30px; background: rgba(236, 72, 153, 0.05); margin-top: 25px; }
+        .ban-row { display: flex; justify-content: space-between; padding: 12px; background: #000; border-radius: 15px; margin-bottom: 8px; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>LIVE <span>CONNECT</span></h1>
+    <h1>Ω MEGA<span>.</span></h1>
     <div style="display:flex; gap:15px;">
-        <i class="fa-solid fa-bolt" style="color:var(--accent)"></i>
-        <i class="fa-solid fa-power-off" onclick="logout()"></i>
+        <i class="fa-solid fa-satellite-dish" style="color:var(--primary)"></i>
+        <i class="fa-solid fa-sign-out-alt" onclick="logout()"></i>
     </div>
 </header>
 
-<div class="main-container">
+<div class="viewport">
     <div id="home" class="page active">
-        <div class="premium-card">
-            <h2 style="margin:0; font-size:24px;">Node: <span id="uName">...</span></h2>
-            <p style="color:var(--text-dim); margin:5px 0 0; font-size:14px;">Status: Encrypted & Verified</p>
+        <div class="glass-card">
+            <h2 style="margin:0; font-size:26px;">Operator: <span id="uName" style="color:var(--primary)">...</span></h2>
+            <p style="color:var(--dim); margin-top:5px;">System Security: Level 10 Encrypted</p>
         </div>
         
-        <div class="stats-grid">
-            <div class="stat-pill"><small>Online</small><div id="onCount">0</div></div>
-            <div class="stat-pill"><small>Hubs</small><div id="grCount">0</div></div>
-        </div>
+        <div class="status-pill"><span>Online Nodes</span><b id="nodeCount">0</b></div>
+        <div class="status-pill"><span>Active Hubs</span><b id="hubCount">0</b></div>
 
-        <div id="admBox" style="display:none;" class="admin-term">
-            <h4 style="margin:0; color:#ef4444;">🛡️ ROOT ACCESS GRANTED</h4>
-            <input id="bcData" placeholder="Global Broadcast Signal..." style="width:100%; background:#000; border:1px solid #333; padding:12px; border-radius:12px; color:white; margin-top:10px; outline:none;">
-            <button onclick="fireBC()" style="background:#ef4444; color:white; border:none; width:100%; padding:10px; margin-top:10px; border-radius:10px; font-weight:bold;">FIRE BROADCAST</button>
-            <div id="banList" style="margin-top:15px;"></div>
+        <div id="adminPanel" style="display:none;" class="admin-hud">
+            <h3 style="margin:0; color:var(--secondary); font-size:16px;"><i class="fa-solid fa-shield"></i> ROOT ACCESS GRANTED</h3>
+            <input id="bcInput" placeholder="Send Global Broadcast..." style="width:100%; background:#000; border:1px solid #333; padding:15px; border-radius:15px; color:white; margin:15px 0; outline:none;">
+            <button onclick="sendBroadcast()" style="width:100%; background:var(--secondary); color:white; border:none; padding:12px; border-radius:15px; font-weight:800; cursor:pointer;">FIRE GLOBAL SIGNAL</button>
+            <div id="adminUserList" style="margin-top:20px;"></div>
         </div>
     </div>
 
     <div id="chat" class="page">
-        <div id="chatWith" style="text-align:center; font-size:12px; color:var(--text-dim); margin-bottom:15px;">Idle</div>
+        <div id="chatHeader" style="text-align:center; color:var(--dim); font-size:11px; margin-bottom:20px; letter-spacing:3px;">IDLE MODE</div>
         <div id="chatBox"></div>
-        <div class="input-wrapper">
-            <label for="fInp" class="btn-icon"><i class="fa-solid fa-plus"></i></label>
-            <input type="file" id="fInp" hidden accept="image/*" onchange="upImg(this)">
-            <input id="mInp" placeholder="Type signal...">
-            <div class="btn-icon" style="background:var(--accent)" onclick="pushMsg()"><i class="fa-solid fa-paper-plane"></i></div>
+        <div class="input-bar">
+            <label for="imgFile" class="action-btn"><i class="fa-solid fa-paperclip"></i></label>
+            <input type="file" id="imgFile" hidden accept="image/*" onchange="uploadImage(this)">
+            <input id="msgInput" placeholder="Enter secure message...">
+            <div class="action-btn btn-send" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></div>
         </div>
     </div>
 
-    <div id="dir" class="page">
-        <h4 style="color:var(--text-dim); font-size:11px;">NODES</h4>
-        <div id="uList"></div>
-        <h4 style="color:var(--text-dim); font-size:11px; margin-top:20px;">HUBS</h4>
-        <div id="gList"></div>
+    <div id="users" class="page">
+        <h4 style="color:var(--dim); font-size:11px; letter-spacing:2px; margin-bottom:15px;">AUTHORIZED PERSONNEL</h4>
+        <div id="nodeList"></div>
+        <h4 style="color:var(--dim); font-size:11px; letter-spacing:2px; margin-top:30px; margin-bottom:15px;">ACTIVE GROUPS</h4>
+        <div id="hubList"></div>
+        <div class="input-bar" style="position:relative; bottom:0; left:0; right:0;">
+            <input id="hubInput" placeholder="Create new group identifier...">
+            <div class="action-btn btn-send" onclick="createHub()"><i class="fa-solid fa-plus"></i></div>
+        </div>
     </div>
 
-    <div class="nav-bar">
-        <i class="fa-solid fa-house nav-item active" onclick="go('home',this)"></i>
-        <i class="fa-solid fa-message nav-item" onclick="go('chat',this)"></i>
-        <i class="fa-solid fa-shield-halved nav-item" onclick="go('dir',this)"></i>
-    </div>
+    <nav>
+        <i class="fa-solid fa-ghost active" onclick="navigate('home',this)"></i>
+        <i class="fa-solid fa-comments" onclick="navigate('chat',this)"></i>
+        <i class="fa-solid fa-user-astronaut" onclick="navigate('users',this)"></i>
+    </nav>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
     import { getDatabase, ref, set, push, onValue, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-    const cfg = {
+    const firebaseConfig = {
         apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
         databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
         projectId: "live-chat-b810c",
     };
 
-    const app = initializeApp(cfg);
+    const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // --- ADMIN SECURITY ---
-    // Muhammad Nazim ki jagah ab ye secret name admin panel kholay ga:
-    const SECRET_ADMIN_ID = "Nazim_X_99"; 
-    
-    let me = localStorage.getItem("u") || prompt("Enter Username:");
+    // --- SECURE ADMIN KEY ---
+    const ADMIN_PASSKEY = "X_ADMIN_786"; // Is naam se login karne par Admin Panel khulega
+
+    let me = localStorage.getItem("u_name") || prompt("Identity Verification Required (Username):");
     if(!me) location.reload();
-    localStorage.setItem("u", me);
+    localStorage.setItem("u_name", me);
     document.getElementById("uName").textContent = me;
 
-    // Admin Check
-    if(me === SECRET_ADMIN_ID) {
-        document.getElementById("admBox").style.display = "block";
-    }
+    // Admin Auth
+    const isRoot = me === ADMIN_PASSKEY;
+    if(isRoot) document.getElementById("adminPanel").style.display = "block";
 
-    const sRef = ref(db, "users/" + me);
-    set(sRef, {name: me, online: true});
-    onDisconnect(sRef).update({online: false});
+    // Online Handling
+    const myRef = ref(db, "users/" + me);
+    set(myRef, {name: me, online: true});
+    onDisconnect(myRef).update({online: false});
 
-    window.go = (id, el) => {
+    window.navigate = (id, el) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('nav i').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
     };
 
-    let target = "";
+    let activeTarget = "";
+    let hubMode = false;
 
+    // Node & Admin Listeners
     onValue(ref(db, "users"), snap => {
-        let count = 0; uList.innerHTML = "";
-        if(me === SECRET_ADMIN_ID) banList.innerHTML = "";
+        let count = 0; nodeList.innerHTML = "";
+        if(isRoot) adminUserList.innerHTML = "<h4>Ban Protocols:</h4>";
         snap.forEach(u => {
             if(u.val().online) {
                 count++;
                 if(u.key !== me) {
-                    uList.innerHTML += `<div class="premium-card" onclick="start('${u.key}')" style="padding:15px; margin-bottom:10px;">👤 ${u.key}</div>`;
+                    nodeList.innerHTML += `<div class="glass-card" onclick="connect('${u.key}', false)" style="padding:18px; margin-bottom:12px;">🛰️ ${u.key}</div>`;
                 }
             }
-            if(me === SECRET_ADMIN_ID && u.key !== me) {
-                banList.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>${u.key}</span><button onclick="ban('${u.key}')" style="color:red; background:none; border:none;">BAN</button></div>`;
+            if(isRoot && u.key !== me) {
+                adminUserList.innerHTML += `<div class="ban-row"><span>${u.key}</span><i class="fa-solid fa-user-slash" style="color:red" onclick="banUser('${u.key}')"></i></div>`;
             }
         });
-        onCount.textContent = count;
+        nodeCount.textContent = count;
     });
 
-    window.start = (t) => {
-        target = t;
-        chatWith.textContent = "PRIVATE LINK: " + t;
-        go('chat', document.querySelectorAll('.nav-item')[1]);
-        load();
+    window.connect = (t, h) => {
+        activeTarget = t; hubMode = h;
+        chatHeader.textContent = "SECURE LINK: " + t;
+        navigate('chat', document.querySelectorAll('nav i')[1]);
+        syncMessages();
     };
 
-    function load() {
-        const path = "chats/" + [me, target].sort().join("_");
+    function syncMessages() {
+        const path = (hubMode ? "hubs/" : "direct/") + [me, activeTarget].sort().join("_");
         onValue(ref(db, path), snap => {
             chatBox.innerHTML = "";
             snap.forEach(m => {
                 const d = m.val();
                 const div = document.createElement("div");
-                div.className = `message ${d.f === me ? 'msg-right' : 'msg-left'}`;
-                div.innerHTML = d.t === 'img' ? `<img src="${d.v}" style="width:100%; border-radius:10px;">` : d.v;
+                div.className = `bubble ${d.f === me ? 'me' : 'them'}`;
+                div.innerHTML = `
+                    <div class="del-btn" onclick="delMsg('${path}','${m.key}')">×</div>
+                    <small>${d.f}</small>
+                    ${d.t === 'img' ? `<img src="${d.v}" style="width:100%; border-radius:12px;">` : d.v}
+                `;
                 chatBox.appendChild(div);
             });
             chatBox.scrollTop = chatBox.scrollHeight;
         });
     }
 
-    window.pushMsg = () => {
-        const v = mInp.value;
-        if(!v || !target) return;
-        const path = "chats/" + [me, target].sort().join("_");
+    window.sendMessage = () => {
+        const v = msgInput.value;
+        if(!v || !activeTarget) return;
+        const path = (hubMode ? "hubs/" : "direct/") + [me, activeTarget].sort().join("_");
         push(ref(db, path), {f: me, v: v, t: 'txt'});
-        mInp.value = "";
+        msgInput.value = "";
     };
 
-    window.fireBC = () => {
-        const m = bcData.value;
-        if(m) set(ref(db, "broadcast"), {m: m});
-        bcData.value = "";
+    window.uploadImage = (e) => {
+        const r = new FileReader();
+        r.onload = (f) => {
+            const path = (hubMode ? "hubs/" : "direct/") + [me, activeTarget].sort().join("_");
+            push(ref(db, path), {f: me, v: f.target.result, t: 'img'});
+        };
+        r.readAsDataURL(e.files[0]);
     };
 
-    onValue(ref(db, "broadcast"), s => { if(s.exists()) alert("📢 BROADCAST: " + s.val().m); });
+    window.sendBroadcast = () => {
+        const m = bcInput.value;
+        if(m) set(ref(db, "global_alert"), {m: m, ts: Date.now()});
+        bcInput.value = "";
+    };
+    onValue(ref(db, "global_alert"), s => { if(s.exists()) alert("📡 GLOBAL SIGNAL:\n" + s.val().m); });
 
-    window.ban = (u) => { if(confirm("Ban " + u + "?")) remove(ref(db, "users/" + u)); };
+    window.createHub = () => {
+        const h = hubInput.value;
+        if(h) set(ref(db, "activeHubs/" + h), {creator: me});
+        hubInput.value = "";
+    };
+
+    onValue(ref(db, "activeHubs"), snap => {
+        hubList.innerHTML = ""; hubCount.textContent = snap.size || 0;
+        snap.forEach(g => {
+            hubList.innerHTML += `<div class="glass-card" onclick="connect('${g.key}', true)" style="padding:18px;">💠 HUB: ${g.key}</div>`;
+        });
+    });
+
+    window.banUser = (u) => { if(confirm("Terminate Access for " + u + "?")) remove(ref(db, "users/" + u)); };
+    window.delMsg = (p, k) => { if(confirm("Erase data point?")) remove(ref(db, p + "/" + k)); };
     window.logout = () => { localStorage.clear(); location.reload(); };
 </script>
 </body>
