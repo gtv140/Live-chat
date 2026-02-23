@@ -1,54 +1,65 @@
-<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Connect 🚀</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* CSS ko thora saaf aur modern kiya hai, layout wahi hai */
+/* CSS: Sirf look ko behtar kiya hai, IDs aur Classes wahi hain */
 :root{
-  --bg:#0a0a0a; --card:#121212; --text:#e5e5e5; --primary:#6b5bff; --accent:#ff5c8d; --success:#22c55e;
+  --bg:#0a0a0a; --card:#121212; --text:#e5e5e5; --muted:#aaa;
+  --primary:#6b5bff; --accent:#ff5c8d; --success:#22c55e;
 }
-body{margin:0; font-family:system-ui,-apple-system; background:var(--bg); color:var(--text); transition:.3s;}
-body.light{--bg:#f1f1f1; --card:#fff; --text:#111;}
-
+body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto; background:var(--bg); color:var(--text); transition:.3s;}
+body.light{--bg:#f1f1f1; --card:#fff; --text:#111; --muted:#555;}
 .app{max-width:480px; margin:auto; min-height:100vh; display:flex; flex-direction:column;}
-header{padding:14px 16px; display:flex; justify-content:space-between; align-items:center; background:var(--card); border-bottom:1px solid #222;}
-header h1{margin:0; font-size:22px; color:var(--primary); text-shadow:0 0 10px var(--primary);}
 
-.page{display:none; padding:16px; flex:1;}
+header{padding:14px 16px; display:flex; justify-content:space-between; align-items:center; background:var(--card); box-shadow:0 3px 15px rgba(0,0,0,.7); position: sticky; top:0; z-index:100;}
+header h1{margin:0; font-size:22px; color:var(--primary); text-shadow:0 0 12px var(--accent);}
+header button{background:none; border:none; font-size:20px; color:var(--text); cursor:pointer;}
+
+.page{display:none; padding:16px; flex:1; animation: fadeIn 0.3s;}
 .page.active{display:block;}
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
 
-.hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff); color:#fff; padding:25px; border-radius:20px; text-align:center; margin-bottom:15px;}
-.dashboard-stat{background:var(--card); padding:16px; margin-bottom:12px; border-radius:16px; border:1px solid #222; display:flex; justify-content:space-between;}
+.hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff); color:#fff; padding:28px; border-radius:20px; text-align:center; box-shadow:0 0 15px #6b5bff; margin-bottom:15px;}
+.dashboard-stat{background:var(--card); padding:16px; margin-bottom:12px; border-radius:16px; border:1px solid #222; display:flex; justify-content:space-between; align-items:center;}
+.dashboard-stat h4{margin:0; color:var(--accent);}
 
 .chat-box{background:var(--card); border-radius:18px; padding:14px; height:45vh; overflow-y:auto; margin-bottom:12px; border:1px solid #222;}
-.msg{background:#1a1a1a; color:#fff; padding:10px 14px; border-radius:15px; margin-bottom:10px; font-size:14px; position:relative; border-left:3px solid var(--primary);}
-.msg .actions{position:absolute; top:6px; right:8px; cursor:pointer; opacity:0.6;}
+.msg{background:#1a1a1a; color:#fff; padding:12px; border-radius:16px; margin-bottom:12px; font-size:14px; position:relative; border-left:3px solid var(--primary);}
+.msg .actions{position:absolute; top:6px; right:8px; font-size:13px; cursor:pointer;}
+.msg .comments{margin-top:8px; padding-left:14px; border-left:2px solid #444; font-size:12px; color:#ccc;}
 
 .input-row{display:flex; gap:10px;}
-.input-row input{flex:1; padding:14px; border-radius:12px; border:1px solid #333; background:#000; color:#fff; outline:none;}
-.input-row button{padding:14px 20px; border:none; border-radius:12px; background:var(--primary); color:#fff; cursor:pointer;}
+.input-row input{flex:1; padding:14px; border-radius:14px; border:1px solid #333; background:#000; color:#fff; outline:none;}
+.input-row button{padding:14px 18px; border:none; border-radius:14px; background:var(--primary); color:#fff; cursor:pointer;}
 
 .user, .group{display:flex; align-items:center; gap:10px; margin-bottom:12px; cursor:pointer; padding:12px; background:var(--card); border-radius:14px; border:1px solid #222;}
-.dot{width:10px; height:10px; background:var(--success); border-radius:50%;}
+.dot{width:12px; height:12px; background:var(--success); border-radius:50%;}
 
-nav{display:flex; justify-content:space-around; background:var(--card); padding:12px 0; border-top:1px solid #222;}
+.contact-card{display:flex; align-items:center; gap:14px; background:var(--card); padding:14px; border-radius:14px; margin-bottom:14px; border:1px solid #333;}
+.contact-card a{text-decoration:none; color:var(--primary);}
+
+.comment-input{margin-top:6px; display:flex; gap:6px;}
+.comment-input input{flex:1; padding:8px; border-radius:10px; border:1px solid #333; background:#000; color:#fff; font-size:12px;}
+.comment-input button{padding:8px 10px; border:none; border-radius:10px; background:var(--primary); color:#fff; font-size:12px;}
+
+nav{display:flex; justify-content:space-around; background:var(--card); padding:12px 0; border-top:1px solid #222; position: sticky; bottom:0;}
 nav button{background:none; border:none; font-size:22px; color:#666; cursor:pointer;}
 nav button.active{color:var(--primary);}
 
-.login-card{background:var(--card); padding:25px; border-radius:20px; border:1px solid #333;}
-.login-card input{width:100%; padding:14px; border-radius:12px; margin-bottom:12px; background:#000; border:1px solid #333; color:#fff;}
-.login-card button{width:100%; padding:14px; border:none; border-radius:12px; background:var(--primary); color:#fff; font-weight:bold;}
+.login-card{background:var(--card); padding:20px; border-radius:18px; border:1px solid #333;}
+.login-card input{width:100%; padding:14px; border-radius:14px; margin-bottom:12px; background:#000; border:1px solid #333; color:#fff;}
+.login-card button{width:100%; padding:14px; border:none; border-radius:14px; background:var(--primary); color:#fff; font-weight:bold;}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
 <h1>Live Connect</h1>
-<div style="display:flex; gap:10px;">
-    <button onclick="toggleTheme()" style="background:none; border:none; color:white; font-size:18px;"><i class="fa-solid fa-moon"></i></button>
-    <button onclick="logout()" style="background:none; border:none; color:white; font-size:18px;"><i class="fa-solid fa-right-from-bracket"></i></button>
+<div>
+<button onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+<button onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
 </div>
 </header>
 
@@ -86,16 +97,44 @@ nav button.active{color:var(--primary);}
 </div>
 </div>
 
+<div id="about" class="page">
+<h3>About Live Connect 🚀</h3>
+<p>Live Connect is developed by <b>WebHub Technologies</b>.</p>
+<ul>
+<li>Real-time private & group chats with comments</li>
+<li>Live user tracking & professional dashboard</li>
+<li>Dark/Light mode & modern UI design</li>
+<li>Customizable groups, notifications & admin controls</li>
+<li>Secure, fast & fully responsive</li>
+</ul>
+</div>
+
+<div id="contact" class="page">
+<h3 style="color:var(--accent)">Contact & Support</h3>
+<div class="contact-card">
+<i class="fa-solid fa-envelope"></i>
+<div><h4>Email</h4><p><a href="mailto:webhub262@gmail.com">webhub262@gmail.com</a></p></div>
+</div>
+<div class="contact-card">
+<i class="fab fa-facebook"></i>
+<div><h4>Facebook</h4><p><a href="https://www.facebook.com/profile.php?id=100084218946114" target="_blank">Visit Profile</a></p></div>
+</div>
+<div class="contact-card">
+<i class="fab fa-instagram"></i>
+<div><h4>Instagram</h4><p><a href="https://www.instagram.com/mr_nazim073?igsh=MXd4d2hmcWNvNjVsdQ==" target="_blank">Follow Us</a></p></div>
+</div>
+</div>
+
 <nav>
 <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
 <button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
 <button onclick="openPage('users',this)"><i class="fa-solid fa-user-group"></i></button>
-<button onclick="openPage('home',this)"><i class="fa-solid fa-circle-info"></i></button>
+<button onclick="openPage('about',this)"><i class="fa-solid fa-circle-info"></i></button>
+<button onclick="openPage('contact',this)"><i class="fa-solid fa-envelope"></i></button>
 </nav>
 </div>
 
 <script type="module">
-/* --- AAPKA ORIGINAL FIREBASE LOGIC --- */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
@@ -116,6 +155,7 @@ let currentUser=null;
 let curChat="";
 let isGroup=false;
 
+// All original selectors
 const chatBox=document.getElementById("chatBox");
 const userList=document.getElementById("userList");
 const groupList=document.getElementById("groupList");
@@ -200,7 +240,10 @@ function loadChat(){
     snap.forEach(m=>{
       const div=document.createElement("div");
       div.className="msg";
-      div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text} <div class="actions" onclick="deleteMsg('${path}','${m.key}')">🗑️</div>`;
+      let actions=`<div class="actions"><span onclick="deleteMsg('${path}','${m.key}')">🗑️</span></div>`;
+      let commentsHTML='<div class="comments">'+(m.val().comments?Object.values(m.val().comments).map(c=>`<div><b>${c.from}:</b> ${c.text}</div>`).join(''):'')+'</div>';
+      let commentInput=`<div class="comment-input"><input placeholder="Comment"/><button onclick="addComment('${path}','${m.key}',this)">💬</button></div>`;
+      div.innerHTML=`<b>${m.val().from}:</b> ${m.val().text} ${actions} ${commentsHTML} ${commentInput}`;
       chatBox.appendChild(div);
       chatBox.scrollTop=chatBox.scrollHeight;
     });
@@ -217,6 +260,12 @@ window.sendMsg=()=>{
 };
 
 window.deleteMsg=(path,key)=>{ if(confirm("Delete?")) remove(ref(db,path+"/"+key)); };
+window.addComment=(path,key,btn)=>{
+  const input=btn.previousElementSibling;
+  if(!input.value) return;
+  push(ref(db,path+"/"+key+"/comments"),{from:currentUser,text:input.value});
+  input.value='';
+};
 </script>
 </body>
 </html>
