@@ -1,182 +1,250 @@
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect | Secure Console</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        :root { --p: #7d5fff; --bg: #050505; --glass: rgba(255,255,255,0.05); --border: rgba(255,255,255,0.1); }
-        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: 0.3s; }
-        body { margin: 0; background: var(--bg); color: #fff; overflow: hidden; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Live Connect 🚀 | Master Console</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#0a0a0a; --card:#111; --text:#e5e5e5; --muted:#aaa;
+  --primary:#6b5bff; --accent:#ff5c8d; --success:#22c55e; --border: rgba(255,255,255,0.1);
+}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--text);overflow:hidden;}
+body.light{--bg:#f1f1f1;--card:#fff;--text:#111;--muted:#555;}
 
-        /* MATRIX HACKING OVERLAY */
-        #hackOverlay { display:none; position:fixed; inset:0; background:#000; z-index:20000; color:#0f0; padding:20px; font-family:monospace; font-size:11px; overflow:hidden; }
+/* MATRIX HACKING OVERLAY */
+#hackOverlay { display:none; position:fixed; inset:0; background:#000; z-index:20000; color:#0f0; padding:20px; font-family:monospace; font-size:11px; overflow:hidden; }
 
-        /* LOGIN SCREEN */
-        #auth { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
-        #auth img { width: 190px; height: 190px; border-radius: 50%; border: 3px solid var(--p); box-shadow: 0 0 60px var(--p); object-fit: cover; margin-bottom: 20px; }
-        #auth h1 { font-size: 32px; margin: 0; font-weight: 800; letter-spacing: -1px; }
-        #auth input { width: 100%; max-width: 300px; padding: 20px; border-radius: 20px; background: var(--glass); border: 1px solid var(--border); color: #fff; margin: 25px 0 15px; text-align: center; font-size: 16px; outline: none; }
-        #auth button { width: 100%; max-width: 300px; padding: 20px; border-radius: 20px; background: var(--p); border: none; color: #fff; font-weight: 800; cursor: pointer; text-transform: uppercase; box-shadow: 0 10px 25px rgba(125,95,255,0.4); }
+.app{max-width:480px; margin:auto; height:100vh; display:flex; flex-direction:column; position: relative;}
 
-        /* MAIN APP */
-        .app { max-width: 480px; margin: auto; height: 100vh; display: flex; flex-direction: column; position: relative; }
-        header { padding: 45px 25px 15px; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; }
-        header h2 { margin:0; font-size: 22px; font-weight: 800; }
+/* LOGIN SCREEN WITH SKULL */
+#loginPage { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+#loginPage img { width: 180px; height: 180px; border-radius: 50%; border: 3px solid var(--primary); box-shadow: 0 0 50px var(--primary); object-fit: cover; margin-bottom: 20px; }
+#loginPage h1 { font-size: 32px; margin: 0; color: var(--primary); font-weight: 800; }
+#loginPage input { width: 100%; max-width: 300px; padding: 18px; border-radius: 15px; background: #111; border: 1px solid var(--border); color: #fff; margin: 20px 0 10px; text-align: center; }
+#loginPage button { width: 100%; max-width: 300px; padding: 18px; border: none; border-radius: 15px; background: linear-gradient(90deg, var(--accent), var(--primary)); color: #fff; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px var(--accent); }
 
-        .page { display: none; padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 110px; }
-        .page.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+header{padding:45px 16px 15px; display:flex; justify-content:space-between; align-items:center; background:var(--card); border-bottom: 1px solid var(--border); z-index: 100;}
+header h1{margin:0;font-size:22px;color:var(--primary); font-weight: 800;}
 
-        .dash-card { background: var(--glass); border-radius: 24px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); backdrop-filter: blur(10px); }
-        .admin-badge { background: gold; color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: 5px; vertical-align: middle; }
+.page{display:none; padding:16px; flex:1; overflow-y: auto; padding-bottom: 110px;}
+.page.active{display:block;}
 
-        /* CHAT SYSTEM */
-        #chatBox { height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 10px; }
-        .msg { padding: 12px 18px; border-radius: 18px; font-size: 14px; max-width: 80%; line-height: 1.4; }
-        .msg.me { background: var(--p); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg.them { background: #1a1a1a; align-self: flex-start; border: 1px solid var(--border); border-bottom-left-radius: 4px; }
-        .msg-info { font-size: 9px; opacity: 0.5; margin-bottom: 4px; display: block; }
+.hero{background:linear-gradient(135deg,#ff5c8d,#6b5bff);color:#fff;padding:28px;border-radius:20px;text-align:center; box-shadow:0 0 15px #6b5bff;}
+.dashboard-stat{background:var(--card);padding:16px;margin-top:12px;border-radius:16px;border:1px solid var(--border); display:flex;justify-content:space-between;align-items:center;}
 
-        /* NAV BAR */
-        nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; height: 75px; background: rgba(10,10,10,0.8); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-btn { color: #444; font-size: 22px; cursor: pointer; }
-        .nav-btn.active { color: var(--p); text-shadow: 0 0 15px var(--p); transform: translateY(-5px); }
+.chat-box{background:var(--card);border-radius:18px;padding:14px;height:50vh;overflow-y:auto;margin-bottom:12px; border: 1px solid var(--border);}
+.msg{background:#1a1a1a;color:#fff;padding:10px 14px;border-radius:16px;margin-bottom:10px;font-size:14px; border: 1px solid var(--border); position: relative;}
+.msg b { color: var(--primary); font-size: 11px; display: block; margin-bottom: 4px; }
 
-        .ip-item { font-size: 11px; font-family: monospace; color: #0f0; border-bottom: 1px solid #222; padding: 8px 0; }
-        .danger-btn { background: #ff4d4d; color: white; border: none; width: 100%; padding: 15px; border-radius: 15px; font-weight: bold; margin-top: 10px; cursor: pointer; }
-    </style>
+.input-row{display:flex;gap:10px;}
+.input-row input{flex:1;padding:14px;border-radius:14px;border:1px solid #444;background:#111;color:#fff;outline:none;}
+.input-row button{padding:14px;border:none;border-radius:14px;background:var(--primary);color:#fff;cursor:pointer;}
+
+nav{position: fixed; bottom: 0; width: 100%; max-width: 480px; display:flex;justify-content:space-around;background:var(--card);padding:15px 0; border-top: 1px solid var(--border); z-index: 1000;}
+nav button{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;}
+nav button.active{color:var(--primary);}
+
+.admin-card { border: 1px solid gold !important; background: rgba(255, 215, 0, 0.05) !important; margin-top: 20px;}
+.ip-log { font-family: monospace; font-size: 11px; color: #0f0; border-bottom: 1px solid #222; padding: 5px 0; }
+</style>
 </head>
 <body>
 
 <div id="hackOverlay"></div>
 
-<div id="auth">
-    <img src="http://googleusercontent.com/generated_image_content/0.png" alt="Skull Logo">
-    <h1>Live Connect</h1>
-    <p style="color:#555; margin-top:5px;">Secure Identity Verification</p>
-    <input type="text" id="userInput" placeholder="Identity Name" autocomplete="off">
-    <button onclick="initiateHack()">Initiate Access</button>
-</div>
-
 <div class="app">
+    <div id="loginPage" class="page active">
+        <img src="http://googleusercontent.com/image_generation_content/28.png" alt="Live Connect Skull">
+        <h1>Live Connect</h1>
+        <p style="color:var(--muted)">Security Protocol Active</p>
+        <input type="text" id="usernameInput" placeholder="Enter Identity">
+        <button onclick="initiateHack()">Initiate Access</button>
+    </div>
+
     <header>
-        <h2>Live Connect <span id="admTag" style="display:none;" class="admin-badge">ADMIN</span></h2>
-        <div onclick="logout()" style="opacity:0.5; cursor:pointer;"><i class="fa-solid fa-power-off"></i></div>
+        <h1>Live Connect <span id="admTag" style="display:none; color:gold; font-size:10px;">[GOD]</span></h1>
+        <div style="display:flex; gap:15px;">
+            <button onclick="document.body.classList.toggle('light')" style="background:none;border:none;color:var(--text);font-size:18px;"><i class="fa-solid fa-moon"></i></button>
+            <button onclick="logout()" style="background:none;border:none;color:var(--text);font-size:18px;"><i class="fa-solid fa-power-off"></i></button>
+        </div>
     </header>
 
-    <div id="home" class="page active">
-        <div id="adminPanel" style="display:none;">
-            <div class="dash-card" style="border-color: gold;">
-                <h4 style="color:gold; margin:0 0 10px;"><i class="fa-solid fa-user-secret"></i> ADMIN CONSOLE (IP LOGS)</h4>
-                <div id="ipList"></div>
-                <button class="danger-btn" onclick="wipeSystem()">WIPE GLOBAL DATA</button>
-            </div>
+    <div id="home" class="page">
+        <div class="hero">
+            <h2>Welcome <span id="dashUser"></span> 🚀</h2>
+            <p>Real-Time Chat & Secure Node Connection</p>
         </div>
-        <div class="dash-card">
-            <h3 style="margin:0;">User: <span id="displayUser">...</span></h3>
-            <p style="font-size:12px; color:var(--p); margin:5px 0 0;">System Status: Encrypted</p>
+        <div class="dashboard-stat"><h4>Online Users</h4><span id="onlineCount">0</span></div>
+        
+        <div id="adminPanel" style="display:none;" class="dash-card admin-card">
+            <h4 style="color:gold; margin-top:0;"><i class="fa-solid fa-user-secret"></i> MASTER LOGS (IP & CITY)</h4>
+            <div id="ipLogs"></div>
+            <button onclick="wipeData()" style="width:100%; padding:10px; background:red; color:white; border:none; border-radius:10px; margin-top:10px; font-weight:bold;">SELF-DESTRUCT (WIPE)</button>
         </div>
     </div>
 
     <div id="chat" class="page">
-        <div id="chatBox"></div>
-        <div style="display:flex; gap:10px; margin-top:15px; background:var(--glass); padding:10px; border-radius:20px; border:1px solid var(--border);">
-            <input id="msgInput" style="flex:1; background:transparent; border:none; color:white; padding:10px; outline:none;" placeholder="Write a message..."/>
-            <button onclick="sendMsg()" style="background:var(--p); border:none; width:45px; height:45px; border-radius:50%; color:white;"><i class="fa-solid fa-paper-plane"></i></button>
+        <div class="chat-box" id="chatBox"></div>
+        <div class="input-row">
+            <input id="msgInput" placeholder="Encrypted Message..."/>
+            <button onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
+    <div id="usersPage" class="page">
+        <h3>Online Entities</h3><div id="userList"></div>
+        <h3 style="margin-top:20px;">Secure Groups</h3><div id="groupList"></div>
+        <div class="input-row" style="margin-top:10px;">
+            <input id="groupInput" placeholder="New Group Name"/>
+            <button onclick="createGroup()">CREATE</button>
+        </div>
+    </div>
+
+    <div id="about" class="page">
+        <h3>About Live Connect 🚀</h3>
+        <p>Live Connect is a pro-level real-time communication platform built for secure networking.</p>
+        <ul>
+            <li>Hacking Interface & Matrix Effects</li>
+            <li>Admin IP Logger & Geolocation Tracking</li>
+            <li>Real-time Group & Private Node Chat</li>
+            <li>Global Data Wipe Controls (Admin Only)</li>
+        </ul>
+    </div>
+
     <nav>
-        <div class="nav-btn active" onclick="openPage('home',this)"><i class="fa-solid fa-house-user"></i></div>
-        <div class="nav-btn" onclick="openPage('chat',this)"><i class="fa-solid fa-comment-dots"></i></div>
+        <button onclick="openPage('home',this)" class="active"><i class="fa-solid fa-house"></i></button>
+        <button onclick="openPage('chat',this)"><i class="fa-solid fa-comments"></i></button>
+        <button onclick="openPage('usersPage',this)"><i class="fa-solid fa-user-group"></i></button>
+        <button onclick="openPage('about',this)"><i class="fa-solid fa-circle-info"></i></button>
     </nav>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE", databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com" };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+const firebaseConfig = {
+  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
+};
 
-    let currentUser = localStorage.getItem("lc_user");
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    async function logUser() {
-        try {
-            const res = await fetch('https://ipapi.co/json/');
-            const data = await res.json();
-            set(ref(db, "logs/" + currentUser), {
-                user: currentUser, ip: data.ip, city: data.city, time: new Date().toLocaleTimeString()
-            });
-        } catch(e) { }
-    }
+let currentUser = localStorage.getItem("lc_user");
 
-    window.initiateHack = () => {
-        const name = document.getElementById("userInput").value.trim();
-        if(!name) return;
-        const overlay = document.getElementById("hackOverlay");
-        overlay.style.display = "block";
-        const steps = ["CONNECTING...", "BYPASSING FIREWALL...", "LOGGING IP...", "ACCESS GRANTED."];
-        let step = 0;
-        const interval = setInterval(() => {
-            overlay.innerHTML += `<p>> ${steps[step]}</p>`;
-            step++;
-            if(step >= steps.length) {
-                clearInterval(interval);
-                setTimeout(() => {
-                    localStorage.setItem("lc_user", name);
-                    location.reload();
-                }, 800);
-            }
-        }, 400);
-    };
-
-    if(currentUser) {
-        document.getElementById("auth").style.display = "none";
-        document.getElementById("displayUser").innerText = currentUser;
-        logUser();
-        if(currentUser === "Admin786") {
-            document.getElementById("adminPanel").style.display = "block";
-            document.getElementById("admTag").style.display = "inline";
-            onValue(ref(db, "logs"), snap => {
-                const list = document.getElementById("ipList"); list.innerHTML = "";
-                snap.forEach(c => {
-                    const l = c.val();
-                    list.innerHTML += `<div class="ip-item"><b>${l.user}</b>: ${l.ip} (${l.city})</div>`;
-                });
-            });
+// MATRIX HACKING EFFECT ON LOGIN
+window.initiateHack = () => {
+    const uname = document.getElementById("usernameInput").value.trim();
+    if(!uname) return;
+    
+    const overlay = document.getElementById("hackOverlay");
+    overlay.style.display = "block";
+    const steps = ["SCANNING NETWORK...", "BYPASSING FIREWALL...", "LOGGING IP ADDRESS...", "FETCHING GEOLOCATION...", "ACCESS GRANTED!"];
+    let i = 0;
+    const interval = setInterval(() => {
+        overlay.innerHTML += `<p>> ${steps[i]}</p>`;
+        i++;
+        if(i >= steps.length) {
+            clearInterval(interval);
+            setTimeout(() => {
+                localStorage.setItem("lc_user", uname);
+                location.reload();
+            }, 800);
         }
-        onValue(ref(db, "globalChat"), snap => {
-            const box = document.getElementById("chatBox"); box.innerHTML = "";
-            snap.forEach(c => {
-                const m = c.val();
-                const type = m.from === currentUser ? 'me' : 'them';
-                box.innerHTML += `<div class="msg ${type}"><span class="msg-info">${m.from}</span>${m.text}</div>`;
+    }, 400);
+};
+
+// LOG IP DATA
+async function logIP() {
+    try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        set(ref(db, "logs/" + currentUser), {
+            name: currentUser, ip: data.ip, city: data.city, org: data.org, time: new Date().toLocaleTimeString()
+        });
+    } catch(e) {}
+}
+
+if(currentUser) {
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("dashUser").textContent = currentUser;
+    logIP();
+    
+    if(currentUser === "Admin786") {
+        document.getElementById("adminPanel").style.display = "block";
+        document.getElementById("admTag").style.display = "inline";
+        onValue(ref(db, "logs"), snap => {
+            const logs = document.getElementById("ipLogs"); logs.innerHTML = "";
+            snap.forEach(l => {
+                const v = l.val();
+                logs.innerHTML += `<div class="ip-log">> <b>${v.name}</b>: ${v.ip} (${v.city})</div>`;
             });
-            box.scrollTop = box.scrollHeight;
         });
     }
+    
+    const userRef = ref(db, "users/" + currentUser);
+    set(userRef, { name: currentUser, online: true });
+    onDisconnect(userRef).update({ online: false });
+    loadChat();
+}
 
-    window.sendMsg = () => {
-        const inp = document.getElementById("msgInput");
-        if(!inp.value) return;
-        push(ref(db, "globalChat"), { from: currentUser, text: inp.value });
-        if(currentUser !== "Admin786") {
-            setTimeout(() => { push(ref(db, "globalChat"), { from: "System", text: "Encrypted connection stable." }); }, 2000);
+window.openPage = (id, btn) => {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+};
+
+onValue(ref(db, "users"), snap => {
+    let count = 0;
+    const list = document.getElementById("userList"); list.innerHTML = "";
+    snap.forEach(u => {
+        if(u.val().online) {
+            count++;
+            list.innerHTML += `<div style="padding:10px; background:var(--card); margin-bottom:5px; border-radius:10px; border-left:4px solid var(--success)">${u.val().name}</div>`;
         }
-        inp.value = "";
-    };
+    });
+    document.getElementById("onlineCount").textContent = count;
+});
 
-    window.wipeSystem = () => { if(confirm("Wipe everything?")) { remove(ref(db, "globalChat")); remove(ref(db, "logs")); } };
-    window.logout = () => { localStorage.clear(); location.reload(); };
-    window.openPage = (id, btn) => {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
-        btn.classList.add('active');
-    };
+onValue(ref(db, "groups"), snap => {
+    const glist = document.getElementById("groupList"); glist.innerHTML = "";
+    snap.forEach(g => {
+        glist.innerHTML += `<div onclick="openGroupChat('${g.key}')" style="padding:10px; background:var(--card); margin-bottom:5px; border-radius:10px; cursor:pointer; border-left:4px solid var(--primary)">${g.key}</div>`;
+    });
+});
+
+window.sendMsg = () => {
+    const input = document.getElementById("msgInput");
+    if(!input.value) return;
+    push(ref(db, "globalChat"), { from: currentUser, text: input.value });
+    input.value = "";
+};
+
+function loadChat() {
+    onValue(ref(db, "globalChat"), snap => {
+        const box = document.getElementById("chatBox"); box.innerHTML = "";
+        snap.forEach(m => {
+            const v = m.val();
+            const align = v.from === currentUser ? 'flex-end' : 'flex-start';
+            const bg = v.from === currentUser ? 'var(--primary)' : '#222';
+            box.innerHTML += `<div class="msg" style="align-self:${align}; background:${bg}"><b>${v.from}</b>${v.text}</div>`;
+        });
+        box.scrollTop = box.scrollHeight;
+    });
+}
+
+window.createGroup = () => {
+    const g = document.getElementById("groupInput").value.trim();
+    if(g) set(ref(db, "groups/" + g), { createdBy: currentUser });
+    document.getElementById("groupInput").value = "";
+};
+
+window.wipeData = () => { if(confirm("System Self-Destruct?")) { remove(ref(db, "globalChat")); remove(ref(db, "logs")); } };
+window.logout = () => { localStorage.clear(); location.reload(); };
+
 </script>
 </body>
 </html>
