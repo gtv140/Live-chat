@@ -2,126 +2,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Empire v10 | Next-Gen Chat</title>
+    <title>Empire Legend | Nazim Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root { 
-            --accent: #6366f1; 
-            --bg: #0f172a; 
-            --glass: rgba(30, 41, 59, 0.7);
-            --text: #f8fafc;
-        }
-
-        /* 🔒 Screen Lock Logic */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html, body { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            overflow: hidden; position: fixed; 
-            background: var(--bg); color: var(--text);
-            font-family: 'Inter', -apple-system, sans-serif;
-        }
-
+        :root { --wa-dark: #075e54; --wa-light: #128c7e; --wa-bg: #fff; --text: #111b21; --gray: #667781; }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        
+        /* 🔒 Poori Screen Lock */
+        html, body { height: 100%; width: 100%; overflow: hidden; position: fixed; background: var(--wa-bg); font-family: sans-serif; }
         body { display: flex; flex-direction: column; }
 
-        /* 💎 Modern Header */
+        /* 🟢 WhatsApp Style Header (Full Width) */
         header { 
-            height: 70px; background: var(--glass); backdrop-filter: blur(15px);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.1);
-            z-index: 100; flex-shrink: 0;
+            background: var(--wa-dark); color: white; padding: 15px 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            flex-shrink: 0; width: 100%; z-index: 100;
         }
-        .logo { font-size: 22px; font-weight: 800; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand { font-size: 22px; font-weight: bold; }
 
-        /* 🚀 Main Viewport */
+        /* 🛠️ Admin Override (Below Header) */
+        #admBar { display: none; background: #ffebee; padding: 10px; border-bottom: 1px solid #ddd; justify-content: space-around; flex-shrink: 0; }
+        .adm-btn { background: #d32f2f; color: white; border: none; padding: 5px 15px; border-radius: 5px; font-weight: bold; font-size: 12px; }
+
+        /* 📜 Main Content Area (Full Screen Scrolling) */
         main { 
-            flex: 1; overflow-y: auto; display: flex; flex-direction: column;
-            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
-            -webkit-overflow-scrolling: touch;
+            flex: 1; overflow-y: auto; background: var(--wa-bg); 
+            -webkit-overflow-scrolling: touch; display: flex; flex-direction: column;
         }
-
-        .page { display: none; padding: 20px; flex-direction: column; min-height: 100%; }
+        .page { display: none; width: 100%; height: 100%; flex-direction: column; }
         .page.active { display: flex; }
 
-        /* 💬 Modern Chat Bubbles */
-        #chatFeed { display: flex; flex-direction: column; gap: 12px; }
+        /* 💬 Chat Bubbles (Fixed UI) */
+        #chatFeed { padding: 15px; display: flex; flex-direction: column; gap: 8px; background: #e5ddd5; min-height: 100%; }
         .bubble { 
-            max-width: 85%; padding: 12px 18px; border-radius: 22px; 
-            font-size: 15px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            animation: fadeIn 0.3s ease;
+            max-width: 80%; padding: 8px 12px; border-radius: 10px; font-size: 15px; 
+            box-shadow: 0 1px 1px rgba(0,0,0,0.15); line-height: 1.4;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .bubble.me { align-self: flex-end; background: linear-gradient(135deg, #6366f1, #a855f7); color: white; border-bottom-right-radius: 4px; }
-        .bubble.other { align-self: flex-start; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-bottom-left-radius: 4px; }
-        .bubble .sender { font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; display: block; opacity: 0.8; }
+        .bubble.me { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; }
+        .bubble.other { align-self: flex-start; background: #fff; border-bottom-left-radius: 2px; }
+        .bubble b { display: block; font-size: 10px; color: var(--wa-light); margin-bottom: 2px; text-transform: uppercase; }
 
-        /* ⌨️ Modern Floating Input */
+        /* 👥 User List (Clean & Full) */
+        .user-item { 
+            padding: 15px 20px; border-bottom: 1px solid #f0f2f5; 
+            display: flex; align-items: center; gap: 15px; cursor: pointer;
+        }
+        .avatar { width: 50px; height: 50px; background: #dfe5e7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; }
+        .user-info { flex: 1; }
+        .user-info h4 { font-size: 16px; color: var(--text); }
+        .user-info p { font-size: 13px; color: var(--gray); margin-top: 2px; }
+
+        /* ⌨️ Sticky Input Area */
         #inputArea { 
-            padding: 15px; background: var(--glass); backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(255,255,255,0.1); display: none; align-items: center; gap: 10px;
+            background: #f0f2f5; padding: 10px 15px; display: none; 
+            align-items: center; gap: 10px; flex-shrink: 0;
         }
-        .input-pill { 
-            flex: 1; background: rgba(0,0,0,0.3); border-radius: 30px; 
-            padding: 5px 20px; border: 1px solid rgba(255,255,255,0.05);
-        }
-        .input-pill input { width: 100%; background: none; border: none; color: white; height: 45px; outline: none; font-size: 16px; }
-        .btn-send { width: 45px; height: 45px; background: var(--accent); border-radius: 50%; border: none; color: white; font-size: 18px; box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); }
+        .input-wrap { flex: 1; background: white; border-radius: 25px; padding: 2px 15px; }
+        .input-wrap input { width: 100%; border: none; height: 40px; outline: none; font-size: 16px; }
+        .send-btn { background: var(--wa-light); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 20px; }
 
-        /* 📱 Bottom Tabs */
+        /* 📱 Bottom Navigation (WhatsApp Style) */
         nav { 
-            height: 75px; background: var(--glass); backdrop-filter: blur(15px);
-            display: flex; justify-content: space-around; align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;
+            height: 65px; background: #fff; border-top: 1px solid #f0f2f5; 
+            display: flex; justify-content: space-around; align-items: center; flex-shrink: 0;
+            padding-bottom: env(safe-area-inset-bottom);
         }
-        .tab { color: #64748b; font-size: 10px; font-weight: 600; text-align: center; cursor: pointer; transition: 0.3s; }
-        .tab i { font-size: 24px; display: block; margin-bottom: 4px; }
-        .tab.active { color: var(--accent); transform: translateY(-5px); }
+        .tab { color: var(--gray); font-size: 12px; text-align: center; flex: 1; cursor: pointer; }
+        .tab i { font-size: 22px; display: block; margin-bottom: 4px; }
+        .tab.active { color: var(--wa-light); }
 
-        /* 🔓 Auth Overlay */
-        #authOverlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        .auth-box { width: 85%; text-align: center; }
-        .auth-box h1 { font-size: 40px; margin-bottom: 10px; letter-spacing: -2px; }
-        .auth-input { width: 100%; padding: 18px; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; color: white; text-align: center; font-size: 18px; margin-bottom: 15px; }
-        .auth-btn { width: 100%; padding: 18px; background: var(--accent); border: none; border-radius: 18px; color: white; font-weight: 800; font-size: 16px; }
+        /* 🚪 Login Page (Full Screen) */
+        #loginOverlay { position: fixed; inset: 0; background: white; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+        .login-box input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 10px; margin: 20px 0 10px; font-size: 18px; text-align: center; }
+        .login-box button { width: 100%; padding: 15px; background: var(--wa-light); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; }
     </style>
 </head>
 <body>
 
-<div id="authOverlay">
-    <div class="auth-box">
-        <h1>Empire</h1>
-        <p style="color: #94a3b8; margin-bottom: 30px;">Enter the digital realm</p>
-        <input type="text" id="userName" class="auth-input" placeholder="Codename">
-        <button class="auth-btn" onclick="initialize()">INITIALIZE</button>
+<div id="loginOverlay">
+    <div class="login-box" style="width: 100%;">
+        <h1 style="color: var(--wa-light); font-size: 32px;">Empire Hub</h1>
+        <p style="color: var(--gray); margin-top: 10px;">Connect to your secure network</p>
+        <input type="text" id="joinName" placeholder="Enter Your Name">
+        <button onclick="joinHub()">AGREE & CONTINUE</button>
     </div>
 </div>
 
 <header>
-    <div class="logo">EMPIRE v10</div>
-    <div id="adminCrown" style="display:none; color: #fbbf24;"><i class="fa-solid fa-crown fa-beat-fade"></i></div>
+    <div class="brand">WhatsApp Legend</div>
+    <div style="font-size: 18px;"><i class="fa-solid fa-camera"></i> <i class="fa-solid fa-search" style="margin-left:20px;"></i></div>
 </header>
 
-<main id="viewport">
-    <div class="page active" id="p-home">
-        <div style="background: var(--glass); padding: 40px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); text-align: center; margin-top: 20px;">
-            <h2 id="helloTxt">Synchronizing...</h2>
-            <p style="color: #94a3b8; font-size: 14px; margin-top: 10px;">Security protocols active. Encryption 100%.</p>
-        </div>
+<div id="admBar">
+    <button class="adm-btn" onclick="muteSys()">MUTE SYSTEM</button>
+    <button class="adm-btn" onclick="wipeSys()">WIPE CHATS</button>
+</div>
+
+<main id="scroller">
+    <div class="page active" id="pg-home">
+        <div id="activeUsers"></div>
     </div>
-    <div class="page" id="p-chat"><div id="chatFeed"></div></div>
-    <div class="page" id="p-users"><div id="onlineList"></div></div>
+
+    <div class="page" id="pg-chat">
+        <div id="chatFeed"></div>
+    </div>
 </main>
 
 <div id="inputArea">
-    <div class="input-pill"><input type="text" id="msgInput" placeholder="Write a message..." onkeydown="if(event.key==='Enter') pushMsg()"></div>
-    <button class="btn-send" onclick="pushMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+    <div class="input-wrap"><input type="text" id="mIn" placeholder="Message" onkeydown="if(event.key==='Enter') sendMsg()"></div>
+    <button class="send-btn" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
 </div>
 
 <nav>
-    <div class="tab active" onclick="navigate('p-home',this)"><i class="fa-solid fa-compass"></i>Hub</div>
-    <div class="tab" onclick="navigate('p-chat',this)"><i class="fa-solid fa-ghost"></i>Shadow</div>
-    <div class="tab" onclick="navigate('p-users',this)"><i class="fa-solid fa-user-astronaut"></i>Aliens</div>
-    <div class="tab" onclick="logout()"><i class="fa-solid fa-power-off"></i>End</div>
+    <div class="tab active" onclick="go('pg-home',this)"><i class="fa-solid fa-message"></i>Chats</div>
+    <div class="tab" onclick="go('pg-chat',this)"><i class="fa-solid fa-ghost"></i>Ghost Chat</div>
+    <div class="tab" onclick="quit()"><i class="fa-solid fa-power-off"></i>Exit</div>
 </nav>
 
 <script type="module">
@@ -129,7 +125,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getDatabase, ref, set, push, onValue, serverTimestamp, query, limitToLast, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-const fbConfig = {
+const config = {
   apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
   authDomain:"live-chat-b810c.firebaseapp.com",
   databaseURL:"https://live-chat-b810c-default-rtdb.firebaseio.com",
@@ -139,80 +135,85 @@ const fbConfig = {
   appId:"1:555058795334:web:f668887409800c32970b47"
 };
 
-const app = initializeApp(fbConfig);
+const app = initializeApp(config);
 const auth = getAuth(app);
-const db = getDatabase(app);
+const db = getDatabase(config.databaseURL ? app : initializeApp(config)); // Safe re-init
 
-let uid, name, isAdmin=false, room="v10_main";
+let uid, name, boss=false, room="legend_v11";
 
-window.initialize = async () => {
-    const n = document.getElementById("userName").value.trim();
-    if(!n) return;
-    if(n.toLowerCase()==='nazim'){ if(prompt("Auth Code:")==='786') isAdmin=true; else return; }
+window.joinHub = async () => {
+    const val = document.getElementById("joinName").value.trim();
+    if(!val) return;
+    if(val.toLowerCase()==='nazim'){ if(prompt("Admin Key:")==='786') boss=true; else return; }
     const res = await signInAnonymously(auth);
-    uid = res.user.uid; name = n;
-    localStorage.setItem("un", n); localStorage.setItem("ia", isAdmin);
-    startHub();
+    uid = res.user.uid; name = val;
+    localStorage.setItem("n_name", val); localStorage.setItem("n_boss", boss);
+    run();
 };
 
-function startHub(){
-    document.getElementById("authOverlay").style.display="none";
-    document.getElementById("helloTxt").innerText = "Welcome, " + name;
-    if(isAdmin) document.getElementById("adminCrown").style.display="block";
+function run(){
+    document.getElementById("loginOverlay").style.display="none";
+    if(boss) document.getElementById("admBar").style.display="flex";
 
-    const presenceRef = ref(db, 'presence/'+uid);
-    onValue(ref(db, '.info/connected'), s => { if(s.val()){ onDisconnect(presenceRef).remove(); set(presenceRef, {name:name, ts:serverTimestamp()}); }});
+    const nodeRef = ref(getDatabase(), 'nodes/'+uid);
+    onValue(ref(getDatabase(), '.info/connected'), s => { if(s.val()){ onDisconnect(nodeRef).remove(); set(nodeRef, {name:name, online:true}); }});
 
-    syncM(); syncU();
+    syncChats(); syncPeople();
 }
 
-window.pushMsg = () => {
-    const i = document.getElementById("msgInput");
+window.sendMsg = () => {
+    const i = document.getElementById("mIn");
     if(!i.value.trim()) return;
-    push(ref(db, room), { uid:uid, name:name, text:i.value, ts:serverTimestamp() });
+    push(ref(getDatabase(), room), { uid:uid, name:name, text:i.value, ts:serverTimestamp() });
     i.value="";
 };
 
-window.navigate = (id, el) => {
+window.go = (id, el) => {
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
     document.getElementById(id).classList.add("active");
     document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
     el.classList.add("active");
-    document.getElementById("inputArea").style.display = (id==='p-chat') ? 'flex' : 'none';
-    if(id==='p-chat') { const v = document.getElementById("viewport"); v.scrollTop = v.scrollHeight; }
+    document.getElementById("inputArea").style.display = (id==='pg-chat') ? 'flex' : 'none';
+    if(id==='pg-chat') scroll();
 };
 
-function syncM(){
-    onValue(query(ref(db, room), limitToLast(50)), s => {
-        const feed = document.getElementById("chatFeed"); feed.innerHTML="";
+function scroll(){ const s = document.getElementById("scroller"); s.scrollTop = s.scrollHeight; }
+
+function syncChats(){
+    onValue(query(ref(getDatabase(), room), limitToLast(50)), s => {
+        const f = document.getElementById("chatFeed"); f.innerHTML="";
         s.forEach(m => {
             const d = m.val();
-            feed.innerHTML += `<div class="bubble ${d.uid===uid?'me':'other'}"><span class="sender">${d.name}</span>${d.text}</div>`;
+            f.innerHTML += `<div class="bubble ${d.uid===uid?'me':'other'}"><b>${d.name}</b>${d.text}</div>`;
         });
-        document.getElementById("viewport").scrollTop = document.getElementById("viewport").scrollHeight;
+        scroll();
     });
 }
 
-function syncU(){
-    onValue(ref(db, 'presence'), s => {
-        const list = document.getElementById("onlineList"); list.innerHTML="";
+function syncPeople(){
+    onValue(ref(getDatabase(), 'nodes'), s => {
+        const list = document.getElementById("activeUsers"); list.innerHTML="";
         s.forEach(u => {
             if(u.key===uid) return;
-            list.innerHTML += `<div style="background:var(--glass); padding:15px; border-radius:20px; margin-bottom:10px; display:flex; align-items:center; gap:15px; border:1px solid rgba(255,255,255,0.05);">
-                <div style="width:10px; height:10px; background:#4ade80; border-radius:50%; box-shadow: 0 0 10px #4ade80;"></div>
-                <b style="flex:1">${u.val().name}</b>
-                <button onclick="room='${uid<u.key?uid+'_'+u.key:u.key+'_'+uid}'; navigate('p-chat', document.querySelectorAll('.tab')[1])" style="background:var(--accent); border:none; color:white; padding:8px 15px; border-radius:12px; font-weight:700;">CHIP IN</button>
+            list.innerHTML += `<div class="user-item" onclick="room='${uid<u.key?uid+'_'+u.key:u.key+'_'+uid}'; go('pg-chat', document.querySelectorAll('.tab')[1])">
+                <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                <div class="user-info">
+                    <h4>${u.val().name}</h4>
+                    <p>Online - Tap to message</p>
+                </div>
             </div>`;
         });
     });
 }
 
-window.logout = () => { localStorage.clear(); signOut(auth).then(()=>location.reload()); };
+window.muteSys = () => { /* Logic here */ };
+window.wipeSys = () => { if(boss && confirm("Wipe?")) remove(ref(getDatabase(), room)); };
+window.quit = () => { localStorage.clear(); signOut(auth).then(()=>location.reload()); };
 
 onAuthStateChanged(auth, user => {
-    if(user && localStorage.getItem("un")){ 
-        uid=user.uid; name=localStorage.getItem("un"); isAdmin=localStorage.getItem("ia")==='true'; 
-        startHub();
+    if(user && localStorage.getItem("n_name")){ 
+        uid=user.uid; name=localStorage.getItem("n_name"); boss=localStorage.getItem("n_boss")==='true'; 
+        run();
     }
 });
 </script>
