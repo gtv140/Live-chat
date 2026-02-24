@@ -2,159 +2,130 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>WEB-HUB | Messenger Pro</title>
+<title>WEB-HUB | Final Fixed</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root { 
-    --p: #0084ff; /* Messenger Blue */
-    --s: #a033ff; /* Messenger Purple */
-    --bg: #000000; 
-    --card: #1c1c1e; 
-    --me: linear-gradient(135deg, #0084ff, #00a2ff);
-    --other: #262626;
-    --text: #ffffff;
-}
-
-* { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+:root { --p: #0084ff; --bg: #000; --card: #1c1c1e; --me: #0084ff; --other: #262626; }
+* { box-sizing: border-box; font-family: -apple-system, sans-serif; }
 
 body { 
-    margin: 0; background: var(--bg); color: var(--text); 
+    margin: 0; background: var(--bg); color: white; 
     height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
 }
 
-/* Admin Controls (Floating) */
-#admTerminal { 
-    display: none; position: fixed; top: 70px; left: 10px; right: 10px; 
-    background: rgba(255, 59, 48, 0.2); backdrop-filter: blur(10px);
-    border: 1px solid #ff3b30; padding: 10px; border-radius: 15px; 
-    z-index: 1000; justify-content: space-between; align-items: center;
+/* 👑 ADMIN BAR - FIXED TOP */
+#admBar { 
+    display: none; background: rgba(255, 59, 48, 0.2); 
+    padding: 10px; border-bottom: 1px solid #ff3b30; 
+    justify-content: space-between; align-items: center; font-size: 12px;
 }
+.btn-red { background: #ff3b30; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-weight: bold; }
 
-/* Header */
-header { 
-    padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
-    background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-bottom: 0.5px solid #333;
-}
-.brand { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; }
+/* 📱 HEADER */
+header { padding: 15px 20px; border-bottom: 1px solid #222; background: #000; }
+.brand { font-size: 22px; font-weight: 800; }
 
-/* Pages */
-.page { display: none; flex: 1; overflow: hidden; position: relative; }
+/* 💬 CHAT FEED - SCROLLABLE */
+.page { display: none; flex: 1; overflow: hidden; }
 .page.active { display: flex; flex-direction: column; }
 
-/* 💬 REAL MESSENGER CHAT BOXES */
+#chat-pg { display: none; flex-direction: column; height: 100%; }
+#chat-pg.active { display: flex; }
+
 .feed { 
-    flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 4px; 
-    scroll-behavior: smooth; padding-bottom: 100px;
+    flex: 1; overflow-y: auto; padding: 15px; 
+    display: flex; flex-direction: column; gap: 8px;
 }
 
-.msg-wrapper { display: flex; flex-direction: column; margin-bottom: 8px; }
-.msg-wrapper.me { align-items: flex-end; }
-.msg-wrapper.other { align-items: flex-start; }
+/* MESSAGES */
+.msg { max-width: 75%; padding: 10px 15px; border-radius: 18px; font-size: 15px; position: relative; }
+.msg.me { align-self: flex-end; background: var(--me); border-bottom-right-radius: 4px; }
+.msg.other { align-self: flex-start; background: var(--other); border-bottom-left-radius: 4px; }
+.msg span { font-size: 10px; opacity: 0.5; display: block; margin-bottom: 3px; }
 
-.bubble { 
-    padding: 10px 16px; border-radius: 20px; font-size: 15px; max-width: 75%;
-    line-height: 1.4; word-wrap: break-word;
+/* ⌨️ STICKY INPUT BOX (FIXED) */
+.input-area { 
+    background: #000; padding: 10px 15px 10px 15px;
+    border-top: 1px solid #222; display: flex; align-items: center; gap: 10px;
 }
-.me .bubble { background: var(--me); color: white; border-bottom-right-radius: 4px; }
-.other .bubble { background: var(--other); color: white; border-bottom-left-radius: 4px; }
-
-.sender { font-size: 10px; opacity: 0.5; margin: 0 10px 4px 10px; font-weight: 600; }
-
-/* ⌨️ STYLISH INPUT BOX (MODERN) */
-.dock-area { 
-    position: absolute; bottom: 0; left: 0; right: 0;
-    padding: 10px 15px 30px 15px; background: linear-gradient(to top, black, transparent);
+.input-box { 
+    flex: 1; background: #262626; border-radius: 20px; 
+    padding: 8px 15px; display: flex; align-items: center;
 }
-.input-container { 
-    background: #262626; border-radius: 25px; padding: 5px 5px 5px 15px;
-    display: flex; align-items: center; gap: 10px;
-}
-.input-container input { 
-    flex: 1; background: none; border: none; color: white; height: 40px; 
-    outline: none; font-size: 16px; 
+.input-box input { 
+    flex: 1; background: none; border: none; color: white; 
+    outline: none; font-size: 16px; height: 35px;
 }
 .send-btn { 
-    width: 38px; height: 38px; background: var(--p); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; border: none; color: white;
+    color: var(--p); font-size: 22px; border: none; background: none; 
 }
 
-/* Bottom Tabs */
-.tabs { 
-    height: 75px; background: #000; border-top: 0.5px solid #333;
-    display: flex; justify-content: space-around; align-items: center; padding-bottom: 15px;
+/* BOTTOM NAVIGATION */
+nav { 
+    height: 65px; background: #000; border-top: 1px solid #222;
+    display: flex; justify-content: space-around; align-items: center;
 }
-.tab { color: #8e8e93; font-size: 1.2rem; cursor: pointer; text-align: center; }
+.tab { color: #8e8e93; text-align: center; font-size: 11px; text-decoration: none; cursor: pointer; }
+.tab i { font-size: 20px; display: block; margin-bottom: 4px; }
 .tab.active { color: var(--p); }
-.tab span { display: block; font-size: 10px; margin-top: 4px; font-weight: 500; }
 
-/* Auth */
-#auth { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; align-items: center; justify-content: center; }
-.auth-inner { width: 85%; text-align: center; }
-.auth-inner input { width: 100%; padding: 16px; background: #1c1c1e; border: none; border-radius: 12px; color: white; margin-bottom: 15px; font-size: 16px; text-align: center; }
-.auth-inner button { width: 100%; padding: 16px; background: var(--p); border: none; border-radius: 12px; color: white; font-weight: 700; font-size: 16px; }
-
-/* User Card */
-.user-row { background: #1c1c1e; padding: 12px 15px; border-radius: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
-.status-dot { width: 10px; height: 10px; background: #34c759; border-radius: 50%; }
-.ban-link { color: #ff3b30; font-size: 11px; font-weight: 700; margin-left: auto; text-decoration: none; }
+/* AUTH */
+#auth { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+.auth-box { width: 80%; text-align: center; }
+.auth-box input { width: 100%; padding: 15px; background: #1c1c1e; border: none; border-radius: 10px; color: white; margin-bottom: 10px; font-size: 16px; }
+.auth-box button { width: 100%; padding: 15px; background: var(--p); border: none; border-radius: 10px; color: white; font-weight: bold; }
 </style>
 </head>
 <body>
 
 <div id="auth">
-    <div class="auth-inner">
-        <h1 style="font-size: 2.5rem; letter-spacing: -1px; margin-bottom: 5px;">Web-Hub</h1>
-        <p style="color: #8e8e93; margin-bottom: 30px;">Enter your asset codename</p>
-        <input type="text" id="username" placeholder="Codename">
-        <button onclick="login()">Get Started</button>
+    <div class="auth-box">
+        <h1 style="font-size: 40px; margin-bottom: 30px;">Web-Hub</h1>
+        <input type="text" id="uIn" placeholder="Enter Username">
+        <button onclick="login()">Connect</button>
     </div>
 </div>
 
-<div id="admTerminal">
-    <span style="font-weight: 800; color: #ff3b30;">ADMIN COMMANDS</span>
+<div id="admBar">
+    <span style="font-weight: 900; color: #ff3b30;">GOD MODE</span>
     <div>
-        <button onclick="admMute()" style="background:white; border:none; padding:5px 10px; border-radius:5px; font-size:10px; font-weight:800;">MUTE</button>
-        <button onclick="admWipe()" style="background:#ff3b30; border:none; color:white; padding:5px 10px; border-radius:5px; font-size:10px; font-weight:800; margin-left:5px;">WIPE</button>
+        <button class="btn-red" onclick="admMute()">MUTE</button>
+        <button class="btn-red" style="margin-left:5px;" onclick="admWipe()">WIPE</button>
     </div>
 </div>
 
-<header>
+<header id="head">
     <div class="brand">Chats</div>
-    <div id="adminCrown" style="display:none; color:#ffcc00;"><i class="fa-solid fa-crown"></i></div>
 </header>
 
 <div class="page active" id="home-pg">
-    <div style="padding: 20px;">
-        <div style="background: #1c1c1e; padding: 30px; border-radius: 25px; text-align:center;">
-            <h2 id="hello" style="margin:0">Hi there!</h2>
-            <p id="sub" style="color:#8e8e93; font-size: 14px;">Welcome to your secure empire.</p>
+    <div style="padding: 20px; text-align: center;">
+        <div style="background: #1c1c1e; padding: 40px 20px; border-radius: 20px;">
+            <h2 id="helloName">Welcome</h2>
+            <p style="color:#8e8e93" id="rankText">Connecting to secure server...</p>
         </div>
     </div>
 </div>
 
 <div class="page" id="chat-pg">
     <div class="feed" id="chatFeed"></div>
-    <div class="dock-area">
-        <div class="input-container">
-            <input type="text" id="mInput" placeholder="Aa" onkeydown="if(event.key==='Enter') sendMsg()">
-            <button class="send-btn" onclick="sendMsg()"><i class="fa-solid fa-arrow-up"></i></button>
+    <div class="input-area">
+        <div class="input-box">
+            <input type="text" id="mIn" placeholder="Aa" onkeydown="if(event.key==='Enter') send()">
         </div>
-        <div id="muteLabel" style="display:none; text-align:center; color:#ff3b30; font-size:11px; font-weight:800; margin-top:5px;">🔇 CHAT DISABLED BY ADMIN</div>
+        <button class="send-btn" onclick="send()"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
 </div>
 
 <div class="page" id="users-pg">
-    <div style="padding: 20px;">
-        <h3 style="color:#8e8e93; font-size: 13px; text-transform: uppercase;">Active Now</h3>
-        <div id="liveList"></div>
-    </div>
+    <div style="padding: 20px;" id="uList"></div>
 </div>
 
-<nav class="tabs">
-    <div class="tab active" onclick="go('home-pg',this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
-    <div class="tab" onclick="go('chat-pg',this)"><i class="fa-solid fa-comment"></i><span>Chats</span></div>
-    <div class="tab" onclick="go('users-pg',this)"><i class="fa-solid fa-users"></i><span>People</span></div>
-    <div class="tab" onclick="out()"><i class="fa-solid fa-right-from-bracket"></i><span>Exit</span></div>
+<nav>
+    <div class="tab active" onclick="go('home-pg',this)"><i class="fa-solid fa-house"></i>Home</div>
+    <div class="tab" onclick="go('chat-pg',this)"><i class="fa-solid fa-comment"></i>Chats</div>
+    <div class="tab" onclick="go('users-pg',this)"><i class="fa-solid fa-users"></i>People</div>
+    <div class="tab" onclick="exit()"><i class="fa-solid fa-right-from-bracket"></i>Exit</div>
 </nav>
 
 <script type="module">
@@ -176,45 +147,42 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-let uID, uName, isAdmin=false, room="global_v4";
-
-const fixScroll = () => { const f = document.getElementById("chatFeed"); f.scrollTop = f.scrollHeight; };
+let uID, uName, isAdmin=false, room="global_v5";
 
 window.login = async () => {
-    const val = document.getElementById("username").value.trim();
-    if(!val) return;
-    if(val.toLowerCase()==='nazim'){
+    const n = document.getElementById("uIn").value.trim();
+    if(!n) return;
+    if(n.toLowerCase()==='nazim'){
         if(prompt("Admin Key:")==='786') isAdmin=true; else return;
     }
     const res = await signInAnonymously(auth);
-    uID = res.user.uid; uName = val;
-    localStorage.setItem("uN", val); localStorage.setItem("uA", isAdmin);
-    init();
+    uID = res.user.uid; uName = n;
+    localStorage.setItem("uN", n); localStorage.setItem("uA", isAdmin);
+    start();
 };
 
-function init(){
+function start(){
     document.getElementById("auth").style.display="none";
-    document.getElementById("hello").innerText = "Hi, " + uName;
+    document.getElementById("helloName").innerText = "Hi, " + uName;
     if(isAdmin){
-        document.getElementById("admTerminal").style.display="flex";
-        document.getElementById("adminCrown").style.display="block";
-        document.getElementById("sub").innerText = "System Administrator (God Mode)";
+        document.getElementById("admBar").style.display="flex";
+        document.getElementById("rankText").innerText = "Sovereign Administrator";
     }
 
     const myRef = ref(db, 'nodes/'+uID);
     onValue(ref(db, '.info/connected'), (s) => {
-        if(s.val()===true){ onDisconnect(myRef).remove(); set(myRef, {name:uName, online:true}); }
+        if(s.val()){ onDisconnect(myRef).remove(); set(myRef, {name:uName, online:true}); }
     });
 
-    syncChat(); syncPeople();
+    syncChat(); syncUsers();
     onValue(ref(db, 'system/mute'), s => { 
-        document.getElementById("mInput").disabled = (s.val() && !isAdmin);
-        document.getElementById("muteLabel").style.display = (s.val() && !isAdmin) ? "block" : "none";
+        document.getElementById("mIn").disabled = (s.val() && !isAdmin);
+        document.getElementById("mIn").placeholder = (s.val() && !isAdmin) ? "Muted" : "Aa";
     });
 }
 
-window.sendMsg = () => {
-    const i = document.getElementById("mInput");
+window.send = () => {
+    const i = document.getElementById("mIn");
     if(!i.value.trim()) return;
     push(ref(db, room), { uid:uID, name:uName, text:i.value, ts:serverTimestamp() });
     i.value="";
@@ -225,61 +193,48 @@ window.go = (id, el) => {
     document.getElementById(id).classList.add("active");
     document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
     el.classList.add("active");
-    if(id==='chat-pg') setTimeout(fixScroll, 100);
+    if(id==='chat-pg') setTimeout(()=>{ const f = document.getElementById("chatFeed"); f.scrollTop = f.scrollHeight; }, 100);
 };
 
 function syncChat(){
     onValue(query(ref(db, room), limitToLast(50)), s => {
-        const feed = document.getElementById("chatFeed"); feed.innerHTML="";
+        const f = document.getElementById("chatFeed"); f.innerHTML="";
         s.forEach(m => {
             const d = m.val();
-            feed.innerHTML += `
-                <div class="msg-wrapper ${d.uid===uID?'me':'other'}">
-                    <span class="sender">${d.name}</span>
-                    <div class="bubble">${d.text}</div>
-                </div>`;
+            f.innerHTML += `<div class="msg ${d.uid===uID?'me':'other'}"><span>${d.name}</span>${d.text}</div>`;
         });
-        fixScroll();
+        f.scrollTop = f.scrollHeight;
     });
 }
 
-function syncPeople(){
+function syncUsers(){
     onValue(ref(db, 'nodes'), s => {
-        const list = document.getElementById("liveList"); list.innerHTML="";
+        const l = document.getElementById("uList"); l.innerHTML="<h3 style='font-size:14px; color:#8e8e93;'>ONLINE</h3>";
         s.forEach(u => {
             if(u.key===uID) return;
             const d = u.val();
-            const row = document.createElement('div'); row.className='user-row';
-            row.innerHTML = `
-                <img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:40px; height:40px; border-radius:50%;">
-                <div style="flex:1">
-                    <div style="font-weight:600; font-size:15px;">${d.name}</div>
-                    <div style="font-size:11px; color:#34c759;">Online Now</div>
+            l.innerHTML += `<div style="background:#1c1c1e; padding:15px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:bold;">${d.name}</span>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="room='${uID<u.key?uID+'_'+u.key:u.key+'_'+uID}'; go('chat-pg', document.querySelectorAll('.tab')[1])" style="background:var(--p); border:none; color:white; border-radius:5px; padding:5px 10px;">Chat</button>
+                    ${isAdmin?`<button onclick="ban('${u.key}')" style="background:#ff3b30; border:none; color:white; border-radius:5px; padding:5px 10px;">BAN</button>`:''}
                 </div>
-                ${isAdmin?`<span class="ban-link" onclick="ban('${u.key}')">BAN</span>`:''}
-            `;
-            row.onclick = (e) => { if(e.target.className!=='ban-link') startPriv(u.key, d.name); };
-            list.appendChild(row);
+            </div>`;
         });
     });
 }
 
-window.startPriv = (tid, tname) => {
-    room = uID < tid ? `${uID}_${tid}` : `${tid}_${uID}`;
-    go('chat-pg', document.querySelectorAll(".tab")[1]);
-};
-
 window.ban = (uid) => { if(isAdmin && confirm("Ban?")) set(ref(db, 'banned/'+uid), true); };
 window.admMute = () => { onValue(ref(db, 'system/mute'), s=>{ set(ref(db, 'system/mute'), !s.val()); }, {onlyOnce:true}); };
-window.admWipe = () => { if(isAdmin && confirm("Wipe?")) remove(ref(db, 'global_v4')); };
-window.out = () => { localStorage.clear(); signOut(auth).then(()=>location.reload()); };
+window.admWipe = () => { if(isAdmin && confirm("Wipe?")) remove(ref(db, room)); };
+window.exit = () => { localStorage.clear(); signOut(auth).then(()=>location.reload()); };
 
 onAuthStateChanged(auth, user => {
     if(user && localStorage.getItem("uN")){ 
         uID=user.uid; uName=localStorage.getItem("uN"); isAdmin=localStorage.getItem("uA")==='true'; 
         onValue(ref(db, 'banned/'+uID), s => {
-            if(s.val()){ document.body.innerHTML="<h1 style='color:red; text-align:center; padding-top:100px;'>ACCESS DENIED</h1>"; localStorage.clear(); }
-            else init();
+            if(s.val()){ document.body.innerHTML="<h1 style='color:red; text-align:center; padding-top:100px;'>BANNED</h1>"; localStorage.clear(); }
+            else start();
         });
     }
 });
