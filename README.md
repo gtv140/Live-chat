@@ -2,36 +2,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Empire Dashboard Simple</title>
+<title>Empire Dashboard App Style</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
 --primary:#8b5cf6; --secondary:#f43f5e; --bg:#0b0f1a; --glass:rgba(20,25,40,0.75); --text:#f8fafc; --hover:#272b3d;
 }
 *{box-sizing:border-box;font-family:sans-serif;}
-body{margin:0;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;}
-.sidebar{width:70px;background:#01030b;display:flex;flex-direction:column;align-items:center;padding:20px 0;gap:15px;}
-.sidebar .btn{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#777;cursor:pointer;position:relative;}
-.sidebar .btn.active{background:var(--primary);color:white;}
-header{padding:10px 15px;background:rgba(0,0,0,0.8);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.05);}
-.main{flex:1;display:flex;flex-direction:column;}
-.content{flex:1;display:flex;overflow:hidden;position:relative;}
+body{margin:0;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;}
+header{padding:10px;background:rgba(0,0,0,0.8);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.05);}
+.main{flex:1;display:flex;overflow:hidden;position:relative;}
 .section{flex:1;overflow-y:auto;padding:15px;display:none;}
 .section.active{display:block;}
 .feed{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;}
 .msg{max-width:80%;padding:8px 12px;border-radius:15px;}
 .me{align-self:flex-end;background:var(--primary);}
 .other{align-self:flex-start;background:var(--glass);}
-.dock{position:absolute;bottom:15px;left:15px;right:15px;background:var(--glass);padding:8px;border-radius:50px;display:flex;gap:5px;}
+.dock{position:absolute;bottom:70px;left:15px;right:15px;background:var(--glass);padding:8px;border-radius:50px;display:flex;gap:5px;}
 .dock input{flex:1;background:none;border:none;color:white;padding-left:8px;}
 .dock button{background:var(--primary);border:none;color:white;padding:0 10px;border-radius:50%;cursor:pointer;}
-.user-list{width:200px;background:rgba(255,255,255,0.02);padding:10px;border-left:1px solid rgba(255,255,255,0.05);}
+.user-list{padding:10px;}
 .u-card{padding:8px;border-radius:10px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.03);cursor:pointer;}
 .u-card:hover{background:rgba(255,255,255,0.07);}
 .auth-box{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;}
 .auth-inner{background:var(--glass);padding:25px;border-radius:20px;text-align:center;width:90%;max-width:300px;}
 .auth-inner input, .auth-inner button{width:100%;padding:10px;margin:5px 0;border:none;border-radius:12px;}
 .auth-inner button{background:var(--primary);color:white;cursor:pointer;}
+.bottom-nav{height:60px;background:rgba(0,0,0,0.85);display:flex;justify-content:space-around;align-items:center;position:fixed;bottom:0;left:0;right:0;border-top:1px solid rgba(255,255,255,0.05);}
+.bottom-nav .nav-btn{color:#777;font-size:1.5rem;cursor:pointer;position:relative;}
+.bottom-nav .nav-btn.active{color:var(--primary);}
+#moreMenu{position:absolute;bottom:60px;right:10px;background:var(--glass);border-radius:12px;display:none;flex-direction:column;gap:5px;padding:8px;}
+#moreMenu button{background:none;border:none;color:white;text-align:left;padding:5px;border-radius:8px;cursor:pointer;}
+#moreMenu button:hover{background:var(--hover);}
 </style>
 </head>
 <body>
@@ -45,17 +47,9 @@ header{padding:10px 15px;background:rgba(0,0,0,0.8);display:flex;justify-content
 </div>
 </div>
 
-<nav class="sidebar">
-<div class="btn active" onclick="switchSection('home')"><i class="fa-solid fa-house"></i></div>
-<div class="btn" onclick="switchSection('users')"><i class="fa-solid fa-users"></i></div>
-<div class="btn" onclick="switchSection('chat')"><i class="fa-solid fa-comments"></i></div>
-<div class="btn" onclick="switchSection('settings')"><i class="fa-solid fa-gear"></i></div>
-<div class="btn" onclick="logoutAll()"><i class="fa-solid fa-power-off"></i></div>
-</nav>
+<header><span id="headerTitle">HOME</span><span id="badge" style="display:none;">👑</span></header>
 
 <div class="main">
-<header><span id="headerTitle">HOME</span><span id="badge" style="display:none;">👑</span></header>
-<div class="content">
 <div id="home" class="section active"><h3>Welcome, <span id="uDisplay"></span>!</h3></div>
 <div id="users" class="section"><h3>Active Users</h3><div id="uList"></div></div>
 <div id="chat" class="section">
@@ -74,6 +68,17 @@ header{padding:10px 15px;background:rgba(0,0,0,0.8);display:flex;justify-content
 </div>
 </div>
 </div>
+
+<div class="bottom-nav">
+<div class="nav-btn active" onclick="switchSection('home')"><i class="fa-solid fa-house"></i></div>
+<div class="nav-btn" onclick="switchSection('chat')"><i class="fa-solid fa-comments"></i></div>
+<div class="nav-btn" onclick="switchSection('users')"><i class="fa-solid fa-users"></i></div>
+<div class="nav-btn" onclick="toggleMore()"><i class="fa-solid fa-ellipsis"></i></div>
+</div>
+
+<div id="moreMenu">
+<button onclick="switchSection('settings')">Settings</button>
+<button onclick="logoutAll()">Logout</button>
 </div>
 
 <script type="module">
@@ -140,7 +145,7 @@ window.switchSection=(sec)=>{
 document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
 document.getElementById(sec).classList.add('active');
 document.getElementById('headerTitle').innerText=sec.toUpperCase();
-document.querySelectorAll('.sidebar .btn').forEach(b=>b.classList.remove('active'));
+document.querySelectorAll('.bottom-nav .nav-btn').forEach(b=>b.classList.remove('active'));
 };
 
 window.send=()=>{
@@ -180,6 +185,11 @@ l.appendChild(node);
 window.toggleMute=()=>{onValue(ref(db,'system/mute'),s=>{set(ref(db,'system/mute'),!s.val());},{onlyOnce:true});};
 window.wipeData=()=>{if(confirm("Wipe Chat?"))remove(ref(db,currentRoom));};
 window.logoutAll=()=>{localStorage.clear(); signOut(auth).then(()=>location.reload());};
+
+window.toggleMore=()=>{
+const m=document.getElementById("moreMenu");
+m.style.display=m.style.display==='flex'?'none':'flex';
+};
 </script>
 
 </body>
