@@ -34,6 +34,10 @@ header{padding:10px;background:rgba(0,0,0,0.8);display:flex;justify-content:spac
 #moreMenu{position:absolute;bottom:60px;right:10px;background:var(--glass);border-radius:12px;display:none;flex-direction:column;gap:5px;padding:8px;}
 #moreMenu button{background:none;border:none;color:white;text-align:left;padding:5px;border-radius:8px;cursor:pointer;}
 #moreMenu button:hover{background:var(--hover);}
+.welcome-box{background:var(--glass);padding:15px;border-radius:15px;margin-bottom:15px;text-align:center;}
+.active-count{background:#272b3d;padding:10px;border-radius:12px;margin-top:10px;}
+.about-box{background:var(--glass);padding:15px;border-radius:15px;margin-top:15px;}
+.typing-indicator{font-size:12px;color:#aaa;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -50,17 +54,34 @@ header{padding:10px;background:rgba(0,0,0,0.8);display:flex;justify-content:spac
 <header><span id="headerTitle">HOME</span><span id="badge" style="display:none;">👑</span></header>
 
 <div class="main">
-<div id="home" class="section active"><h3>Welcome, <span id="uDisplay"></span>!</h3></div>
+<!-- HOME -->
+<div id="home" class="section active">
+<div class="welcome-box">
+<h3>Welcome, <span id="uDisplay"></span>!</h3>
+<div class="active-count">Active Users: <span id="activeCount">0</span></div>
+</div>
+<div class="about-box">
+<h4>About Our Website</h4>
+<p>This is a modern real-time chat dashboard with admin powers, multi-user chat, broadcast messages, and private messaging features. Connect instantly!</p>
+</div>
+</div>
+
+<!-- USERS -->
 <div id="users" class="section"><h3>Active Users</h3><div id="uList"></div></div>
+
+<!-- CHAT -->
 <div id="chat" class="section">
 <div class="feed" id="feed"></div>
+<div class="typing-indicator" id="typing"></div>
 <div class="dock">
-<input type="text" id="mIn" placeholder="Type a message..." onkeydown="if(event.key==='Enter') send()">
+<input type="text" id="mIn" placeholder="Type a message..." onkeydown="typingIndicator();if(event.key==='Enter') send()">
 <button onclick="send()"><i class="fa-solid fa-paper-plane"></i></button>
 <input type="text" id="broadcastInput" placeholder="Broadcast..." style="display:none;">
 <button id="broadcastBtn" style="display:none;" onclick="broadcast()"><i class="fa-solid fa-bullhorn"></i></button>
 </div>
 </div>
+
+<!-- SETTINGS -->
 <div id="settings" class="section">
 <div id="adminTools" style="display:none;">
 <button onclick="toggleMute()">Mute/Unmute Chat</button>
@@ -101,6 +122,7 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 let uUID,uName,isAdmin=false,currentRoom="global_simple";
+let typingTimeout;
 
 onAuthStateChanged(auth,user=>{
 if(user){
@@ -137,10 +159,11 @@ document.getElementById("broadcastBtn").style.display="block";
 document.getElementById("badge").style.display="inline";
 }
 set(ref(db,'nodes/'+uUID),{name:uName,online:true});
-syncUsers(); syncMsgs();
+syncUsers(); syncMsgs(); updateActiveCount();
 onValue(ref(db,'system/mute'),s=>{document.getElementById("feed").style.opacity=(s.val()&&!isAdmin)?0.5:1;});
 }
 
+// Sections
 window.switchSection=(sec)=>{
 document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
 document.getElementById(sec).classList.add('active');
@@ -148,13 +171,29 @@ document.getElementById('headerTitle').innerText=sec.toUpperCase();
 document.querySelectorAll('.bottom-nav .nav-btn').forEach(b=>b.classList.remove('active'));
 };
 
+// Chat
 window.send=()=>{
 const i=document.getElementById("mIn");
 if(!i.value.trim())return;
 push(ref(db,currentRoom),{uid:uUID,sender:uName,text:i.value,ts:serverTimestamp()});
 i.value="";
+typingIndicator(false);
 };
 
+// Typing Indicator
+function typingIndicator(active=true){
+const tRef=ref(db,'typing/'+currentRoom+'/'+uUID);
+set(tRef,active?uName:null);
+clearTimeout(typingTimeout);
+if(active) typingTimeout=setTimeout(()=>{set(tRef,null);},3000);
+onValue(ref(db,'typing/'+currentRoom),s=>{
+let usersTyping=[];
+s.forEach(c=>{if(c.val()) usersTyping.push(c.val());});
+document.getElementById('typing').innerText=usersTyping.length?usersTyping.join(', ')+' is typing...':'';
+});
+}
+
+// Broadcast
 function broadcast(){
 const msg=document.getElementById("broadcastInput").value.trim();
 if(!msg)return;
@@ -162,6 +201,7 @@ push(ref(db,'broadcast'),{uid:uUID,sender:uName,text:msg,ts:serverTimestamp()});
 document.getElementById("broadcastInput").value="";
 }
 
+// Sync Messages
 function syncMsgs(){
 onValue(query(ref(db,currentRoom),limitToLast(50)),s=>{
 const f=document.getElementById("feed"); f.innerHTML="";
@@ -170,26 +210,45 @@ s.forEach(m=>{const d=m.val(); f.innerHTML+=`<div class="msg ${d.uid===uUID?'me'
 onValue(ref(db,'broadcast'),s=>{const f=document.getElementById("feed"); s.forEach(m=>{const d=m.val(); f.innerHTML+=`<div class="msg" style="background:var(--secondary);color:white;text-align:center;">${d.sender}: ${d.text}</div>`;});});
 }
 
+// Users
 function syncUsers(){
 onValue(ref(db,'nodes'),s=>{
 const l=document.getElementById("uList"); l.innerHTML="";
-s.forEach(u=>{if(u.key===uUID)return;
+let count=1;
+s.forEach(u=>{
+if(u.key===uUID) return; 
+count++;
 const d=u.val();
 const node=document.createElement('div'); node.className='u-card';
-node.innerHTML=`<span>${d.name}</span>${isAdmin?` <button onclick="if(confirm('Ban ${d.name}?'))set(ref(db,'banned/${u.key}'),true)">BAN</button>`:""}`;
+node.innerHTML=`<span>${d.name} ${d.online?'🟢':'⚪'}</span>${isAdmin?` <button onclick="if(confirm('Ban ${d.name}?'))set(ref(db,'banned/${u.key}'),true)">BAN</button>`:""}`;
+node.onclick=()=>openPrivateChat(u.key,d.name);
 l.appendChild(node);
 });
+document.getElementById('activeCount').innerText=count;
 });
 }
 
+// Private chat
+function openPrivateChat(tid,tname){
+const rid = uUID<tid?`${uUID}_${tid}`:`${tid}_${uUID}`;
+currentRoom='private/'+rid;
+switchSection('chat');
+document.getElementById('headerTitle').innerText='🔒 '+tname;
+syncMsgs();
+typingIndicator();
+}
+
+// Admin & Utilities
 window.toggleMute=()=>{onValue(ref(db,'system/mute'),s=>{set(ref(db,'system/mute'),!s.val());},{onlyOnce:true});};
 window.wipeData=()=>{if(confirm("Wipe Chat?"))remove(ref(db,currentRoom));};
 window.logoutAll=()=>{localStorage.clear(); signOut(auth).then(()=>location.reload());};
 
+// Bottom menu
 window.toggleMore=()=>{
 const m=document.getElementById("moreMenu");
 m.style.display=m.style.display==='flex'?'none':'flex';
 };
+window.updateActiveCount=()=>{syncUsers();};
 </script>
 
 </body>
