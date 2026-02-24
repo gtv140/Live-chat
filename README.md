@@ -2,11 +2,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Web-Hub Chat - Fixed Icons</title>
+<title>Web-Hub Chat - Final Modern</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
---primary:#6d28d9; --secondary:#f472b6; --bg:#0f172a; --glass:rgba(30,41,59,0.85); --text-light:#f1f5f9;
+--primary:#6d28d9; --secondary:#f472b6; --bg:#0f172a; --glass:rgba(30,41,59,0.85); --text-light:#f1f5f9; --accent:#fbbf24;
 }
 *{box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s;}
 body{margin:0;background:var(--bg);color:var(--text-light);height:100dvh;display:flex;flex-direction:column;}
@@ -38,19 +38,22 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .users-list{background:var(--glass);padding:15px;border-radius:15px;display:flex;flex-direction:column;gap:10px;}
 .user-card{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;cursor:pointer;background:rgba(255,255,255,0.03);}
 .user-card:hover{background:rgba(255,255,255,0.08);}
-.chat-box{flex:1;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-bottom:100px;}
-.msg{max-width:80%;padding:10px 15px;border-radius:20px;font-size:14px;position:relative;}
+.chat-box{flex:1;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-bottom:120px;}
+.msg{max-width:80%;padding:10px 15px;border-radius:20px;font-size:14px;position:relative;word-wrap:break-word;}
 .msg.me{align-self:flex-end;background:var(--primary);border-bottom-right-radius:4px;}
 .msg.other{align-self:flex-start;background:var(--glass);border-bottom-left-radius:4px;}
+.msg img{max-width:100%;border-radius:12px;margin-top:8px;}
 .dock{position:fixed;bottom:70px;left:10px;right:10px;background:rgba(30,41,59,0.95);padding:8px;border-radius:50px;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,0.1);}
 .dock input{flex:1;background:none;border:none;color:white;outline:none;padding-left:10px;}
+.dock label{cursor:pointer;}
 .admin-tools{position:fixed;top:70px;right:10px;background:var(--glass);padding:10px;border-radius:15px;display:flex;flex-direction:column;gap:10px;}
 .admin-tools button{padding:5px 10px;border:none;border-radius:10px;cursor:pointer;font-weight:700;}
 .admin-tools button.broadcast{background:#facc15;color:#000;}
 .admin-tools button.mute{background:#ef4444;color:#fff;}
-.group-box{background:var(--glass);padding:15px;border-radius:15px;margin-top:10px;}
+.group-box{background:var(--glass);padding:15px;border-radius:15px;margin-top:10px;display:flex;gap:5px;}
 .group-box input{padding:8px;border-radius:10px;border:none;width:70%;outline:none;}
-.group-box button{padding:8px 10px;border-radius:10px;border:none;background:var(--primary);color:#fff;cursor:pointer;margin-left:5px;}
+.group-box button{padding:8px 10px;border-radius:10px;border:none;background:var(--primary);color:#fff;cursor:pointer;}
+.typing-indicator{font-size:0.8rem;color:#fbbf24;opacity:0.8;margin-left:10px;}
 </style>
 </head>
 <body>
@@ -83,9 +86,14 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 
 <div class="page" id="chatPage">
   <div class="chat-box" id="chatFeed"></div>
+  <div class="typing-indicator" id="typingIndicator"></div>
   <div class="dock">
-    <input type="text" id="chatInput" placeholder="Enter message..." onkeydown="if(event.key==='Enter') sendMessage()">
+    <label for="pUp"><i class="fa-solid fa-image"></i></label>
+    <input type="file" id="pUp" hidden onchange="upImg(this)">
+    <input type="text" id="chatInput" placeholder="Enter message..." onkeydown="typing();if(event.key==='Enter') sendMessage()">
     <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+    <label for="emojiPicker"><i class="fa-solid fa-face-smile"></i></label>
+    <input type="color" id="emojiPicker" hidden onchange="insertEmoji(this.value)">
   </div>
   <div class="group-box">
     <input type="text" id="groupName" placeholder="Enter group name">
@@ -100,7 +108,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 <div class="page" id="about">
   <div style="padding:20px;background:var(--glass);border-radius:15px;">
     <h2>About Web-Hub</h2>
-    <p>Web-Hub is an innovative real-time chat platform...</p>
+    <p>Web-Hub is an innovative real-time chat platform connecting users instantly with private messages, group chats, media, emoji, and admin controls. Fast, modern, responsive, and fully secure. Perfect for web & mobile users.</p>
   </div>
 </div>
 
@@ -125,7 +133,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, set, push, onValue, serverTimestamp, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, serverTimestamp, query, limitToLast, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -161,15 +169,7 @@ setInterval(updateDateQuote,5000);
 updateDateQuote();
 
 function toggleMenu(){document.getElementById("menuDropdown").style.display=document.getElementById("menuDropdown").style.display==='flex'?'none':'flex';}
-
-function showPage(id,el=null){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  if(el){
-    document.querySelectorAll(".bottom-nav i").forEach(i=>i.classList.remove("active"));
-    el.classList.add("active");
-  }
-}
+function showPage(id,el=null){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");if(el){document.querySelectorAll(".bottom-nav i").forEach(i=>i.classList.remove("active"));el.classList.add("active");}}
 
 window.boot=async()=>{
   const n=document.getElementById("loginName").value.trim();
@@ -185,7 +185,7 @@ window.boot=async()=>{
   localStorage.setItem("uN",n); localStorage.setItem("uA",isAdmin);
   document.getElementById("loginScreen").style.display="none";
   document.getElementById("welcomeBox").innerText=`Welcome, ${uName}!`;
-  set(ref(db,'nodes/'+uUID),{name:uName,online:true});
+  set(ref(db,'nodes/'+uUID),{name:uName,online:true,typing:false});
   syncUsers(); syncMsgs();
 }
 
@@ -195,30 +195,40 @@ function sendMessage(){
   const i=document.getElementById("chatInput");
   if(!i.value.trim())return;
   push(ref(db,currentRoom),{uid:uUID,sender:uName,text:i.value,ts:serverTimestamp()});
+  update(ref(db,'nodes/'+uUID),{typing:false});
   i.value="";
 }
 
-function broadcastMessage(){
-  const msg=prompt("Enter broadcast message:");
-  if(!msg)return;
-  push(ref(db,'global_v2'),{uid:uUID,sender:'ADMIN',text:msg,ts:serverTimestamp(),broadcast:true});
+function upImg(el){
+  const r=new FileReader();
+  r.onload=e=>sendMessageWithMedia(e.target.result);
+  r.readAsDataURL(el.files[0]);
+}
+function sendMessageWithMedia(p){
+  push(ref(db,currentRoom),{uid:uUID,sender:uName,img:p,ts:serverTimestamp()});
 }
 
+function insertEmoji(e){document.getElementById("chatInput").value+=e;}
+
+function broadcastMessage(){const msg=prompt("Enter broadcast message:");if(!msg)return;push(ref(db,'global_v2'),{uid:uUID,sender:'ADMIN',text:msg,ts:serverTimestamp(),broadcast:true});}
 function toggleMute(){onValue(ref(db,'system/mute'),s=>{set(ref(db,'system/mute'),!s.val());},{onlyOnce:true});}
 
 function syncMsgs(){
   onValue(query(ref(db,currentRoom),limitToLast(50)),s=>{
-    const f=document.getElementById("chatFeed");
-    f.innerHTML="";
+    const f=document.getElementById("chatFeed");f.innerHTML="";
     s.forEach(m=>{
       const d=m.val();
       let cls=d.uid===uUID?'me':'other';
       if(d.broadcast) cls='other';
-      f.innerHTML+=`<div class="msg ${cls}"><small style="opacity:0.5;font-size:10px;">${d.sender}</small>${d.text?`<div>${d.text}</div>`:''}</div>`;
+      f.innerHTML+=`<div class="msg ${cls}"><small style="opacity:0.5;font-size:10px;">${d.sender}</small>${d.text?`<div>${d.text}</div>`:''}${d.img?`<img src="${d.img}">`:''}</div>`;
     });
     f.scrollTop=f.scrollHeight;
   });
 }
+
+function typing(){update(ref(db,'nodes/'+uUID),{typing:true});setTimeout(()=>update(ref(db,'nodes/'+uUID),{typing:false}),3000);}
+function showTyping(){onValue(ref(db,'nodes'),s=>{let typingUsers=[];s.forEach(u=>{const d=u.val();if(d.typing && u.key!==uUID) typingUsers.push(d.name);});document.getElementById("typingIndicator").innerText = typingUsers.length>0 ? typingUsers.join(", ")+" is typing..." : "";});}
+setInterval(showTyping,1000);
 
 function syncUsers(){
   onValue(ref(db,'nodes'),s=>{
@@ -226,8 +236,7 @@ function syncUsers(){
     s.forEach(u=>{
       const d=u.val();
       if(!d.online)return;
-      const node=document.createElement('div');
-      node.className='user-card'; node.innerText=d.name;
+      const node=document.createElement('div'); node.className='user-card'; node.innerText=d.name;
       node.onclick=()=>{if(u.key!==uUID){currentRoom=uUID<u.key?`${uUID}_${u.key}`:`${u.key}_${uUID}`;showPage('chatPage');syncMsgs();}};
       l.appendChild(node);
     });
@@ -248,7 +257,7 @@ onAuthStateChanged(auth,user=>{
     uUID=user.uid;
     const savedName=localStorage.getItem("uN");
     const savedAdmin=localStorage.getItem("uA")==="true";
-    if(savedName){ uName=savedName; isAdmin=savedAdmin; if(isAdmin) document.getElementById("adminTools").style.display="flex"; document.getElementById("loginScreen").style.display="none"; document.getElementById("welcomeBox").innerText=`Welcome, ${uName}!`; set(ref(db,'nodes/'+uUID),{name:uName,online:true}); syncUsers(); syncMsgs(); }
+    if(savedName){ uName=savedName; isAdmin=savedAdmin; if(isAdmin) document.getElementById("adminTools").style.display="flex"; document.getElementById("loginScreen").style.display="none"; document.getElementById("welcomeBox").innerText=`Welcome, ${uName}!`; set(ref(db,'nodes/'+uUID),{name:uName,online:true,typing:false}); syncUsers(); syncMsgs(); }
   }
 });
 </script>
