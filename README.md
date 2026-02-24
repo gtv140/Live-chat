@@ -2,188 +2,191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Live Connect</title>
+<title>Live Connect Pro</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root {
-  --primary: #075e54; /* WhatsApp Green Style */
-  --accent: #128c7e;
-  --bg: #f0f2f5;
-  --white: #ffffff;
-  --text: #1c1e21;
-  --gray: #65676b;
+  --bg: #0a0a0a;
+  --card: #151515;
+  --primary: #6b5bff;
+  --accent: #ff5c8d;
+  --text: #ffffff;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
 body { 
-  margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-  background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column;
+  margin: 0; padding: 0; background: var(--bg); color: var(--text); 
+  font-family: 'Segoe UI', Roboto, sans-serif; height: 100vh; overflow: hidden;
 }
 
-/* Header */
+/* App Container - Full Mobile Screen */
+.app { width: 100%; height: 100vh; display: flex; flex-direction: column; position: relative; }
+
 header {
-  background: var(--primary); color: white; padding: 15px 20px;
-  display: flex; justify-content: space-between; align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;
+  padding: 15px; display: flex; justify-content: space-between; align-items: center;
+  background: var(--card); border-bottom: 1px solid #222; z-index: 100;
 }
-header h1 { margin: 0; font-size: 20px; font-weight: 600; }
+header h1 { margin: 0; font-size: 20px; font-weight: 800; color: var(--primary); text-shadow: 0 0 10px rgba(107, 91, 255, 0.5); }
 
-/* Main Container */
-.app-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; width: 100%; max-width: 500px; margin: 0 auto; background: var(--white); }
-
-/* Pages */
-.page { display: none; padding: 15px; flex: 1; }
-.page.active { display: block; animation: fadeIn 0.2s ease; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-/* Login */
-.login-screen { text-align: center; padding: 40px 20px; }
-.login-screen input {
-  width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #ddd;
-  margin-bottom: 15px; font-size: 16px; outline: none;
+/* Pages Styling */
+.page { 
+  display: none; flex: 1; padding: 15px; overflow-y: auto; 
+  padding-bottom: 80px; /* Space for Nav */
+  animation: fadeIn 0.3s ease;
 }
-.btn-main {
-  width: 100%; padding: 15px; border-radius: 8px; border: none;
-  background: var(--primary); color: white; font-weight: bold; font-size: 16px; cursor: pointer;
-}
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Dashboard Cards */
-.stat-card {
-  background: #e7f3ff; border-radius: 12px; padding: 20px; margin-bottom: 15px;
-  display: flex; justify-content: space-between; align-items: center;
+/* Hero Section - Mobile Fit */
+.hero {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  padding: 25px 15px; border-radius: 18px; text-align: center; margin-bottom: 15px;
+  box-shadow: 0 4px 15px rgba(107, 91, 255, 0.3);
 }
-.stat-card h4 { margin: 0; color: #0064d1; }
-.stat-card span { font-size: 18px; font-weight: bold; }
+.hero h2 { margin: 0; font-size: 20px; }
 
-/* Chat Bubbles */
-#chatBox { display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #e5ddd5; min-height: 300px; border-radius: 8px; overflow-y: auto; }
+/* Dashboard Boxes */
+.stat-box {
+  background: var(--card); border: 1px solid #222; padding: 15px;
+  border-radius: 15px; margin-bottom: 10px; display: flex; 
+  justify-content: space-between; align-items: center;
+}
+.stat-box h4 { margin: 0; font-size: 14px; color: var(--accent); }
+
+/* Chat Mobile Interface */
+#chatBox { height: 60vh; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; background: #000; border-radius: 15px; margin-bottom: 10px; border: 1px solid #1a1a1a; }
 .msg { 
-  max-width: 80%; padding: 8px 12px; border-radius: 8px; font-size: 15px; 
-  position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4;
+  max-width: 85%; padding: 10px 14px; border-radius: 15px; font-size: 14px;
+  background: #222; border-left: 3px solid var(--primary); align-self: flex-start;
 }
-.msg.me { align-self: flex-end; background: #dcf8c6; color: #000; }
-.msg.other { align-self: flex-start; background: var(--white); color: #000; }
-.msg b { display: block; font-size: 11px; color: var(--accent); margin-bottom: 2px; }
+.msg.me { align-self: flex-end; border-left: none; border-right: 3px solid var(--accent); background: #1a1a1a; }
+.msg b { display: block; font-size: 10px; color: var(--primary); margin-bottom: 3px; }
 
-/* Input Bar */
-.input-area {
-  padding: 10px; background: #f0f0f0; display: flex; gap: 8px; border-top: 1px solid #ddd;
+/* Floating Input Bar */
+.input-row {
+  position: absolute; bottom: 70px; left: 0; width: 100%; padding: 10px;
+  display: flex; gap: 8px; background: rgba(10,10,10,0.9); backdrop-filter: blur(10px);
 }
-.input-area input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; background: white; }
-.btn-send { background: var(--primary); color: white; width: 45px; height: 45px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-
-/* User List */
-.user-item {
-  display: flex; align-items: center; gap: 12px; padding: 15px;
-  border-bottom: 1px solid #eee; cursor: pointer;
+.input-row input {
+  flex: 1; padding: 12px 15px; border-radius: 25px; border: 1px solid #333;
+  background: #1a1a1a; color: #fff; outline: none; font-size: 14px;
 }
-.user-item:active { background: #f5f5f5; }
-.avatar { width: 45px; height: 45px; background: #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+.input-row button {
+  width: 45px; height: 45px; border-radius: 50%; border: none;
+  background: var(--primary); color: white; cursor: pointer;
+}
 
-/* Bottom Nav */
+/* Users List */
+.user-card {
+  padding: 12px; background: var(--card); border-radius: 12px;
+  margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
+  border: 1px solid #222;
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+
+/* Login Page */
+.login-card { padding: 40px 20px; text-align: center; margin-top: 20%; }
+.login-card input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; background: #151515; color: #fff; margin-bottom: 15px; }
+
+/* Bottom Navbar */
 nav {
-  display: flex; justify-content: space-around; background: white;
-  border-top: 1px solid #ddd; padding: 10px 0;
+  position: absolute; bottom: 0; width: 100%; height: 65px;
+  display: flex; justify-content: space-around; align-items: center;
+  background: var(--card); border-top: 1px solid #222;
 }
-nav button { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-nav button.active { color: var(--primary); }
-nav button span { font-size: 10px; font-weight: 500; }
+nav button { background: none; border: none; color: #555; font-size: 20px; transition: 0.3s; }
+nav button.active { color: var(--primary); transform: translateY(-3px); }
 
 /* Admin Floating Button */
-#adminBtn { 
-  position: fixed; right: 20px; bottom: 80px; width: 50px; height: 50px; 
-  background: gold; color: black; border-radius: 50%; display: none; 
-  align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+#nazimWand {
+  position: fixed; right: 20px; bottom: 85px; width: 50px; height: 50px;
+  background: gold; color: #000; border-radius: 50%; display: none;
+  align-items: center; justify-content: center; font-size: 20px; z-index: 999;
 }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Live Connect</h1>
-  <div onclick="logout()" style="cursor:pointer;"><i class="fa-solid fa-sign-out-alt"></i></div>
-</header>
+<div id="nazimWand" onclick="toggleAdminPanel()"><i class="fa-solid fa-bolt"></i></div>
 
-<div class="app-content">
+<div class="app">
+  <header>
+    <h1>LIVE CONNECT</h1>
+    <button onclick="logout()" style="background:none; border:none; color:#fff;"><i class="fa-solid fa-power-off"></i></button>
+  </header>
+
   <div id="loginPage" class="page active">
-    <div class="login-screen">
-      <i class="fa-solid fa-comments" style="font-size: 50px; color: var(--primary); margin-bottom: 20px;"></i>
-      <h2>Welcome Back</h2>
-      <input type="text" id="usernameInput" placeholder="Enter your name">
-      <button class="btn-main" onclick="login()">Login</button>
+    <div class="login-card">
+      <i class="fa-solid fa-satellite-dish" style="font-size: 50px; color: var(--primary); margin-bottom: 20px;"></i>
+      <h3>INITIALIZE CONNECTION</h3>
+      <input type="text" id="uNameInp" placeholder="Enter Codename">
+      <button onclick="doLogin()" style="width:100%; padding:15px; border-radius:12px; border:none; background:var(--primary); color:white; font-weight:bold;">CONNECT_</button>
     </div>
   </div>
 
   <div id="home" class="page">
-    <h3 id="welcomeMsg">Hello!</h3>
-    <div class="stat-card">
-      <h4>Online Users</h4>
-      <span id="onlineCount">0</span>
+    <div class="hero">
+      <h2 id="userTag">Welcome Agent</h2>
+      <p style="font-size: 12px; opacity:0.8;">Secure Real-Time Grid</p>
     </div>
-    <div class="stat-card" style="background: #fdf2f2;">
-      <h4 style="color: #d93025;">Active Groups</h4>
-      <span>1</span>
-    </div>
+    <div class="stat-box"><h4>ACTIVE NODES</h4><span id="onCount">0</span></div>
+    <div class="stat-box"><h4>SYSTEM STATUS</h4><span style="color: #22c55e;">ONLINE</span></div>
   </div>
 
   <div id="chat" class="page">
-    <div id="chatBox"></div>
-    <div id="adminPanel" style="display:none; background:#fff3cd; padding:10px; margin-top:10px; border-radius:8px; border:1px solid #ffeeba; display:none; gap:5px; flex-wrap:wrap;">
-        <button onclick="sendTrap('freeze')" style="font-size:10px;">Freeze All</button>
-        <button onclick="sendTrap('restore')" style="font-size:10px;">Restore</button>
+    <div id="adminTools" style="display:none; background:rgba(255,0,0,0.1); padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid red; display:none; gap:5px;">
+        <button onclick="sendTrap('freeze')" style="flex:1; font-size:10px; padding:5px; background:red; border:none; color:white;">FREEZE</button>
+        <button onclick="sendTrap('restore')" style="flex:1; font-size:10px; padding:5px; background:green; border:none; color:white;">RESTORE</button>
     </div>
-    <div class="input-area">
-      <input type="text" id="msgInput" placeholder="Type a message...">
-      <button class="btn-send" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+    <div id="chatBox"></div>
+    <div class="input-row">
+      <input id="mInp" placeholder="Type signal..."/>
+      <button onclick="pushMsg()"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
   </div>
 
   <div id="users" class="page">
-    <h3 style="margin-top:0;">Contacts</h3>
-    <div id="userList"></div>
+    <h3 style="font-size:16px; margin-bottom:15px;">TARGETS IN RANGE</h3>
+    <div id="uList"></div>
   </div>
+
+  <nav id="bottomNav" style="display:none;">
+    <button onclick="navTo('home', this)" class="active"><i class="fa-solid fa-house"></i></button>
+    <button onclick="navTo('chat', this)"><i class="fa-solid fa-comment-dots"></i></button>
+    <button onclick="navTo('users', this)"><i class="fa-solid fa-users"></i></button>
+  </nav>
 </div>
-
-<div id="adminBtn" onclick="toggleAdminPanel()"><i class="fa-solid fa-shield-virus"></i></div>
-
-<nav id="bottomNav" style="display:none;">
-  <button onclick="openPage('home', this)" class="active"><i class="fa-solid fa-house"></i><span>Home</span></button>
-  <button onclick="openPage('chat', this)"><i class="fa-solid fa-message"></i><span>Chat</span></button>
-  <button onclick="openPage('users', this)"><i class="fa-solid fa-user-friends"></i><span>Users</span></button>
-</nav>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-const firebaseConfig = {
+const fbConfig = {
   apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
   databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com"
 };
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(fbConfig);
 const db = getDatabase(app);
-let currentUser = null;
+let myName = null;
 
-window.login = () => {
-  const name = document.getElementById("usernameInput").value.trim();
-  if(!name) return;
-  currentUser = name;
-  document.getElementById("welcomeMsg").innerText = "Hello, " + currentUser;
-  
-  if(currentUser === "Nazim") document.getElementById("adminBtn").style.display = "flex";
-  
-  const userRef = ref(db, "users/" + name);
-  set(userRef, { name: name, online: true });
-  onDisconnect(userRef).update({ online: false });
+window.doLogin = () => {
+  const val = document.getElementById("uNameInp").value.trim();
+  if(!val) return;
+  myName = val;
+  document.getElementById("userTag").innerText = "Welcome, " + myName;
+  if(myName === "Nazim") document.getElementById("nazimWand").style.display = "flex";
+
+  const uRef = ref(db, "users/" + myName);
+  set(uRef, { name: myName, online: true });
+  onDisconnect(uRef).update({ online: false });
 
   document.getElementById("loginPage").classList.remove("active");
   document.getElementById("home").classList.add("active");
   document.getElementById("bottomNav").style.display = "flex";
 };
 
-window.openPage = (id, btn) => {
+window.navTo = (id, btn) => {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -191,47 +194,46 @@ window.openPage = (id, btn) => {
 };
 
 onValue(ref(db, "users"), snap => {
-  let count = 0;
-  const list = document.getElementById("userList");
+  let c = 0;
+  const list = document.getElementById("uList");
   list.innerHTML = "";
   snap.forEach(u => {
     if(u.val().online) {
-      count++;
-      if(u.key !== currentUser) {
+      c++;
+      if(u.key !== myName) {
         let div = document.createElement("div");
-        div.className = "user-item";
-        div.innerHTML = `<div class="avatar">${u.key[0].toUpperCase()}</div><div><b>${u.key}</b><br><small style="color:green">Online</small></div>`;
-        div.onclick = () => openPage('chat', document.querySelector('nav button:nth-child(2)'));
+        div.className = "user-card";
+        div.innerHTML = `<div class="dot"></div><span>${u.key}</span>`;
+        div.onclick = () => navTo('chat', document.querySelectorAll('nav button')[1]);
         list.appendChild(div);
       }
     }
   });
-  document.getElementById("onlineCount").innerText = count;
+  document.getElementById("onCount").innerText = c;
 });
 
-window.sendMsg = () => {
-  const input = document.getElementById("msgInput");
+window.pushMsg = () => {
+  const input = document.getElementById("mInp");
   if(!input.value) return;
-  push(ref(db, "messages/global"), { from: currentUser, text: input.value });
+  push(ref(db, "global_chat"), { from: myName, text: input.value });
   input.value = "";
 };
 
-onValue(ref(db, "messages/global"), snap => {
+onValue(ref(db, "global_chat"), snap => {
   const box = document.getElementById("chatBox");
   box.innerHTML = "";
   snap.forEach(m => {
-    let d = m.val();
     let div = document.createElement("div");
-    div.className = "msg " + (d.from === currentUser ? "me" : "other");
-    div.innerHTML = `<b>${d.from}</b>${d.text}`;
+    div.className = "msg " + (m.val().from === myName ? "me" : "");
+    div.innerHTML = `<b>${m.val().from}</b>${m.val().text}`;
     box.appendChild(div);
   });
   box.scrollTop = box.scrollHeight;
 });
 
 window.toggleAdminPanel = () => {
-    const p = document.getElementById("adminPanel");
-    p.style.display = p.style.display === "none" ? "flex" : "none";
+    const tools = document.getElementById("adminTools");
+    tools.style.display = tools.style.display === "none" ? "flex" : "none";
 };
 
 window.sendTrap = (type) => {
