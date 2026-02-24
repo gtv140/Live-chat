@@ -2,115 +2,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NeonPro Quantum Dashboard</title>
+    <title>NeonPro Universal | Final</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        :root { --neon: #bc13fe; --cyan: #00d2ff; --bg: #020617; }
-        body, html { height: 100%; margin: 0; background: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; color: #fff; overflow: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        :root { --p: #bc13fe; --s: #00d2ff; --bg: #020617; }
         
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: #fff; height: 100dvh; overflow: hidden; margin: 0; }
+
         .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
-        .neon-card { border: 1px solid rgba(188, 19, 254, 0.3); box-shadow: 0 0 15px rgba(188, 19, 254, 0.1); }
         
-        .app-grid { display: grid; grid-template-columns: 280px 1fr; height: 100dvh; }
-        @media (max-width: 1024px) { .app-grid { grid-template-columns: 1fr; } }
+        /* Layout Grid */
+        .app-container { display: flex; height: 100dvh; width: 100vw; }
 
-        /* Dashboard Stats */
-        .stat-box { padding: 1.25rem; border-radius: 1.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
-        .stat-val { font-size: 1.5rem; font-weight: 800; color: var(--cyan); text-shadow: 0 0 10px rgba(0,210,255,0.4); }
+        /* Responsive Sidebar */
+        .sidebar { 
+            width: 320px; flex-shrink: 0; background: #070b14; border-right: 1px solid rgba(188, 19, 254, 0.1);
+            display: flex; flex-direction: column; transition: 0.3s ease;
+        }
 
-        /* Sidebar & Navigation */
-        .sidebar { background: #070b14; border-right: 1px solid rgba(188, 19, 254, 0.2); transition: 0.4s; z-index: 2000; }
-        @media (max-width: 1024px) { .sidebar { position: fixed; inset: 0; transform: translateX(-100%); width: 100%; } .sidebar.active { transform: translateX(0); } }
+        /* Mobile Adjustments */
+        @media (max-width: 1024px) {
+            .sidebar { position: fixed; left: -100%; top: 0; bottom: 0; width: 85%; z-index: 2000; }
+            .sidebar.active { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.8); }
+            .main-content { width: 100vw !important; }
+        }
 
-        /* Chat System */
-        #chat-flow { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; scroll-behavior: smooth; }
-        .bubble { padding: 12px 18px; border-radius: 20px; font-size: 14px; position: relative; }
-        .mine .bubble { background: linear-gradient(135deg, var(--neon), #7e22ce); border-bottom-right-radius: 2px; }
-        .other .bubble { background: #1e293b; border-bottom-left-radius: 2px; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; position: relative; }
 
-        /* Input Area */
-        .footer-area { background: linear-gradient(to top, #020617, transparent); padding: 1rem 1.5rem 2.5rem 1.5rem; }
-        .input-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(188, 19, 254, 0.3); border-radius: 30px; padding: 6px 10px; }
+        /* Stat Cards */
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
+        .stat-card { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
 
+        /* Chat Stream */
+        #chat-flow { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
+        .bubble { padding: 12px 16px; border-radius: 20px; max-width: 85%; font-size: 14px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .mine { align-self: flex-end; background: linear-gradient(135deg, var(--p), #7e22ce); border-bottom-right-radius: 4px; }
+        .other { align-self: flex-start; background: #1e293b; border-bottom-left-radius: 4px; }
+
+        /* Better Input Bar */
+        .input-footer { padding: 10px 15px 30px 15px; background: var(--bg); border-top: 1px solid rgba(255,255,255,0.05); }
+        .input-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(188,19,254,0.3); border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; }
+        .input-pill input { background: transparent; border: none; outline: none; color: #fff; flex: 1; padding: 10px 5px; font-size: 15px; }
+
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1500; }
+        .overlay.active { display: block; }
+        
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--p); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="auth" class="fixed inset-0 z-[5000] flex items-center justify-center bg-[#020617] p-6">
-        <div class="glass p-12 rounded-[3.5rem] w-full max-w-sm text-center border-purple-500/30 border">
-            <h1 class="text-4xl font-black mb-10 tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">NEON PRO</h1>
-            <input id="u-in" type="text" placeholder="Access Identity" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white text-center mb-6 focus:border-purple-500 transition font-bold outline-none">
-            <button onclick="login()" class="w-full bg-purple-600 py-5 rounded-2xl font-black shadow-xl active:scale-95 transition-all">CONNECT</button>
+    <div id="auth" class="fixed inset-0 z-[5000] flex items-center justify-center bg-[#020617] p-4">
+        <div class="glass p-10 rounded-[2.5rem] w-full max-w-sm text-center">
+            <h1 class="text-3xl font-black mb-8 italic">NEON <span class="text-purple-500">PRO</span></h1>
+            <input id="u-in" type="text" placeholder="Your Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-center mb-5 outline-none focus:border-purple-500 font-bold">
+            <button onclick="login()" class="w-full bg-purple-600 py-4 rounded-xl font-black shadow-lg active:scale-95 transition">GET STARTED</button>
         </div>
     </div>
 
-    <div class="app-grid">
-        <aside id="side" class="sidebar flex flex-col p-6">
-            <div class="flex justify-between items-center mb-10">
-                <span class="text-xl font-black italic tracking-tighter">QUANTUM<span class="text-cyan-400">.OS</span></span>
-                <button onclick="logout()" class="text-red-500 bg-red-500/10 p-2 rounded-lg"><i class="fa-solid fa-power-off"></i></button>
+    <div id="overlay" class="overlay" onclick="toggleSide()"></div>
+
+    <div class="app-container">
+        <aside id="side" class="sidebar">
+            <div class="p-6 flex justify-between items-center border-b border-white/5">
+                <span class="text-xl font-black tracking-tighter italic">NEON.OS</span>
+                <button onclick="logout()" class="text-red-400 text-sm"><i class="fa-solid fa-power-off"></i></button>
             </div>
             
-            <div class="flex-1 overflow-y-auto space-y-4">
-                <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em]">Live Channels</p>
-                <div onclick="openChat('global')" class="p-4 bg-purple-600/10 border border-purple-600/20 rounded-2xl cursor-pointer font-bold flex items-center gap-3">
-                    <i class="fa-solid fa-hashtag text-purple-400"></i> global-hq
+            <div class="flex-1 overflow-y-auto p-4">
+                <div onclick="openChat('global')" class="p-4 bg-purple-600/10 border border-purple-600/20 rounded-xl cursor-pointer font-bold mb-6 flex items-center gap-3">
+                    <i class="fa-solid fa-earth-americas text-purple-400"></i> Global HQ
                 </div>
                 
-                <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mt-8">Secure Nodes</p>
+                <p class="text-[10px] text-slate-500 font-black uppercase mb-3 ml-2">Active Users</p>
                 <div id="u-list" class="space-y-2"></div>
             </div>
 
-            <div class="mt-8 pt-6 border-t border-white/5 flex items-center gap-4">
-                <div id="my-av" class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-cyan-500 flex items-center justify-center font-black text-xl">?</div>
-                <div><p id="my-n" class="font-bold text-sm">Offline</p><p class="text-[9px] text-green-500 font-bold uppercase tracking-widest animate-pulse">● System Ready</p></div>
+            <div class="p-4 border-t border-white/5">
+                <div class="stat-grid">
+                    <div class="stat-card"><p class="text-[8px] text-slate-400">Online</p><p id="stat-count" class="text-sm font-bold text-cyan-400">0</p></div>
+                    <div class="stat-card"><p class="text-[8px] text-slate-400">Secure</p><p class="text-xs font-bold text-green-400">YES</p></div>
+                    <div class="stat-card"><p class="text-[8px] text-slate-400">Server</p><p class="text-[8px] font-bold">ACTIVE</p></div>
+                </div>
             </div>
         </aside>
 
-        <main class="flex flex-col h-full overflow-hidden">
-            <header class="p-6 glass border-b border-white/5">
-                <div class="flex items-center gap-4 mb-6">
-                    <button class="lg:hidden w-10 h-10 glass rounded-xl text-purple-400 flex items-center justify-center" onclick="toggleSide()"><i class="fa-solid fa-bars"></i></button>
-                    <h2 id="chat-h" class="text-lg font-extrabold tracking-tight">Command Center</h2>
+        <main class="main-content">
+            <header class="h-16 flex items-center px-4 border-b border-white/5 justify-between glass">
+                <div class="flex items-center gap-3">
+                    <button class="lg:hidden text-purple-400 text-xl p-2" onclick="toggleSide()"><i class="fa-solid fa-bars-staggered"></i></button>
+                    <div>
+                        <h2 id="chat-h" class="text-sm font-bold tracking-tight">Select Chat</h2>
+                        <div class="flex items-center gap-1"><span class="w-1 h-1 bg-green-500 rounded-full"></span><span class="text-[8px] text-slate-500 font-bold uppercase">Encrypted Signal</span></div>
+                    </div>
                 </div>
-
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="stat-box">
-                        <p class="text-[9px] text-slate-400 font-bold uppercase mb-1">Active Nodes</p>
-                        <p id="stat-count" class="stat-val">01</p>
-                    </div>
-                    <div class="stat-box">
-                        <p class="text-[9px] text-slate-400 font-bold uppercase mb-1">Secured Data</p>
-                        <p class="stat-val">AES-256</p>
-                    </div>
-                    <div class="stat-box">
-                        <p class="text-[9px] text-slate-400 font-bold uppercase mb-1">Uptime</p>
-                        <p class="stat-val text-green-400">99.9%</p>
-                    </div>
+                <div class="flex gap-4 text-slate-400">
+                    <i class="fa-solid fa-video text-sm"></i>
+                    <i class="fa-solid fa-phone text-sm"></i>
                 </div>
             </header>
 
             <div id="chat-flow">
-                <div class="h-full flex flex-col items-center justify-center text-center opacity-30">
-                    <i class="fa-solid fa-shield-halved text-6xl mb-4"></i>
-                    <p class="font-black italic text-xl">SELECT A CHANNEL TO INITIALIZE SYNC</p>
+                <div class="m-auto text-center opacity-20">
+                    <i class="fa-solid fa-comment-dots text-5xl mb-3"></i>
+                    <p class="text-xs font-bold uppercase">Ready to transmit</p>
                 </div>
             </div>
 
-            <div id="input-area" class="footer-area hidden">
-                <div id="reply-box" class="hidden mb-3 p-3 bg-purple-600/10 rounded-xl border-l-4 border-purple-500 flex justify-between items-center text-[10px]">
-                    <span id="reply-txt" class="italic opacity-70"></span>
-                    <button onclick="cancelReply()"><i class="fa-solid fa-x"></i></button>
+            <div id="input-area" class="input-footer hidden">
+                <div id="reply-box" class="hidden mb-2 p-2 bg-purple-600/10 rounded-lg border-l-2 border-purple-500 text-[10px] flex justify-between">
+                    <span id="reply-txt" class="truncate opacity-70"></span>
+                    <button onclick="cancelReply()"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <form id="m-form" class="input-pill flex items-center gap-3">
-                    <input type="file" id="f-in" class="hidden" accept="image/*" onchange="upImg(this)">
-                    <button type="button" onclick="document.getElementById('f-in').click()" class="text-slate-500 hover:text-cyan-400 transition ml-2"><i class="fa-solid fa-plus-circle text-2xl"></i></button>
-                    <input id="m-in" type="text" placeholder="Broadcast signal..." class="bg-transparent flex-1 outline-none text-sm p-3 font-medium text-white" autocomplete="off">
-                    <button class="bg-gradient-to-r from-purple-600 to-blue-500 w-12 h-10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition"><i class="fa-solid fa-paper-plane text-[10px]"></i></button>
+                <form id="m-form" class="input-pill">
+                    <input type="file" id="f-in" class="hidden" onchange="upImg(this)">
+                    <button type="button" onclick="document.getElementById('f-in').click()" class="text-slate-400"><i class="fa-solid fa-circle-plus text-xl"></i></button>
+                    <input id="m-in" type="text" placeholder="Type message..." autocomplete="off">
+                    <button class="bg-purple-600 w-10 h-10 rounded-full flex items-center justify-center shadow-lg"><i class="fa-solid fa-paper-plane text-[10px]"></i></button>
                 </form>
             </div>
         </main>
@@ -135,27 +147,27 @@
         const db = getDatabase(app);
         const st = getStorage(app);
 
-        let user = localStorage.getItem('neonSyncUser'), active = null, reply = null;
-
+        let user = localStorage.getItem('neonUser'), active = null, reply = null;
         if(user) login(user);
 
         function login(n) {
             const val = n || document.getElementById('u-in').value.trim();
             if(!val) return;
-            user = val; localStorage.setItem('neonSyncUser', val);
+            user = val; localStorage.setItem('neonUser', val);
             document.getElementById('auth').style.display = 'none';
-            document.getElementById('my-n').innerText = user;
-            document.getElementById('my-av').innerText = user[0].toUpperCase();
             set(ref(db, 'online/' + user), true);
             loadUsers();
         }
 
-        window.toggleSide = () => document.getElementById('side').classList.toggle('active');
+        window.toggleSide = () => {
+            document.getElementById('side').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        };
 
         window.openChat = (t) => {
             active = t;
             document.getElementById('input-area').classList.remove('hidden');
-            document.getElementById('chat-h').innerText = t === 'global' ? 'Global Command HQ' : `@${t.toUpperCase()}`;
+            document.getElementById('chat-h').innerText = t === 'global' ? 'Global HQ' : `@${t}`;
             if(window.innerWidth < 1024) toggleSide();
             loadMsgs();
         };
@@ -168,13 +180,13 @@
                     count++;
                     if(u.key !== user) {
                         const d = document.createElement('div');
-                        d.className = "p-4 glass rounded-2xl cursor-pointer hover:bg-purple-600/10 transition flex items-center gap-3 mb-2 border border-white/5";
-                        d.innerHTML = `<div class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#00d2ff]"></div> <span class="font-bold text-sm tracking-tighter uppercase italic">${u.key}</span>`;
+                        d.className = "p-3 glass rounded-xl cursor-pointer hover:bg-purple-600/10 flex items-center gap-3 mb-1";
+                        d.innerHTML = `<div class="w-2 h-2 rounded-full bg-cyan-400"></div> <span class="text-sm font-bold">${u.key}</span>`;
                         d.onclick = () => openChat(u.key);
                         list.appendChild(d);
                     }
                 });
-                document.getElementById('stat-count').innerText = count.toString().padStart(2, '0');
+                document.getElementById('stat-count').innerText = count;
             });
         }
 
@@ -185,37 +197,30 @@
                 s.forEach(m => {
                     const d = m.val(), id = m.key, isM = d.sender === user;
                     const wrap = document.createElement('div');
-                    wrap.className = `flex flex-col mb-4 ${isM ? 'items-end' : 'items-start'}`;
-                    
+                    wrap.className = isM ? 'mine bubble' : 'other bubble';
                     wrap.innerHTML = `
-                        <span class="text-[8px] font-black text-slate-500 mb-1 uppercase tracking-widest px-2">${d.sender} • Secured</span>
-                        ${d.reply ? `<div class="text-[9px] glass p-2 rounded-xl mb-1 border-l-2 border-cyan-400 opacity-60 italic">@${d.reply.to}: ${d.reply.msg}</div>` : ''}
-                        <div class="bubble cursor-pointer hover:scale-[1.02] transition" onclick="toggleMenu('${id}')">
-                            ${d.img ? `<img src="${d.img}" class="rounded-xl max-w-full">` : d.text}
-                            <div id="act-${id}" class="hidden absolute -top-10 ${isM ? 'right-0' : 'left-0'} glass p-2 rounded-xl gap-3 border-purple-500/50 shadow-2xl z-50">
-                                <button onclick="setReply('${d.sender}','${d.text||"Media"}')" class="text-[9px] font-black">REPLY</button>
-                                <button onclick="react('${id}','🔥')" class="text-xs">🔥</button>
-                                ${isM ? `<button onclick="del('${id}')" class="text-[9px] text-red-500 font-black">DEL</button>` : ''}
-                            </div>
+                        <p class="text-[8px] font-bold opacity-50 mb-1">${d.sender}</p>
+                        ${d.reply ? `<div class="text-[9px] bg-black/20 p-2 rounded mb-1 border-l-2 border-cyan-400 italic">@${d.reply.to}: ${d.reply.msg}</div>` : ''}
+                        ${d.img ? `<img src="${d.img}" class="rounded-lg max-w-full">` : `<span>${d.text}</span>`}
+                        <div class="flex gap-2 mt-2">
+                            <button onclick="setRep('${d.sender}','${d.text||"Img"}')" class="text-[8px] font-bold uppercase">Reply</button>
+                            ${isM ? `<button onclick="del('${id}')" class="text-[8px] font-bold uppercase text-red-400">Del</button>` : ''}
                         </div>
-                        <div id="rx-${id}" class="flex gap-1 mt-1"></div>
                     `;
                     flow.appendChild(wrap);
-                    if(d.reactions) {
-                        const rxD = document.getElementById(`rx-${id}`);
-                        Object.entries(d.reactions).forEach(([e, c]) => {
-                            rxD.innerHTML += `<span class="glass px-2 py-0.5 rounded-lg text-[8px] font-bold border border-purple-500/30">${e} ${c}</span>`;
-                        });
-                    }
                 });
                 flow.scrollTop = flow.scrollHeight;
             });
         }
 
-        window.toggleMenu = (id) => {
-            const el = document.getElementById(`act-${id}`);
-            el.classList.toggle('hidden'); el.classList.toggle('flex');
-        }
+        window.setRep = (u, m) => {
+            reply = { to: u, msg: m };
+            document.getElementById('reply-box').classList.remove('hidden');
+            document.getElementById('reply-txt').innerText = `Reply to @${u}: ${m}`;
+            document.getElementById('m-in').focus();
+        };
+
+        window.cancelReply = () => { reply = null; document.getElementById('reply-box').classList.add('hidden'); };
 
         window.upImg = async (i) => {
             const f = i.files[0]; if(!f) return;
@@ -224,20 +229,6 @@
             const url = await getDownloadURL(snap.ref);
             const p = active === 'global' ? 'msgs/global' : `private/${[user, active].sort().join('_')}`;
             push(ref(db, p), { sender: user, img: url });
-        };
-
-        window.setReply = (u, m) => {
-            reply = { to: u, msg: m };
-            document.getElementById('reply-box').classList.remove('hidden');
-            document.getElementById('reply-txt').innerText = `Syncing with @${u}: ${m}`;
-            document.getElementById('m-in').focus();
-        };
-
-        window.cancelReply = () => { reply = null; document.getElementById('reply-box').classList.add('hidden'); };
-
-        window.react = (mid, e) => {
-            const p = (active === 'global' ? 'msgs/global/' : `private/${[user, active].sort().join('_')}/`) + mid + '/reactions/' + e;
-            onValue(ref(db, p), (s) => set(ref(db, p), (s.val() || 0) + 1), { onlyOnce: true });
         };
 
         window.del = (id) => {
@@ -255,7 +246,7 @@
             push(ref(db, p), m); i.value = "";
         };
 
-        window.logout = () => { if(confirm("Disconnect Signal?")) { remove(ref(db, 'online/' + user)); localStorage.clear(); location.reload(); }};
+        window.logout = () => { remove(ref(db, 'online/' + user)); localStorage.clear(); location.reload(); };
         window.login = login;
     </script>
 </body>
