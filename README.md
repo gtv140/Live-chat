@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Empire Dashboard V5</title>
+<title>Empire Dashboard V6</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
@@ -57,7 +57,7 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 
 <div id="auth">
 <div class="auth-box">
-<h1 class="brand">EMPIRE_V5</h1>
+<h1 class="brand">EMPIRE_V6</h1>
 <input type="text" id="loginName" placeholder="Enter Codename">
 <div id="adminPinDiv" style="display:none;">
 <input type="password" id="adminPin" class="inline-pin" placeholder="Enter Admin PIN">
@@ -83,7 +83,7 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 </header>
 
 <div class="content">
-<div id="home" class="section active"><h2>Welcome, <span id="uDisplay"></span>!</h2><p>Empire Realtime Dashboard v5</p></div>
+<div id="home" class="section active"><h2>Welcome, <span id="uDisplay"></span>!</h2><p>Empire Realtime Dashboard v6</p></div>
 <div id="users" class="section"><h3>Active Users</h3><div id="uList"></div></div>
 <div id="groups" class="section">
 <h3>Global Chat</h3>
@@ -98,7 +98,7 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 <div class="mute-msg" id="muteScreen">🔇 GLOBAL CHAT IS LOCKED</div>
 </div>
 </div>
-<div id="about" class="section"><h3>About</h3><p>Modern Empire Dashboard v5 - All features enabled.</p></div>
+<div id="about" class="section"><h3>About</h3><p>Modern Empire Dashboard v6 - All features enabled.</p></div>
 <div id="contact" class="section"><h3>Contact</h3><p>Email: support@empire.com</p></div>
 <div id="settings" class="section">
 <h3>Settings</h3>
@@ -130,7 +130,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-let uUID,uName,isAdmin=false,currentRoom="global_v5";
+let uUID,uName,isAdmin=false,currentRoom="global_v6";
 
 onAuthStateChanged(auth,user=>{
 if(user){
