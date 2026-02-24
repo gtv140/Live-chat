@@ -10,41 +10,57 @@
         body { margin: 0; background: var(--bg); color: #f9fafb; height: 100dvh; display: flex; overflow: hidden; }
 
         /* --- Elite Navigation --- */
-        .side-nav { width: 85px; background: #000; border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center; padding: 30px 0; gap: 35px; z-index: 50; }
+        .side-nav { width: 85px; background: #000; border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center; padding: 30px 0; gap: 35px; z-index: 50; flex-shrink: 0; }
         .nav-item { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; border-radius: 18px; color: #4b5563; cursor: pointer; font-size: 1.4rem; }
         .nav-item.active, .nav-item:hover { background: var(--p); color: #fff; box-shadow: 0 0 25px rgba(124, 58, 237, 0.5); }
 
         /* --- Dashboard Area --- */
-        .app-core { flex: 1; display: flex; flex-direction: column; position: relative; }
-        header { padding: 25px 35px; display: flex; justify-content: space-between; align-items: center; background: rgba(3, 7, 18, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .app-core { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+
+        header { padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; background: rgba(3, 7, 18, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
         .glitch-text { font-weight: 900; font-size: 1.5rem; letter-spacing: -1px; background: linear-gradient(to right, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .main-stage { flex: 1; display: flex; overflow: hidden; }
-        .chat-zone { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .feed { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 20px; padding-bottom: 130px; }
+
+        .main-stage { flex: 1; display: flex; flex-direction: row; overflow: hidden; }
+
+        /* --- Chat Zone --- */
+        .chat-zone { flex: 1; display: flex; flex-direction: column; position: relative; min-width: 0; }
+        .feed { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; padding-bottom: 120px; }
 
         /* --- Bubbles & Media --- */
-        .bubble { max-width: 75%; padding: 16px 20px; border-radius: 24px; font-size: 15px; line-height: 1.5; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .bubble { max-width: 75%; padding: 14px 18px; border-radius: 24px; font-size: 15px; line-height: 1.5; box-shadow: 0 10px 30px rgba(0,0,0,0.3); word-break: break-word; }
         .me { align-self: flex-end; background: linear-gradient(135deg, var(--p), var(--s)); border-bottom-right-radius: 4px; }
         .other { align-self: flex-start; background: var(--g); border: 1px solid rgba(255,255,255,0.1); border-bottom-left-radius: 4px; }
         .bubble img { max-width: 100%; border-radius: 15px; margin-top: 10px; display: block; }
 
         /* --- Admin Command Strip --- */
-        #adminStrip { display: none; padding: 10px 30px; background: #ef4444; text-align: center; font-weight: 800; font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; }
+        #adminStrip { display: none; padding: 10px 20px; background: #ef4444; text-align: center; font-weight: 800; font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; flex-shrink: 0; }
 
         /* --- Input Dock --- */
-        .dock { position: absolute; bottom: 30px; left: 30px; right: 30px; background: rgba(31, 41, 55, 0.9); padding: 12px; border-radius: 60px; display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(30px); }
-        .dock input { flex: 1; background: none; border: none; color: #fff; font-size: 16px; outline: none; padding-left: 10px; }
-        .dock-btn { width: 48px; height: 48px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .dock { position: absolute; bottom: 20px; left: 15px; right: 15px; background: rgba(31, 41, 55, 0.9); padding: 10px; border-radius: 60px; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(30px); }
+        .dock input { flex: 1; background: none; border: none; color: #fff; font-size: 15px; outline: none; padding-left: 10px; }
+        .dock-btn { width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .btn-send { background: var(--p); color: white; }
 
         /* --- User Sidebar --- */
-        .user-panel { width: 300px; background: rgba(255,255,255,0.02); border-left: 1px solid rgba(255,255,255,0.05); padding: 30px; }
+        .user-panel { width: 280px; background: rgba(255,255,255,0.02); border-left: 1px solid rgba(255,255,255,0.05); padding: 20px; flex-shrink: 0; overflow-y: auto; }
         @media (max-width: 1000px) { .user-panel { display: none; } }
 
         /* --- Auth & Modals --- */
         #authOverlay { position: fixed; inset: 0; z-index: 1000; background: #000; display: flex; align-items: center; justify-content: center; }
-        .auth-card { width: 90%; max-width: 400px; text-align: center; padding: 40px; background: var(--g); border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); }
+        .auth-card { width: 90%; max-width: 400px; text-align: center; padding: 35px; background: var(--g); border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); }
+
+        /* --- Mobile Responsive --- */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .side-nav { width: 100%; height: 60px; flex-direction: row; justify-content: space-around; padding: 0 10px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+            .nav-item { width: 45px; height: 45px; font-size: 1.2rem; }
+            .main-stage { flex-direction: column; }
+            .dock { left: 10px; right: 10px; bottom: 10px; }
+        }
+        @media (max-width: 480px) {
+            .glitch-text { font-size: 1.2rem; }
+            .dock input { font-size: 14px; }
+        }
     </style>
 </head>
 <body>
@@ -52,9 +68,9 @@
 <div id="authOverlay">
     <div class="auth-card">
         <h1 class="glitch-text">EMPIRE_LOGIN</h1>
-        <p style="opacity: 0.5; font-size: 0.8rem; margin-bottom: 30px;">Initialize Secure Session</p>
-        <input type="text" id="joinName" placeholder="Enter Codename" style="width:100%; padding:18px; border-radius:20px; border:none; background:#000; color:#fff; margin-bottom:15px; text-align:center; font-size:1rem;">
-        <button onclick="initEmpire()" style="width:100%; padding:18px; border-radius:20px; border:none; background:var(--p); color:#fff; font-weight:800; cursor:pointer;">START_ENGINE</button>
+        <p style="opacity: 0.5; font-size: 0.8rem; margin-bottom: 25px;">Initialize Secure Session</p>
+        <input type="text" id="joinName" placeholder="Enter Codename" style="width:100%; padding:16px; border-radius:18px; border:none; background:#000; color:#fff; margin-bottom:15px; text-align:center; font-size:1rem;">
+        <button onclick="initEmpire()" style="width:100%; padding:16px; border-radius:18px; border:none; background:var(--p); color:#fff; font-weight:800; cursor:pointer;">START_ENGINE</button>
     </div>
 </div>
 
@@ -86,7 +102,7 @@
 
         <aside class="user-panel">
             <h3 style="margin-top:0; font-size:1.2rem;">Live Nodes</h3>
-            <div id="nodesList" style="display:flex; flex-direction:column; gap:15px; margin-top:25px;"></div>
+            <div id="nodesList" style="display:flex; flex-direction:column; gap:15px; margin-top:20px;"></div>
         </aside>
     </div>
 </div>
@@ -117,7 +133,6 @@
         myName = document.getElementById("joinName").value.trim();
         if(!myName) return;
 
-        // Admin Security Check
         if(myName.toLowerCase() === 'nazim') {
             let pin = prompt("Enter Master PIN:");
             if(pin !== "786") { alert("Access Denied!"); return; }
