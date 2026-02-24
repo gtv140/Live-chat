@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Web-Hub Chat - Final</title>
+<title>Web-Hub Chat - Fixed Icons</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
@@ -24,8 +24,8 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:rgba(15,23,42,0.95);display:flex;justify-content:space-around;align-items:center;border-top:1px solid rgba(255,255,255,0.05);}
 .bottom-nav i{font-size:1.5rem;color:#9ca3af;cursor:pointer;}
 .bottom-nav i.active{color:var(--primary);}
-.three-dot-menu{position:relative;}
-.menu-dropdown{display:none;position:absolute;bottom:50px;right:0;background:var(--glass);border-radius:15px;overflow:hidden;min-width:150px;}
+.three-dot-menu{position:relative;cursor:pointer;}
+.menu-dropdown{display:none;position:absolute;bottom:50px;right:0;background:var(--glass);border-radius:15px;overflow:hidden;min-width:150px;flex-direction:column;display:flex;}
 .menu-dropdown div{padding:10px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.1);}
 .menu-dropdown div:last-child{border:none;}
 .menu-dropdown div:hover{background:rgba(255,255,255,0.1);}
@@ -65,8 +65,8 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 
 <header>
   <div class="brand">WEB-HUB CHAT</div>
-  <div class="three-dot-menu">
-    <i class="fa-solid fa-ellipsis-vertical" onclick="toggleMenu()"></i>
+  <div class="three-dot-menu" onclick="toggleMenu()">
+    <i class="fa-solid fa-ellipsis-vertical"></i>
     <div class="menu-dropdown" id="menuDropdown">
       <div onclick="showPage('about')">About</div>
       <div onclick="showPage('contact')">Contact Us</div>
@@ -100,7 +100,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 <div class="page" id="about">
   <div style="padding:20px;background:var(--glass);border-radius:15px;">
     <h2>About Web-Hub</h2>
-    <p>Web-Hub is an innovative platform connecting users in real-time chat environments. Our features include global chat, private chat, and user-created groups. Admins can broadcast messages, mute chat, and manage users. Web-Hub is secure, fast, and interactive, constantly updated to enhance user experience. Join Web-Hub and experience real-time communication like never before.</p>
+    <p>Web-Hub is an innovative real-time chat platform...</p>
   </div>
 </div>
 
@@ -125,7 +125,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:15p
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, set, push, onValue, serverTimestamp, query, limitToLast, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, serverTimestamp, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -161,7 +161,15 @@ setInterval(updateDateQuote,5000);
 updateDateQuote();
 
 function toggleMenu(){document.getElementById("menuDropdown").style.display=document.getElementById("menuDropdown").style.display==='flex'?'none':'flex';}
-function showPage(id,el=null){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");if(el)document.querySelectorAll(".bottom-nav i").forEach(i=>i.classList.remove("active"));if(el)el.classList.add("active");}
+
+function showPage(id,el=null){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  if(el){
+    document.querySelectorAll(".bottom-nav i").forEach(i=>i.classList.remove("active"));
+    el.classList.add("active");
+  }
+}
 
 window.boot=async()=>{
   const n=document.getElementById("loginName").value.trim();
