@@ -1,139 +1,116 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Web-Hub Chat - Final</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Web-Hub Pro | Nazim Edition</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{
---primary:#6d28d9;--secondary:#f472b6;--bg:#0f172a;--glass:rgba(30,41,59,0.85);--text-light:#f1f5f9;--accent:#fbbf24;
-}
-*{box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s;}
-body{margin:0;background:var(--bg);color:var(--text-light);height:100vh;display:flex;flex-direction:column;}
+:root{ --primary:#7c3aed; --secondary:#db2777; --bg:#030712; --glass:rgba(30,41,59,0.7); --accent:#fbbf24; }
+*{box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; transition:0.3s; }
+body{margin:0; background:var(--bg); color:#f9fafb; height:100dvh; display:flex; flex-direction:column; overflow:hidden;}
 
-/* Login */
-#loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;}
-.login-box{background:var(--glass);padding:40px;border-radius:25px;text-align:center;width:90%;max-width:350px;}
-.login-box h1{background:linear-gradient(to right,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:2rem;margin-bottom:20px;}
-.login-box input{width:100%;padding:15px;margin-bottom:15px;border-radius:15px;border:none;background:#000;color:#fff;text-align:center;outline:none;}
-.login-box button{width:100%;padding:15px;border-radius:15px;border:none;background:var(--primary);color:white;font-weight:800;cursor:pointer;}
+/* Login Layer */
+#loginLayer{position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:2000;}
+.auth-card{background:var(--glass); padding:40px; border-radius:30px; border:1px solid rgba(255,255,255,0.1); text-align:center; width:90%; max-width:380px; backdrop-filter:blur(20px);}
+.auth-card h1{background:linear-gradient(to right,var(--primary),var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:2.5rem; margin-bottom:10px; font-weight:900;}
+.auth-card input{width:100%; padding:15px; margin-bottom:15px; border-radius:15px; border:none; background:#000; color:#fff; text-align:center; outline:none; font-size:1rem;}
+.auth-card button{width:100%; padding:15px; border-radius:15px; border:none; background:var(--primary); color:white; font-weight:800; cursor:pointer; font-size:1rem; box-shadow:0 10px 20px rgba(124,58,237,0.3);}
 
-/* Header & Nav */
-header{display:flex;justify-content:space-between;align-items:center;padding:15px 25px;background:rgba(15,23,42,0.9);backdrop-filter:blur(10px);}
-.brand{font-weight:900;font-size:1.5rem;background:linear-gradient(to right,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:60px;background:rgba(15,23,42,0.95);display:flex;justify-content:space-around;align-items:center;border-top:1px solid rgba(255,255,255,0.05);}
-.bottom-nav i{font-size:1.5rem;color:#9ca3af;cursor:pointer;}
-.bottom-nav i.active{color:var(--primary);}
-.three-dot-menu{position:relative;cursor:pointer;}
-.menu-dropdown{display:none;position:absolute;bottom:50px;right:0;background:var(--glass);border-radius:15px;overflow:hidden;min-width:150px;flex-direction:column;display:flex;}
-.menu-dropdown div{padding:10px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.1);}
-.menu-dropdown div:last-child{border:none;}
-.menu-dropdown div:hover{background:rgba(255,255,255,0.1);}
+/* Layout */
+header{padding:18px 25px; background:rgba(3,7,18,0.9); display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); z-index:100;}
+.brand{font-weight:900; font-size:1.4rem; letter-spacing:-1px;}
+.admin-badge{background:var(--accent); color:#000; padding:2px 8px; border-radius:8px; font-size:10px; font-weight:900; margin-left:10px;}
 
-/* Pages */
-.page{display:none;flex:1;overflow:auto;padding:20px;flex-direction:column;gap:15px;}
-.page.active{display:flex;}
-.welcome-box{background:var(--glass);padding:20px;border-radius:20px;text-align:center;font-size:1.2rem;font-weight:600;}
-.quotes-box{background:rgba(30,41,59,0.6);padding:15px;border-radius:15px;font-style:italic;text-align:center;font-size:0.9rem;}
-.users-list{background:var(--glass);padding:15px;border-radius:15px;display:flex;flex-direction:column;gap:10px;}
-.user-card{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;cursor:pointer;background:rgba(255,255,255,0.03);}
+.page{display:none; flex:1; overflow-y:auto; padding:20px; padding-bottom:100px;}
+.page.active{display:flex; flex-direction:column; animation:fadeIn 0.4s ease;}
+@keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+
+/* Chat UI */
+.feed{flex:1; display:flex; flex-direction:column; gap:12px;}
+.msg{max-width:80%; padding:12px 16px; border-radius:20px; font-size:14px; line-height:1.5; position:relative;}
+.msg.me{align-self:flex-end; background:var(--primary); color:white; border-bottom-right-radius:4px;}
+.msg.other{align-self:flex-start; background:var(--glass); border-bottom-left-radius:4px; border:1px solid rgba(255,255,255,0.05);}
+.msg img{max-width:100%; border-radius:12px; margin-top:8px; display:block;}
+
+.dock{position:fixed; bottom:75px; left:15px; right:15px; background:rgba(30,41,59,0.9); backdrop-filter:blur(20px); padding:10px; border-radius:50px; display:flex; align-items:center; gap:10px; border:1px solid rgba(255,255,255,0.1);}
+.dock input{flex:1; background:none; border:none; color:white; outline:none; padding-left:10px; font-size:15px;}
+.dock button{background:var(--primary); color:white; border:none; width:42px; height:42px; border-radius:50%; cursor:pointer;}
+
+.bottom-nav{position:fixed; bottom:0; left:0; right:0; height:65px; background:rgba(0,0,0,0.9); display:flex; justify-content:space-around; align-items:center; border-top:1px solid rgba(255,255,255,0.05);}
+.nav-btn{color:#4b5563; font-size:1.4rem; cursor:pointer;}
+.nav-btn.active{color:var(--primary); filter:drop-shadow(0 0 8px var(--primary));}
+
+/* Extras */
+.welcome-card{background:linear-gradient(135deg,var(--primary),var(--secondary)); padding:30px; border-radius:25px; text-align:center; margin-bottom:20px;}
+.quote-box{background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; font-style:italic; text-align:center; font-size:0.9rem; color:#94a3b8;}
+.user-card{background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; align-items:center; gap:15px; cursor:pointer;}
 .user-card:hover{background:rgba(255,255,255,0.08);}
-.chat-box{flex:1;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding-bottom:120px;}
-.msg{max-width:80%;padding:10px 15px;border-radius:20px;font-size:14px;position:relative;word-wrap:break-word;}
-.msg.me{align-self:flex-end;background:var(--primary);border-bottom-right-radius:4px;}
-.msg.other{align-self:flex-start;background:var(--glass);border-bottom-left-radius:4px;}
-.msg img{max-width:100%;border-radius:12px;margin-top:8px;}
-.dock{position:fixed;bottom:70px;left:10px;right:10px;background:rgba(30,41,59,0.95);padding:8px;border-radius:50px;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,0.1);}
-.dock input{flex:1;background:none;border:none;color:white;outline:none;padding-left:10px;}
-.dock label{cursor:pointer;}
-.admin-tools{position:fixed;top:70px;right:10px;background:var(--glass);padding:10px;border-radius:15px;display:flex;flex-direction:column;gap:10px;}
-.admin-tools button{padding:5px 10px;border:none;border-radius:10px;cursor:pointer;font-weight:700;}
-.admin-tools button.broadcast{background:#facc15;color:#000;}
-.admin-tools button.mute{background:#ef4444;color:#fff;}
-.group-box{background:var(--glass);padding:15px;border-radius:15px;margin-top:10px;display:flex;gap:5px;}
-.group-box input{padding:8px;border-radius:10px;border:none;width:70%;outline:none;}
-.group-box button{padding:8px 10px;border-radius:10px;border:none;background:var(--primary);color:#fff;cursor:pointer;}
-.typing-indicator{font-size:0.8rem;color:#fbbf24;opacity:0.8;margin-left:10px;}
+.typing-tag{color:var(--accent); font-size:12px; margin:5px 0 0 15px; font-weight:600;}
 </style>
 </head>
 <body>
 
-<div id="loginScreen">
-  <div class="login-box">
-    <h1>WEB-HUB</h1>
-    <input type="text" id="loginName" placeholder="Enter Username">
-    <button onclick="boot()">Login</button>
-  </div>
+<div id="loginLayer">
+    <div class="auth-card">
+        <h1>WEB-HUB</h1>
+        <p style="opacity:0.5; font-size:0.8rem; margin-bottom:20px;">Secure Real-time Portal</p>
+        <input type="text" id="nodeName" placeholder="Enter Username">
+        <button onclick="boot()">INITIALIZE</button>
+    </div>
 </div>
 
 <header>
-  <div class="brand">WEB-HUB CHAT</div>
-  <div class="three-dot-menu" onclick="toggleMenu()">
-    <i class="fa-solid fa-ellipsis-vertical"></i>
-    <div class="menu-dropdown" id="menuDropdown">
-      <div onclick="showPage('about')">About</div>
-      <div onclick="showPage('contact')">Contact Us</div>
-      <div onclick="logout()">Logout</div>
+    <div style="display:flex; align-items:center;">
+        <span class="brand">WEB-HUB</span>
+        <span id="admTag" class="admin-badge" style="display:none;">ADMIN</span>
     </div>
-  </div>
+    <div id="statusDot" style="width:10px; height:10px; background:#10b981; border-radius:50%;"></div>
 </header>
 
-<div class="page active" id="home">
-  <div class="welcome-box" id="welcomeBox">Welcome, User!</div>
-  <div class="quotes-box" id="quoteBox">Loading quotes...</div>
-  <div id="dateBox" style="text-align:center;margin-top:10px;font-size:0.9rem;color:#fbbf24;"></div>
+<div class="page active" id="pg-home">
+    <div class="welcome-card">
+        <h2 id="greet" style="margin:0;">Welcome!</h2>
+        <small id="userRole">Standard Asset</small>
+    </div>
+    <div class="quote-box" id="quoteFeed">"Design is not just what it looks like, it's how it works."</div>
+    <div style="margin-top:20px; text-align:center; font-size:0.8rem; color:var(--accent);" id="clock"></div>
 </div>
 
-<div class="page" id="chatPage">
-  <div class="chat-box" id="chatFeed"></div>
-  <div class="typing-indicator" id="typingIndicator"></div>
-  <div class="dock">
-    <label for="pUp"><i class="fa-solid fa-image"></i></label>
-    <input type="file" id="pUp" hidden onchange="upImg(this)">
-    <input type="text" id="chatInput" placeholder="Enter message..." onkeydown="typing();if(event.key==='Enter') sendMessage()">
-    <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-    <label for="emojiPicker"><i class="fa-solid fa-face-smile"></i></label>
-    <input type="color" id="emojiPicker" hidden onchange="insertEmoji(this.value)">
-  </div>
-  <div class="group-box">
-    <input type="text" id="groupName" placeholder="Enter group name">
-    <button onclick="createGroup()">Create Group</button>
-  </div>
+<div class="page" id="pg-chat">
+    <div id="chatHeader" style="padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:15px; font-weight:800; font-size:0.9rem; color:var(--primary);">GLOBAL_CHANNEL</div>
+    <div class="feed" id="chatFeed"></div>
+    <div id="typeInfo" class="typing-tag"></div>
+    <div class="dock">
+        <label for="imgUp"><i class="fa-solid fa-paperclip"></i></label>
+        <input type="file" id="imgUp" hidden onchange="upMedia(this)">
+        <input type="text" id="msgIn" placeholder="Type a message..." oninput="pushType()" onkeydown="if(event.key==='Enter') sendMsg()">
+        <button onclick="sendMsg()"><i class="fa-solid fa-location-arrow"></i></button>
+    </div>
 </div>
 
-<div class="page" id="usersPage">
-  <div class="users-list" id="usersList"></div>
+<div class="page" id="pg-users">
+    <h3 style="margin-top:0;">Active Nodes</h3>
+    <div id="nodesList"></div>
+    <div style="margin-top:20px; padding:15px; background:var(--glass); border-radius:15px;">
+        <small style="display:block; margin-bottom:10px; opacity:0.6;">CREATE GROUP</small>
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="gName" placeholder="Group Name" style="flex:1; padding:10px; border-radius:10px; border:none; background:#000; color:#fff;">
+            <button onclick="makeGroup()" style="background:var(--primary); border:none; color:#fff; padding:0 15px; border-radius:10px; cursor:pointer;">+</button>
+        </div>
+    </div>
 </div>
 
-<div class="page" id="about">
-  <div style="padding:20px;background:var(--glass);border-radius:15px;">
-    <h2>About Web-Hub</h2>
-    <p>Web-Hub is an innovative real-time chat platform connecting users instantly with private messages, group chats, media, emoji, and admin controls. Fast, modern, responsive, and fully secure. Perfect for web & mobile users.</p>
-  </div>
-</div>
-
-<div class="page" id="contact">
-  <div style="padding:20px;background:var(--glass);border-radius:15px;">
-    <h2>Contact Us</h2>
-    <p>Email: <a href="mailto:webhub262@gmail.com" style="color:var(--secondary)">webhub262@gmail.com</a></p>
-  </div>
-</div>
-
-<div class="bottom-nav">
-  <i class="fa-solid fa-house active" onclick="showPage('home',this)"></i>
-  <i class="fa-solid fa-comments" onclick="showPage('chatPage',this)"></i>
-  <i class="fa-solid fa-users" onclick="showPage('usersPage',this)"></i>
-</div>
-
-<div class="admin-tools" id="adminTools" style="display:none;">
-  <button class="broadcast" onclick="broadcastMessage()">Broadcast</button>
-  <button class="mute" onclick="toggleMute()">Toggle Mute</button>
-</div>
+<nav class="bottom-nav">
+    <i class="fa-solid fa-house nav-btn active" onclick="nav('pg-home',this)"></i>
+    <i class="fa-solid fa-comment-dots nav-btn" onclick="nav('pg-chat',this)"></i>
+    <i class="fa-solid fa-user-group nav-btn" onclick="nav('pg-users',this)"></i>
+    <i class="fa-solid fa-power-off nav-btn" onclick="exit()"></i>
+</nav>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, set, push, onValue, serverTimestamp, query, limitToLast, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, serverTimestamp, query, limitToLast, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -149,116 +126,140 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-let uUID,uName,isAdmin=false;
-let currentRoom="global_v2";
+let uUID, uName, isAdmin=false;
+let currentRoom = "global_v2";
 
-const quotes=[
-"Success is not final, failure is not fatal: It is the courage to continue that counts.",
-"Believe you can and you're halfway there.",
-"Hard work beats talent when talent doesn't work hard.",
-"Stay positive, work hard, make it happen.",
-"Don't wait for opportunity. Create it."
+const quotes = [
+    "Empire is built on code.", "Work hard in silence.", "Stay focused, stay humble.",
+    "Nazim's System is Online.", "The best way to predict future is to create it."
 ];
 
-function updateDateQuote(){
-  const d=new Date();
-  document.getElementById("dateBox").innerText=d.toLocaleString();
-  document.getElementById("quoteBox").innerText=quotes[Math.floor(Math.random()*quotes.length)];
-}
-setInterval(updateDateQuote,5000);
-updateDateQuote();
+// Navigation
+window.nav = (id, el) => {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    document.querySelectorAll(".nav-btn").forEach(i => i.classList.remove("active"));
+    el.classList.add("active");
+    if(id === 'pg-chat') syncMsgs();
+};
 
-function toggleMenu(){document.getElementById("menuDropdown").style.display=document.getElementById("menuDropdown").style.display==='flex'?'none':'flex';}
-function showPage(id,el=null){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");if(el){document.querySelectorAll(".bottom-nav i").forEach(i=>i.classList.remove("active"));el.classList.add("active");}}
+window.boot = async () => {
+    const n = document.getElementById("nodeName").value.trim();
+    if(!n) return;
+    if(n.toLowerCase() === 'nazim'){
+        if(prompt("Enter Admin PIN:") === '786') isAdmin=true;
+        else return;
+    }
+    const res = await signInAnonymously(auth);
+    uUID = res.user.uid; uName = n;
+    localStorage.setItem("uN", n); localStorage.setItem("uA", isAdmin);
+    setupApp();
+};
 
-window.boot=async()=>{
-  const n=document.getElementById("loginName").value.trim();
-  if(!n)return alert("Enter username!");
-  if(n.toLowerCase()==='nazim'){
-    const pin=prompt("Enter admin PIN:");
-    if(pin!=='786')return alert("Wrong PIN!");
-    isAdmin=true;
-    document.getElementById("adminTools").style.display="flex";
-  }
-  const res=await signInAnonymously(auth);
-  uUID=res.user.uid; uName=n;
-  localStorage.setItem("uN",n); localStorage.setItem("uA",isAdmin);
-  document.getElementById("loginScreen").style.display="none";
-  document.getElementById("welcomeBox").innerText=`Welcome, ${uName}!`;
-  set(ref(db,'nodes/'+uUID),{name:uName,online:true,typing:false});
-  syncUsers(); syncMsgs();
-}
-
-function logout(){localStorage.clear();signOut(auth).then(()=>location.reload());}
-
-function sendMessage(){
-  const i=document.getElementById("chatInput");
-  if(!i.value.trim())return;
-  push(ref(db,currentRoom),{uid:uUID,sender:uName,text:i.value,ts:serverTimestamp()});
-  update(ref(db,'nodes/'+uUID),{typing:false});
-  i.value="";
-}
-
-function upImg(el){
-  const r=new FileReader();
-  r.onload=e=>sendMessageWithMedia(e.target.result);
-  r.readAsDataURL(el.files[0]);
-}
-function sendMessageWithMedia(p){
-  push(ref(db,currentRoom),{uid:uUID,sender:uName,img:p,ts:serverTimestamp()});
+function setupApp(){
+    document.getElementById("loginLayer").style.display = "none";
+    document.getElementById("greet").innerText = "Welcome, " + uName;
+    if(isAdmin) {
+        document.getElementById("admTag").style.display = "inline";
+        document.getElementById("userRole").innerText = "Supreme System Admin";
+    }
+    set(ref(db, 'nodes/'+uUID), {name: uName, online: true, typing: false});
+    syncUsers();
+    syncMsgs();
+    trackTyping();
+    setInterval(() => {
+        document.getElementById("clock").innerText = new Date().toLocaleString();
+        document.getElementById("quoteFeed").innerText = quotes[Math.floor(Math.random()*quotes.length)];
+    }, 10000);
 }
 
-function insertEmoji(e){document.getElementById("chatInput").value+=e;}
-
-function broadcastMessage(){const msg=prompt("Enter broadcast message:");if(!msg)return;push(ref(db,'global_v2'),{uid:uUID,sender:'ADMIN',text:msg,ts:serverTimestamp(),broadcast:true});}
-function toggleMute(){onValue(ref(db,'system/mute'),s=>{set(ref(db,'system/mute'),!s.val());},{onlyOnce:true});}
-
-function syncMsgs(){
-  onValue(query(ref(db,currentRoom),limitToLast(50)),s=>{
-    const f=document.getElementById("chatFeed");f.innerHTML="";
-    s.forEach(m=>{
-      const d=m.val();
-      let cls=d.uid===uUID?'me':'other';
-      if(d.broadcast) cls='other';
-      f.innerHTML+=`<div class="msg ${cls}"><small style="opacity:0.5;font-size:10px;">${d.sender}</small>${d.text?`<div>${d.text}</div>`:''}${d.img?`<img src="${d.img}">`:''}</div>`;
+window.sendMsg = (img = null) => {
+    const i = document.getElementById("msgIn");
+    if(!i.value.trim() && !img) return;
+    push(ref(db, currentRoom), {
+        uid: uUID, sender: uName, text: i.value, img: img, ts: serverTimestamp()
     });
-    f.scrollTop=f.scrollHeight;
-  });
-}
+    i.value = "";
+    update(ref(db, 'nodes/'+uUID), {typing: false});
+};
 
-function typing(){update(ref(db,'nodes/'+uUID),{typing:true});setTimeout(()=>update(ref(db,'nodes/'+uUID),{typing:false}),3000);}
-function showTyping(){onValue(ref(db,'nodes'),s=>{let typingUsers=[];s.forEach(u=>{const d=u.val();if(d.typing && u.key!==uUID) typingUsers.push(d.name);});document.getElementById("typingIndicator").innerText = typingUsers.length>0 ? typingUsers.join(", ")+" is typing..." : "";});}
-setInterval(showTyping,1000);
+window.upMedia = (el) => {
+    const r = new FileReader();
+    r.onload = e => sendMsg(e.target.result);
+    r.readAsDataURL(el.files[0]);
+};
 
-function syncUsers(){
-  onValue(ref(db,'nodes'),s=>{
-    const l=document.getElementById("usersList"); l.innerHTML="";
-    s.forEach(u=>{
-      const d=u.val();
-      if(!d.online)return;
-      const node=document.createElement('div'); node.className='user-card'; node.innerText=d.name;
-      node.onclick=()=>{if(u.key!==uUID){currentRoom=uUID<u.key?`${uUID}_${u.key}`:`${u.key}_${uUID}`;showPage('chatPage');syncMsgs();}};
-      l.appendChild(node);
+function syncMsgs() {
+    onValue(query(ref(db, currentRoom), limitToLast(40)), s => {
+        const feed = document.getElementById("chatFeed");
+        feed.innerHTML = "";
+        s.forEach(m => {
+            const d = m.val();
+            feed.innerHTML += `
+                <div class="msg ${d.uid === uUID ? 'me' : 'other'}">
+                    <small style="opacity:0.5; font-weight:800; font-size:10px; display:block; margin-bottom:4px;">${d.sender}</small>
+                    ${d.text ? `<div>${d.text}</div>` : ''}
+                    ${d.img ? `<img src="${d.img}">` : ''}
+                </div>`;
+        });
+        feed.scrollTop = feed.scrollHeight;
     });
-  });
 }
 
-function createGroup(){
-  const g=document.getElementById("groupName").value.trim();
-  if(!g)return alert("Enter group name!");
-  currentRoom=`group_${g}`;
-  document.getElementById("groupName").value="";
-  syncMsgs();
-  alert("Group '"+g+"' created. Users can join by same name!");
+window.pushType = () => {
+    update(ref(db, 'nodes/'+uUID), {typing: true});
+    setTimeout(() => update(ref(db, 'nodes/'+uUID), {typing: false}), 2000);
+};
+
+function trackTyping() {
+    onValue(ref(db, 'nodes'), s => {
+        let typs = [];
+        s.forEach(u => {
+            if(u.val().typing && u.key !== uUID) typs.push(u.val().name);
+        });
+        document.getElementById("typeInfo").innerText = typs.length ? typs.join(", ") + " is typing..." : "";
+    });
 }
 
-onAuthStateChanged(auth,user=>{
-  if(user){
-    uUID=user.uid;
-    const savedName=localStorage.getItem("uN");
-    const savedAdmin=localStorage.getItem("uA")==="true";
-    if(savedName){ uName=savedName; isAdmin=savedAdmin; if(isAdmin) document.getElementById("adminTools").style.display="flex"; document.getElementById("loginScreen").style.display="none"; document.getElementById("welcomeBox").innerText=`Welcome, ${uName}!`; set(ref(db,'nodes/'+uUID),{name:uName,online:true,typing:false}); syncUsers(); syncMsgs(); }
-  }
+function syncUsers() {
+    onValue(ref(db, 'nodes'), s => {
+        const l = document.getElementById("nodesList");
+        l.innerHTML = "";
+        s.forEach(u => {
+            const d = u.val();
+            if(!d.online) return;
+            const card = document.createElement('div');
+            card.className = 'user-card';
+            card.innerHTML = `<img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:35px; border-radius:10px;"> <span>${d.name}</span>`;
+            card.onclick = () => {
+                if(u.key === uUID) { currentRoom = "global_v2"; document.getElementById("chatHeader").innerText = "GLOBAL_CHANNEL"; }
+                else {
+                    currentRoom = uUID < u.key ? `${uUID}_${u.key}` : `${u.key}_${uUID}`;
+                    document.getElementById("chatHeader").innerText = "PRIVATE: " + d.name;
+                }
+                nav('pg-chat', document.querySelectorAll(".nav-btn")[1]);
+            };
+            l.appendChild(card);
+        });
+    });
+}
+
+window.makeGroup = () => {
+    const g = document.getElementById("gName").value.trim();
+    if(!g) return;
+    currentRoom = "group_" + g;
+    document.getElementById("chatHeader").innerText = "GROUP: " + g;
+    nav('pg-chat', document.querySelectorAll(".nav-btn")[1]);
+    document.getElementById("gName").value = "";
+};
+
+window.exit = () => { localStorage.clear(); signOut(auth).then(()=>location.reload()); };
+
+onAuthStateChanged(auth, user => {
+    if(user){
+        const sn = localStorage.getItem("uN");
+        if(sn){ uUID=user.uid; uName=sn; isAdmin=localStorage.getItem("uA")==="true"; setupApp(); }
+    }
 });
 </script>
 </body>
