@@ -2,108 +2,96 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Web-Hub Pro | Nazim Edition</title>
+<title>Web-Hub Sovereign | Nazim God Mode</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{ --primary:#7c3aed; --secondary:#db2777; --bg:#030712; --glass:rgba(30,41,59,0.7); --accent:#fbbf24; }
+:root{ --p:#8b5cf6; --s:#ec4899; --bg:#020617; --g:rgba(30,41,59,0.7); --danger:#ef4444; }
 *{box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; transition:0.3s; }
 body{margin:0; background:var(--bg); color:#f9fafb; height:100dvh; display:flex; flex-direction:column; overflow:hidden;}
 
-/* Login Layer */
-#loginLayer{position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:2000;}
-.auth-card{background:var(--glass); padding:40px; border-radius:30px; border:1px solid rgba(255,255,255,0.1); text-align:center; width:90%; max-width:380px; backdrop-filter:blur(20px);}
-.auth-card h1{background:linear-gradient(to right,var(--primary),var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:2.5rem; margin-bottom:10px; font-weight:900;}
-.auth-card input{width:100%; padding:15px; margin-bottom:15px; border-radius:15px; border:none; background:#000; color:#fff; text-align:center; outline:none; font-size:1rem;}
-.auth-card button{width:100%; padding:15px; border-radius:15px; border:none; background:var(--primary); color:white; font-weight:800; cursor:pointer; font-size:1rem; box-shadow:0 10px 20px rgba(124,58,237,0.3);}
+/* Admin Special UI */
+#adminTerminal{display:none; background:rgba(239,68,68,0.15); border:1px solid var(--danger); margin:10px; padding:10px; border-radius:15px; display:none; justify-content:space-around; align-items:center; z-index:100;}
+.adm-btn{background:var(--danger); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:800; cursor:pointer; text-transform:uppercase;}
 
-/* Layout */
-header{padding:18px 25px; background:rgba(3,7,18,0.9); display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); z-index:100;}
-.brand{font-weight:900; font-size:1.4rem; letter-spacing:-1px;}
-.admin-badge{background:var(--accent); color:#000; padding:2px 8px; border-radius:8px; font-size:10px; font-weight:900; margin-left:10px;}
+/* Standard UI */
+#loginLayer{position:fixed; inset:0; background:#000; display:flex; align-items:center; justify-content:center; z-index:2000;}
+.auth-card{background:var(--g); padding:40px; border-radius:30px; border:1px solid rgba(255,255,255,0.1); text-align:center; width:90%; max-width:380px; backdrop-filter:blur(20px);}
+.auth-card input{width:100%; padding:15px; margin-bottom:15px; border-radius:15px; border:none; background:#000; color:#fff; text-align:center; outline:none;}
+.auth-card button{width:100%; padding:15px; border-radius:15px; border:none; background:var(--p); color:white; font-weight:800; cursor:pointer;}
 
-.page{display:none; flex:1; overflow-y:auto; padding:20px; padding-bottom:100px;}
-.page.active{display:flex; flex-direction:column; animation:fadeIn 0.4s ease;}
-@keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+header{padding:18px 25px; background:rgba(2,6,23,0.9); display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05);}
+.brand{font-weight:900; font-size:1.4rem; background:linear-gradient(to right, #a78bfa, #f472b6); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
 
-/* Chat UI */
+.page{display:none; flex:1; overflow-y:auto; padding:20px; padding-bottom:120px;}
+.page.active{display:flex; flex-direction:column;}
+
 .feed{flex:1; display:flex; flex-direction:column; gap:12px;}
-.msg{max-width:80%; padding:12px 16px; border-radius:20px; font-size:14px; line-height:1.5; position:relative;}
-.msg.me{align-self:flex-end; background:var(--primary); color:white; border-bottom-right-radius:4px;}
-.msg.other{align-self:flex-start; background:var(--glass); border-bottom-left-radius:4px; border:1px solid rgba(255,255,255,0.05);}
-.msg img{max-width:100%; border-radius:12px; margin-top:8px; display:block;}
+.msg{max-width:80%; padding:12px 16px; border-radius:20px; font-size:14px; position:relative;}
+.me{align-self:flex-end; background:var(--p); color:white; border-bottom-right-radius:4px;}
+.other{align-self:flex-start; background:var(--g); border-bottom-left-radius:4px;}
+.msg img{max-width:100%; border-radius:12px; margin-top:8px;}
 
-.dock{position:fixed; bottom:75px; left:15px; right:15px; background:rgba(30,41,59,0.9); backdrop-filter:blur(20px); padding:10px; border-radius:50px; display:flex; align-items:center; gap:10px; border:1px solid rgba(255,255,255,0.1);}
-.dock input{flex:1; background:none; border:none; color:white; outline:none; padding-left:10px; font-size:15px;}
-.dock button{background:var(--primary); color:white; border:none; width:42px; height:42px; border-radius:50%; cursor:pointer;}
+.dock{position:fixed; bottom:75px; left:15px; right:15px; background:rgba(30,41,59,0.95); padding:10px; border-radius:50px; display:flex; align-items:center; gap:10px; border:1px solid rgba(255,255,255,0.1); backdrop-filter:blur(20px);}
+.dock input{flex:1; background:none; border:none; color:white; outline:none; padding-left:10px;}
+.mute-overlay{position:absolute; inset:0; background:rgba(0,0,0,0.85); color:var(--danger); display:none; align-items:center; justify-content:center; border-radius:50px; font-weight:900; font-size:11px;}
 
-.bottom-nav{position:fixed; bottom:0; left:0; right:0; height:65px; background:rgba(0,0,0,0.9); display:flex; justify-content:space-around; align-items:center; border-top:1px solid rgba(255,255,255,0.05);}
+.bottom-nav{position:fixed; bottom:0; left:0; right:0; height:65px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid rgba(255,255,255,0.05);}
 .nav-btn{color:#4b5563; font-size:1.4rem; cursor:pointer;}
-.nav-btn.active{color:var(--primary); filter:drop-shadow(0 0 8px var(--primary));}
+.nav-btn.active{color:var(--p); filter:drop-shadow(0 0 8px var(--p));}
 
-/* Extras */
-.welcome-card{background:linear-gradient(135deg,var(--primary),var(--secondary)); padding:30px; border-radius:25px; text-align:center; margin-bottom:20px;}
-.quote-box{background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; font-style:italic; text-align:center; font-size:0.9rem; color:#94a3b8;}
-.user-card{background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; align-items:center; gap:15px; cursor:pointer;}
-.user-card:hover{background:rgba(255,255,255,0.08);}
-.typing-tag{color:var(--accent); font-size:12px; margin:5px 0 0 15px; font-weight:600;}
+.u-card{background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; align-items:center; gap:12px;}
+.ban-hammer{background:none; border:1px solid var(--danger); color:var(--danger); padding:4px 8px; border-radius:6px; font-size:10px; font-weight:800; margin-left:auto; display:none; cursor:pointer;}
 </style>
 </head>
 <body>
 
 <div id="loginLayer">
     <div class="auth-card">
-        <h1>WEB-HUB</h1>
-        <p style="opacity:0.5; font-size:0.8rem; margin-bottom:20px;">Secure Real-time Portal</p>
-        <input type="text" id="nodeName" placeholder="Enter Username">
+        <h1 class="brand">WEB-HUB</h1>
+        <input type="text" id="nName" placeholder="Enter Username">
         <button onclick="boot()">INITIALIZE</button>
     </div>
 </div>
 
+<div id="adminTerminal">
+    <span style="font-size:10px; font-weight:900; color:var(--danger);">GOD_MODE</span>
+    <button class="adm-btn" onclick="admToggleMute()">Toggle Mute</button>
+    <button class="adm-btn" onclick="admWipe()">Wipe History</button>
+</div>
+
 <header>
-    <div style="display:flex; align-items:center;">
-        <span class="brand">WEB-HUB</span>
-        <span id="admTag" class="admin-badge" style="display:none;">ADMIN</span>
-    </div>
-    <div id="statusDot" style="width:10px; height:10px; background:#10b981; border-radius:50%;"></div>
+    <div class="brand">WEB-HUB PRO</div>
+    <div id="admBadge" style="display:none; color:#fbbf24;"><i class="fa-solid fa-crown"></i></div>
 </header>
 
-<div class="page active" id="pg-home">
-    <div class="welcome-card">
-        <h2 id="greet" style="margin:0;">Welcome!</h2>
-        <small id="userRole">Standard Asset</small>
+<div class="page active" id="p-home">
+    <div style="background:linear-gradient(135deg,var(--p),var(--s)); padding:30px; border-radius:25px; text-align:center;">
+        <h2 id="welcomeText" style="margin:0;">Connecting...</h2>
+        <small id="roleText">Initializing Assets</small>
     </div>
-    <div class="quote-box" id="quoteFeed">"Design is not just what it looks like, it's how it works."</div>
-    <div style="margin-top:20px; text-align:center; font-size:0.8rem; color:var(--accent);" id="clock"></div>
+    <p id="quoteBox" style="text-align:center; font-style:italic; opacity:0.6; margin-top:20px;"></p>
 </div>
 
-<div class="page" id="pg-chat">
-    <div id="chatHeader" style="padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:15px; font-weight:800; font-size:0.9rem; color:var(--primary);">GLOBAL_CHANNEL</div>
+<div class="page" id="p-chat">
     <div class="feed" id="chatFeed"></div>
-    <div id="typeInfo" class="typing-tag"></div>
     <div class="dock">
-        <label for="imgUp"><i class="fa-solid fa-paperclip"></i></label>
-        <input type="file" id="imgUp" hidden onchange="upMedia(this)">
-        <input type="text" id="msgIn" placeholder="Type a message..." oninput="pushType()" onkeydown="if(event.key==='Enter') sendMsg()">
-        <button onclick="sendMsg()"><i class="fa-solid fa-location-arrow"></i></button>
+        <label for="imgUp"><i class="fa-solid fa-camera"></i></label>
+        <input type="file" id="imgUp" hidden onchange="up(this)">
+        <input type="text" id="mIn" placeholder="Type signal..." onkeydown="if(event.key==='Enter') send()">
+        <button onclick="send()" style="background:var(--p); border:none; color:white; width:40px; height:40px; border-radius:50%;"><i class="fa-solid fa-paper-plane"></i></button>
+        <div class="mute-overlay" id="muteScreen">🔇 GLOBAL CHAT IS LOCKED BY ADMIN</div>
     </div>
 </div>
 
-<div class="page" id="pg-users">
-    <h3 style="margin-top:0;">Active Nodes</h3>
-    <div id="nodesList"></div>
-    <div style="margin-top:20px; padding:15px; background:var(--glass); border-radius:15px;">
-        <small style="display:block; margin-bottom:10px; opacity:0.6;">CREATE GROUP</small>
-        <div style="display:flex; gap:10px;">
-            <input type="text" id="gName" placeholder="Group Name" style="flex:1; padding:10px; border-radius:10px; border:none; background:#000; color:#fff;">
-            <button onclick="makeGroup()" style="background:var(--primary); border:none; color:#fff; padding:0 15px; border-radius:10px; cursor:pointer;">+</button>
-        </div>
-    </div>
+<div class="page" id="p-users">
+    <h3>Online Assets</h3>
+    <div id="uList"></div>
 </div>
 
 <nav class="bottom-nav">
-    <i class="fa-solid fa-house nav-btn active" onclick="nav('pg-home',this)"></i>
-    <i class="fa-solid fa-comment-dots nav-btn" onclick="nav('pg-chat',this)"></i>
-    <i class="fa-solid fa-user-group nav-btn" onclick="nav('pg-users',this)"></i>
+    <i class="fa-solid fa-house nav-btn active" onclick="nav('p-home',this)"></i>
+    <i class="fa-solid fa-comment-dots nav-btn" onclick="nav('p-chat',this)"></i>
+    <i class="fa-solid fa-user-shield nav-btn" onclick="nav('p-users',this)"></i>
     <i class="fa-solid fa-power-off nav-btn" onclick="exit()"></i>
 </nav>
 
@@ -126,140 +114,99 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-let uUID, uName, isAdmin=false;
-let currentRoom = "global_v2";
-
-const quotes = [
-    "Empire is built on code.", "Work hard in silence.", "Stay focused, stay humble.",
-    "Nazim's System is Online.", "The best way to predict future is to create it."
-];
-
-// Navigation
-window.nav = (id, el) => {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-    document.querySelectorAll(".nav-btn").forEach(i => i.classList.remove("active"));
-    el.classList.add("active");
-    if(id === 'pg-chat') syncMsgs();
-};
+let uUID, uName, isAdmin=false, curRoom="global_v2";
 
 window.boot = async () => {
-    const n = document.getElementById("nodeName").value.trim();
+    const n = document.getElementById("nName").value.trim();
     if(!n) return;
-    if(n.toLowerCase() === 'nazim'){
-        if(prompt("Enter Admin PIN:") === '786') isAdmin=true;
+    if(n.toLowerCase()==='nazim'){
+        if(prompt("Admin PIN:")==='786') isAdmin=true;
         else return;
     }
     const res = await signInAnonymously(auth);
     uUID = res.user.uid; uName = n;
-    localStorage.setItem("uN", n); localStorage.setItem("uA", isAdmin);
-    setupApp();
+    localStorage.setItem("uN",n); localStorage.setItem("uA",isAdmin);
+    checkBan(uUID);
 };
 
-function setupApp(){
-    document.getElementById("loginLayer").style.display = "none";
-    document.getElementById("greet").innerText = "Welcome, " + uName;
-    if(isAdmin) {
-        document.getElementById("admTag").style.display = "inline";
-        document.getElementById("userRole").innerText = "Supreme System Admin";
-    }
-    set(ref(db, 'nodes/'+uUID), {name: uName, online: true, typing: false});
-    syncUsers();
-    syncMsgs();
-    trackTyping();
-    setInterval(() => {
-        document.getElementById("clock").innerText = new Date().toLocaleString();
-        document.getElementById("quoteFeed").innerText = quotes[Math.floor(Math.random()*quotes.length)];
-    }, 10000);
+function checkBan(uid) {
+    onValue(ref(db, 'banned/'+uid), s => {
+        if(s.val()) { document.body.innerHTML = "<h1 style='color:red; text-align:center; padding-top:100px;'>🚫 YOU ARE BANNED</h1>"; localStorage.clear(); }
+        else startApp();
+    });
 }
 
-window.sendMsg = (img = null) => {
-    const i = document.getElementById("msgIn");
+function startApp(){
+    document.getElementById("loginLayer").style.display="none";
+    document.getElementById("welcomeText").innerText = "Welcome, "+uName;
+    if(isAdmin) {
+        document.getElementById("adminTerminal").style.display="flex";
+        document.getElementById("admBadge").style.display="block";
+        document.getElementById("roleText").innerText = "Supreme Sovereign Administrator";
+    }
+    set(ref(db, 'nodes/'+uUID), {name:uName, online:true});
+    syncMsgs(); syncUsers();
+    onValue(ref(db, 'system/mute'), s => { document.getElementById("muteScreen").style.display = (s.val() && !isAdmin) ? "flex" : "none"; });
+}
+
+window.send = (img=null) => {
+    const i = document.getElementById("mIn");
     if(!i.value.trim() && !img) return;
-    push(ref(db, currentRoom), {
-        uid: uUID, sender: uName, text: i.value, img: img, ts: serverTimestamp()
-    });
-    i.value = "";
-    update(ref(db, 'nodes/'+uUID), {typing: false});
+    push(ref(db, curRoom), { uid:uUID, sender:uName, text:i.value, img:img, ts:serverTimestamp() });
+    i.value="";
 };
 
-window.upMedia = (el) => {
+window.up = (el) => {
     const r = new FileReader();
-    r.onload = e => sendMsg(e.target.result);
+    r.onload = e => send(e.target.result);
     r.readAsDataURL(el.files[0]);
 };
 
-function syncMsgs() {
-    onValue(query(ref(db, currentRoom), limitToLast(40)), s => {
-        const feed = document.getElementById("chatFeed");
-        feed.innerHTML = "";
-        s.forEach(m => {
-            const d = m.val();
-            feed.innerHTML += `
-                <div class="msg ${d.uid === uUID ? 'me' : 'other'}">
-                    <small style="opacity:0.5; font-weight:800; font-size:10px; display:block; margin-bottom:4px;">${d.sender}</small>
-                    ${d.text ? `<div>${d.text}</div>` : ''}
-                    ${d.img ? `<img src="${d.img}">` : ''}
-                </div>`;
-        });
-        feed.scrollTop = feed.scrollHeight;
-    });
-}
-
-window.pushType = () => {
-    update(ref(db, 'nodes/'+uUID), {typing: true});
-    setTimeout(() => update(ref(db, 'nodes/'+uUID), {typing: false}), 2000);
+window.nav = (id, el) => {
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+    el.classList.add("active");
 };
 
-function trackTyping() {
-    onValue(ref(db, 'nodes'), s => {
-        let typs = [];
-        s.forEach(u => {
-            if(u.val().typing && u.key !== uUID) typs.push(u.val().name);
+function syncMsgs(){
+    onValue(query(ref(db, curRoom), limitToLast(40)), s => {
+        const f = document.getElementById("chatFeed"); f.innerHTML="";
+        s.forEach(m => {
+            const d = m.val();
+            f.innerHTML += `<div class="msg ${d.uid===uUID?'me':'other'}"><small style="opacity:0.5; font-size:10px; display:block;">${d.sender}</small>${d.text?`<div>${d.text}</div>`:''}${d.img?`<img src="${d.img}">`:''}</div>`;
         });
-        document.getElementById("typeInfo").innerText = typs.length ? typs.join(", ") + " is typing..." : "";
+        f.scrollTop = f.scrollHeight;
     });
 }
 
-function syncUsers() {
+function syncUsers(){
     onValue(ref(db, 'nodes'), s => {
-        const l = document.getElementById("nodesList");
-        l.innerHTML = "";
+        const l = document.getElementById("uList"); l.innerHTML="";
         s.forEach(u => {
-            const d = u.val();
-            if(!d.online) return;
-            const card = document.createElement('div');
-            card.className = 'user-card';
-            card.innerHTML = `<img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:35px; border-radius:10px;"> <span>${d.name}</span>`;
-            card.onclick = () => {
-                if(u.key === uUID) { currentRoom = "global_v2"; document.getElementById("chatHeader").innerText = "GLOBAL_CHANNEL"; }
-                else {
-                    currentRoom = uUID < u.key ? `${uUID}_${u.key}` : `${u.key}_${uUID}`;
-                    document.getElementById("chatHeader").innerText = "PRIVATE: " + d.name;
-                }
-                nav('pg-chat', document.querySelectorAll(".nav-btn")[1]);
-            };
+            const d = u.val(); if(!d.online) return;
+            const card = document.createElement('div'); card.className='u-card';
+            card.innerHTML = `<img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:35px; border-radius:10px;"> <span>${d.name}</span> <button class="ban-hammer" style="display:${isAdmin?'block':'none'}" onclick="ban('${u.key}')">BAN</button>`;
+            card.onclick = (e) => { if(e.target.tagName!=='BUTTON') { openPriv(u.key, d.name); } };
             l.appendChild(card);
         });
     });
 }
 
-window.makeGroup = () => {
-    const g = document.getElementById("gName").value.trim();
-    if(!g) return;
-    currentRoom = "group_" + g;
-    document.getElementById("chatHeader").innerText = "GROUP: " + g;
-    nav('pg-chat', document.querySelectorAll(".nav-btn")[1]);
-    document.getElementById("gName").value = "";
+window.openPriv = (tid, tn) => {
+    if(tid===uUID) return;
+    curRoom = uUID < tid ? `${uUID}_${tid}` : `${tid}_${uUID}`;
+    nav('p-chat', document.querySelectorAll(".nav-btn")[1]);
+    syncMsgs();
 };
 
+window.ban = (uid) => { if(isAdmin && confirm("Ban User?")) set(ref(db, 'banned/'+uid), true); };
+window.admToggleMute = () => { onValue(ref(db, 'system/mute'), s=>{ set(ref(db, 'system/mute'), !s.val()); }, {onlyOnce:true}); };
+window.admWipe = () => { if(isAdmin && confirm("Wipe History?")) remove(ref(db, 'global_v2')); };
 window.exit = () => { localStorage.clear(); signOut(auth).then(()=>location.reload()); };
 
 onAuthStateChanged(auth, user => {
-    if(user){
-        const sn = localStorage.getItem("uN");
-        if(sn){ uUID=user.uid; uName=sn; isAdmin=localStorage.getItem("uA")==="true"; setupApp(); }
-    }
+    if(user && localStorage.getItem("uN")){ uUID=user.uid; uName=localStorage.getItem("uN"); isAdmin=localStorage.getItem("uA")==='true'; checkBan(uUID); }
 });
 </script>
 </body>
