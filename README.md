@@ -2,105 +2,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Empire-X | Admin Sovereign</title>
+    <title>Empire Ultra | Gemini v100</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root { --primary: #8b5cf6; --secondary: #ec4899; --dark: #0f172a; --glass: rgba(30, 41, 59, 0.7); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            margin: 0; background: var(--dark); color: #f1f5f9; 
-            font-family: 'Inter', sans-serif; height: 100dvh; display: flex; 
-        }
+        :root { --p: #7c3aed; --s: #db2777; --bg: #030712; --g: rgba(31, 41, 55, 0.7); }
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { margin: 0; background: var(--bg); color: #f9fafb; height: 100dvh; display: flex; overflow: hidden; }
 
-        /* --- Elite Sidebar --- */
-        .sidebar { 
-            width: 80px; background: #020617; border-right: 1px solid rgba(255,255,255,0.05);
-            display: flex; flex-direction: column; align-items: center; py: 30px; gap: 30px; 
-        }
-        .nav-link { 
-            width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-            border-radius: 15px; color: #64748b; cursor: pointer; transition: 0.3s;
-        }
-        .nav-link:hover, .nav-link.active { background: var(--primary); color: white; box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); }
+        /* --- Elite Navigation --- */
+        .side-nav { width: 85px; background: #000; border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center; padding: 30px 0; gap: 35px; z-index: 50; }
+        .nav-item { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; border-radius: 18px; color: #4b5563; cursor: pointer; font-size: 1.4rem; }
+        .nav-item.active, .nav-item:hover { background: var(--p); color: #fff; box-shadow: 0 0 25px rgba(124, 58, 237, 0.5); }
 
-        /* --- Dashboard Wrapper --- */
-        .wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        /* --- Dashboard Area --- */
+        .app-core { flex: 1; display: flex; flex-direction: column; position: relative; }
+        header { padding: 25px 35px; display: flex; justify-content: space-between; align-items: center; background: rgba(3, 7, 18, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glitch-text { font-weight: 900; font-size: 1.5rem; letter-spacing: -1px; background: linear-gradient(to right, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        header { 
-            padding: 20px 30px; display: flex; justify-content: space-between; align-items: center;
-            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); z-index: 10;
-        }
-        .user-tag { background: linear-gradient(to right, var(--primary), var(--secondary)); padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; }
-
-        /* --- Chat & Modules --- */
         .main-stage { flex: 1; display: flex; overflow: hidden; }
-        .chat-view { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .feed { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 15px; padding-bottom: 120px; }
-        
-        /* Message Bubbles */
-        .bubble { max-width: 70%; padding: 14px 18px; border-radius: 22px; font-size: 14px; position: relative; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } }
-        .bubble.me { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
-        .bubble.other { align-self: flex-start; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-bottom-left-radius: 4px; }
+        .chat-zone { flex: 1; display: flex; flex-direction: column; position: relative; }
+        .feed { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 20px; padding-bottom: 130px; }
 
-        /* Admin Action UI */
-        #adminPanel { 
-            display: none; position: absolute; top: 80px; right: 20px; 
-            background: #ef4444; color: white; padding: 10px 20px; 
-            border-radius: 12px; font-weight: 800; cursor: pointer; z-index: 100;
-            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
-        }
+        /* --- Bubbles & Media --- */
+        .bubble { max-width: 75%; padding: 16px 20px; border-radius: 24px; font-size: 15px; line-height: 1.5; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .me { align-self: flex-end; background: linear-gradient(135deg, var(--p), var(--s)); border-bottom-right-radius: 4px; }
+        .other { align-self: flex-start; background: var(--g); border: 1px solid rgba(255,255,255,0.1); border-bottom-left-radius: 4px; }
+        .bubble img { max-width: 100%; border-radius: 15px; margin-top: 10px; display: block; }
+
+        /* --- Admin Command Strip --- */
+        #adminStrip { display: none; padding: 10px 30px; background: #ef4444; text-align: center; font-weight: 800; font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; }
 
         /* --- Input Dock --- */
-        .input-area { 
-            position: absolute; bottom: 25px; left: 25px; right: 25px;
-            background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(20px);
-            padding: 10px; border-radius: 50px; display: flex; gap: 10px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .input-area input { flex: 1; background: none; border: none; color: white; padding: 12px 20px; outline: none; font-size: 15px; }
-        .action-btn { background: var(--primary); border: none; width: 45px; height: 45px; border-radius: 50%; color: white; cursor: pointer; }
+        .dock { position: absolute; bottom: 30px; left: 30px; right: 30px; background: rgba(31, 41, 55, 0.9); padding: 12px; border-radius: 60px; display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(30px); }
+        .dock input { flex: 1; background: none; border: none; color: #fff; font-size: 16px; outline: none; padding-left: 10px; }
+        .dock-btn { width: 48px; height: 48px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .btn-send { background: var(--p); color: white; }
 
-        /* User List Sidebar */
-        .user-list { width: 280px; background: rgba(0,0,0,0.2); padding: 25px; overflow-y: auto; border-left: 1px solid rgba(255,255,255,0.05); }
-        @media (max-width: 900px) { .user-list { display: none; } }
+        /* --- User Sidebar --- */
+        .user-panel { width: 300px; background: rgba(255,255,255,0.02); border-left: 1px solid rgba(255,255,255,0.05); padding: 30px; }
+        @media (max-width: 1000px) { .user-panel { display: none; } }
+
+        /* --- Auth & Modals --- */
+        #authOverlay { position: fixed; inset: 0; z-index: 1000; background: #000; display: flex; align-items: center; justify-content: center; }
+        .auth-card { width: 90%; max-width: 400px; text-align: center; padding: 40px; background: var(--g); border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
-<nav class="sidebar">
-    <div class="nav-link active"><i class="fa-solid fa-house"></i></div>
-    <div class="nav-link"><i class="fa-solid fa-user-group"></i></div>
-    <div class="nav-link" onclick="toggleView('settings')"><i class="fa-solid fa-sliders"></i></div>
-    <div class="nav-link" onclick="toggleView('contact')"><i class="fa-solid fa-headset"></i></div>
+<div id="authOverlay">
+    <div class="auth-card">
+        <h1 class="glitch-text">EMPIRE_LOGIN</h1>
+        <p style="opacity: 0.5; font-size: 0.8rem; margin-bottom: 30px;">Initialize Secure Session</p>
+        <input type="text" id="joinName" placeholder="Enter Codename" style="width:100%; padding:18px; border-radius:20px; border:none; background:#000; color:#fff; margin-bottom:15px; text-align:center; font-size:1rem;">
+        <button onclick="initEmpire()" style="width:100%; padding:18px; border-radius:20px; border:none; background:var(--p); color:#fff; font-weight:800; cursor:pointer;">START_ENGINE</button>
+    </div>
+</div>
+
+<nav class="side-nav">
+    <div class="nav-item active"><i class="fa-solid fa-ghost"></i></div>
+    <div class="nav-item"><i class="fa-solid fa-bolt"></i></div>
+    <div class="nav-item" onclick="alert('Settings: Encryption v10.0 Active')"><i class="fa-solid fa-shield-halved"></i></div>
+    <div class="nav-item" onclick="location.reload()"><i class="fa-solid fa-power-off"></i></div>
 </nav>
 
-<div class="wrapper">
+<div class="app-core">
+    <div id="adminStrip" onclick="wipeDatabase()">SYSTEM WIPE: EXECUTE COMMAND</div>
     <header>
-        <div style="display: flex; flex-direction: column;">
-            <span id="welcomeUser" style="font-weight: 900; font-size: 1.2rem; letter-spacing: -0.5px;">Empire_Dashboard</span>
-            <small style="opacity: 0.5;">Secure Node: Active</small>
-        </div>
-        <div id="adminTag" class="user-tag" style="display:none">👑 SUPREME ADMIN</div>
+        <div class="glitch-text" id="headerTitle">ULTRA_CONNECT</div>
+        <div id="adminBadge" style="display:none; background: #fbbf24; color: #000; padding: 5px 12px; border-radius: 12px; font-weight: 800; font-size: 0.7rem;">👑 SUPREME</div>
     </header>
 
-    <div id="adminPanel" onclick="clearSystemChat()">WIPE ALL DATA</div>
-
     <div class="main-stage">
-        <div class="chat-view">
-            <div class="feed" id="chatFeed"></div>
+        <div class="chat-zone">
+            <div class="feed" id="mainFeed"></div>
             
-            <div class="input-area">
-                <label for="pUpload" style="padding:10px; cursor:pointer; opacity:0.6"><i class="fa-solid fa-paperclip"></i></label>
-                <input type="file" id="pUpload" hidden onchange="handleFile(this)">
-                <input type="text" id="mInput" placeholder="Broadcast message..." onkeydown="if(event.key==='Enter') dispatch()">
-                <button class="action-btn" onclick="dispatch()"><i class="fa-solid fa-location-arrow"></i></button>
+            <div class="dock">
+                <label for="fUp" class="nav-item" style="width:40px; height:40px; font-size:1rem; margin:0;"><i class="fa-solid fa-plus"></i></label>
+                <input type="file" id="fUp" hidden onchange="processFile(this)">
+                <input type="text" id="msgIn" placeholder="Enter encrypted signal..." onkeydown="if(event.key==='Enter') broadcast()">
+                <button class="dock-btn btn-send" onclick="broadcast()"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
 
-        <aside class="user-list">
-            <h3 style="margin-bottom:20px; font-size:1rem; opacity:0.6">Online Assets</h3>
-            <div id="activeNodes"></div>
+        <aside class="user-panel">
+            <h3 style="margin-top:0; font-size:1.2rem;">Live Nodes</h3>
+            <div id="nodesList" style="display:flex; flex-direction:column; gap:15px; margin-top:25px;"></div>
         </aside>
     </div>
 </div>
@@ -108,7 +94,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getDatabase, ref, set, push, onValue, serverTimestamp, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue, serverTimestamp, remove, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -124,67 +110,87 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    let uName = prompt("Enter Empire Codename:") || "Agent_" + Math.floor(Math.random()*1000);
-    let uUID;
+    let myUID, myName;
+    let isAdmin = false;
 
-    // Start Session
-    signInAnonymously(auth).then(res => {
-        uUID = res.user.uid;
-        document.getElementById("welcomeUser").innerText = "Welcome, " + uName;
-        
-        // Admin Privileges Check (Aapka Naam Nazim ho toh)
-        if(uName.toLowerCase() === 'nazim') {
-            document.getElementById("adminTag").style.display = "block";
-            document.getElementById("adminPanel").style.display = "block";
+    window.initEmpire = async () => {
+        myName = document.getElementById("joinName").value.trim();
+        if(!myName) return;
+
+        // Admin Security Check
+        if(myName.toLowerCase() === 'nazim') {
+            let pin = prompt("Enter Master PIN:");
+            if(pin !== "786") { alert("Access Denied!"); return; }
+            isAdmin = true;
         }
 
-        set(ref(db, 'online/' + uUID), { name: uName, last: serverTimestamp() });
-        syncData();
-    });
+        const res = await signInAnonymously(auth);
+        myUID = res.user.uid;
+        
+        if(isAdmin) {
+            document.getElementById("adminBadge").style.display = "block";
+            document.getElementById("adminStrip").style.display = "block";
+        }
 
-    window.dispatch = (img = null) => {
-        const i = document.getElementById("mInput");
-        if(!i.value.trim() && !img) return;
-        push(ref(db, 'empire_v90'), {
-            uid: uUID, sender: uName, text: i.value, img: img, ts: serverTimestamp()
+        document.getElementById("authOverlay").style.display = "none";
+        set(ref(db, 'online_v100/' + myUID), { name: myName, role: isAdmin ? 'admin' : 'user' });
+        sync();
+    };
+
+    window.broadcast = (img = null) => {
+        const input = document.getElementById("msgIn");
+        if(!input.value.trim() && !img) return;
+
+        push(ref(db, 'v100_core'), {
+            uid: myUID, sender: myName, text: input.value, photo: img, ts: serverTimestamp()
         });
-        i.value = "";
+        input.value = "";
     };
 
-    window.handleFile = (el) => {
-        const reader = new FileReader();
-        reader.onload = (e) => dispatch(e.target.result);
-        reader.readAsDataURL(el.files[0]);
+    window.processFile = (el) => {
+        const r = new FileReader();
+        r.onload = (e) => broadcast(e.target.result);
+        r.readAsDataURL(el.files[0]);
     };
 
-    window.clearSystemChat = () => {
-        if(confirm("Destroy all records?")) remove(ref(db, 'empire_v90'));
+    window.wipeDatabase = () => {
+        if(confirm("DANGER: This will delete ALL chat records. Proceed?")) {
+            remove(ref(db, 'v100_core'));
+        }
     };
 
-    function syncData() {
-        onValue(ref(db, 'empire_v90'), snap => {
-            const f = document.getElementById("chatFeed");
-            f.innerHTML = "";
+    function sync() {
+        onValue(query(ref(db, 'v100_core'), limitToLast(40)), snap => {
+            const feed = document.getElementById("mainFeed");
+            feed.innerHTML = "";
             snap.forEach(s => {
                 const d = s.val();
-                f.innerHTML += `
-                    <div class="bubble ${d.uid === uUID ? 'me' : 'other'}">
-                        <small style="opacity:0.5; display:block; margin-bottom:5px;">${d.sender}</small>
+                const isMe = d.uid === myUID;
+                feed.innerHTML += `
+                    <div class="bubble ${isMe ? 'me' : 'other'}">
+                        <small style="opacity:0.6; font-weight:800; display:block; margin-bottom:5px;">${d.sender}</small>
                         ${d.text ? `<div>${d.text}</div>` : ''}
-                        ${d.img ? `<img src="${d.img}" style="max-width:100%; border-radius:10px; margin-top:10px;">` : ''}
+                        ${d.photo ? `<img src="${d.photo}">` : ''}
                     </div>
                 `;
             });
-            f.scrollTop = f.scrollHeight;
+            feed.scrollTop = feed.scrollHeight;
         });
 
-        onValue(ref(db, 'online'), snap => {
-            const list = document.getElementById("activeNodes");
+        onValue(ref(db, 'online_v100'), snap => {
+            const list = document.getElementById("nodesList");
             list.innerHTML = "";
             snap.forEach(s => {
-                list.innerHTML += `<div style="padding:10px; background:rgba(255,255,255,0.05); border-radius:10px; margin-bottom:10px; font-size:0.9rem;">
-                    <i class="fa-solid fa-circle" style="color:#10b981; font-size:8px; margin-right:10px;"></i> ${s.val().name}
-                </div>`;
+                const d = s.val();
+                list.innerHTML += `
+                    <div style="display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:10px; border-radius:15px;">
+                        <img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:35px; border-radius:12px;">
+                        <div>
+                            <div style="font-size:0.9rem; font-weight:600;">${d.name}</div>
+                            <div style="font-size:0.7rem; color:#10b981;">● Online</div>
+                        </div>
+                    </div>
+                `;
             });
         });
     }
