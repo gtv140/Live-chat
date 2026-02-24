@@ -2,12 +2,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Empire Modern Dashboard v4</title>
+<title>Empire Dashboard V5</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
---primary:#8b5cf6; --secondary:#f43f5e; --bg:#0b0f1a; --glass:rgba(20,25,40,0.75); --text:#f8fafc;
---hover:#272b3d;
+--primary:#8b5cf6; --secondary:#f43f5e; --bg:#0b0f1a; --glass:rgba(20,25,40,0.75); --text:#f8fafc; --hover:#272b3d;
 }
 *{box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s;}
 body{margin:0;background:var(--bg);color:var(--text);height:100vh;display:flex;overflow:hidden;}
@@ -50,6 +49,7 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 .auth-box{width:90%;max-width:350px;text-align:center;padding:40px;background:var(--glass);border-radius:30px;border:1px solid rgba(255,255,255,0.1);}
 .auth-box input{font-size:1rem;padding:12px;margin-bottom:12px;border-radius:12px;border:none;background:#000;color:#fff;text-align:center;width:100%;}
 .auth-box button{font-size:1rem;padding:12px;border-radius:12px;border:none;background:var(--primary);color:white;cursor:pointer;font-weight:800;}
+.inline-pin{margin-top:8px;padding:10px;border-radius:10px;width:100%;border:none;background:#111;color:white;text-align:center;}
 @media(max-width:850px){.user-list{display:none;}.sidebar{position:fixed;left:-80px;top:0;height:100%;}.sidebar.show{left:0;}}
 </style>
 </head>
@@ -57,8 +57,11 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 
 <div id="auth">
 <div class="auth-box">
-<h1 class="brand">EMPIRE_V4</h1>
+<h1 class="brand">EMPIRE_V5</h1>
 <input type="text" id="loginName" placeholder="Enter Codename">
+<div id="adminPinDiv" style="display:none;">
+<input type="password" id="adminPin" class="inline-pin" placeholder="Enter Admin PIN">
+</div>
 <button onclick="boot()">LOGIN</button>
 </div>
 </div>
@@ -80,7 +83,7 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 </header>
 
 <div class="content">
-<div id="home" class="section active"><h2>Welcome, <span id="uDisplay"></span>!</h2><p>Empire Realtime Dashboard v4</p></div>
+<div id="home" class="section active"><h2>Welcome, <span id="uDisplay"></span>!</h2><p>Empire Realtime Dashboard v5</p></div>
 <div id="users" class="section"><h3>Active Users</h3><div id="uList"></div></div>
 <div id="groups" class="section">
 <h3>Global Chat</h3>
@@ -95,7 +98,7 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 <div class="mute-msg" id="muteScreen">🔇 GLOBAL CHAT IS LOCKED</div>
 </div>
 </div>
-<div id="about" class="section"><h3>About</h3><p>Modern Empire Dashboard v4 - All features enabled.</p></div>
+<div id="about" class="section"><h3>About</h3><p>Modern Empire Dashboard v5 - All features enabled.</p></div>
 <div id="contact" class="section"><h3>Contact</h3><p>Email: support@empire.com</p></div>
 <div id="settings" class="section">
 <h3>Settings</h3>
@@ -109,27 +112,25 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 </div>
 
 <script type="module">
-// Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getDatabase, ref, set, push, onValue, serverTimestamp, remove, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// Firebase config - check this with your project
 const firebaseConfig = {
-apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-authDomain: "live-chat-b810c.firebaseapp.com",
-databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
-projectId: "live-chat-b810c",
-storageBucket: "live-chat-b810c.firebasestorage.app",
-messagingSenderId: "555058795334",
-appId: "1:555058795334:web:f668887409800c32970b47"
+apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+authDomain:"live-chat-b810c.firebaseapp.com",
+databaseURL:"https://live-chat-b810c-default-rtdb.firebaseio.com",
+projectId:"live-chat-b810c",
+storageBucket:"live-chat-b810c.firebasestorage.app",
+messagingSenderId:"555058795334",
+appId:"1:555058795334:web:f668887409800c32970b47"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-let uUID,uName,isAdmin=false,currentRoom="global_v4";
+let uUID,uName,isAdmin=false,currentRoom="global_v5";
 
 onAuthStateChanged(auth,user=>{
 if(user){
@@ -144,8 +145,9 @@ const n=document.getElementById("loginName").value.trim();
 if(!n)return;
 let admin=false;
 if(n.toLowerCase()==="nazim"){
-if(prompt("Enter Master PIN:")==="786") admin=true;
-else {alert("Wrong PIN"); return;}
+document.getElementById("adminPinDiv").style.display="block";
+const pin=document.getElementById("adminPin").value.trim();
+if(pin!=="786"){alert("Wrong PIN"); return;} admin=true;
 }
 try{
 const res=await signInAnonymously(auth);
