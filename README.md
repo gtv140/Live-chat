@@ -2,14 +2,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Empire Sovereign | God Mode</title>
+<title>Empire Sovereign | Realtime Chat</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root { --p: #a855f7; --s: #ec4899; --bg: #030712; --glass: rgba(30, 41, 59, 0.7); }
 * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.3s; }
 body { margin: 0; background: var(--bg); color: #f9fafb; height: 100dvh; display: flex; overflow: hidden; }
 
-/* Navigation Sidebar */
+/* Sidebar */
 .sidebar { width: 60px; background: #000; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 20px; transition: all 0.3s; position: relative; z-index: 100; }
 .nav-btn { width: 45px; height: 45px; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #4b5563; cursor: pointer; font-size: 1.2rem; }
 .nav-btn.active { background: var(--p); color: white; box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
@@ -94,20 +94,20 @@ header { padding: 12px 20px; display: flex; justify-content: space-between; alig
             <div class="dock" id="inputDock">
                 <label for="pUp" style="padding:10px; cursor:pointer; opacity:0.6"><i class="fa-solid fa-image"></i></label>
                 <input type="file" id="pUp" hidden onchange="upImg(this)">
-                <input type="text" id="mIn" placeholder="Enter signal..." onkeydown="if(event.key==='Enter') send()">
+                <input type="text" id="mIn" placeholder="Enter message..." onkeydown="if(event.key==='Enter') send()">
                 <button onclick="send()" style="background:var(--p); border:none; color:white; width:40px; height:40px; border-radius:50%; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i></button>
                 <div class="mute-msg" id="muteScreen">🔇 GLOBAL CHAT IS LOCKED</div>
             </div>
         </div>
         <aside class="user-list">
-            <h5 style="opacity:0.5; margin-bottom:15px;">ASSETS</h5>
+            <h5 style="opacity:0.5; margin-bottom:15px;">USERS</h5>
             <div id="uList"></div>
         </aside>
     </div>
 </div>
 
 <script type="module">
-// Firebase imports & config (same as original)
+// Firebase setup
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getDatabase, ref, set, push, onValue, serverTimestamp, remove, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -132,10 +132,7 @@ onAuthStateChanged(auth, user => {
     if (user) {
         const savedName = localStorage.getItem("uN");
         const savedAdmin = localStorage.getItem("uA") === "true";
-        if (savedName) {
-            uUID = user.uid; uName = savedName; isAdmin = savedAdmin;
-            checkBan(user.uid);
-        }
+        if (savedName) { uUID = user.uid; uName = savedName; isAdmin = savedAdmin; checkBan(user.uid); }
     }
 });
 
@@ -155,108 +152,64 @@ window.boot = async () => {
 
 function checkBan(uid) {
     onValue(ref(db, 'banned/' + uid), s => {
-        if(s.val()) { 
-            document.body.innerHTML = "<h1 style='color:red; text-align:center; padding:50px;'>🚫 PERMANENTLY BANNED</h1>";
-            localStorage.clear();
-        } else { start(); }
+        if(s.val()) { document.body.innerHTML = "<h1 style='color:red; text-align:center; padding:50px;'>🚫 BANNED</h1>"; localStorage.clear(); }
+        else start();
     });
 }
 
 function start() {
     document.getElementById("auth").style.display = "none";
-    if(isAdmin) {
-        document.getElementById("adminTools").style.display = "flex";
-        document.getElementById("badge").style.display = "block";
-    }
+    if(isAdmin) { document.getElementById("adminTools").style.display = "flex"; document.getElementById("badge").style.display = "block"; }
     set(ref(db, 'nodes/' + uUID), { name: uName, online: true });
     syncMsgs(); syncUsers();
-    onValue(ref(db, 'system/mute'), s => {
-        document.getElementById("muteScreen").style.display = (s.val() && !isAdmin) ? "flex" : "none";
-    });
+    onValue(ref(db, 'system/mute'), s => { document.getElementById("muteScreen").style.display = (s.val() && !isAdmin) ? "flex" : "none"; });
 }
 
-window.send = (p = null) => {
+window.send = (p=null) => {
     const i = document.getElementById("mIn");
     if(!i.value.trim() && !p) return;
-    push(ref(db, currentRoom), { uid: uUID, sender: uName, text: i.value, img: p, ts: serverTimestamp() });
-    i.value = "";
+    push(ref(db, currentRoom), { uid:uUID, sender:uName, text:i.value, img:p, ts:serverTimestamp() });
+    i.value="";
 };
 
-window.upImg = (el) => {
-    const r = new FileReader();
-    r.onload = (e) => send(e.target.result);
-    r.readAsDataURL(el.files[0]);
-};
+window.upImg = (el) => { const r=new FileReader(); r.onload=(e)=>send(e.target.result); r.readAsDataURL(el.files[0]); };
 
-window.goGlobal = () => {
-    currentRoom = "global_v2";
-    document.getElementById("title").innerText = "GLOBAL_FEED";
-    document.getElementById("glob").classList.add("active");
-    syncMsgs();
-};
+window.goGlobal = () => { currentRoom="global_v2"; document.getElementById("title").innerText="GLOBAL_FEED"; document.getElementById("glob").classList.add("active"); syncMsgs(); };
 
-window.openPriv = (tid, tname) => {
-    if(tid === uUID) return;
-    const rid = uUID < tid ? `${uUID}_${tid}` : `${tid}_${uUID}`;
-    currentRoom = `private/${rid}`;
-    document.getElementById("title").innerText = "🔒 " + tname;
-    document.getElementById("glob").classList.remove("active");
-    syncMsgs();
-};
+window.openPriv = (tid,tname) => { if(tid===uUID) return; const rid=uUID<tid?`${uUID}_${tid}`:`${tid}_${uUID}`; currentRoom=`private/${rid}`; document.getElementById("title").innerText="🔒 "+tname; document.getElementById("glob").classList.remove("active"); syncMsgs(); };
 
 function syncMsgs() {
-    onValue(query(ref(db, currentRoom), limitToLast(40)), s => {
-        const f = document.getElementById("feed");
-        f.innerHTML = "";
-        s.forEach(m => {
-            const d = m.val();
-            f.innerHTML += `<div class="msg ${d.uid === uUID ? 'me' : 'other'}">
-                <small style="opacity:0.5; font-size:10px; font-weight:800;">${d.sender}</small>
-                ${d.text ? `<div>${d.text}</div>` : ''}
-                ${d.img ? `<img src="${d.img}">` : ''}
+    onValue(query(ref(db, currentRoom), limitToLast(50)), s => {
+        const f=document.getElementById("feed"); f.innerHTML="";
+        s.forEach(m=>{ const d=m.val();
+            f.innerHTML+=`<div class="msg ${d.uid===uUID?'me':'other'}">
+                <small style="opacity:0.5;font-size:10px;font-weight:800;">${d.sender}</small>
+                ${d.text?`<div>${d.text}</div>`:''}
+                ${d.img?`<img src="${d.img}">`:''}
             </div>`;
-        });
-        f.scrollTop = f.scrollHeight;
+        }); f.scrollTop=f.scrollHeight;
     });
 }
 
 function syncUsers() {
-    onValue(ref(db, 'nodes'), s => {
-        const l = document.getElementById("uList");
-        l.innerHTML = "";
-        s.forEach(u => {
-            if(u.key === uUID) return;
-            const d = u.val();
-            const node = document.createElement('div');
-            node.className = 'u-card';
-            node.innerHTML = `
-                <img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:30px; border-radius:10px;">
+    onValue(ref(db,'nodes'), s => {
+        const l=document.getElementById("uList"); l.innerHTML="";
+        s.forEach(u => { if(u.key===uUID) return; const d=u.val();
+            const node=document.createElement('div'); node.className='u-card';
+            node.innerHTML=`<img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:30px;border-radius:10px;">
                 <span style="font-size:0.8rem;">${d.name}</span>
-                ${isAdmin ? `<span class="ban-hammer" id="bh-${u.key}" style="display:block;">BAN</span>` : ''}
-            `;
-            node.onclick = (e) => {
-                if(e.target.className === 'ban-hammer') {
-                    if(confirm("Ban " + d.name + "?")) set(ref(db, 'banned/' + u.key), true);
-                } else { openPriv(u.key, d.name); }
-            };
+                ${isAdmin?`<span class="ban-hammer" id="bh-${u.key}" style="display:block;">BAN</span>`:''}`;
+            node.onclick=(e)=>{ if(e.target.className==='ban-hammer'){ if(confirm("Ban "+d.name+"?")) set(ref(db,'banned/'+u.key),true); } else openPriv(u.key,d.name); };
             l.appendChild(node);
         });
     });
 }
 
-window.toggleMute = () => {
-    onValue(ref(db, 'system/mute'), s => {
-        set(ref(db, 'system/mute'), !s.val());
-    }, { onlyOnce: true });
-};
-
-window.wipeData = () => { if(confirm("Wipe Global?")) remove(ref(db, 'global_v2')); };
-window.logout = () => { localStorage.clear(); signOut(auth).then(() => location.reload()); };
-
-// Sidebar toggle logic
-document.getElementById("menuToggle").addEventListener("click", () => {
-    document.querySelector(".sidebar").classList.toggle("show");
-});
+window.toggleMute=()=>{ onValue(ref(db,'system/mute'), s=>{ set(ref(db,'system/mute'),!s.val()); },{onlyOnce:true}); };
+window.wipeData=()=>{ if(confirm("Wipe Global?")) remove(ref(db,'global_v2')); };
+window.logout=()=>{ localStorage.clear(); signOut(auth).then(()=>location.reload()); };
+document.getElementById("menuToggle").addEventListener("click",()=>{ document.querySelector(".sidebar").classList.toggle("show"); });
 </script>
+
 </body>
 </html>
