@@ -13,13 +13,21 @@
         .sidebar { width: 280px; background: rgba(15, 23, 42, 0.98); border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; z-index: 100; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .chat-view { flex: 1; display: flex; flex-direction: column; background: radial-gradient(circle at top right, #1e1b4b, #020617); position: relative; height: 100%; }
         #chat-flow { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 220px !important; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
-        .msg-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 20px; max-width: 85%; align-self: flex-start; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative; cursor: pointer; }
+        
+        /* Dashboard Overlay */
+        #main-dashboard { position: absolute; inset: 0; display: flex; flex-direction: column; items-center; justify-content: center; background: #020617; z-index: 10; text-align: center; padding: 20px; }
+        .stat-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; width: 140px; }
+
+        .msg-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 20px; max-width: 85%; align-self: flex-start; position: relative; }
         .msg-card.mine { align-self: flex-end; border-color: var(--neon-purple); background: rgba(168, 85, 247, 0.12); }
-        .reply-box-msg { background: rgba(0,0,0,0.3); border-left: 3px solid var(--neon-cyan); padding: 5px 8px; margin-bottom: 5px; border-radius: 4px; font-size: 11px; color: #94a3b8; }
-        .input-bar { position: fixed !important; bottom: 25px !important; left: 15px !important; right: 15px !important; z-index: 999 !important; background: rgba(15, 23, 42, 0.9) !important; backdrop-filter: blur(25px); border-radius: 26px; padding: 12px 20px; border: 2px solid var(--neon-purple); box-shadow: 0 0 35px rgba(168, 85, 247, 0.4); }
+        
+        /* Input Bar Hidden by Default */
+        .input-bar { display: none; position: fixed !important; bottom: 25px !important; left: 15px !important; right: 15px !important; z-index: 999 !important; background: rgba(15, 23, 42, 0.9) !important; backdrop-filter: blur(25px); border-radius: 26px; padding: 12px 20px; border: 2px solid var(--neon-purple); box-shadow: 0 0 35px rgba(168, 85, 247, 0.4); }
         @media (min-width: 769px) { .input-bar { left: 300px; right: 30px; } }
-        #reply-preview { display: none; background: rgba(168, 85, 247, 0.2); padding: 8px 15px; border-radius: 15px 15px 0 0; color: white; font-size: 11px; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        
         .status-dot { width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; }
+        .side-opt { display: flex; align-items: center; gap: 12px; padding: 10px 15px; border-radius: 12px; font-size: 13px; color: #94a3b8; transition: 0.2s; cursor: pointer; }
+        .side-opt:hover { background: rgba(255,255,255,0.05); color: white; }
         @media (max-width: 768px) { .sidebar { position: fixed; left: -100%; top: 0; bottom: 0; width: 85%; } .sidebar.active { left: 0; } }
     </style>
 </head>
@@ -28,18 +36,23 @@
     <div id="login-screen" class="fixed inset-0 z-[1000] bg-[#020617] flex items-center justify-center p-6 text-center">
         <div class="bg-slate-900/80 border border-purple-500/30 p-10 rounded-[2.5rem] w-full max-w-sm backdrop-blur-2xl">
             <h2 class="text-3xl font-bold mb-6 text-white tracking-tighter">Neon<span class="text-purple-500">Pro</span></h2>
-            <input id="username-input" type="text" placeholder="Enter Your Name..." class="w-full p-4 bg-slate-800 rounded-2xl mb-4 text-white text-center font-bold outline-none border border-transparent focus:border-cyan-400">
-            <button id="join-btn" class="w-full bg-purple-600 text-white font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition">Launch Workspace</button>
+            <input id="username-input" type="text" placeholder="Enter Your Name..." class="w-full p-4 bg-slate-800 rounded-2xl mb-4 text-white text-center font-bold outline-none border border-transparent">
+            <button id="join-btn" class="w-full bg-purple-600 text-white font-bold py-4 rounded-2xl shadow-lg">Launch System</button>
         </div>
     </div>
 
     <div class="app-shell">
         <aside id="sidebar" class="sidebar">
-            <div class="p-8 border-b border-white/5 font-bold text-xl text-white tracking-tight">WORKSPACE</div>
-            <div class="flex-1 overflow-y-auto p-4 space-y-6">
+            <div class="p-8 border-b border-white/5 font-bold text-xl text-white">WORKSPACE</div>
+            <div class="flex-1 overflow-y-auto p-4 space-y-4">
                 <div onclick="switchChat('global')" class="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-300 rounded-xl cursor-pointer font-bold text-sm"># global-hq</div>
-                <p class="text-[10px] text-slate-500 uppercase font-bold ml-2 tracking-widest">Team Members</p>
-                <div id="users-list" class="space-y-2"></div>
+                <p class="text-[10px] text-slate-500 uppercase font-bold ml-2">Team Members</p>
+                <div id="users-list" class="space-y-1"></div>
+                
+                <hr class="border-white/5 my-4">
+                <div class="side-opt"><i class="fa-solid fa-gear"></i> Settings</div>
+                <div class="side-opt"><i class="fa-solid fa-circle-info"></i> About</div>
+                <div class="side-opt"><i class="fa-solid fa-envelope"></i> Contact Us</div>
             </div>
             <div class="p-6 bg-black/40 flex items-center gap-4">
                 <div id="u-avatar" class="w-10 h-10 rounded-xl bg-purple-600 flex items-center justify-center font-bold text-white uppercase">?</div>
@@ -49,22 +62,36 @@
         </aside>
 
         <main class="chat-view">
+            <div id="main-dashboard">
+                <h1 class="text-4xl font-bold mb-2">Welcome to NeonPro</h1>
+                <p class="text-slate-500 mb-8">Select a conversation to start messaging</p>
+                <div class="flex gap-4">
+                    <div class="stat-card">
+                        <div class="text-2xl font-bold text-cyan-400" id="stat-online">0</div>
+                        <div class="text-[10px] uppercase font-bold text-slate-500">Users Online</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-2xl font-bold text-purple-400">Live</div>
+                        <div class="text-[10px] uppercase font-bold text-slate-500">System Status</div>
+                    </div>
+                </div>
+            </div>
+
             <header class="h-20 border-b border-white/5 flex items-center justify-between px-6 bg-slate-900/20 backdrop-blur-md">
                 <div class="flex items-center gap-4">
                     <button onclick="toggleSidebar()" class="md:hidden text-white"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
-                    <div><h2 id="chat-title" class="text-xl font-bold text-white tracking-tight"># global-hq</h2><div id="typing-box" class="text-[10px] text-cyan-400 font-bold h-3"></div></div>
+                    <h2 id="chat-title" class="text-xl font-bold text-white tracking-tight">Main Dashboard</h2>
                 </div>
             </header>
 
             <div id="chat-flow"></div>
 
-            <div class="input-bar">
-                <div id="reply-preview"><span>Replying...</span><button onclick="cancelReply()"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="input-bar" id="input-container">
                 <form id="msg-form" class="flex items-center gap-4">
                     <input type="file" id="file-input" class="hidden" accept="image/*" onchange="uploadFile(this)">
                     <button type="button" onclick="document.getElementById('file-input').click()" class="text-slate-400 hover:text-cyan-400"><i class="fa-solid fa-image text-2xl"></i></button>
-                    <input id="msg-input" type="text" placeholder="Send a message..." class="bg-transparent text-white" autocomplete="off" oninput="handleTyping()">
-                    <button class="w-11 h-11 bg-purple-600 rounded-xl flex items-center justify-center text-white shadow-xl active:scale-90 transition"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                    <input id="msg-input" type="text" placeholder="Type a message..." class="bg-transparent text-white w-full outline-none">
+                    <button class="w-11 h-11 bg-purple-600 rounded-xl flex items-center justify-center text-white shadow-xl"><i class="fa-solid fa-paper-plane text-xs"></i></button>
                 </form>
             </div>
         </main>
@@ -72,7 +99,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue, update, remove, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
         const firebaseConfig = {
@@ -88,7 +115,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const storage = getStorage(app);
-        let myName = "", activeChat = "global", replyTo = null, typingTimer;
+        let myName = "", activeChat = null;
 
         window.onload = () => { if(localStorage.getItem('chatProUser')) init(localStorage.getItem('chatProUser')); };
         document.getElementById('join-btn').onclick = () => { 
@@ -102,10 +129,17 @@
             document.getElementById('u-name').innerText = n;
             document.getElementById('u-avatar').innerText = n[0].toUpperCase();
             set(ref(db, 'online/' + n), true);
-            loadMessages();
             loadUsers();
-            listenTyping();
         }
+
+        window.switchChat = (u) => { 
+            activeChat = u; 
+            document.getElementById('main-dashboard').style.display = 'none';
+            document.getElementById('input-container').style.display = 'block';
+            document.getElementById('chat-title').innerText = u === 'global' ? '# global-hq' : `@ ${u}`; 
+            loadMessages(); 
+            if(window.innerWidth < 768) toggleSidebar(); 
+        };
 
         function loadMessages() {
             const path = activeChat === "global" ? 'msgs/global' : `private/${[myName, activeChat].sort().join('_')}`;
@@ -114,73 +148,50 @@
                 flow.innerHTML = "";
                 snap.forEach(msg => {
                     const d = msg.val();
-                    const mid = msg.key;
                     const isMine = d.sender === myName;
                     const div = document.createElement('div');
                     div.className = `msg-card ${isMine ? 'mine' : ''}`;
-                    div.onclick = () => setReply(d.sender, d.text || "Photo");
-
                     let content = d.text || "";
-                    if(d.file) content = `<img src="${d.file}" class="rounded-xl max-w-full md:max-w-xs mt-1">`;
-
-                    div.innerHTML = `
-                        ${d.reply ? `<div class="reply-box-msg"><b>@${d.reply.to}:</b> ${d.reply.msg}</div>` : ''}
-                        <div class="flex justify-between items-start gap-4 mb-1">
-                            <span class="text-[10px] font-bold ${isMine ? 'text-purple-300' : 'text-cyan-400'} uppercase">${d.sender}</span>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[9px] text-slate-500">${new Date(d.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
-                                <button onclick="event.stopPropagation(); deleteMsg('${mid}')" class="text-red-500/50 hover:text-red-500 text-[10px]"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>
-                        </div>
-                        <div class="text-slate-200 text-sm">${content}</div>
-                    `;
+                    if(d.file) content = `<img src="${d.file}" class="rounded-xl max-w-full">`;
+                    div.innerHTML = `<span class="text-[10px] font-bold ${isMine ? 'text-purple-300' : 'text-cyan-400'} uppercase">${d.sender}</span><div class="text-white text-sm mt-1">${content}</div>`;
                     flow.appendChild(div);
                 });
                 flow.scrollTop = flow.scrollHeight;
             });
         }
 
-        window.setReply = (to, msg) => { replyTo = {to, msg}; document.getElementById('reply-preview').style.display = 'flex'; document.getElementById('reply-preview').querySelector('span').innerText = `Replying to @${to}...`; };
-        window.cancelReply = () => { replyTo = null; document.getElementById('reply-preview').style.display = 'none'; };
-        window.deleteMsg = (id) => { if(confirm("Delete message?")) remove(ref(db, (activeChat === 'global' ? 'msgs/global/' : `private/${[myName, activeChat].sort().join('_')}/`) + id)); };
-
-        window.uploadFile = async (i) => {
-            const file = i.files[0]; if(!file) return;
-            const r = sRef(storage, `neon_uploads/${Date.now()}`);
-            const path = activeChat === 'global' ? 'msgs/global' : `private/${[myName, activeChat].sort().join('_')}`;
-            await uploadBytes(r, file);
-            const url = await getDownloadURL(r);
-            push(ref(db, path), { sender: myName, file: url, time: Date.now() });
-        };
-
         function loadUsers() {
             onValue(ref(db, 'online'), (snap) => {
                 const list = document.getElementById('users-list');
+                let count = 0;
                 list.innerHTML = "";
                 snap.forEach(c => {
+                    count++;
                     const d = document.createElement('div');
-                    d.className = `flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-white/5 transition ${activeChat === c.key ? 'bg-white/10' : ''}`;
-                    d.innerHTML = `<div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center font-bold text-xs text-white">${c.key[0].toUpperCase()}</div><div class="flex-1 text-xs font-bold text-white">${c.key}</div><div class="status-dot"></div>`;
+                    d.className = `flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-white/5 transition`;
+                    d.innerHTML = `<div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center font-bold text-xs">${c.key[0]}</div><div class="flex-1 text-xs font-bold">${c.key}</div><div class="status-dot"></div>`;
                     if(c.key !== myName) d.onclick = () => switchChat(c.key);
                     list.appendChild(d);
                 });
+                document.getElementById('stat-online').innerText = count;
             });
         }
 
-        window.switchChat = (u) => { activeChat = u; document.getElementById('chat-title').innerText = u === 'global' ? '# global-hq' : `@ ${u}`; loadMessages(); if(window.innerWidth < 768) toggleSidebar(); };
-        window.handleTyping = () => { set(ref(db, `typing/${activeChat}/${myName}`), true); clearTimeout(typingTimer); typingTimer = setTimeout(() => remove(ref(db, `typing/${activeChat}/${myName}`)), 2000); };
-        function listenTyping() { onValue(ref(db, `typing/${activeChat}`), (snap) => { const typers = snap.val() ? Object.keys(snap.val()).filter(u => u !== myName) : []; document.getElementById('typing-box').innerText = typers.length > 0 ? `${typers[0]} is typing...` : ""; }); }
-        window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('active');
-        window.logout = () => { localStorage.clear(); location.reload(); };
+        window.uploadFile = async (i) => {
+            const file = i.files[0]; if(!file) return;
+            const r = sRef(storage, `uploads/${Date.now()}`);
+            await uploadBytes(r, file);
+            const url = await getDownloadURL(r);
+            push(ref(db, activeChat === 'global' ? 'msgs/global' : `private/${[myName, activeChat].sort().join('_')}`), { sender: myName, file: url, time: Date.now() });
+        };
+
         document.getElementById('msg-form').onsubmit = e => {
             e.preventDefault(); const i = document.getElementById('msg-input');
-            if(i.value.trim()){ 
-                const d = { sender: myName, text: i.value, time: Date.now() };
-                if(replyTo) { d.reply = replyTo; cancelReply(); }
-                push(ref(db, activeChat === 'global' ? 'msgs/global' : `private/${[myName, activeChat].sort().join('_')}`), d);
-                i.value = ""; 
-            }
+            if(i.value.trim()){ push(ref(db, activeChat === 'global' ? 'msgs/global' : `private/${[myName, activeChat].sort().join('_')}`), { sender: myName, text: i.value, time: Date.now() }); i.value = ""; }
         };
+
+        window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('active');
+        window.logout = () => { localStorage.clear(); location.reload(); };
     </script>
 </body>
 </html>
