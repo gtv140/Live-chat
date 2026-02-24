@@ -2,45 +2,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Web-Hub Sovereign | Nazim God Mode</title>
+<title>Web-Hub Sovereign | Smart Scroll</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{ --p:#8b5cf6; --s:#ec4899; --bg:#020617; --g:rgba(30,41,59,0.7); --danger:#ef4444; }
 *{box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; transition:0.3s; }
-body{margin:0; background:var(--bg); color:#f9fafb; height:100dvh; display:flex; flex-direction:column; overflow:hidden;}
+body { 
+    margin: 0; background: var(--bg); color: #f9fafb; 
+    height: 100dvh; display: flex; flex-direction: column; overflow: hidden; 
+    position: fixed; width: 100%; /* Prevents rubber-banding on iOS */
+}
 
 /* Admin Special UI */
-#adminTerminal{display:none; background:rgba(239,68,68,0.15); border:1px solid var(--danger); margin:10px; padding:10px; border-radius:15px; display:none; justify-content:space-around; align-items:center; z-index:100;}
-.adm-btn{background:var(--danger); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:800; cursor:pointer; text-transform:uppercase;}
+#adminTerminal{ display:none; background:rgba(239,68,68,0.15); border:1px solid var(--danger); margin:10px; padding:10px; border-radius:15px; justify-content:space-around; align-items:center; z-index:100; }
+.adm-btn{ background:var(--danger); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:800; cursor:pointer; }
 
-/* Standard UI */
-#loginLayer{position:fixed; inset:0; background:#000; display:flex; align-items:center; justify-content:center; z-index:2000;}
-.auth-card{background:var(--g); padding:40px; border-radius:30px; border:1px solid rgba(255,255,255,0.1); text-align:center; width:90%; max-width:380px; backdrop-filter:blur(20px);}
-.auth-card input{width:100%; padding:15px; margin-bottom:15px; border-radius:15px; border:none; background:#000; color:#fff; text-align:center; outline:none;}
-.auth-card button{width:100%; padding:15px; border-radius:15px; border:none; background:var(--p); color:white; font-weight:800; cursor:pointer;}
+/* Login Layer */
+#loginLayer{ position:fixed; inset:0; background:#000; display:flex; align-items:center; justify-content:center; z-index:2000; }
+.auth-card{ background:var(--g); padding:40px; border-radius:30px; border:1px solid rgba(255,255,255,0.1); text-align:center; width:90%; max-width:380px; backdrop-filter:blur(20px); }
+.auth-card input{ width:100%; padding:15px; margin-bottom:15px; border-radius:15px; border:none; background:#000; color:#fff; text-align:center; outline:none; }
+.auth-card button{ width:100%; padding:15px; border-radius:15px; border:none; background:var(--p); color:white; font-weight:800; cursor:pointer; }
 
-header{padding:18px 25px; background:rgba(2,6,23,0.9); display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05);}
-.brand{font-weight:900; font-size:1.4rem; background:linear-gradient(to right, #a78bfa, #f472b6); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+header{ padding:15px 25px; background:rgba(2,6,23,0.9); display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); }
+.brand{ font-weight:900; font-size:1.4rem; background:linear-gradient(to right, #a78bfa, #f472b6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 
-.page{display:none; flex:1; overflow-y:auto; padding:20px; padding-bottom:120px;}
-.page.active{display:flex; flex-direction:column;}
+.page{ display:none; flex:1; overflow:hidden; position:relative; } /* Hidden by default */
+.page.active{ display:flex; flex-direction:column; }
 
-.feed{flex:1; display:flex; flex-direction:column; gap:12px;}
-.msg{max-width:80%; padding:12px 16px; border-radius:20px; font-size:14px; position:relative;}
-.me{align-self:flex-end; background:var(--p); color:white; border-bottom-right-radius:4px;}
-.other{align-self:flex-start; background:var(--g); border-bottom-left-radius:4px;}
-.msg img{max-width:100%; border-radius:12px; margin-top:8px;}
+/* 🚀 SMART SCROLL FEED */
+.feed{ 
+    flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px; 
+    scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+    padding-bottom: 140px; /* Space for the dock */
+}
 
-.dock{position:fixed; bottom:75px; left:15px; right:15px; background:rgba(30,41,59,0.95); padding:10px; border-radius:50px; display:flex; align-items:center; gap:10px; border:1px solid rgba(255,255,255,0.1); backdrop-filter:blur(20px);}
-.dock input{flex:1; background:none; border:none; color:white; outline:none; padding-left:10px;}
-.mute-overlay{position:absolute; inset:0; background:rgba(0,0,0,0.85); color:var(--danger); display:none; align-items:center; justify-content:center; border-radius:50px; font-weight:900; font-size:11px;}
+.msg{ max-width:80%; padding:12px 16px; border-radius:20px; font-size:14px; position:relative; word-wrap: break-word; }
+.me{ align-self:flex-end; background:var(--p); color:white; border-bottom-right-radius:4px; }
+.other{ align-self:flex-start; background:var(--g); border-bottom-left-radius:4px; }
+.msg img{ max-width:100%; border-radius:12px; margin-top:8px; display:block; }
 
-.bottom-nav{position:fixed; bottom:0; left:0; right:0; height:65px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid rgba(255,255,255,0.05);}
-.nav-btn{color:#4b5563; font-size:1.4rem; cursor:pointer;}
-.nav-btn.active{color:var(--p); filter:drop-shadow(0 0 8px var(--p));}
+.dock{ position:absolute; bottom:20px; left:15px; right:15px; background:rgba(30, 41, 59, 0.95); padding:10px; border-radius:50px; display:flex; align-items:center; gap:10px; border:1px solid rgba(255,255,255,0.1); backdrop-filter:blur(20px); z-index:10; }
+.dock input{ flex:1; background:none; border:none; color:white; outline:none; padding-left:10px; font-size:16px; /* 16px prevents iOS zoom on focus */ }
+.mute-overlay{ position:absolute; inset:0; background:rgba(0,0,0,0.85); color:var(--danger); display:none; align-items:center; justify-content:center; border-radius:50px; font-weight:900; font-size:11px; }
 
-.u-card{background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; align-items:center; gap:12px;}
-.ban-hammer{background:none; border:1px solid var(--danger); color:var(--danger); padding:4px 8px; border-radius:6px; font-size:10px; font-weight:800; margin-left:auto; display:none; cursor:pointer;}
+.bottom-nav{ height:65px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid rgba(255,255,255,0.05); z-index:20; }
+.nav-btn{ color:#4b5563; font-size:1.4rem; cursor:pointer; }
+.nav-btn.active{ color:var(--p); filter:drop-shadow(0 0 8px var(--p)); }
+
+.u-card{ background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; align-items:center; gap:12px; }
+.ban-hammer{ border:1px solid var(--danger); color:var(--danger); padding:4px 8px; border-radius:6px; font-size:10px; font-weight:800; margin-left:auto; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -55,8 +65,8 @@ header{padding:18px 25px; background:rgba(2,6,23,0.9); display:flex; justify-con
 
 <div id="adminTerminal">
     <span style="font-size:10px; font-weight:900; color:var(--danger);">GOD_MODE</span>
-    <button class="adm-btn" onclick="admToggleMute()">Toggle Mute</button>
-    <button class="adm-btn" onclick="admWipe()">Wipe History</button>
+    <button class="adm-btn" onclick="admToggleMute()">Mute</button>
+    <button class="adm-btn" onclick="admWipe()">Wipe</button>
 </div>
 
 <header>
@@ -65,11 +75,12 @@ header{padding:18px 25px; background:rgba(2,6,23,0.9); display:flex; justify-con
 </header>
 
 <div class="page active" id="p-home">
-    <div style="background:linear-gradient(135deg,var(--p),var(--s)); padding:30px; border-radius:25px; text-align:center;">
-        <h2 id="welcomeText" style="margin:0;">Connecting...</h2>
-        <small id="roleText">Initializing Assets</small>
+    <div style="padding:40px 20px; text-align:center;">
+        <div style="background:linear-gradient(135deg,var(--p),var(--s)); padding:30px; border-radius:25px;">
+            <h2 id="welcomeText" style="margin:0;">Connecting...</h2>
+            <small id="roleText">Initializing Assets</small>
+        </div>
     </div>
-    <p id="quoteBox" style="text-align:center; font-style:italic; opacity:0.6; margin-top:20px;"></p>
 </div>
 
 <div class="page" id="p-chat">
@@ -77,15 +88,17 @@ header{padding:18px 25px; background:rgba(2,6,23,0.9); display:flex; justify-con
     <div class="dock">
         <label for="imgUp"><i class="fa-solid fa-camera"></i></label>
         <input type="file" id="imgUp" hidden onchange="up(this)">
-        <input type="text" id="mIn" placeholder="Type signal..." onkeydown="if(event.key==='Enter') send()">
-        <button onclick="send()" style="background:var(--p); border:none; color:white; width:40px; height:40px; border-radius:50%;"><i class="fa-solid fa-paper-plane"></i></button>
-        <div class="mute-overlay" id="muteScreen">🔇 GLOBAL CHAT IS LOCKED BY ADMIN</div>
+        <input type="text" id="mIn" placeholder="Type message..." onfocus="scrollToBottom()" onkeydown="if(event.key==='Enter') send()">
+        <button onclick="send()" style="background:var(--p); border:none; color:white; width:40px; height:40px; border-radius:50%; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i></button>
+        <div class="mute-overlay" id="muteScreen">🔇 GLOBAL LOCKED</div>
     </div>
 </div>
 
 <div class="page" id="p-users">
-    <h3>Online Assets</h3>
-    <div id="uList"></div>
+    <div style="padding:20px; overflow-y:auto; height:100%;">
+        <h3>Online Assets</h3>
+        <div id="uList"></div>
+    </div>
 </div>
 
 <nav class="bottom-nav">
@@ -116,6 +129,11 @@ const db = getDatabase(app);
 
 let uUID, uName, isAdmin=false, curRoom="global_v2";
 
+window.scrollToBottom = () => {
+    const f = document.getElementById("chatFeed");
+    setTimeout(() => { f.scrollTop = f.scrollHeight; }, 100);
+};
+
 window.boot = async () => {
     const n = document.getElementById("nName").value.trim();
     if(!n) return;
@@ -126,15 +144,8 @@ window.boot = async () => {
     const res = await signInAnonymously(auth);
     uUID = res.user.uid; uName = n;
     localStorage.setItem("uN",n); localStorage.setItem("uA",isAdmin);
-    checkBan(uUID);
+    startApp();
 };
-
-function checkBan(uid) {
-    onValue(ref(db, 'banned/'+uid), s => {
-        if(s.val()) { document.body.innerHTML = "<h1 style='color:red; text-align:center; padding-top:100px;'>🚫 YOU ARE BANNED</h1>"; localStorage.clear(); }
-        else startApp();
-    });
-}
 
 function startApp(){
     document.getElementById("loginLayer").style.display="none";
@@ -154,6 +165,7 @@ window.send = (img=null) => {
     if(!i.value.trim() && !img) return;
     push(ref(db, curRoom), { uid:uUID, sender:uName, text:i.value, img:img, ts:serverTimestamp() });
     i.value="";
+    scrollToBottom();
 };
 
 window.up = (el) => {
@@ -167,16 +179,17 @@ window.nav = (id, el) => {
     document.getElementById(id).classList.add("active");
     document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
     el.classList.add("active");
+    if(id === 'p-chat') scrollToBottom();
 };
 
 function syncMsgs(){
-    onValue(query(ref(db, curRoom), limitToLast(40)), s => {
+    onValue(query(ref(db, curRoom), limitToLast(50)), s => {
         const f = document.getElementById("chatFeed"); f.innerHTML="";
         s.forEach(m => {
             const d = m.val();
             f.innerHTML += `<div class="msg ${d.uid===uUID?'me':'other'}"><small style="opacity:0.5; font-size:10px; display:block;">${d.sender}</small>${d.text?`<div>${d.text}</div>`:''}${d.img?`<img src="${d.img}">`:''}</div>`;
         });
-        f.scrollTop = f.scrollHeight;
+        scrollToBottom();
     });
 }
 
@@ -186,7 +199,7 @@ function syncUsers(){
         s.forEach(u => {
             const d = u.val(); if(!d.online) return;
             const card = document.createElement('div'); card.className='u-card';
-            card.innerHTML = `<img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:35px; border-radius:10px;"> <span>${d.name}</span> <button class="ban-hammer" style="display:${isAdmin?'block':'none'}" onclick="ban('${u.key}')">BAN</button>`;
+            card.innerHTML = `<img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:35px; border-radius:10px;"> <span>${d.name}</span> ${isAdmin?`<button class="ban-hammer" onclick="ban('${u.key}')">BAN</button>`:''}`;
             card.onclick = (e) => { if(e.target.tagName!=='BUTTON') { openPriv(u.key, d.name); } };
             l.appendChild(card);
         });
@@ -197,7 +210,6 @@ window.openPriv = (tid, tn) => {
     if(tid===uUID) return;
     curRoom = uUID < tid ? `${uUID}_${tid}` : `${tid}_${uUID}`;
     nav('p-chat', document.querySelectorAll(".nav-btn")[1]);
-    syncMsgs();
 };
 
 window.ban = (uid) => { if(isAdmin && confirm("Ban User?")) set(ref(db, 'banned/'+uid), true); };
@@ -206,7 +218,7 @@ window.admWipe = () => { if(isAdmin && confirm("Wipe History?")) remove(ref(db, 
 window.exit = () => { localStorage.clear(); signOut(auth).then(()=>location.reload()); };
 
 onAuthStateChanged(auth, user => {
-    if(user && localStorage.getItem("uN")){ uUID=user.uid; uName=localStorage.getItem("uN"); isAdmin=localStorage.getItem("uA")==='true'; checkBan(uUID); }
+    if(user && localStorage.getItem("uN")){ uUID=user.uid; uName=localStorage.getItem("uN"); isAdmin=localStorage.getItem("uA")==='true'; startApp(); }
 });
 </script>
 </body>
