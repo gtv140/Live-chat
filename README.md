@@ -2,149 +2,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Aether UI | Gemini Special Edition</title>
+    <title>NEON-X | Ultimate Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         
-        :root { --accent: #8b5cf6; --accent-glow: rgba(139, 92, 246, 0.3); --bg: #09090b; --card: #18181b; --text: #fafafa; }
-        .light-theme { --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --accent: #6366f1; }
+        :root { --p: #7c3aed; --s: #06b6d4; --bg: #030712; --card: #111827; --text: #f9fafb; }
+        .light { --bg: #f3f4f6; --card: #ffffff; --text: #111827; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         body { background: var(--bg); color: var(--text); height: 100dvh; overflow: hidden; }
 
-        /* Layout Architecture */
-        .app-wrapper { display: flex; height: 100dvh; width: 100vw; }
+        /* Premium Animations */
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
         
-        .sidebar { 
-            width: 300px; flex-shrink: 0; background: var(--card); border-right: 1px solid rgba(255,255,255,0.05);
-            display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
+        /* Layout Structure */
+        .sidebar { width: 300px; background: var(--card); border-right: 1px solid rgba(255,255,255,0.05); }
         @media (max-width: 1024px) {
-            .sidebar { position: fixed; left: -100%; top: 0; bottom: 0; width: 85%; z-index: 2000; border-right: none; }
+            .sidebar { position: fixed; left: -100%; z-index: 100; height: 100%; width: 85%; }
             .sidebar.active { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
         }
 
-        /* Message Esthetics */
-        #chat-flow { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
-        .msg-group { position: relative; max-width: 85%; display: flex; flex-direction: column; gap: 4px; }
-        
-        .card-ui { 
-            background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 14px 18px; 
-            border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); position: relative;
-        }
+        /* Message Bubbles 2.0 */
+        #chat-flow { flex: 1; overflow-y: auto; padding: 25px; scroll-behavior: smooth; }
+        .msg-wrap { max-width: 80%; margin-bottom: 20px; position: relative; }
+        .bubble { padding: 15px 20px; border-radius: 24px; font-size: 15px; position: relative; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
         
         .mine { align-self: flex-end; }
-        .mine .card-ui { background: var(--accent); color: white; border: none; border-bottom-right-radius: 4px; }
+        .mine .bubble { background: linear-gradient(135deg, var(--p), #4f46e5); color: white; border-bottom-right-radius: 4px; }
         
         .other { align-self: flex-start; }
-        .other .card-ui { border-bottom-left-radius: 4px; }
+        .other .bubble { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-bottom-left-radius: 4px; }
 
-        /* Action Pill */
-        .action-pill { 
-            position: absolute; top: -18px; right: 0; display: none; background: var(--card); 
-            border: 1px solid var(--accent); border-radius: 30px; padding: 4px 10px; gap: 12px; z-index: 100;
-        }
-        .msg-group:hover .action-pill, .msg-group:active .action-pill { display: flex; }
+        /* Floating Menu */
+        .msg-options { display: none; position: absolute; top: -45px; right: 0; background: var(--card); border-radius: 50px; padding: 5px 15px; gap: 15px; border: 1px solid var(--p); z-index: 10; }
+        .msg-wrap:hover .msg-options, .msg-wrap:active .msg-options { display: flex; animation: float 2s infinite ease-in-out; }
 
-        /* Modern Input */
-        .input-bar { padding: 20px; background: linear-gradient(to top, var(--bg) 80%, transparent); }
-        .pill { background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 8px 12px; display: flex; align-items: center; gap: 12px; }
-        .pill:focus-within { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-        .pill input { background: transparent; border: none; outline: none; color: inherit; flex: 1; font-size: 15px; }
+        /* Input Deck */
+        .input-deck { padding: 20px; background: var(--bg); border-top: 1px solid rgba(255,255,255,0.05); }
+        .pill-input { background: var(--card); border-radius: 30px; padding: 8px 15px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; }
+        .pill-input:focus-within { border-color: var(--p); box-shadow: 0 0 20px rgba(124, 58, 237, 0.15); }
 
-        /* Global Classes */
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1500; }
-        .overlay.active { display: block; }
-        .btn-circle { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .btn-circle:active { scale: 0.9; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--p); border-radius: 10px; }
     </style>
 </head>
-<body>
+<body class="flex">
 
-    <div id="auth" class="fixed inset-0 z-[5000] flex items-center justify-center bg-[#09090b] p-6">
-        <div class="w-full max-w-sm text-center">
-            <div class="w-20 h-20 bg-indigo-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl rotate-12"><i class="fa-solid fa-feather-pointed text-4xl text-white"></i></div>
-            <h1 class="text-3xl font-extrabold mb-2 tracking-tighter">AETHER<span class="text-indigo-500">UI</span></h1>
-            <p class="text-slate-500 text-sm mb-10 font-medium">Next-gen communication portal</p>
-            <input id="u-in" type="text" placeholder="Identity Label" class="w-full bg-[#18181b] border border-white/5 p-5 rounded-2xl text-white text-center mb-4 outline-none focus:border-indigo-500 transition-all font-semibold">
-            <button onclick="login()" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-bold shadow-2xl shadow-indigo-500/20 active:scale-95 transition-all">INITIALIZE</button>
+    <div id="auth" class="fixed inset-0 z-[1000] flex items-center justify-center bg-[#030712] p-8">
+        <div class="max-w-md w-full text-center">
+            <div class="mb-8 inline-block p-6 rounded-[2.5rem] bg-gradient-to-tr from-purple-600 to-cyan-400 shadow-2xl rotate-6 animate-bounce"><i class="fa-solid fa-bolt-lightning text-4xl text-white"></i></div>
+            <h1 class="text-4xl font-black mb-2 tracking-tighter">NEON<span class="text-purple-500">-X</span></h1>
+            <p class="text-slate-500 mb-10 font-medium">Ultimate Communication Protocol</p>
+            <input id="u-in" type="text" placeholder="Access Identity" class="w-full bg-gray-900 border border-gray-800 p-5 rounded-3xl text-center mb-6 outline-none focus:border-purple-500 transition-all font-bold text-white">
+            <button onclick="login()" class="w-full bg-purple-600 py-5 rounded-3xl font-black shadow-2xl hover:bg-purple-700 active:scale-95">ESTABLISH LINK</button>
         </div>
     </div>
 
-    <div id="overlay" class="overlay" onclick="toggleSide()"></div>
-
-    <div class="app-wrapper">
-        <aside id="side" class="sidebar">
-            <div class="p-8 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-indigo-500 rounded-lg"></div>
-                    <span class="font-black text-xl tracking-tighter">AETHER</span>
+    <aside id="side" class="sidebar flex flex-col transition-all duration-500">
+        <div class="p-8 flex items-center justify-between">
+            <span class="text-2xl font-black italic tracking-tighter text-purple-500">X<span class="text-white">.OS</span></span>
+            <button onclick="toggleMode()" class="w-10 h-10 rounded-2xl glass flex items-center justify-center"><i id="m-icon" class="fa-solid fa-moon text-purple-400"></i></button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto px-6 space-y-8">
+            <div>
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Core Hubs</p>
+                <div onclick="openChat('global')" class="p-4 bg-purple-600/10 border-l-4 border-purple-500 rounded-xl cursor-pointer font-bold flex items-center gap-4 hover:bg-purple-600/20">
+                    <i class="fa-solid fa-globe"></i> global-stream
                 </div>
-                <button onclick="toggleTheme()" class="text-slate-500 hover:text-indigo-400"><i id="t-icon" class="fa-solid fa-moon"></i></button>
             </div>
             
-            <div class="flex-1 overflow-y-auto px-4 space-y-6">
-                <div>
-                    <label class="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Workspaces</label>
-                    <div onclick="openChat('global')" class="mt-2 p-4 bg-indigo-500/10 text-indigo-400 rounded-2xl cursor-pointer font-bold flex items-center gap-3 border border-indigo-500/20">
-                        <i class="fa-solid fa-hashtag"></i> global-lounge
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Live Nodes</p>
-                    <div id="u-list" class="mt-2 space-y-1"></div>
-                </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Live Nodes</p>
+                <div id="u-list" class="space-y-3"></div>
             </div>
+        </div>
 
-            <div class="p-6 bg-black/10 flex items-center gap-4">
-                <div id="my-av" class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-white">?</div>
-                <div class="flex-1 overflow-hidden">
-                    <p id="my-n" class="text-sm font-bold truncate">User</p>
-                    <p class="text-[9px] text-indigo-400 font-bold tracking-widest uppercase">Connected</p>
-                </div>
-                <button onclick="logout()" class="text-slate-500 hover:text-red-500"><i class="fa-solid fa-power-off"></i></button>
+        <div class="p-6 mt-auto border-t border-white/5 bg-black/20">
+            <div class="flex items-center gap-4">
+                <div id="my-av" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center font-black text-white shadow-lg">?</div>
+                <div class="flex-1 truncate"><p id="my-n" class="font-black text-sm truncate">Identity</p><span class="text-[9px] text-green-500 font-bold uppercase">Online Secure</span></div>
+                <button onclick="logout()" class="text-red-500/50 hover:text-red-500"><i class="fa-solid fa-power-off"></i></button>
             </div>
-        </aside>
+        </div>
+    </aside>
 
-        <main class="flex-1 flex flex-col min-w-0">
-            <header class="h-20 flex items-center px-6 justify-between backdrop-blur-md sticky top-0 z-40">
-                <div class="flex items-center gap-4">
-                    <button class="lg:hidden btn-circle bg-white/5" onclick="toggleSide()"><i class="fa-solid fa-bars-staggered"></i></button>
-                    <div>
-                        <h2 id="chat-h" class="font-extrabold text-sm uppercase tracking-tight">Main Terminal</h2>
-                        <span class="text-[9px] font-bold text-green-500 uppercase">● System Nominal</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="bg-indigo-500/10 px-4 py-2 rounded-xl text-[10px] font-black text-indigo-400">ACTIVE: <span id="stat-count">0</span></div>
-                </div>
-            </header>
-
-            <div id="chat-flow">
-                <div class="m-auto text-center opacity-10">
-                    <i class="fa-solid fa-terminal text-6xl mb-4"></i>
-                    <p class="text-xs font-black uppercase tracking-[0.3em]">Awaiting Data</p>
-                </div>
+    <main class="flex-1 flex flex-col min-w-0 bg-[var(--bg)] relative">
+        <header class="h-20 flex items-center px-8 border-b border-white/5 glass justify-between sticky top-0 z-50">
+            <div class="flex items-center gap-4">
+                <button class="lg:hidden text-2xl" onclick="toggleSide()"><i class="fa-solid fa-bars-staggered"></i></button>
+                <div><h2 id="chat-h" class="font-black text-lg tracking-tight uppercase italic">Select Terminal</h2><p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Active AES-256 Encryption</p></div>
             </div>
-
-            <div id="input-area" class="input-bar hidden">
-                <div id="reply-tag" class="hidden mb-3 p-4 bg-indigo-500/5 rounded-2xl border-l-4 border-indigo-500 flex justify-between items-center text-xs">
-                    <span id="reply-txt" class="truncate opacity-60 font-medium italic"></span>
-                    <button onclick="cancelReply()"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <form id="m-form" class="pill">
-                    <input type="file" id="f-in" class="hidden" accept="image/*" onchange="upImg(this)">
-                    <button type="button" onclick="document.getElementById('f-in').click()" class="text-slate-500 hover:text-indigo-400 transition"><i class="fa-solid fa-circle-plus text-2xl"></i></button>
-                    <input id="m-in" type="text" placeholder="Type a secure message..." autocomplete="off">
-                    <button class="bg-indigo-600 text-white w-11 h-11 rounded-xl flex items-center justify-center shadow-lg active:scale-90 transition-all"><i class="fa-solid fa-paper-plane text-xs"></i></button>
-                </form>
+            <div class="flex items-center gap-6 text-slate-400">
+                <i class="fa-solid fa-phone hover:text-purple-500 cursor-pointer"></i>
+                <i class="fa-solid fa-video hover:text-cyan-500 cursor-pointer"></i>
+                <div class="hidden sm:block text-[10px] font-black bg-purple-600/10 px-4 py-2 rounded-full text-purple-400">USERS: <span id="stat-count">0</span></div>
             </div>
-        </main>
-    </div>
+        </header>
+
+        <div id="chat-flow" class="flex flex-col">
+            <div class="m-auto text-center opacity-10">
+                <i class="fa-solid fa-shield-halved text-7xl mb-4"></i>
+                <p class="font-black uppercase tracking-widest">Ready for Transmission</p>
+            </div>
+        </div>
+
+        <div id="input-area" class="input-deck hidden">
+            <div id="reply-tag" class="hidden mb-4 p-4 glass rounded-2xl border-l-4 border-purple-500 flex justify-between items-center text-xs animate-pulse">
+                <span id="reply-txt" class="truncate font-bold text-slate-400"></span>
+                <button onclick="cancelReply()"><i class="fa-solid fa-circle-xmark"></i></button>
+            </div>
+            <form id="m-form" class="pill-input">
+                <input type="file" id="f-in" class="hidden" accept="image/*" onchange="upImg(this)">
+                <button type="button" onclick="document.getElementById('f-in').click()" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-purple-500 transition"><i class="fa-solid fa-circle-plus text-2xl"></i></button>
+                <input id="m-in" type="text" placeholder="Type an encrypted message..." autocomplete="off" class="bg-transparent flex-1 outline-none text-sm font-medium">
+                <button class="bg-purple-600 text-white w-12 h-10 rounded-2xl flex items-center justify-center shadow-xl active:scale-90"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+            </form>
+        </div>
+    </main>
+
+    <div id="overlay" class="fixed inset-0 bg-black/60 hidden z-[90] backdrop-blur-sm" onclick="toggleSide()"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -165,13 +145,13 @@
         const db = getDatabase(app);
         const st = getStorage(app);
 
-        let user = localStorage.getItem('ae_user'), active = null, reply = null;
+        let user = localStorage.getItem('nx_user'), active = null, reply = null;
         if(user) login(user);
 
         function login(n) {
             const val = n || document.getElementById('u-in').value.trim();
             if(!val) return;
-            user = val; localStorage.setItem('ae_user', val);
+            user = val; localStorage.setItem('nx_user', val);
             document.getElementById('auth').style.display = 'none';
             document.getElementById('my-n').innerText = user;
             document.getElementById('my-av').innerText = user[0].toUpperCase();
@@ -179,21 +159,21 @@
             loadUsers();
         }
 
-        window.toggleTheme = () => {
-            document.body.classList.toggle('light-theme');
-            const isL = document.body.classList.contains('light-theme');
-            document.getElementById('t-icon').className = isL ? "fa-solid fa-sun" : "fa-solid fa-moon";
+        window.toggleMode = () => {
+            document.body.classList.toggle('light');
+            const isL = document.body.classList.contains('light');
+            document.getElementById('m-icon').className = isL ? "fa-solid fa-sun" : "fa-solid fa-moon";
         };
 
         window.toggleSide = () => {
             document.getElementById('side').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('hidden');
         };
 
         window.openChat = (t) => {
             active = t;
             document.getElementById('input-area').classList.remove('hidden');
-            document.getElementById('chat-h').innerText = t === 'global' ? 'Global Lounge' : `@${t}`;
+            document.getElementById('chat-h').innerText = t === 'global' ? 'Global Stream' : `@${t}`;
             if(window.innerWidth < 1024) toggleSide();
             loadMsgs();
         };
@@ -206,8 +186,8 @@
                     count++;
                     if(u.key !== user) {
                         const d = document.createElement('div');
-                        d.className = "p-4 rounded-2xl cursor-pointer hover:bg-indigo-500/5 transition flex items-center gap-3";
-                        d.innerHTML = `<div class="w-2 h-2 rounded-full bg-indigo-500 shadow-lg shadow-indigo-500/50"></div> <span class="text-xs font-bold uppercase tracking-tight">${u.key}</span>`;
+                        d.className = "p-4 glass rounded-2xl cursor-pointer hover:scale-[1.02] flex items-center gap-4 mb-2";
+                        d.innerHTML = `<div class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee]"></div> <span class="text-xs font-black uppercase italic">${u.key}</span>`;
                         d.onclick = () => openChat(u.key);
                         list.appendChild(d);
                     }
@@ -223,25 +203,25 @@
                 s.forEach(m => {
                     const d = m.val(), id = m.key, isM = d.sender === user;
                     const wrap = document.createElement('div');
-                    wrap.className = `msg-group ${isM ? 'mine' : 'other'}`;
+                    wrap.className = `msg-wrap ${isM ? 'mine' : 'other'} flex flex-col`;
                     wrap.innerHTML = `
-                        <div class="action-pill shadow-xl text-white">
-                            <button onclick="setRep('${d.sender}','${d.text||"Image"}')" class="text-[9px] font-black px-1">REPLY</button>
+                        <div class="msg-options text-white items-center">
+                            <button onclick="setRep('${d.sender}','${d.text||"Media"}')" class="text-[9px] font-black px-2 hover:text-cyan-400">REPLY</button>
                             <button onclick="react('${id}','❤️')" class="text-xs">❤️</button>
-                            ${isM ? `<button onclick="del('${id}')" class="text-[9px] font-black px-1">DEL</button>` : ''}
+                            ${isM ? `<button onclick="del('${id}')" class="text-[9px] font-black px-2 text-red-400">DEL</button>` : ''}
                         </div>
-                        <p class="text-[9px] font-bold opacity-30 uppercase ml-2">${d.sender}</p>
-                        <div class="card-ui">
-                            ${d.reply ? `<div class="text-[10px] bg-black/10 p-3 rounded-xl mb-3 border-l-2 border-indigo-400 italic opacity-60">@${d.reply.to}: ${d.reply.msg}</div>` : ''}
-                            ${d.img ? `<img src="${d.img}" class="rounded-xl max-w-full">` : `<span class="text-sm font-medium">${d.text}</span>`}
-                            <div id="rx-${id}" class="flex gap-1 mt-2"></div>
+                        <span class="text-[8px] font-black opacity-30 mb-2 uppercase px-3 tracking-tighter">${d.sender}</span>
+                        <div class="bubble">
+                            ${d.reply ? `<div class="text-[9px] bg-black/20 p-3 rounded-xl mb-3 border-l-2 border-purple-500 italic opacity-60">@${d.reply.to}: ${d.reply.msg}</div>` : ''}
+                            ${d.img ? `<img src="${d.img}" class="rounded-2xl max-w-full">` : `<span class="font-medium">${d.text}</span>`}
                         </div>
+                        <div id="rx-${id}" class="flex gap-1 mt-2 px-2"></div>
                     `;
                     flow.appendChild(wrap);
                     if(d.reactions) {
                         const rxD = document.getElementById(`rx-${id}`);
                         Object.entries(d.reactions).forEach(([e, c]) => {
-                            rxD.innerHTML += `<span class="bg-indigo-500/10 px-2 py-0.5 rounded-lg text-[8px] font-bold border border-indigo-500/10">${e} ${c}</span>`;
+                            rxD.innerHTML += `<span class="glass px-2 py-1 rounded-lg text-[9px] font-black">${e} ${c}</span>`;
                         });
                     }
                 });
@@ -252,7 +232,7 @@
         window.setRep = (u, m) => {
             reply = { to: u, msg: m };
             document.getElementById('reply-tag').classList.remove('hidden');
-            document.getElementById('reply-txt').innerText = `Reply to @${u}: ${m}`;
+            document.getElementById('reply-txt').innerText = `REPLYING TO @${u}: ${m}`;
             document.getElementById('m-in').focus();
         };
 
@@ -273,7 +253,7 @@
         };
 
         window.del = (id) => {
-            if(confirm("Delete signal?")) {
+            if(confirm("Erase signal permanently?")) {
                 const p = (active === 'global' ? 'msgs/global/' : `private/${[user, active].sort().join('_')}/`) + id;
                 remove(ref(db, p));
             }
