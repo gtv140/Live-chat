@@ -2,18 +2,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Empire Dashboard | Realtime Chat</title>
+<title>Empire Realtime Dashboard</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
-  --primary:#a855f7; --secondary:#ec4899; --bg:#030712; --glass:rgba(30,41,59,0.7); --text:#f9fafb;
+--primary:#a855f7; --secondary:#ec4899; --bg:#030712; --glass:rgba(30,41,59,0.7); --text:#f9fafb;
 }
 *{box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s;}
 body{margin:0;background:var(--bg);color:var(--text);height:100vh;display:flex;overflow:hidden;}
 /* Sidebar */
-.sidebar{width:70px;background:#000;display:flex;flex-direction:column;align-items:center;padding:20px 0;gap:25px;transition:all 0.3s;}
-.sidebar .icon-btn{width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#4b5563;font-size:1.2rem;cursor:pointer;}
+.sidebar{width:70px;background:#000;display:flex;flex-direction:column;align-items:center;padding:20px 0;gap:20px;transition:all 0.3s;}
+.sidebar .icon-btn{width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#4b5563;font-size:1.2rem;cursor:pointer;position:relative;}
 .sidebar .icon-btn.active{background:var(--primary);color:white;box-shadow:0 0 20px rgba(168,85,247,0.4);}
+.sidebar .icon-btn .notif{position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:red;display:none;}
 #menuToggle{display:none;position:fixed;top:15px;left:15px;z-index:2000;width:40px;height:40px;border-radius:50%;background:var(--primary);color:#fff;border:none;font-size:1.2rem;cursor:pointer;}
 /* Main */
 .main{flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden;}
@@ -21,6 +22,8 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 .brand{font-weight:900;font-size:1.2rem;background:linear-gradient(to right,#c084fc,#fb7185);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 /* Content */
 .content{flex:1;display:flex;overflow:hidden;position:relative;}
+.section{flex:1;overflow-y:auto;padding:15px;display:none;}
+.section.active{display:block;}
 .chat-view{flex:1;display:flex;flex-direction:column;position:relative;}
 .feed{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:12px;padding-bottom:100px;}
 .user-list{width:220px;background:rgba(255,255,255,0.02);padding:15px;border-left:1px solid rgba(255,255,255,0.05);transition:all 0.3s;}
@@ -31,7 +34,9 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 .msg{max-width:80%;padding:10px 14px;border-radius:18px;font-size:13px;position:relative;word-wrap:break-word;}
 .me{align-self:flex-end;background:var(--primary);border-bottom-right-radius:4px;}
 .other{align-self:flex-start;background:var(--glass);border-bottom-left-radius:4px;}
+.broadcast{background:#ef4444;color:white;padding:8px;border-radius:12px;align-self:center;font-weight:800;}
 .msg img{max-width:100%;border-radius:10px;margin-top:6px;}
+.timestamp{font-size:10px;opacity:0.5;margin-top:4px;}
 /* Dock */
 .dock{position:absolute;bottom:15px;left:10px;right:10px;background:rgba(30,41,59,0.95);padding:6px;border-radius:50px;display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,0.1);}
 .dock input{flex:1;background:none;border:none;color:white;outline:none;padding-left:8px;font-size:0.95rem;}
@@ -62,6 +67,7 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
   <div class="icon-btn" onclick="switchSection('about')"><i class="fa-solid fa-circle-info"></i></div>
   <div class="icon-btn" onclick="switchSection('contact')"><i class="fa-solid fa-envelope"></i></div>
   <div class="icon-btn" onclick="switchSection('settings')"><i class="fa-solid fa-gear"></i></div>
+  <div class="icon-btn" onclick="logoutAll()"><i class="fa-solid fa-power-off"></i></div>
 </nav>
 
 <div class="main">
@@ -70,29 +76,31 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
     <div id="badge" style="display:none;color:gold;"><i class="fa-solid fa-crown"></i></div>
   </header>
   <div class="content">
-    <div id="home" class="section">Welcome to Empire Dashboard!</div>
-    <div id="users" class="section" style="display:none;">
+    <div id="home" class="section active">Welcome to Empire Dashboard!</div>
+    <div id="users" class="section">
       <h3>Active Users</h3>
       <div id="uList"></div>
     </div>
-    <div id="groups" class="section" style="display:none;">
+    <div id="groups" class="section">
       <h3>Chat Groups</h3>
       <div class="chat-view">
         <div class="feed" id="feed"></div>
         <div class="dock">
           <input type="text" id="mIn" placeholder="Enter message..." onkeydown="if(event.key==='Enter') send()">
           <button onclick="send()"><i class="fa-solid fa-paper-plane"></i></button>
+          <input type="text" id="broadcastInput" placeholder="Admin Broadcast..." style="display:none;">
+          <button id="broadcastBtn" style="display:none;" onclick="broadcast()"><i class="fa-solid fa-bullhorn"></i></button>
         </div>
       </div>
     </div>
-    <div id="about" class="section" style="display:none;">
+    <div id="about" class="section">
       <h3>About Us</h3><p>This is a modern Empire Realtime Chat Dashboard.</p>
     </div>
-    <div id="contact" class="section" style="display:none;">
+    <div id="contact" class="section">
       <h3>Contact Us</h3><p>Email: support@empire.com</p>
     </div>
-    <div id="settings" class="section" style="display:none;">
-      <h3>Settings</h3><p>Profile and preferences.</p>
+    <div id="settings" class="section">
+      <h3>Settings</h3>
       <div id="adminTools" style="display:none;">
         <span>GOD MODE ACTIVE</span>
         <button onclick="toggleMute()">TOGGLE MUTE</button>
@@ -117,34 +125,111 @@ storageBucket: "live-chat-b810c.firebasestorage.app",
 messagingSenderId: "555058795334",
 appId: "1:555058795334:web:f668887409800c32970b47"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
+
 let uUID,uName,isAdmin=false,currentRoom="global_v2";
 
-onAuthStateChanged(auth,user=>{if(user){const savedName=localStorage.getItem("uN");const savedAdmin=localStorage.getItem("uA")==="true";if(savedName){uUID=user.uid;uName=savedName;isAdmin=savedAdmin;checkBan(user.uid);}}});
+onAuthStateChanged(auth,user=>{
+  if(user){
+    const savedName=localStorage.getItem("uN");
+    const savedAdmin=localStorage.getItem("uA")==="true";
+    if(savedName){uUID=user.uid; uName=savedName; isAdmin=savedAdmin; checkBan(user.uid);}
+  }
+});
 
-window.boot=async()=>{const n=document.getElementById("loginName").value.trim();if(!n)return;let admin=false;if(n.toLowerCase()==="nazim"){if(prompt("Master PIN:")==="786")admin=true;else{alert("Wrong PIN");return;}}const res=await signInAnonymously(auth);uUID=res.user.uid;uName=n;isAdmin=admin;localStorage.setItem("uN",n);localStorage.setItem("uA",admin);checkBan(uUID);};
+window.boot=async()=>{
+  const n=document.getElementById("loginName").value.trim();
+  if(!n)return;
+  let admin=false;
+  if(n.toLowerCase()==="nazim"){
+    if(prompt("Master PIN:")==="786")admin=true;
+    else{alert("Wrong PIN");return;}
+  }
+  const res=await signInAnonymously(auth);
+  uUID=res.user.uid; uName=n; isAdmin=admin;
+  localStorage.setItem("uN",n); localStorage.setItem("uA",admin);
+  checkBan(uUID);
+};
 
-function checkBan(uid){onValue(ref(db,'banned/'+uid),s=>{if(s.val()){document.body.innerHTML="<h1 style='color:red;text-align:center;padding:50px;'>🚫 BANNED</h1>";localStorage.clear();}else start();});}
+function checkBan(uid){
+  onValue(ref(db,'banned/'+uid),s=>{
+    if(s.val()){document.body.innerHTML="<h1 style='color:red;text-align:center;padding:50px;'>🚫 BANNED</h1>";localStorage.clear();}
+    else start();
+  });
+}
 
 function start(){
-document.getElementById("auth").style.display="none";
-if(isAdmin){document.getElementById("adminTools").style.display="flex";document.getElementById("badge").style.display="block";}
-set(ref(db,'nodes/'+uUID),{name:uName,online:true});syncUsers();syncMsgs();onValue(ref(db,'system/mute'),s=>{document.getElementById("muteScreen")&&(document.getElementById("muteScreen").style.display=(s.val()&&!isAdmin)?"flex":"none");});}
+  document.getElementById("auth").style.display="none";
+  if(isAdmin){
+    document.getElementById("adminTools").style.display="flex";
+    document.getElementById("badge").style.display="block";
+    document.getElementById("broadcastInput").style.display="block";
+    document.getElementById("broadcastBtn").style.display="block";
+  }
+  set(ref(db,'nodes/'+uUID),{name:uName,online:true});
+  syncUsers(); syncMsgs();
+  onValue(ref(db,'system/mute'),s=>{document.getElementById("muteScreen")&&(document.getElementById("muteScreen").style.display=(s.val()&&!isAdmin)?"flex":"none");});
+}
 
-window.switchSection=(sec)=>{document.querySelectorAll('.section').forEach(s=>s.style.display='none');document.getElementById(sec).style.display='block';document.getElementById('headerTitle').innerText=sec.toUpperCase();document.querySelectorAll('.sidebar .icon-btn').forEach(b=>b.classList.remove('active'));if(sec==='home')document.querySelector('.sidebar .icon-btn:first-child').classList.add('active');};
+window.switchSection=(sec)=>{
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(sec).classList.add('active');
+  document.getElementById('headerTitle').innerText=sec.toUpperCase();
+  document.querySelectorAll('.sidebar .icon-btn').forEach(b=>b.classList.remove('active'));
+  if(sec==='home')document.querySelector('.sidebar .icon-btn:first-child').classList.add('active');
+};
 
-window.send=(p=null)=>{const i=document.getElementById("mIn");if(!i.value.trim()&&!p)return;push(ref(db,currentRoom),{uid:uUID,sender:uName,text:i.value,img:p,ts:serverTimestamp()});i.value="";};
+window.send=(p=null)=>{
+  const i=document.getElementById("mIn");
+  if(!i.value.trim()&&!p)return;
+  push(ref(db,currentRoom),{uid:uUID,sender:uName,text:i.value,img:p,ts:serverTimestamp()});
+  i.value="";
+};
 
-function syncMsgs(){onValue(query(ref(db,currentRoom),limitToLast(50)),s=>{const f=document.getElementById("feed");if(!f)return;f.innerHTML="";s.forEach(m=>{const d=m.val();f.innerHTML+=`<div class="msg ${d.uid===uUID?'me':'other'}"><small style="opacity:0.5;font-size:10px;font-weight:800;">${d.sender}</small>${d.text?`<div>${d.text}</div>`:""}${d.img?`<img src='${d.img}'>`:""}</div>`;});f.scrollTop=f.scrollHeight;});}
+function broadcast(){
+  const msg=document.getElementById("broadcastInput").value.trim();
+  if(!msg)return;
+  push(ref(db,'broadcast'),{uid:uUID,sender:uName,text:msg,ts:serverTimestamp()});
+  document.getElementById("broadcastInput").value="";
+}
 
-function syncUsers(){onValue(ref(db,'nodes'),s=>{const l=document.getElementById("uList");l.innerHTML="";s.forEach(u=>{if(u.key===uUID)return;const d=u.val();const node=document.createElement('div');node.className='u-card';node.innerHTML=`<img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:30px;border-radius:10px;"><span style="font-size:0.8rem;">${d.name}</span>${isAdmin?`<span class="ban-hammer" style="display:block;" onclick="if(confirm('Ban ${d.name}?'))set(ref(db,'banned/${u.key}'),true)">BAN</span>`:""}`;l.appendChild(node);});});}
+function syncMsgs(){
+  onValue(query(ref(db,currentRoom),limitToLast(50)),s=>{
+    const f=document.getElementById("feed"); if(!f)return; f.innerHTML="";
+    s.forEach(m=>{
+      const d=m.val();
+      f.innerHTML+=`<div class="msg ${d.uid===uUID?'me':'other'}"><small style="opacity:0.5;font-size:10px;font-weight:800;">${d.sender}</small>${d.text?`<div>${d.text}</div>`:""}<div class="timestamp">${new Date(d.ts).toLocaleTimeString()}</div></div>`;
+    });
+    f.scrollTop=f.scrollHeight;
+  });
+  onValue(ref(db,'broadcast'),s=>{
+    const f=document.getElementById("feed"); if(!f)return;
+    s.forEach(m=>{
+      const d=m.val();
+      f.innerHTML+=`<div class="broadcast">${d.sender}: ${d.text}</div>`;
+    });
+  });
+}
+
+function syncUsers(){
+  onValue(ref(db,'nodes'),s=>{
+    const l=document.getElementById("uList"); l.innerHTML="";
+    s.forEach(u=>{
+      if(u.key===uUID)return;
+      const d=u.val();
+      const node=document.createElement('div');
+      node.className='u-card';
+      node.innerHTML=`<img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:30px;border-radius:10px;"><span style="font-size:0.8rem;">${d.name}</span>${isAdmin?`<span class="ban-hammer" style="display:block;" onclick="if(confirm('Ban ${d.name}?'))set(ref(db,'banned/${u.key}'),true)">BAN</span>`:""}`;
+      l.appendChild(node);
+    });
+  });
+}
 
 window.toggleMute=()=>{onValue(ref(db,'system/mute'),s=>{set(ref(db,'system/mute'),!s.val());},{onlyOnce:true});};
 window.wipeData=()=>{if(confirm("Wipe Global?"))remove(ref(db,'global_v2'));};
-window.logout=()=>{localStorage.clear();signOut(auth).then(()=>location.reload());};
+window.logoutAll=()=>{localStorage.clear(); signOut(auth).then(()=>location.reload());};
 document.getElementById("menuToggle").addEventListener("click",()=>{document.getElementById("sidebar").classList.toggle("show");});
 </script>
 </body>
