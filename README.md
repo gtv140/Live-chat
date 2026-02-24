@@ -2,142 +2,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Infinity Connect | God Mode</title>
+    <title>Live Connect Empire</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6366f1; --accent: #a855f7; --bg: #020617;
-            --surface: rgba(30, 41, 59, 0.7); --text: #f8fafc;
-        }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            margin: 0; background: var(--bg); color: var(--text);
-            font-family: 'Plus Jakarta Sans', sans-serif; height: 100dvh; 
-            display: flex; justify-content: center; overflow: hidden;
-        }
+        :root { --primary: #6366f1; --accent: #10b981; --bg: #020617; --card: #1e293b; }
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.3s; }
+        body { margin: 0; background: var(--bg); color: white; height: 100dvh; overflow: hidden; display: flex; }
 
-        /* App Container */
-        .app-wrap {
-            width: 100%; max-width: 500px; height: 100dvh;
-            display: flex; flex-direction: column; position: relative;
-            background: radial-gradient(circle at top right, #1e1b4b, #020617);
-        }
+        /* --- Sidebar Navigation --- */
+        .sidebar { width: 70px; background: #0b0f1a; display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 25px; border-right: 1px solid rgba(255,255,255,0.05); z-index: 1000; }
+        .side-icon { font-size: 1.5rem; color: #64748b; cursor: pointer; position: relative; }
+        .side-icon:hover, .side-icon.active { color: var(--primary); }
+        .side-icon.active::after { content: ''; position: absolute; left: -15px; top: 25%; height: 50%; width: 4px; background: var(--primary); border-radius: 0 4px 4px 0; }
 
-        /* Modern Header */
-        header {
-            padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;
-            backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .brand { font-weight: 800; font-size: 1.4rem; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* User Status Bar */
-        .status-bar {
-            display: flex; gap: 15px; padding: 10px 1.5rem; 
-            overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .status-bar::-webkit-scrollbar { display: none; }
-        .u-node { display: flex; flex-direction: column; align-items: center; min-width: 60px; }
-        .u-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--primary); padding: 2px; }
-        .u-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .u-node span { font-size: 10px; margin-top: 5px; opacity: 0.7; }
-
-        /* Chat Canvas */
-        .chat-canvas {
-            flex: 1; overflow-y: auto; padding: 1.5rem;
-            display: flex; flex-direction: column; gap: 1.2rem;
-            scroll-behavior: smooth; padding-bottom: 100px;
-        }
-
-        .msg-row { display: flex; flex-direction: column; max-width: 80%; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes pop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        /* --- Main Content --- */
+        .main-container { flex: 1; display: flex; flex-direction: column; position: relative; }
         
-        .msg-row.me { align-self: flex-end; align-items: flex-end; }
-        .msg-row.other { align-self: flex-start; align-items: flex-start; }
+        header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,6,23,0.8); backdrop-filter: blur(10px); }
+        .welcome-text { font-weight: 800; font-size: 1.2rem; background: linear-gradient(to right, #818cf8, #fb7185); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .bubble {
-            padding: 12px 16px; border-radius: 20px; font-size: 15px; line-height: 1.5;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative;
-        }
-        .me .bubble { background: linear-gradient(135deg, var(--primary), var(--accent)); border-bottom-right-radius: 4px; }
-        .other .bubble { background: var(--surface); border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
-
-        .meta { font-size: 10px; margin-top: 5px; opacity: 0.5; display: flex; gap: 5px; align-items: center; }
-        .crown { color: #fbbf24; font-size: 12px; margin-right: 4px; }
-
-        /* Bottom Command Center */
-        .cmd-center {
-            position: fixed; bottom: 0; width: 100%; max-width: 500px;
-            padding: 15px; background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255,255,255,0.1); z-index: 100;
-        }
-        .typing-pill { position: absolute; top: -30px; left: 20px; font-size: 12px; color: var(--primary); display: none; }
+        /* --- Chat Sections --- */
+        .content-area { flex: 1; display: flex; overflow: hidden; }
+        .chat-section { flex: 1; display: flex; flex-direction: column; background: rgba(255,255,255,0.02); }
         
-        .input-group {
-            display: flex; align-items: center; gap: 10px; 
-            background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .input-group input {
-            flex: 1; background: none; border: none; color: white; padding: 10px 0;
-            font-size: 16px; outline: none;
-        }
-        .btn-action {
-            width: 42px; height: 42px; border-radius: 50%; border: none;
-            background: var(--primary); color: white; cursor: pointer;
-            transition: 0.2s; display: flex; align-items: center; justify-content: center;
-        }
-        .btn-action:active { transform: scale(0.9); }
+        .messages-list { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; padding-bottom: 120px; }
+        .bubble { max-width: 75%; padding: 12px 16px; border-radius: 20px; font-size: 0.95rem; line-height: 1.4; position: relative; }
+        .bubble.me { align-self: flex-end; background: var(--primary); border-bottom-right-radius: 4px; }
+        .bubble.other { align-self: flex-start; background: var(--card); border-bottom-left-radius: 4px; }
+        .bubble img { max-width: 100%; border-radius: 12px; margin-top: 5px; }
 
-        /* Auth Screen */
-        #authScreen {
-            position: fixed; inset: 0; z-index: 9999; background: var(--bg);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .login-box {
-            width: 85%; max-width: 350px; padding: 2.5rem; text-align: center;
-            background: var(--surface); border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
-        }
+        /* --- Input Dock --- */
+        .input-dock { position: absolute; bottom: 20px; left: 20px; right: 20px; background: #1e293b; padding: 10px 15px; border-radius: 50px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .input-dock input { flex: 1; background: none; border: none; color: white; outline: none; font-size: 1rem; }
+        .icon-btn { color: #94a3b8; cursor: pointer; font-size: 1.2rem; }
+        .send-btn { background: var(--primary); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; color: white; }
+
+        /* --- Active Users Sidebar --- */
+        .users-panel { width: 260px; background: rgba(255,255,255,0.03); border-left: 1px solid rgba(255,255,255,0.05); padding: 20px; overflow-y: auto; }
+        @media (max-width: 800px) { .users-panel { display: none; } }
+
+        /* --- Modals --- */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+        .modal-content { background: var(--card); padding: 30px; border-radius: 24px; max-width: 400px; width: 100%; text-align: center; }
+
+        #authScreen { position: fixed; inset: 0; z-index: 5000; background: var(--bg); display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
 <div id="authScreen">
-    <div class="login-box">
-        <h1 style="margin-bottom:0.5rem">Welcome_</h1>
-        <p style="font-size: 0.8rem; opacity: 0.5; margin-bottom: 2rem;">Secure Biometric Simulation</p>
-        <input type="text" id="nodeName" placeholder="Enter Codename" style="width:100%; padding:1rem; border-radius:15px; border:none; background:#020617; color:white; margin-bottom:1rem; text-align:center;">
-        <button onclick="bootApp()" class="btn-auth" style="width:100%; padding:1rem; border-radius:15px; border:none; background:var(--primary); color:white; font-weight:800; cursor:pointer;">INITIALIZE</button>
+    <div style="text-align: center; width: 80%; max-width: 350px;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Connect_</h1>
+        <input type="text" id="userName" placeholder="Your Name" style="width: 100%; padding: 15px; border-radius: 15px; border: none; background: #1e293b; color: white; margin-bottom: 15px; text-align: center;">
+        <button onclick="startEmpire()" style="width: 100%; padding: 15px; border-radius: 15px; border: none; background: var(--primary); color: white; font-weight: 800; cursor: pointer;">ENTER SYSTEM</button>
     </div>
 </div>
 
-<div class="app-wrap">
+<nav class="sidebar">
+    <div class="side-icon active" title="Chats"><i class="fa-solid fa-comment-dots"></i></div>
+    <div class="side-icon" title="Groups"><i class="fa-solid fa-user-group"></i></div>
+    <div class="side-icon" onclick="showModal('settingsModal')"><i class="fa-solid fa-gear"></i></div>
+    <div class="side-icon" onclick="showModal('contactModal')"><i class="fa-solid fa-circle-info"></i></div>
+</nav>
+
+<div class="main-container">
     <header>
-        <div class="brand">INFINITY_CONNECT</div>
-        <i class="fa-solid fa-ellipsis-vertical" style="opacity:0.6"></i>
+        <div class="welcome-text" id="welcomeMsg">Welcome, Pilot</div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <span id="statusLed" style="width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent);"></span>
+            <div id="roomTag" style="font-size: 0.7rem; opacity: 0.5; border: 1px solid rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px;">GLOBAL_CORE</div>
+        </div>
     </header>
 
-    <div class="status-bar" id="activeUsers">
+    <div class="content-area">
+        <div class="chat-section">
+            <div class="messages-list" id="chatStream"></div>
+            
+            <div class="input-dock">
+                <label for="imgUpload" class="icon-btn"><i class="fa-solid fa-image"></i></label>
+                <input type="file" id="imgUpload" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
+                <input type="text" id="msgInput" placeholder="Write a message..." onkeydown="if(event.key==='Enter') sendMsg()">
+                <button class="send-btn" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
         </div>
 
-    <div class="chat-canvas" id="canvas"></div>
+        <aside class="users-panel">
+            <h4 style="margin-top:0; opacity:0.6">Active Nodes</h4>
+            <div id="userList" style="display:flex; flex-direction:column; gap:15px;"></div>
+        </aside>
+    </div>
+</div>
 
-    <div class="cmd-center">
-        <div id="typingInfo" class="typing-pill">Someone is typing...</div>
-        <div class="input-group">
-            <i class="fa-regular fa-face-smile" style="opacity:0.5"></i>
-            <input type="text" id="mainInp" placeholder="Send an encrypted signal..." oninput="handleTyping()">
-            <button class="btn-action" onclick="sendSignal()">
-                <i class="fa-solid fa-paper-plane"></i>
-            </button>
-        </div>
+<div class="modal" id="settingsModal">
+    <div class="modal-content">
+        <h3>Settings</h3>
+        <p style="opacity:0.6">Privacy & Account Security</p>
+        <button onclick="closeModal('settingsModal')" style="background:var(--primary); border:none; color:white; padding:10px 20px; border-radius:10px; width:100%; margin-top:20px;">Save Changes</button>
+    </div>
+</div>
+
+<div class="modal" id="contactModal">
+    <div class="modal-content">
+        <h3>About Empire</h3>
+        <p>Built for Nazim by Gemini Titan v80.</p>
+        <p style="font-size:0.8rem; opacity:0.5">Contact: support@empire-chat.io</p>
+        <button onclick="closeModal('contactModal')" style="background:var(--primary); border:none; color:white; padding:10px 20px; border-radius:10px; width:100%; margin-top:20px;">Close</button>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getDatabase, ref, set, push, onValue, serverTimestamp, query, limitToLast, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue, serverTimestamp, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
@@ -153,100 +130,74 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    let myUID = "";
-    let myName = "";
-    let typingTimer;
+    let myUID, myName;
 
-    window.bootApp = async () => {
-        const input = document.getElementById("nodeName");
-        myName = input.value.trim();
+    window.startEmpire = async () => {
+        myName = document.getElementById("userName").value.trim();
         if(!myName) return;
 
-        try {
-            const cred = await signInAnonymously(auth);
-            myUID = cred.user.uid;
-
-            // Presence System
-            const myStatusRef = ref(db, 'status/' + myUID);
-            set(myStatusRef, { name: myName, online: true, typing: false });
-            onDisconnect(myStatusRef).remove();
-
-            document.getElementById("authScreen").style.display = "none";
-        } catch (e) { alert(e.message); }
+        const cred = await signInAnonymously(auth);
+        myUID = cred.user.uid;
+        document.getElementById("welcomeMsg").innerText = `Welcome, ${myName}`;
+        document.getElementById("authScreen").style.display = "none";
+        
+        set(ref(db, 'nodes/' + myUID), { name: myName, online: true });
+        loadStream();
     };
 
-    // Typing Logic
-    window.handleTyping = () => {
-        set(ref(db, `status/${myUID}/typing`), true);
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(() => {
-            set(ref(db, `status/${myUID}/typing`), false);
-        }, 2000);
-    };
+    window.sendMsg = (imgData = null) => {
+        const inp = document.getElementById("msgInput");
+        if(!inp.value.trim() && !imgData) return;
 
-    // Active Users & Typing Sync
-    onValue(ref(db, 'status'), snap => {
-        const bar = document.getElementById("activeUsers");
-        const typ = document.getElementById("typingInfo");
-        bar.innerHTML = "";
-        let typingUsers = [];
-
-        snap.forEach(s => {
-            const d = s.val();
-            if(s.key !== myUID && d.typing) typingUsers.push(d.name);
-            
-            bar.innerHTML += `
-                <div class="u-node">
-                    <div class="u-avatar">
-                        <img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff">
-                    </div>
-                    <span>${d.name}</span>
-                </div>
-            `;
-        });
-
-        typ.style.display = typingUsers.length > 0 ? "block" : "none";
-        typ.innerText = typingUsers.join(", ") + " is typing...";
-    });
-
-    // Messaging
-    window.sendSignal = () => {
-        const inp = document.getElementById("mainInp");
-        const val = inp.value.trim();
-        if(!val) return;
-
-        push(ref(db, 'v60_messages'), {
+        push(ref(db, 'empire_chat'), {
             uid: myUID,
             sender: myName,
-            text: val,
+            text: inp.value.trim(),
+            image: imgData,
             ts: serverTimestamp()
         });
         inp.value = "";
-        set(ref(db, `status/${myUID}/typing`), false);
     };
 
-    const q = query(ref(db, 'v60_messages'), limitToLast(40));
-    onValue(q, snap => {
-        const canvas = document.getElementById("canvas");
-        canvas.innerHTML = "";
-        snap.forEach(s => {
-            const d = s.val();
-            const isMe = d.uid === myUID;
-            const isAdmin = d.sender.toLowerCase() === "nazim";
+    window.uploadPhoto = (el) => {
+        const file = el.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => sendMsg(e.target.result);
+        reader.readAsDataURL(file);
+    };
 
-            canvas.innerHTML += `
-                <div class="msg-row ${isMe ? 'me' : 'other'}">
-                    <div class="bubble">${d.text}</div>
-                    <div class="meta">
-                        ${isAdmin ? '<i class="fa-solid fa-crown crown"></i>' : ''}
-                        <b>${d.sender}</b> • Now
-                        ${isMe ? '<i class="fa-solid fa-check-double" style="color:var(--primary)"></i>' : ''}
+    function loadStream() {
+        onValue(query(ref(db, 'empire_chat'), limitToLast(50)), snap => {
+            const stream = document.getElementById("chatStream");
+            stream.innerHTML = "";
+            snap.forEach(s => {
+                const d = s.val();
+                stream.innerHTML += `
+                    <div class="bubble ${d.uid === myUID ? 'me' : 'other'}">
+                        <small style="opacity:0.6; display:block; margin-bottom:4px;">${d.sender}</small>
+                        ${d.text ? `<div>${d.text}</div>` : ''}
+                        ${d.image ? `<img src="${d.image}">` : ''}
                     </div>
-                </div>
-            `;
+                `;
+            });
+            stream.scrollTop = stream.scrollHeight;
         });
-        canvas.scrollTop = canvas.scrollHeight;
-    });
+
+        onValue(ref(db, 'nodes'), snap => {
+            const list = document.getElementById("userList");
+            list.innerHTML = "";
+            snap.forEach(s => {
+                const d = s.val();
+                list.innerHTML += `<div style="display:flex; align-items:center; gap:10px;">
+                    <img src="https://ui-avatars.com/api/?name=${d.name}&background=6366f1&color=fff" style="width:30px; border-radius:50%">
+                    <span style="font-size:0.9rem">${d.name}</span>
+                </div>`;
+            });
+        });
+    }
+
+    window.showModal = id => document.getElementById(id).style.display = 'flex';
+    window.closeModal = id => document.getElementById(id).style.display = 'none';
 </script>
 </body>
 </html>
