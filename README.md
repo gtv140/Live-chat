@@ -2,88 +2,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Empire Ultra | Private & Global</title>
+    <title>Empire Sovereign | God Mode</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root { --p: #8b5cf6; --s: #ec4899; --bg: #030712; --card: rgba(30, 41, 59, 0.7); }
-        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        :root { --p: #a855f7; --s: #ec4899; --bg: #030712; --glass: rgba(30, 41, 59, 0.7); }
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.3s; }
         body { margin: 0; background: var(--bg); color: #f9fafb; height: 100dvh; display: flex; overflow: hidden; }
 
-        /* --- Sidebar --- */
-        .sidebar { width: 80px; background: #000; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; padding: 25px 0; gap: 25px; }
-        .nav-btn { width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #4b5563; cursor: pointer; transition: 0.3s; font-size: 1.3rem; }
-        .nav-btn.active { background: var(--p); color: white; box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); }
+        /* Navigation Sidebar */
+        .sidebar { width: 75px; background: #000; border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; padding: 25px 0; gap: 25px; }
+        .nav-btn { width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #4b5563; cursor: pointer; font-size: 1.3rem; }
+        .nav-btn.active { background: var(--p); color: white; box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
 
-        /* --- Main Content --- */
+        /* Main UI */
         .main { flex: 1; display: flex; flex-direction: column; position: relative; }
         header { padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; background: rgba(3, 7, 18, 0.9); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .brand { font-weight: 900; font-size: 1.2rem; background: linear-gradient(to right, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand { font-weight: 900; font-size: 1.3rem; background: linear-gradient(to right, #c084fc, #fb7185); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        #adminTools { display: none; background: #ef4444; padding: 8px; text-align: center; gap: 20px; justify-content: center; align-items: center; }
+        .tool-btn { background: white; color: black; border: none; padding: 2px 10px; border-radius: 5px; font-size: 10px; font-weight: 800; cursor: pointer; }
 
-        .content-wrap { flex: 1; display: flex; overflow: hidden; }
-        .chat-area { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .feed { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; padding-bottom: 100px; }
+        .content { flex: 1; display: flex; overflow: hidden; }
+        .chat-view { flex: 1; display: flex; flex-direction: column; position: relative; }
+        .feed { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; padding-bottom: 110px; }
 
-        /* --- User List (Desktop & Mobile Scroll) --- */
-        .user-list { width: 260px; background: rgba(255,255,255,0.02); padding: 20px; border-left: 1px solid rgba(255,255,255,0.05); overflow-y: auto; }
+        /* User List */
+        .user-list { width: 260px; background: rgba(255,255,255,0.02); padding: 20px; border-left: 1px solid rgba(255,255,255,0.05); }
         @media (max-width: 850px) { .user-list { display: none; } }
-        .u-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; cursor: pointer; margin-bottom: 8px; border: 1px solid transparent; }
-        .u-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
-        .u-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--p); }
+        .u-card { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; cursor: pointer; margin-bottom: 8px; background: rgba(255,255,255,0.03); }
+        .u-card:hover { background: rgba(255,255,255,0.08); }
+        .ban-hammer { color: #ef4444; margin-left: auto; font-size: 12px; font-weight: 800; border: 1px solid #ef4444; padding: 2px 6px; border-radius: 4px; display: none; }
 
-        /* --- Bubbles --- */
-        .bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 14px; position: relative; line-height: 1.5; }
-        .me { align-self: flex-end; background: var(--p); color: white; border-bottom-right-radius: 4px; }
-        .other { align-self: flex-start; background: var(--card); border-bottom-left-radius: 4px; }
-        .bubble img { max-width: 100%; border-radius: 12px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.1); }
+        /* Message Bubbles */
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 14px; position: relative; }
+        .me { align-self: flex-end; background: var(--p); border-bottom-right-radius: 4px; }
+        .other { align-self: flex-start; background: var(--glass); border-bottom-left-radius: 4px; }
+        .msg img { max-width: 100%; border-radius: 12px; margin-top: 8px; }
 
-        /* --- Input Dock --- */
-        .dock { position: absolute; bottom: 20px; left: 15px; right: 15px; background: rgba(30, 41, 59, 0.9); padding: 8px; border-radius: 50px; display: flex; align-items: center; gap: 10px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
-        .dock input { flex: 1; background: none; border: none; color: white; outline: none; padding-left: 10px; font-size: 15px; }
-        .dock-btn { width: 42px; height: 42px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; }
+        /* Input Dock */
+        .dock { position: absolute; bottom: 20px; left: 15px; right: 15px; background: rgba(30, 41, 59, 0.95); padding: 8px; border-radius: 50px; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .dock input { flex: 1; background: none; border: none; color: white; outline: none; padding-left: 10px; }
+        .mute-msg { position: absolute; inset: 0; background: rgba(0,0,0,0.8); color: #ef4444; display: none; align-items: center; justify-content: center; border-radius: 50px; font-weight: 800; font-size: 12px; }
 
-        /* --- Auth Layer --- */
-        #authLayer { position: fixed; inset: 0; z-index: 2000; background: #030712; display: flex; align-items: center; justify-content: center; }
-        .auth-card { width: 85%; max-width: 360px; text-align: center; padding: 40px; background: var(--card); border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); }
+        /* Auth Screen */
+        #auth { position: fixed; inset: 0; z-index: 2000; background: #030712; display: flex; align-items: center; justify-content: center; }
+        .auth-box { width: 85%; max-width: 350px; text-align: center; padding: 40px; background: var(--glass); border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
-<div id="authLayer">
-    <div class="auth-card">
-        <h1 class="brand" style="font-size: 2rem;">EMPIRE_X</h1>
-        <p style="opacity: 0.5; font-size: 0.8rem; margin-bottom: 30px;">Initialize Secure Signal</p>
-        <input type="text" id="nodeName" placeholder="Enter Codename" style="width:100%; padding:15px; border-radius:15px; border:none; background:#000; color:#fff; margin-bottom:15px; text-align:center;">
-        <button onclick="bootSystem()" style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--p); color:white; font-weight:800; cursor:pointer;">CONNECT</button>
+<div id="auth">
+    <div class="auth-box">
+        <h1 class="brand" style="font-size: 2rem;">EMPIRE_v2</h1>
+        <input type="text" id="loginName" placeholder="Codename" style="width:100%; padding:15px; border-radius:15px; border:none; background:#000; color:#fff; margin-bottom:15px; text-align:center;">
+        <button onclick="boot()" style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--p); color:white; font-weight:800; cursor:pointer;">INITIALIZE</button>
     </div>
 </div>
 
 <nav class="sidebar">
-    <div class="nav-btn active" id="globalTab" onclick="goGlobal()" title="Global Group"><i class="fa-solid fa-earth-americas"></i></div>
-    <div class="nav-btn" onclick="alert('Files Vault: Encrypted')"><i class="fa-solid fa-folder-closed"></i></div>
+    <div class="nav-btn active" onclick="goGlobal()" id="glob"><i class="fa-solid fa-globe"></i></div>
     <div class="nav-btn" onclick="logout()"><i class="fa-solid fa-power-off"></i></div>
 </nav>
 
 <div class="main">
-    <div id="adminPanel" onclick="adminWipe()" style="display:none; padding:8px; background:#ef4444; color:white; text-align:center; font-size:10px; font-weight:800; letter-spacing:2px; cursor:pointer;">EMERGENCY DATA WIPE</div>
+    <div id="adminTools">
+        <span style="font-size: 10px; font-weight: 800;">GOD MODE ACTIVE</span>
+        <button class="tool-btn" onclick="toggleMute()">TOGGLE MUTE</button>
+        <button class="tool-btn" onclick="wipeData()" style="background:#ef4444; color:white;">WIPE CHAT</button>
+    </div>
     <header>
-        <div class="brand" id="viewTitle">GLOBAL_CONNECT</div>
-        <div id="adminBadge" style="display:none; background:gold; color:black; padding:3px 10px; border-radius:8px; font-weight:900; font-size:10px;">👑 ADMIN</div>
+        <div class="brand" id="title">GLOBAL_FEED</div>
+        <div id="badge" style="display:none; color:gold;"><i class="fa-solid fa-crown"></i></div>
     </header>
 
-    <div class="content-wrap">
-        <div class="chat-area">
-            <div class="feed" id="chatFeed"></div>
-            <div class="dock">
-                <label for="imgInp" style="padding:10px; cursor:pointer; opacity:0.6"><i class="fa-solid fa-camera"></i></label>
-                <input type="file" id="imgInp" hidden onchange="handleImage(this)">
-                <input type="text" id="mInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') dispatch()">
-                <button class="dock-btn" onclick="dispatch()" style="background:var(--p)"><i class="fa-solid fa-paper-plane"></i></button>
+    <div class="content">
+        <div class="chat-view">
+            <div class="feed" id="feed"></div>
+            <div class="dock" id="inputDock">
+                <label for="pUp" style="padding:10px; cursor:pointer; opacity:0.6"><i class="fa-solid fa-image"></i></label>
+                <input type="file" id="pUp" hidden onchange="upImg(this)">
+                <input type="text" id="mIn" placeholder="Enter signal..." onkeydown="if(event.key==='Enter') send()">
+                <button onclick="send()" style="background:var(--p); border:none; color:white; width:40px; height:40px; border-radius:50%; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i></button>
+                <div class="mute-msg" id="muteScreen">🔇 GLOBAL CHAT IS LOCKED</div>
             </div>
         </div>
-
         <aside class="user-list">
-            <h4 style="margin:0 0 15px 0; opacity:0.5; font-size:12px;">ONLINE ASSETS</h4>
-            <div id="onlineNodes"></div>
+            <h5 style="opacity:0.5; margin-bottom:15px;">ASSETS</h5>
+            <div id="uList"></div>
         </aside>
     </div>
 </div>
@@ -107,118 +112,131 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    let myUID, myName, isAdmin = false;
-    let currentRoom = "global_v130";
+    let uUID, uName, isAdmin = false, currentRoom = "global_v2";
 
-    // Auto-Login Persistence
     onAuthStateChanged(auth, user => {
         if (user) {
-            const savedName = localStorage.getItem("empire_user");
-            const savedAdmin = localStorage.getItem("empire_admin") === "true";
+            const savedName = localStorage.getItem("uN");
+            const savedAdmin = localStorage.getItem("uA") === "true";
             if (savedName) {
-                myUID = user.uid; myName = savedName; isAdmin = savedAdmin;
-                enterEmpire();
+                uUID = user.uid; uName = savedName; isAdmin = savedAdmin;
+                checkBan(user.uid);
             }
         }
     });
 
-    window.bootSystem = async () => {
-        const name = document.getElementById("nodeName").value.trim();
-        if (!name) return;
-        
-        let adminMode = false;
-        if (name.toLowerCase() === 'nazim') {
-            const pin = prompt("Enter Master PIN:");
-            if (pin !== "786") { alert("Access Denied"); return; }
-            adminMode = true;
+    window.boot = async () => {
+        const n = document.getElementById("loginName").value.trim();
+        if(!n) return;
+        let admin = false;
+        if(n.toLowerCase() === 'nazim') {
+            if(prompt("Master PIN:") === "786") admin = true;
+            else { alert("Wrong PIN"); return; }
         }
-
         const res = await signInAnonymously(auth);
-        myUID = res.user.uid; myName = name; isAdmin = adminMode;
-        localStorage.setItem("empire_user", name);
-        localStorage.setItem("empire_admin", adminMode);
-        enterEmpire();
+        uUID = res.user.uid; uName = n; isAdmin = admin;
+        localStorage.setItem("uN", n); localStorage.setItem("uA", admin);
+        checkBan(uUID);
     };
 
-    function enterEmpire() {
-        document.getElementById("authLayer").style.display = "none";
-        if (isAdmin) {
-            document.getElementById("adminBadge").style.display = "block";
-            document.getElementById("adminPanel").style.display = "block";
-        }
-        set(ref(db, 'nodes/' + myUID), { name: myName, online: true });
-        syncMessages();
-        syncUsers();
+    function checkBan(uid) {
+        onValue(ref(db, 'banned/' + uid), s => {
+            if(s.val()) { 
+                document.body.innerHTML = "<h1 style='color:red; text-align:center; padding:50px;'>🚫 PERMANENTLY BANNED</h1>";
+                localStorage.clear();
+            } else { start(); }
+        });
     }
 
-    window.dispatch = (photo = null) => {
-        const inp = document.getElementById("mInput");
-        if (!inp.value.trim() && !photo) return;
-        push(ref(db, currentRoom), {
-            uid: myUID, sender: myName, text: inp.value, photo: photo, ts: serverTimestamp()
+    function start() {
+        document.getElementById("auth").style.display = "none";
+        if(isAdmin) {
+            document.getElementById("adminTools").style.display = "flex";
+            document.getElementById("badge").style.display = "block";
+        }
+        set(ref(db, 'nodes/' + uUID), { name: uName, online: true });
+        syncMsgs(); syncUsers();
+        onValue(ref(db, 'system/mute'), s => {
+            document.getElementById("muteScreen").style.display = (s.val() && !isAdmin) ? "flex" : "none";
         });
-        inp.value = "";
+    }
+
+    window.send = (p = null) => {
+        const i = document.getElementById("mIn");
+        if(!i.value.trim() && !p) return;
+        push(ref(db, currentRoom), { uid: uUID, sender: uName, text: i.value, img: p, ts: serverTimestamp() });
+        i.value = "";
     };
 
-    window.handleImage = (el) => {
+    window.upImg = (el) => {
         const r = new FileReader();
-        r.onload = (e) => dispatch(e.target.result);
+        r.onload = (e) => send(e.target.result);
         r.readAsDataURL(el.files[0]);
     };
 
     window.goGlobal = () => {
-        currentRoom = "global_v130";
-        document.getElementById("viewTitle").innerText = "GLOBAL_CONNECT";
-        document.getElementById("globalTab").classList.add("active");
-        syncMessages();
+        currentRoom = "global_v2";
+        document.getElementById("title").innerText = "GLOBAL_FEED";
+        document.getElementById("glob").classList.add("active");
+        syncMsgs();
     };
 
-    window.openPrivate = (targetUID, targetName) => {
-        if (targetUID === myUID) return;
-        const roomID = myUID < targetUID ? `${myUID}_${targetUID}` : `${targetUID}_${myUID}`;
-        currentRoom = `private/${roomID}`;
-        document.getElementById("viewTitle").innerText = "🔒 " + targetName;
-        document.getElementById("globalTab").classList.remove("active");
-        syncMessages();
+    window.openPriv = (tid, tname) => {
+        if(tid === uUID) return;
+        const rid = uUID < tid ? `${uUID}_${tid}` : `${tid}_${uUID}`;
+        currentRoom = `private/${rid}`;
+        document.getElementById("title").innerText = "🔒 " + tname;
+        document.getElementById("glob").classList.remove("active");
+        syncMsgs();
     };
 
-    function syncMessages() {
-        onValue(query(ref(db, currentRoom), limitToLast(40)), snap => {
-            const feed = document.getElementById("chatFeed");
-            feed.innerHTML = "";
-            snap.forEach(s => {
-                const d = s.val();
-                feed.innerHTML += `
-                    <div class="bubble ${d.uid === myUID ? 'me' : 'other'}">
-                        <small style="opacity:0.5; font-weight:800; font-size:10px;">${d.sender}</small>
-                        ${d.text ? `<div>${d.text}</div>` : ''}
-                        ${d.photo ? `<img src="${d.photo}">` : ''}
-                    </div>
-                `;
+    function syncMsgs() {
+        onValue(query(ref(db, currentRoom), limitToLast(40)), s => {
+            const f = document.getElementById("feed");
+            f.innerHTML = "";
+            s.forEach(m => {
+                const d = m.val();
+                f.innerHTML += `<div class="msg ${d.uid === uUID ? 'me' : 'other'}">
+                    <small style="opacity:0.5; font-size:10px; font-weight:800;">${d.sender}</small>
+                    ${d.text ? `<div>${d.text}</div>` : ''}
+                    ${d.img ? `<img src="${d.img}">` : ''}
+                </div>`;
             });
-            feed.scrollTop = feed.scrollHeight;
+            f.scrollTop = f.scrollHeight;
         });
     }
 
     function syncUsers() {
-        onValue(ref(db, 'nodes'), snap => {
-            const list = document.getElementById("onlineNodes");
-            list.innerHTML = "";
-            snap.forEach(s => {
-                const d = s.val();
-                if (s.key === myUID) return;
-                list.innerHTML += `
-                    <div class="u-item" onclick="openPrivate('${s.key}', '${d.name}')">
-                        <img src="https://ui-avatars.com/api/?name=${d.name}&background=8b5cf6&color=fff" class="u-avatar">
-                        <span style="font-size:0.9rem;">${d.name}</span>
-                        <div style="width:8px; height:8px; background:#10b981; border-radius:50%; margin-left:auto;"></div>
-                    </div>
+        onValue(ref(db, 'nodes'), s => {
+            const l = document.getElementById("uList");
+            l.innerHTML = "";
+            s.forEach(u => {
+                if(u.key === uUID) return;
+                const d = u.val();
+                const node = document.createElement('div');
+                node.className = 'u-card';
+                node.innerHTML = `
+                    <img src="https://ui-avatars.com/api/?name=${d.name}&background=random&color=fff" style="width:30px; border-radius:10px;">
+                    <span style="font-size:0.8rem;">${d.name}</span>
+                    ${isAdmin ? `<span class="ban-hammer" id="bh-${u.key}" style="display:block;">BAN</span>` : ''}
                 `;
+                node.onclick = (e) => {
+                    if(e.target.className === 'ban-hammer') {
+                        if(confirm("Ban " + d.name + "?")) set(ref(db, 'banned/' + u.key), true);
+                    } else { openPriv(u.key, d.name); }
+                };
+                l.appendChild(node);
             });
         });
     }
 
-    window.adminWipe = () => { if (isAdmin && confirm("Wipe Global History?")) remove(ref(db, 'global_v130')); };
+    window.toggleMute = () => {
+        onValue(ref(db, 'system/mute'), s => {
+            set(ref(db, 'system/mute'), !s.val());
+        }, { onlyOnce: true });
+    };
+
+    window.wipeData = () => { if(confirm("Wipe Global?")) remove(ref(db, 'global_v2')); };
     window.logout = () => { localStorage.clear(); signOut(auth).then(() => location.reload()); };
 </script>
 </body>
