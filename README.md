@@ -2,14 +2,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Web-Hub Chat - Fully Working</title>
+<title>Web-Hub Chat - Final</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
---primary:#6d28d9; --secondary:#f472b6; --bg:#0f172a; --glass:rgba(30,41,59,0.85); --text-light:#f1f5f9; --accent:#fbbf24;
+--primary:#6d28d9;--secondary:#f472b6;--bg:#0f172a;--glass:rgba(30,41,59,0.85);--text-light:#f1f5f9;--accent:#fbbf24;
 }
 *{box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s;}
-body{margin:0;background:var(--bg);color:var(--text-light);height:100dvh;display:flex;flex-direction:column;}
+body{margin:0;background:var(--bg);color:var(--text-light);height:100vh;display:flex;flex-direction:column;}
 
 /* Login */
 #loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;}
