@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Empire Modern Dashboard</title>
+<title>Empire Modern Dashboard v4</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
@@ -50,7 +50,6 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 .auth-box{width:90%;max-width:350px;text-align:center;padding:40px;background:var(--glass);border-radius:30px;border:1px solid rgba(255,255,255,0.1);}
 .auth-box input{font-size:1rem;padding:12px;margin-bottom:12px;border-radius:12px;border:none;background:#000;color:#fff;text-align:center;width:100%;}
 .auth-box button{font-size:1rem;padding:12px;border-radius:12px;border:none;background:var(--primary);color:white;cursor:pointer;font-weight:800;}
-/* Responsive */
 @media(max-width:850px){.user-list{display:none;}.sidebar{position:fixed;left:-80px;top:0;height:100%;}.sidebar.show{left:0;}}
 </style>
 </head>
@@ -58,8 +57,8 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 
 <div id="auth">
 <div class="auth-box">
-<h1 class="brand">EMPIRE_V3</h1>
-<input type="text" id="loginName" placeholder="Codename">
+<h1 class="brand">EMPIRE_V4</h1>
+<input type="text" id="loginName" placeholder="Enter Codename">
 <button onclick="boot()">LOGIN</button>
 </div>
 </div>
@@ -79,15 +78,10 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 <div class="brand" id="headerTitle">HOME</div>
 <div id="badge" style="display:none;color:gold;"><i class="fa-solid fa-crown"></i></div>
 </header>
+
 <div class="content">
-<div id="home" class="section active">
-<h2>Welcome, <span id="uDisplay"></span>!</h2>
-<p>Empire Realtime Dashboard v3 - Modern UI</p>
-</div>
-<div id="users" class="section">
-<h3>Active Users</h3>
-<div id="uList"></div>
-</div>
+<div id="home" class="section active"><h2>Welcome, <span id="uDisplay"></span>!</h2><p>Empire Realtime Dashboard v4</p></div>
+<div id="users" class="section"><h3>Active Users</h3><div id="uList"></div></div>
 <div id="groups" class="section">
 <h3>Global Chat</h3>
 <div class="chat-view">
@@ -101,14 +95,8 @@ header{padding:12px 20px;display:flex;justify-content:space-between;align-items:
 <div class="mute-msg" id="muteScreen">🔇 GLOBAL CHAT IS LOCKED</div>
 </div>
 </div>
-<div id="about" class="section">
-<h3>About</h3>
-<p>This is the modern Empire Dashboard with full realtime features.</p>
-</div>
-<div id="contact" class="section">
-<h3>Contact</h3>
-<p>Email: support@empire.com</p>
-</div>
+<div id="about" class="section"><h3>About</h3><p>Modern Empire Dashboard v4 - All features enabled.</p></div>
+<div id="contact" class="section"><h3>Contact</h3><p>Email: support@empire.com</p></div>
 <div id="settings" class="section">
 <h3>Settings</h3>
 <div id="adminTools" style="display:none;">
@@ -126,6 +114,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getDatabase, ref, set, push, onValue, serverTimestamp, remove, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+// Firebase config - check this with your project
 const firebaseConfig = {
 apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
 authDomain: "live-chat-b810c.firebaseapp.com",
@@ -140,7 +129,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-let uUID,uName,isAdmin=false,currentRoom="global_v3";
+let uUID,uName,isAdmin=false,currentRoom="global_v4";
 
 onAuthStateChanged(auth,user=>{
 if(user){
@@ -154,11 +143,16 @@ window.boot=async()=>{
 const n=document.getElementById("loginName").value.trim();
 if(!n)return;
 let admin=false;
-if(n.toLowerCase()==="nazim"){if(prompt("Master PIN:")==="786")admin=true;else{alert("Wrong PIN");return;}}
+if(n.toLowerCase()==="nazim"){
+if(prompt("Enter Master PIN:")==="786") admin=true;
+else {alert("Wrong PIN"); return;}
+}
+try{
 const res=await signInAnonymously(auth);
 uUID=res.user.uid; uName=n; isAdmin=admin;
 localStorage.setItem("uN",n); localStorage.setItem("uA",admin);
 start();
+}catch(e){alert("Login failed! Check Firebase connection.");}
 };
 
 function start(){
