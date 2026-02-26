@@ -2,223 +2,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect | Professional Network</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Live Connect Modern 🚀</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        
-        :root { --p: #2563eb; --bg: #f9fafb; --card: #ffffff; --text: #1f2937; }
-        .dark { --p: #3b82f6; --bg: #111827; --card: #1f2937; --text: #f9fafb; }
-
-        * { font-family: 'Inter', sans-serif; transition: all 0.2s ease; }
-        body { background-color: var(--bg); color: var(--text); height: 100dvh; margin: 0; overflow: hidden; }
-
-        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,0.1); }
-        .dark .glass-nav { background: rgba(31, 41, 55, 0.8); border-bottom: 1px solid rgba(255,255,255,0.1); }
-
-        .sidebar { width: 320px; background: var(--card); border-right: 1px solid rgba(0,0,0,0.05); }
-        @media (max-width: 1024px) {
-            .sidebar { position: fixed; left: -100%; z-index: 50; height: 100%; width: 85%; }
-            .sidebar.active { left: 0; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
+        :root { 
+            --bg: #030508; --card: #0d1117; --primary: #00d2ff; --accent: #ff0055; 
+            --text: #e6edf3; --glass: rgba(13, 17, 23, 0.9);
+            --grad: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
         }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        #chat-flow { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .bubble { max-width: 75%; padding: 12px 16px; border-radius: 18px; position: relative; font-size: 14.5px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .mine { align-self: flex-end; background: var(--p); color: white; border-bottom-right-radius: 2px; }
-        .other { align-self: flex-start; background: var(--card); border: 1px solid rgba(0,0,0,0.05); border-bottom-left-radius: 2px; }
+        /* HEADER */
+        header { padding: 50px 20px 15px; flex-shrink: 0; background: var(--bg); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1a1d21; z-index: 1000; }
+        header h1 { margin: 0; font-size: 20px; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .input-box { background: var(--card); border: 1px solid rgba(0,0,0,0.1); border-radius: 50px; padding: 10px 20px; }
-        .dark .input-box { border-color: rgba(255,255,255,0.1); }
+        /* VIEWPORT SYSTEM */
+        .viewport { flex: 1; overflow: hidden; position: relative; }
+        .page { display: none; height: 100%; flex-direction: column; padding: 15px; animation: slideIn 0.3s ease-out; }
+        .page.active { display: flex; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* SEARCH & INPUTS */
+        .search-bar { background: #161b22; border: 1px solid #30363d; border-radius: 15px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .search-bar input { flex: 1; background: none; border: none; color: white; font-size: 14px; }
+
+        /* DUAL BOX INDEPENDENT SCROLL */
+        .scroll-container { flex: 1; overflow-y: auto; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid #21262d; padding: 10px; margin-bottom: 15px; -webkit-overflow-scrolling: touch; }
+        .label { font-size: 10px; font-weight: bold; opacity: 0.5; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 10px 5px; }
+
+        /* MODERN CARDS */
+        .card { display: flex; align-items: center; gap: 12px; background: var(--card); padding: 14px; border-radius: 18px; margin-bottom: 8px; border: 1px solid #30363d; transition: 0.2s; }
+        .card:active { transform: scale(0.97); background: #1c2128; }
+        .pfp { width: 40px; height: 40px; border-radius: 50%; background: var(--grad); display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
+
+        /* CHAT UI */
+        #chatBox { display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px; }
+        .m-bubble { padding: 12px 16px; border-radius: 20px; max-width: 80%; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
+        .m-bubble.me { align-self: flex-end; background: var(--grad); border-bottom-right-radius: 2px; box-shadow: 0 4px 15px rgba(0,210,255,0.2); }
+        .m-bubble.other { align-self: flex-start; background: #21262d; border-bottom-left-radius: 2px; }
+
+        /* BOTTOM STICKY COMPONENTS */
+        .bottom-shelf { flex-shrink: 0; padding: 10px 0 35px 0; background: var(--bg); border-top: 1px solid #1a1d21; }
+        .msg-input-wrap { width: 92%; max-width: 500px; margin: 0 auto 12px auto; background: #161b22; padding: 12px 18px; border-radius: 30px; display: none; align-items: center; gap: 12px; border: 1px solid #30363d; }
+        .msg-input-wrap input { flex: 1; background: none; border: none; color: white; }
+
+        nav { width: 92%; max-width: 500px; margin: 0 auto; height: 75px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 35px; display: flex; justify-content: space-around; align-items: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 -10px 25px rgba(0,0,0,0.5); }
+        nav button { background: none; border: none; color: #484f58; font-size: 22px; transition: 0.3s; padding: 10px; }
+        nav button.active { color: var(--primary); transform: translateY(-5px); }
+
+        /* OVERLAYS */
+        #loginOverlay { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        #banOverlay { display: none; position: fixed; inset: 0; background: #000; z-index: 11000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; }
     </style>
 </head>
-<body class="flex flex-col">
+<body>
 
-    <div id="auth-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-blue-600 p-6">
-        <div class="bg-white rounded-[2rem] p-10 max-w-sm w-full shadow-2xl text-center">
-            <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                <i class="fa-solid fa-link text-4xl"></i>
-            </div>
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">Live Connect</h1>
-            <p class="text-gray-500 mb-8 text-sm">Welcome! Login to start connecting.</p>
-            <input id="u-name" type="text" placeholder="Your Full Name" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-2xl mb-4 outline-none focus:border-blue-500 font-semibold text-gray-800 text-center">
-            <button onclick="doLogin()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-blue-700 active:scale-95 transition-transform">JOIN NETWORK</button>
+<div id="loginOverlay">
+    <div style="width:85%; text-align:center;">
+        <i class="fa-solid fa-bolt-lightning" style="font-size:55px; color:var(--primary); margin-bottom:20px;"></i>
+        <h2 style="font-weight:900; letter-spacing:1px;">LIVE CONNECT</h2>
+        <input type="text" id="uInp" placeholder="Enter Nickname" style="width:100%; padding:18px; border-radius:18px; background:#111; border:1px solid #333; color:#fff; text-align:center; margin:30px 0 20px 0; font-size:16px;">
+        <button onclick="doLogin()" style="width:100%; padding:18px; border-radius:18px; background:var(--grad); color:white; border:none; font-weight:800; cursor:pointer;">START SESSION</button>
+    </div>
+</div>
+
+<div id="banOverlay">
+    <i class="fa-solid fa-hand-slash" style="font-size:70px; color:var(--accent); margin-bottom:20px;"></i>
+    <h1 style="color:var(--accent);">TERMINAL BANNED</h1>
+    <p style="opacity:0.6;">Your access has been revoked by the administrator.</p>
+</div>
+
+<header>
+    <h1>Live Connect</h1>
+    <div style="display:flex; gap:18px; align-items:center;">
+        <i class="fa-solid fa-crown" id="admIco" style="display:none; color:gold; font-size:20px;" onclick="nav('admin')"></i>
+        <i class="fa-solid fa-power-off" style="color:var(--accent); font-size:20px;" onclick="logout()"></i>
+    </div>
+</header>
+
+<div class="viewport">
+    <div id="home" class="page active">
+        <div style="background:var(--grad); padding:30px; border-radius:28px; margin-bottom:20px;">
+            <h2 id="welcome" style="margin:0; font-size:26px;">Hello!</h2>
+            <p style="font-size:11px; margin:5px 0 0 0; opacity:0.9;">Secure Protocol V150.0 Active</p>
+        </div>
+        <div class="label">Latest Broadcast</div>
+        <div class="scroll-container" id="sysAlert" style="font-size:13px; line-height:1.6; padding:20px;">
+            No active system-wide alerts at the moment.
         </div>
     </div>
 
-    <nav class="glass-nav h-16 flex items-center px-6 justify-between shrink-0 z-40">
-        <div class="flex items-center gap-4">
-            <button onclick="toggleSide()" class="lg:hidden text-xl"><i class="fa-solid fa-bars"></i></button>
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white"><i class="fa-solid fa-link text-xs"></i></div>
-                <span class="font-bold text-lg tracking-tight">Live Connect</span>
-            </div>
+    <div id="chat" class="page">
+        <div class="scroll-container" id="chatScroll">
+            <div id="chatBox"></div>
         </div>
-        <div class="flex items-center gap-4">
-            <button onclick="toggleMode()" class="w-10 h-10 rounded-full border flex items-center justify-center"><i id="m-icon" class="fa-solid fa-moon"></i></button>
-            <div class="hidden sm:flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-full">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <span id="welcome-txt" class="text-xs font-bold text-blue-600 dark:text-blue-400">Hi, Member</span>
-            </div>
+    </div>
+
+    <div id="nodes" class="page">
+        <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass" style="opacity:0.4;"></i>
+            <input type="text" id="uSearch" placeholder="Search for users..." onkeyup="filterNodes()">
         </div>
+        <div class="label">Online Terminals</div>
+        <div class="scroll-container" id="uList"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="label">Active Clusters</div>
+            <button onclick="mkGr()" style="background:none; border:1px solid var(--primary); color:var(--primary); font-size:10px; padding:3px 10px; border-radius:8px; margin-bottom:8px;">+ NEW</button>
+        </div>
+        <div class="scroll-container" id="gList"></div>
+    </div>
+
+    <div id="admin" class="page">
+        <div class="label">Broadcast Command</div>
+        <div class="card">
+            <input type="text" id="bcMsg" placeholder="Type global alert..." style="flex:1; background:none; border:none; color:white;">
+            <i class="fa-solid fa-paper-plane" style="color:var(--primary);" onclick="sendBC()"></i>
+        </div>
+        <div class="label">Terminal Management</div>
+        <div class="scroll-container" id="aList"></div>
+        <button onclick="nuke()" style="width:100%; padding:16px; background:var(--accent); color:white; border:none; border-radius:18px; font-weight:bold; margin-top:5px;">NUKE SYSTEM DATA</button>
+    </div>
+</div>
+
+<div class="bottom-shelf">
+    <div class="msg-input-wrap" id="chatInputArea">
+        <label for="imgInp"><i class="fa-solid fa-image" style="color:var(--primary); font-size:24px;"></i></label>
+        <input type="file" id="imgInp" hidden onchange="upImg(this)">
+        <input id="msgInp" placeholder="Type a message...">
+        <i class="fa-solid fa-circle-arrow-up" style="color:var(--primary); font-size:28px;" onclick="sendMsg()"></i>
+    </div>
+    <nav>
+        <button onclick="nav('home', this)" class="active"><i class="fa-solid fa-house"></i></button>
+        <button onclick="nav('chat', this)"><i class="fa-solid fa-comments"></i></button>
+        <button onclick="nav('nodes', this)"><i class="fa-solid fa-users-viewfinder"></i></button>
     </nav>
+</div>
 
-    <div class="flex flex-1 overflow-hidden">
-        <aside id="sidebar" class="sidebar flex flex-col shrink-0">
-            <div class="p-6">
-                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Chat Channels</h3>
-                <button onclick="setChat('global')" class="w-full flex items-center gap-3 p-4 bg-blue-600 text-white rounded-2xl shadow-lg mb-8 font-semibold">
-                    <i class="fa-solid fa-globe"></i> Global Feed
-                </button>
+<script>
+var firebaseConfig = {
+  apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
+  authDomain: "live-chat-b810c.firebaseapp.com",
+  databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
+  projectId: "live-chat-b810c",
+  storageBucket: "live-chat-b810c.firebasestorage.app",
+  messagingSenderId: "555058795334",
+  appId: "1:555058795334:web:f668887409800c32970b47"
+};
 
-                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Online Users</h3>
-                <div id="u-list" class="space-y-3"></div>
-            </div>
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+var currentUser = localStorage.getItem("lc_u");
 
-            <div class="mt-auto p-6 border-t bg-gray-50/50 dark:bg-black/10">
-                <div class="flex items-center gap-3">
-                    <div id="my-av" class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg">?</div>
-                    <div class="flex-1 overflow-hidden">
-                        <p id="my-name" class="font-bold text-sm truncate">User Name</p>
-                        <p class="text-[10px] text-green-500 font-bold uppercase">Connected</p>
-                    </div>
-                    <button onclick="doLogout()" class="text-red-500 bg-red-50 p-3 rounded-xl hover:bg-red-100"><i class="fa-solid fa-power-off"></i></button>
-                </div>
-            </div>
-        </aside>
+if(currentUser) { document.getElementById("loginOverlay").style.display = "none"; initApp(currentUser); }
 
-        <main class="flex-1 flex flex-col min-w-0 bg-white/50 dark:bg-transparent">
-            <header class="h-14 px-6 border-b flex items-center bg-white/30 dark:bg-black/10 backdrop-blur-sm">
-                <h2 id="chat-title" class="font-bold text-sm uppercase tracking-wide">Global Feed</h2>
-            </header>
+function doLogin() {
+    var u = document.getElementById("uInp").value.trim();
+    if(u) { db.ref("users/"+u).update({ online: true, frozen: false }).then(() => { localStorage.setItem("lc_u", u); location.reload(); }); }
+}
 
-            <div id="chat-flow"></div>
+function initApp(u) {
+    document.getElementById("welcome").innerText = "Hi, " + u;
+    if(u === "Admin786") document.getElementById("admIco").style.display = "block";
 
-            <div class="p-4 bg-white/50 dark:bg-transparent backdrop-blur-md">
-                <form id="msg-form" class="max-w-4xl mx-auto flex items-center gap-3 input-box">
-                    <input type="file" id="img-in" class="hidden" accept="image/*" onchange="upImg(this)">
-                    <button type="button" onclick="document.getElementById('img-in').click()" class="text-gray-400 hover:text-blue-600"><i class="fa-solid fa-circle-plus text-2xl"></i></button>
-                    <input id="m-text" type="text" placeholder="Write something..." class="flex-1 bg-transparent outline-none text-sm font-medium py-2" autocomplete="off">
-                    <button class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg active:scale-90"><i class="fa-solid fa-paper-plane text-sm"></i></button>
-                </form>
-            </div>
-        </main>
-    </div>
+    db.ref("broadcast").on("value", s => { if(s.val()) document.getElementById("sysAlert").innerHTML = `<div class="card" style="background:#ff005511; border:1px solid var(--accent);"><i class="fa-solid fa-bullhorn" style="color:var(--accent);"></i> ${s.val().msg}</div>`; });
+    db.ref("users/"+u+"/frozen").on("value", s => { document.getElementById("banOverlay").style.display = s.val() ? "flex" : "none"; });
 
-    <div id="overlay" class="fixed inset-0 bg-black/50 z-40 hidden" onclick="toggleSide()"></div>
+    db.ref("users").on("value", s => {
+        var ul = document.getElementById("uList"), al = document.getElementById("aList");
+        ul.innerHTML = ""; al.innerHTML = "";
+        s.forEach(n => {
+            var l = n.key.charAt(0).toUpperCase();
+            if(n.key !== u) {
+                ul.innerHTML += `<div class="card node-item" data-name="${n.key}" onclick="startChat('${n.key}', false)">
+                    <div class="pfp">${l}</div><div style="flex:1;"><b>${n.key}</b></div>
+                    <i class="fa-solid fa-circle" style="color:${n.val().online?'#00ff88':'#333'}; font-size:8px;"></i></div>`;
+                if(u === "Admin786") al.innerHTML += `<div class="card">
+                    <div class="pfp" style="background:#333">${l}</div><div style="flex:1;"><b>${n.key}</b></div>
+                    <button onclick="hjk('${n.key}', ${!n.val().frozen})" style="background:${n.val().frozen?'#00ff88':'#ff0055'}; border:none; padding:8px 15px; border-radius:12px; color:white; font-weight:bold;">${n.val().frozen?'FREE':'BAN'}</button></div>`;
+            }
+        });
+    });
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+    db.ref("groups").on("value", s => {
+        var gl = document.getElementById("gList"); gl.innerHTML = "";
+        s.forEach(g => { gl.innerHTML += `<div class="card" onclick="startChat('${g.key}', true)"><div class="pfp" style="background:#444">#</div><div style="flex:1;"><b>${g.key}</b></div><i class="fa-solid fa-chevron-right" style="opacity:0.2"></i></div>`; });
+    });
+}
 
-        const cfg = {
-            apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-            databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
-            projectId: "live-chat-b810c",
-            storageBucket: "live-chat-b810c.firebasestorage.app",
-            appId: "1:555058795334:web:f668887409800c32970b47"
-        };
+function filterNodes() {
+    var v = document.getElementById("uSearch").value.toLowerCase();
+    document.querySelectorAll('.node-item').forEach(el => { el.style.display = el.getAttribute('data-name').toLowerCase().includes(v) ? 'flex' : 'none'; });
+}
 
-        const app = initializeApp(cfg);
-        const db = getDatabase(app);
-        const st = getStorage(app);
+var currentPath = "global";
+function startChat(t, isG) {
+    currentPath = isG ? "groups/"+t : "pvt/"+[currentUser, t].sort().join("_");
+    nav('chat', document.querySelectorAll('nav button')[1]);
+    db.ref(currentPath).off();
+    db.ref(currentPath).on("value", s => {
+        var box = document.getElementById("chatBox"); box.innerHTML = "";
+        s.forEach(m => {
+            var d = m.val();
+            box.innerHTML += `<div class="m-bubble ${d.from===currentUser?'me':'other'}"><b>${d.from}</b><br>${d.type==='img'?'<img src="'+d.txt+'" style="width:100%; border-radius:12px; margin-top:5px;">':d.txt}</div>`;
+        });
+        document.getElementById("chatScroll").scrollTop = 999999;
+    });
+}
 
-        let user = localStorage.getItem('lc_user'), active = 'global';
+function nav(p, b) {
+    document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+    document.getElementById(p).classList.add('active');
+    document.querySelectorAll('nav button').forEach(x => x.classList.remove('active'));
+    if(b && b.tagName === 'BUTTON') b.classList.add('active');
+    document.getElementById("chatInputArea").style.display = (p === 'chat') ? 'flex' : 'none';
+}
 
-        if(user) login();
-
-        window.doLogin = () => {
-            const val = document.getElementById('u-name').value.trim();
-            if(!val) return alert("Please enter your name!");
-            user = val; localStorage.setItem('lc_user', val);
-            login();
-        };
-
-        function login() {
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('my-name').innerText = user;
-            document.getElementById('welcome-txt').innerText = `Hi, ${user.split(' ')[0]}`;
-            document.getElementById('my-av').innerText = user[0].toUpperCase();
-            set(ref(db, 'online/' + user), true);
-            loadUsers();
-            setChat('global');
-        }
-
-        window.doLogout = () => {
-            remove(ref(db, 'online/' + user));
-            localStorage.clear();
-            location.reload();
-        };
-
-        window.toggleMode = () => {
-            document.documentElement.classList.toggle('dark');
-            const isD = document.documentElement.classList.contains('dark');
-            document.getElementById('m-icon').className = isD ? "fa-solid fa-sun" : "fa-solid fa-moon";
-        };
-
-        window.toggleSide = () => {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('hidden');
-        };
-
-        window.setChat = (c) => {
-            active = c;
-            document.getElementById('chat-title').innerText = c === 'global' ? 'Global Feed' : '@' + c;
-            if(window.innerWidth < 1024) toggleSide();
-            loadMsgs();
-        };
-
-        function loadUsers() {
-            onValue(ref(db, 'online'), (s) => {
-                const list = document.getElementById('u-list'); list.innerHTML = "";
-                s.forEach(u => {
-                    if(u.key !== user) {
-                        const d = document.createElement('div');
-                        d.className = "flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-xl cursor-pointer hover:bg-blue-50";
-                        d.innerHTML = `<div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">${u.key[0]}</div> <span class="text-sm font-semibold">${u.key}</span>`;
-                        d.onclick = () => setChat(u.key);
-                        list.appendChild(d);
-                    }
-                });
-            });
-        }
-
-        function loadMsgs() {
-            const p = active === 'global' ? 'global' : 'private/' + [user, active].sort().join('_');
-            onValue(ref(db, 'chats/' + p), (s) => {
-                const flow = document.getElementById('chat-flow'); flow.innerHTML = "";
-                s.forEach(m => {
-                    const d = m.val(), isM = d.sender === user;
-                    const div = document.createElement('div');
-                    div.className = `bubble ${isM ? 'mine' : 'other'}`;
-                    div.innerHTML = `
-                        <p class="text-[9px] font-bold uppercase opacity-50 mb-1">${d.sender}</p>
-                        ${d.img ? `<img src="${d.img}" class="rounded-lg max-w-full">` : `<span>${d.text}</span>`}
-                    `;
-                    flow.appendChild(div);
-                });
-                flow.scrollTop = flow.scrollHeight;
-            });
-        }
-
-        document.getElementById('msg-form').onsubmit = (e) => {
-            e.preventDefault();
-            const i = document.getElementById('m-text');
-            if(!i.value.trim()) return;
-            const p = active === 'global' ? 'global' : 'private/' + [user, active].sort().join('_');
-            push(ref(db, 'chats/' + p), { sender: user, text: i.value, time: Date.now() });
-            i.value = "";
-        };
-
-        window.upImg = async (i) => {
-            const f = i.files[0]; if(!f) return;
-            const r = sRef(st, `files/${Date.now()}`);
-            const snap = await uploadBytes(r, f);
-            const url = await getDownloadURL(snap.ref);
-            const p = active === 'global' ? 'global' : 'private/' + [user, active].sort().join('_');
-            push(ref(db, 'chats/' + p), { sender: user, img: url, time: Date.now() });
-        };
-    </script>
+function sendMsg() { var i = document.getElementById("msgInp"); if(i.value) { db.ref(currentPath).push({ from: currentUser, txt: i.value, type: 'text' }); i.value = ""; } }
+function sendBC() { var m = document.getElementById("bcMsg").value; if(m) { db.ref("broadcast").set({ msg: m }); document.getElementById("bcMsg").value = ""; } }
+function upImg(e) { var r = new FileReader(); r.onload = f => db.ref(currentPath).push({ from: currentUser, txt: f.target.result, type: 'img' }); r.readAsDataURL(e.files[0]); }
+function hjk(t, s) { db.ref("users/"+t).update({ frozen: s }); }
+function logout() { db.ref("users/"+currentUser).update({online: false}).then(() => { localStorage.clear(); location.reload(); }); }
+function mkGr() { var n = prompt("Cluster Name:"); if(n) db.ref("groups/"+n).set({ c: 1 }); }
+function nuke() { if(confirm("NUKE ALL?")) db.ref().remove(); }
+</script>
 </body>
 </html>
