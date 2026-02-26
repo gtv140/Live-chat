@@ -142,7 +142,7 @@ var currentUser=localStorage.getItem("lc_u");
 
 if(currentUser){document.getElementById("loginOverlay").style.display="none";initApp(currentUser);}
 
-function doLogin(){var u=document.getElementById("uInp").value.trim();if(u){db.ref("users/"+u).update({online:true,frozen:false}).then(()=>{localStorage.setItem("lc_u",u);location.reload();});}}
+function doLogin(){var u=document.getElementById("uInp").value.trim();if(u){db.ref("users/"+u).once('value').then(s=>{if(!s.exists()){db.ref("users/"+u).set({online:true,frozen:false})} else {db.ref("users/"+u).update({online:true,frozen:false})}}).then(()=>{localStorage.setItem("lc_u",u);location.reload();});}}
 
 function initApp(u){
 document.getElementById("welcome").innerText="Hi, "+u;
@@ -197,127 +197,8 @@ function logout(){db.ref("users/"+currentUser).update({online:false}).then(()=>{
 function mkGr(){var n=prompt("Cluster Name:");if(n)db.ref("groups/"+n).set({c:1});}
 function nuke(){if(confirm("NUKE ALL?"))db.ref().remove();}
 function deleteMsg(k){db.ref(currentPath+"/"+k).remove();}
-function addReaction(k,r){db.ref(currentPath+"/"+k+"/reactions").transaction(arr=>{if(arr){arr.push(r);}else{arr=[r];}return arr;});}<script>
-// ✅ AUTO SCROLL WHEN NEW MESSAGE ADDED
-db.ref(currentPath).on("child_added",()=>{
-    var box=document.getElementById("chatScroll");
-    box.scrollTop=box.scrollHeight;
-});
-
-// ✅ SEND MESSAGE WITH ENTER KEY
-document.getElementById("msgInp").addEventListener("keypress", function(e){
-    if(e.key==="Enter"){ sendMsg(); }
-});
-
-// ✅ START CHAT FUNCTION (PRIVATE OR GROUP)
-function startChat(target,isGroup){
-    currentPath=isGroup?"groups/"+target:"pvt/"+[currentUser,target].sort().join("_");
-    nav("chat",document.querySelectorAll("nav button")[1]);
-    db.ref(currentPath).off();
-    db.ref(currentPath).on("value",snapshot=>{
-        var box=document.getElementById("chatBox");
-        box.innerHTML="";
-        snapshot.forEach(m=>{
-            var d=m.val();
-            var reactions=d.reactions?d.reactions.map(r=>`<span class="reaction-btn" onclick="addReaction('${m.key}','${r}')">${r}</span>`).join(''):'';
-            box.innerHTML+=`<div class="m-bubble ${d.from===currentUser?'me':'other'}">
-                <b>${d.from}</b><br>
-                ${d.type==="img"?`<img src="${d.txt}" style="width:100%;border-radius:12px;margin-top:5px;">`:d.txt}
-                <div class="reactions">
-                    ${reactions} 
-                    <span class="reaction-btn" onclick="addReaction('${m.key}','❤️')">❤️</span>
-                    <span class="reaction-btn" onclick="addReaction('${m.key}','😂')">😂</span>
-                    <span class="reaction-btn" onclick="addReaction('${m.key}','😮')">😮</span>
-                </div>
-                <button style="position:absolute;top:5px;right:5px;background:#ff0055;color:white;border:none;padding:2px 6px;border-radius:8px;font-size:10px;cursor:pointer;" onclick="deleteMsg('${m.key}')">X</button>
-            </div>`;
-        });
-        box.scrollTop=box.scrollHeight;
-    });
-}
-
-// ✅ NAVIGATION
-function nav(page,btn){
-    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-    document.getElementById(page).classList.add("active");
-    document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
-    if(btn) btn.classList.add("active");
-    document.getElementById("chatInputArea").style.display=(page==="chat")?"flex":"none";
-}
-
-// ✅ SEND TEXT MESSAGE
-function sendMsg(){
-    var i=document.getElementById("msgInp");
-    if(i.value){
-        db.ref(currentPath).push({from:currentUser,txt:i.value,type:"text",reactions:[]});
-        i.value="";
-    }
-}
-
-// ✅ SEND BROADCAST (ADMIN ONLY)
-function sendBC(){
-    var msg=document.getElementById("bcMsg").value;
-    if(currentUser==="Admin786" && msg){
-        db.ref("broadcast").set({msg});
-        document.getElementById("bcMsg").value="";
-    }
-}
-
-// ✅ IMAGE UPLOAD
-function upImg(input){
-    if(input.files && input.files[0]){
-        var reader=new FileReader();
-        reader.onload=function(e){
-            db.ref(currentPath).push({from:currentUser,txt:e.target.result,type:"img",reactions:[]});
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// ✅ ADD REACTION
-function addReaction(msgId,emoji){
-    db.ref(currentPath+"/"+msgId+"/reactions").transaction(arr=>{
-        if(arr){ arr.push(emoji); } else { arr=[emoji]; }
-        return arr;
-    });
-}
-
-// ✅ DELETE MESSAGE
-function deleteMsg(msgId){
-    if(currentUser==="Admin786" || confirm("Delete this message?")){
-        db.ref(currentPath+"/"+msgId).remove();
-    }
-}
-
-// ✅ BAN / FREE USER (ADMIN)
-function hjk(user,freeze){
-    db.ref("users/"+user).update({frozen:freeze});
-}
-
-// ✅ LOGOUT
-function logout(){
-    db.ref("users/"+currentUser).update({online:false}).then(()=>{
-        localStorage.removeItem("lc_u");
-        location.reload();
-    });
-}
-
-// ✅ CREATE GROUP / CLUSTER
-function mkGr(){
-    var n=prompt("Cluster Name:");
-    if(n) db.ref("groups/"+n).set({createdBy:currentUser,time:Date.now()});
-}
-
-// ✅ NUKE SYSTEM (ADMIN)
-function nuke(){
-    if(currentUser==="Admin786" && confirm("NUKE ALL? All data will be deleted!")) db.ref().remove();
-}
-
-// ✅ FILTER ONLINE USERS
-function filterNodes(){
-    var val=document.getElementById("uSearch").value.toLowerCase();
-    document.querySelectorAll(".node-item").forEach(n=>{
-        n.style.display=n.getAttribute("data-name").toLowerCase().includes(val)?"flex":"none";
-    });
-}
+function addReaction(k,r){db.ref(currentPath+"/"+k+"/reactions").transaction(arr=>{if(arr){arr.push(r);}else{arr=[r];}return arr;});}
 </script>
+
+</body>
+</html>
