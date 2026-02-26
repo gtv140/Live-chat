@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Live Connect Modern 🚀</title>
+<title>Live Connect Ultimate 🚀</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -101,6 +101,7 @@ width:40px;height:40px;border-radius:50%;
 background:var(--grad);
 display:flex;align-items:center;justify-content:center;
 font-weight:bold;color:white;
+overflow:hidden;
 }
 #chatBox{
 display:flex;
@@ -115,6 +116,7 @@ max-width:80%;
 font-size:14px;
 line-height:1.5;
 word-wrap:break-word;
+position:relative;
 }
 .m-bubble.me{
 align-self:flex-end;
@@ -126,6 +128,9 @@ box-shadow:0 4px 15px rgba(0,210,255,.2);
 align-self:flex-start;
 background:#21262d;
 border-bottom-left-radius:2px;
+}
+.reactions{
+position:absolute;bottom:-18px;right:10px;font-size:12px;opacity:0.7;cursor:pointer;
 }
 .bottom-shelf{
 position:fixed;
@@ -174,19 +179,22 @@ nav button.active{
 color:var(--primary);
 transform:translateY(-5px);
 }
-#loginOverlay{
-position:fixed;inset:0;background:#000;
-z-index:10000;display:flex;align-items:center;justify-content:center;
+#loginOverlay,#banOverlay{
+position:fixed;inset:0;
+z-index:10000;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+background:#000;
+text-align:center;
 }
-#banOverlay{
-display:none;position:fixed;inset:0;background:#000;
-z-index:11000;flex-direction:column;
-align-items:center;justify-content:center;text-align:center;padding:30px;
-}
+#banOverlay{display:none;}
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="loginOverlay">
 <div style="width:85%; text-align:center;">
 <i class="fa-solid fa-bolt-lightning" style="font-size:55px; color:var(--primary); margin-bottom:20px;"></i>
@@ -196,6 +204,7 @@ align-items:center;justify-content:center;text-align:center;padding:30px;
 </div>
 </div>
 
+<!-- BAN -->
 <div id="banOverlay">
 <i class="fa-solid fa-hand-slash" style="font-size:70px; color:var(--accent); margin-bottom:20px;"></i>
 <h1 style="color:var(--accent);">TERMINAL BANNED</h1>
@@ -211,23 +220,23 @@ align-items:center;justify-content:center;text-align:center;padding:30px;
 </header>
 
 <div class="viewport">
+
+<!-- HOME -->
 <div id="home" class="page active">
 <div style="background:var(--grad); padding:30px; border-radius:28px; margin-bottom:20px;">
 <h2 id="welcome" style="margin:0; font-size:26px;">Hello!</h2>
 <p style="font-size:11px; margin:5px 0 0 0; opacity:0.9;">Secure Protocol V150.0 Active</p>
 </div>
 <div class="label">Latest Broadcast</div>
-<div class="scroll-container" id="sysAlert" style="font-size:13px; line-height:1.6; padding:20px;">
-No active system-wide alerts at the moment.
-</div>
+<div class="scroll-container" id="sysAlert" style="font-size:13px; line-height:1.6; padding:20px;">No active system-wide alerts at the moment.</div>
 </div>
 
+<!-- CHAT -->
 <div id="chat" class="page">
-<div class="scroll-container" id="chatScroll">
-<div id="chatBox"></div>
-</div>
+<div class="scroll-container" id="chatScroll"><div id="chatBox"></div></div>
 </div>
 
+<!-- NODES -->
 <div id="nodes" class="page">
 <div class="search-bar">
 <i class="fa-solid fa-magnifying-glass" style="opacity:0.4;"></i>
@@ -242,6 +251,7 @@ No active system-wide alerts at the moment.
 <div class="scroll-container" id="gList"></div>
 </div>
 
+<!-- ADMIN -->
 <div id="admin" class="page">
 <div class="label">Broadcast Command</div>
 <div class="card">
@@ -252,8 +262,10 @@ No active system-wide alerts at the moment.
 <div class="scroll-container" id="aList"></div>
 <button onclick="nuke()" style="width:100%; padding:16px; background:var(--accent); color:white; border:none; border-radius:18px; font-weight:bold; margin-top:5px;">NUKE SYSTEM DATA</button>
 </div>
+
 </div>
 
+<!-- BOTTOM INPUT -->
 <div class="bottom-shelf">
 <div class="msg-input-wrap" id="chatInputArea">
 <label for="imgInp"><i class="fa-solid fa-image" style="color:var(--primary); font-size:24px;"></i></label>
@@ -269,16 +281,7 @@ No active system-wide alerts at the moment.
 </div>
 
 <script>
-var firebaseConfig = {
-apiKey: "AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",
-authDomain: "live-chat-b810c.firebaseapp.com",
-databaseURL: "https://live-chat-b810c-default-rtdb.firebaseio.com",
-projectId: "live-chat-b810c",
-storageBucket: "live-chat-b810c.firebasestorage.app",
-messagingSenderId: "555058795334",
-appId: "1:555058795334:web:f668887409800c32970b47"
-};
-
+var firebaseConfig = {apiKey:"AIzaSyCSD1O9tV7xDZu_kljq-0NMhA2DqtW5quE",authDomain:"live-chat-b810c.firebaseapp.com",databaseURL:"https://live-chat-b810c-default-rtdb.firebaseio.com",projectId:"live-chat-b810c",storageBucket:"live-chat-b810c.firebasestorage.app",messagingSenderId:"555058795334",appId:"1:555058795334:web:f668887409800c32970b47"};
 firebase.initializeApp(firebaseConfig);
 var db=firebase.database();
 var currentUser=localStorage.getItem("lc_u");
@@ -287,7 +290,13 @@ if(currentUser){document.getElementById("loginOverlay").style.display="none";ini
 
 function doLogin(){
 var u=document.getElementById("uInp").value.trim();
-if(u){db.ref("users/"+u).update({online:true,frozen:false}).then(()=>{localStorage.setItem("lc_u",u);location.reload();});}
+if(u){
+db.ref("users/"+u).update({online:true,frozen:false}).then(()=>{
+localStorage.setItem("lc_u",u);
+document.getElementById("loginOverlay").style.display="none";
+initApp(u);
+});
+}
 }
 
 function initApp(u){
@@ -295,6 +304,7 @@ document.getElementById("welcome").innerText="Hi, "+u;
 if(u==="Admin786")document.getElementById("admIco").style.display="block";
 
 db.ref("broadcast").on("value",s=>{if(s.val())document.getElementById("sysAlert").innerHTML=`<div class="card" style="background:#ff005511; border:1px solid var(--accent);"><i class="fa-solid fa-bullhorn" style="color:var(--accent);"></i> ${s.val().msg}</div>`;});
+
 db.ref("users/"+u+"/frozen").on("value",s=>{document.getElementById("banOverlay").style.display=s.val()?"flex":"none";});
 
 db.ref("users").on("value",s=>{
@@ -303,12 +313,8 @@ ul.innerHTML="";al.innerHTML="";
 s.forEach(n=>{
 var l=n.key.charAt(0).toUpperCase();
 if(n.key!==u){
-ul.innerHTML+=`<div class="card node-item" data-name="${n.key}" onclick="startChat('${n.key}', false)">
-<div class="pfp">${l}</div><div style="flex:1;"><b>${n.key}</b></div>
-<i class="fa-solid fa-circle" style="color:${n.val().online?'#00ff88':'#333'}; font-size:8px;"></i></div>`;
-if(u==="Admin786")al.innerHTML+=`<div class="card">
-<div class="pfp" style="background:#333">${l}</div><div style="flex:1;"><b>${n.key}</b></div>
-<button onclick="hjk('${n.key}', ${!n.val().frozen})" style="background:${n.val().frozen?'#00ff88':'#ff0055'}; border:none; padding:8px 15px; border-radius:12px; color:white; font-weight:bold;">${n.val().frozen?'FREE':'BAN'}</button></div>`;
+ul.innerHTML+=`<div class="card node-item" data-name="${n.key}" onclick="startChat('${n.key}', false)"><div class="pfp">${l}</div><div style="flex:1;"><b>${n.key}</b></div><i class="fa-solid fa-circle" style="color:${n.val().online?'#00ff88':'#333'}; font-size:8px;"></i></div>`;
+if(u==="Admin786")al.innerHTML+=`<div class="card"><div class="pfp" style="background:#333">${l}</div><div style="flex:1;"><b>${n.key}</b></div><button onclick="hjk('${n.key}',${!n.val().frozen})" style="background:${n.val().frozen?'#00ff88':'#ff0055'}; border:none; padding:8px 15px; border-radius:12px; color:white; font-weight:bold;">${n.val().frozen?'FREE':'BAN'}</button></div>`;
 }
 });
 });
@@ -317,6 +323,8 @@ db.ref("groups").on("value",s=>{
 var gl=document.getElementById("gList");gl.innerHTML="";
 s.forEach(g=>{gl.innerHTML+=`<div class="card" onclick="startChat('${g.key}', true)"><div class="pfp" style="background:#444">#</div><div style="flex:1;"><b>${g.key}</b></div><i class="fa-solid fa-chevron-right" style="opacity:0.2"></i></div>`;});
 });
+
+startChat("global", true);
 }
 
 function filterNodes(){var v=document.getElementById("uSearch").value.toLowerCase();document.querySelectorAll('.node-item').forEach(el=>{el.style.display=el.getAttribute('data-name').toLowerCase().includes(v)?'flex':'none';});}
@@ -330,12 +338,14 @@ db.ref(currentPath).on("value",s=>{
 var box=document.getElementById("chatBox");box.innerHTML="";
 s.forEach(m=>{
 var d=m.val();
-box.innerHTML+=`<div class="m-bubble ${d.from===currentUser?'me':'other'}"><b>${d.from}</b><br>${d.type==='img'?'<img src="'+d.txt+'" style="width:100%; border-radius:12px; margin-top:5px;">':d.txt}</div>`;
+var reactions=d.reactions? '❤️'.repeat(d.reactions.length) : '';
+box.innerHTML+=`<div class="m-bubble ${d.from===currentUser?'me':'other'}"><b>${d.from}</b><br>${d.type==='img'?'<img src="'+d.txt+'" style="width:100%; border-radius:12px; margin-top:5px;">':d.txt}<div class="reactions">${reactions}</div></div>`;
 });
 document.getElementById("chatScroll").scrollTop=999999;
 });
 }
 
+// NAV
 function nav(p,b){
 document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
 document.getElementById(p).classList.add('active');
@@ -344,13 +354,16 @@ if(b&&b.tagName==='BUTTON')b.classList.add('active');
 document.getElementById("chatInputArea").style.display=(p==='chat')?'flex':'none';
 }
 
-function sendMsg(){var i=document.getElementById("msgInp");if(i.value){db.ref(currentPath).push({from:currentUser,txt:i.value,type:'text'});i.value="";}}
-function sendBC(){var m=document.getElementById("bcMsg").value;if(m){db.ref("broadcast").set({msg:m});document.getElementById("bcMsg").value="";}}
-function upImg(e){var r=new FileReader();r.onload=f=>db.ref(currentPath).push({from:currentUser,txt:f.target.result,type:'img'});r.readAsDataURL(e.files[0]);}
-function hjk(t,s){db.ref("users/"+t).update({frozen:s});}
+// CHAT
+function sendMsg(){var i=document.getElementById("msgInp");if(i.value){db.ref(currentPath).push({from:currentUser,txt:i.value,type:'text',reactions:[]});i.value="";}}
+function upImg(e){var r=new FileReader();r.onload=f=>db.ref(currentPath).push({from:currentUser,txt:f.target.result,type:'img',reactions:[]});r.readAsDataURL(e.files[0]);}
+
+// ADMIN
+function sendBC(){var m=document.getElementById("bcMsg").value;if(m && currentUser==='Admin786'){db.ref("broadcast").set({msg:m});document.getElementById("bcMsg").value="";}}
+function hjk(t,s){if(currentUser==='Admin786'){db.ref("users/"+t).update({frozen:s});}}
 function logout(){db.ref("users/"+currentUser).update({online:false}).then(()=>{localStorage.clear();location.reload();});}
 function mkGr(){var n=prompt("Cluster Name:");if(n)db.ref("groups/"+n).set({c:1});}
-function nuke(){if(confirm("NUKE ALL?"))db.ref().remove();}
+function nuke(){if(currentUser==='Admin786' && confirm("Are you sure? This will delete ALL data!"))db.ref().remove();}
 </script>
 </body>
 </html>
