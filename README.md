@@ -196,12 +196,18 @@ text-align:center;
 
 <!-- LOGIN -->
 <div id="loginOverlay">
-<div style="width:85%; text-align:center;">
-<i class="fa-solid fa-bolt-lightning" style="font-size:55px; color:var(--primary); margin-bottom:20px;"></i>
-<h2 style="font-weight:900; letter-spacing:1px;">LIVE CONNECT</h2>
-<input type="text" id="uInp" placeholder="Enter Nickname" style="width:100%; padding:18px; border-radius:18px; background:#111; border:1px solid #333; color:#fff; text-align:center; margin:30px 0 20px 0; font-size:16px;">
-<button onclick="doLogin()" style="width:100%; padding:18px; border-radius:18px; background:var(--grad); color:white; border:none; font-weight:800; cursor:pointer;">START SESSION</button>
-</div>
+  <div style="width:85%; text-align:center;">
+    <img id="loginPic" src="temp_tieba_picture_2_temp1771736492722.jpg" 
+         style="width:80px; height:80px; border-radius:50%; margin-bottom:20px; object-fit:cover;">
+    <i class="fa-solid fa-bolt-lightning" style="font-size:55px; color:var(--primary); margin-bottom:15px;"></i>
+    <h2 style="font-weight:900; letter-spacing:1px;">LIVE CONNECT</h2>
+    <input type="text" id="uInp" placeholder="Enter Nickname" 
+           style="width:100%; padding:18px; border-radius:18px; background:#111; border:1px solid #333; color:#fff; text-align:center; margin:30px 0 20px 0; font-size:16px;">
+    <button onclick="doLogin()" 
+            style="width:100%; padding:18px; border-radius:18px; background:var(--grad); color:white; border:none; font-weight:800; cursor:pointer;">
+      START SESSION
+    </button>
+  </div>
 </div>
 
 <!-- BAN -->
