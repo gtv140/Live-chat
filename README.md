@@ -15,16 +15,9 @@
 --grad:linear-gradient(135deg,#00d2ff,#3a7bd5);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;outline:none;}
-body{
-margin:0;font-family:'Segoe UI',Roboto,sans-serif;
-background:var(--bg);color:var(--text);
-min-height:100dvh;display:flex;flex-direction:column;
-}
-header{padding:20px 15px 10px;flex-shrink:0;background:var(--bg);
-display:flex;justify-content:space-between;align-items:center;
-border-bottom:1px solid #1a1d21;position:sticky;top:0;z-index:1000;}
-header h1{margin:0;font-size:20px;font-weight:800;
-background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+body{margin:0;font-family:'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;display:flex;flex-direction:column;}
+header{padding:20px 15px 10px;flex-shrink:0;background:var(--bg);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1a1d21;position:sticky;top:0;z-index:1000;}
+header h1{margin:0;font-size:20px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .viewport{flex:1;overflow-y:auto;position:relative;padding-bottom:160px;}
 .page{display:none;height:100%;flex-direction:column;padding:15px;animation:slideIn .3s ease-out;}
 .page.active{display:flex;}
@@ -34,12 +27,12 @@ background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:tran
 .scroll-container{flex:1;overflow-y:auto;background:rgba(255,255,255,.03);border-radius:20px;border:1px solid #21262d;padding:10px;margin-bottom:15px;}
 .card{display:flex;align-items:center;gap:12px;background:var(--card);padding:14px;border-radius:18px;margin-bottom:8px;border:1px solid #30363d;transition:.2s;}
 .card:active{transform:scale(.97);background:#1c2128;}
-.pfp{width:40px;height:40px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:bold;color:white;overflow:hidden;}
+.pfp{width:40px;height:40px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:bold;overflow:hidden;color:white;}
 #chatBox{display:flex;flex-direction:column;gap:12px;padding-bottom:20px;}
 .m-bubble{padding:12px 16px;border-radius:20px;max-width:80%;font-size:14px;line-height:1.5;word-wrap:break-word;position:relative;}
 .m-bubble.me{align-self:flex-end;background:var(--grad);border-bottom-right-radius:2px;box-shadow:0 4px 15px rgba(0,210,255,.2);}
 .m-bubble.other{align-self:flex-start;background:#21262d;border-bottom-left-radius:2px;}
-.reactions{position:absolute;bottom:-18px;right:10px;font-size:12px;opacity:0.7;cursor:pointer;display:flex;gap:4px;}
+.reactions{position:absolute;bottom:-18px;right:10px;font-size:12px;opacity:0.8;cursor:pointer;display:flex;gap:4px;}
 .reaction-btn{cursor:pointer;transition:0.2s;}
 .reaction-btn:hover{transform:scale(1.2);}
 .bottom-shelf{position:fixed;bottom:0;left:0;width:100%;padding:10px 0 35px;background:var(--bg);border-top:1px solid #1a1d21;z-index:999;}
@@ -182,11 +175,11 @@ db.ref(currentPath).on("value",s=>{
 var box=document.getElementById("chatBox");box.innerHTML="";
 s.forEach(m=>{
 var d=m.val();
-var reactionsHtml=d.reactions?d.reactions.map(r=>`<span class="reaction-btn">${r}</span>`).join(''):'';
+var reactionsHtml=d.reactions?d.reactions.map(r=>`<span class="reaction-btn" onclick="addReaction('${m.key}','${r}')">${r}</span>`).join(''):'';
 box.innerHTML+=`<div class="m-bubble ${d.from===currentUser?'me':'other'}">
 <b>${d.from}</b><br>
 ${d.type==='img'?'<img src="'+d.txt+'" style="width:100%;border-radius:12px;margin-top:5px;">':d.txt}
-<div class="reactions">${reactionsHtml}</div>
+<div class="reactions">${reactionsHtml} <span class="reaction-btn" onclick="addReaction('${m.key}','❤️')">❤️</span> <span class="reaction-btn" onclick="addReaction('${m.key}','😂')">😂</span> <span class="reaction-btn" onclick="addReaction('${m.key}','😮')">😮</span></div>
 <button style="position:absolute;top:5px;right:5px;background:#ff0055;color:white;border:none;padding:2px 6px;border-radius:8px;font-size:10px;cursor:pointer;" onclick="deleteMsg('${m.key}')">X</button>
 </div>`;
 });
@@ -204,6 +197,127 @@ function logout(){db.ref("users/"+currentUser).update({online:false}).then(()=>{
 function mkGr(){var n=prompt("Cluster Name:");if(n)db.ref("groups/"+n).set({c:1});}
 function nuke(){if(confirm("NUKE ALL?"))db.ref().remove();}
 function deleteMsg(k){db.ref(currentPath+"/"+k).remove();}
+function addReaction(k,r){db.ref(currentPath+"/"+k+"/reactions").transaction(arr=>{if(arr){arr.push(r);}else{arr=[r];}return arr;});}<script>
+// ✅ AUTO SCROLL WHEN NEW MESSAGE ADDED
+db.ref(currentPath).on("child_added",()=>{
+    var box=document.getElementById("chatScroll");
+    box.scrollTop=box.scrollHeight;
+});
+
+// ✅ SEND MESSAGE WITH ENTER KEY
+document.getElementById("msgInp").addEventListener("keypress", function(e){
+    if(e.key==="Enter"){ sendMsg(); }
+});
+
+// ✅ START CHAT FUNCTION (PRIVATE OR GROUP)
+function startChat(target,isGroup){
+    currentPath=isGroup?"groups/"+target:"pvt/"+[currentUser,target].sort().join("_");
+    nav("chat",document.querySelectorAll("nav button")[1]);
+    db.ref(currentPath).off();
+    db.ref(currentPath).on("value",snapshot=>{
+        var box=document.getElementById("chatBox");
+        box.innerHTML="";
+        snapshot.forEach(m=>{
+            var d=m.val();
+            var reactions=d.reactions?d.reactions.map(r=>`<span class="reaction-btn" onclick="addReaction('${m.key}','${r}')">${r}</span>`).join(''):'';
+            box.innerHTML+=`<div class="m-bubble ${d.from===currentUser?'me':'other'}">
+                <b>${d.from}</b><br>
+                ${d.type==="img"?`<img src="${d.txt}" style="width:100%;border-radius:12px;margin-top:5px;">`:d.txt}
+                <div class="reactions">
+                    ${reactions} 
+                    <span class="reaction-btn" onclick="addReaction('${m.key}','❤️')">❤️</span>
+                    <span class="reaction-btn" onclick="addReaction('${m.key}','😂')">😂</span>
+                    <span class="reaction-btn" onclick="addReaction('${m.key}','😮')">😮</span>
+                </div>
+                <button style="position:absolute;top:5px;right:5px;background:#ff0055;color:white;border:none;padding:2px 6px;border-radius:8px;font-size:10px;cursor:pointer;" onclick="deleteMsg('${m.key}')">X</button>
+            </div>`;
+        });
+        box.scrollTop=box.scrollHeight;
+    });
+}
+
+// ✅ NAVIGATION
+function nav(page,btn){
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    document.getElementById(page).classList.add("active");
+    document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+    if(btn) btn.classList.add("active");
+    document.getElementById("chatInputArea").style.display=(page==="chat")?"flex":"none";
+}
+
+// ✅ SEND TEXT MESSAGE
+function sendMsg(){
+    var i=document.getElementById("msgInp");
+    if(i.value){
+        db.ref(currentPath).push({from:currentUser,txt:i.value,type:"text",reactions:[]});
+        i.value="";
+    }
+}
+
+// ✅ SEND BROADCAST (ADMIN ONLY)
+function sendBC(){
+    var msg=document.getElementById("bcMsg").value;
+    if(currentUser==="Admin786" && msg){
+        db.ref("broadcast").set({msg});
+        document.getElementById("bcMsg").value="";
+    }
+}
+
+// ✅ IMAGE UPLOAD
+function upImg(input){
+    if(input.files && input.files[0]){
+        var reader=new FileReader();
+        reader.onload=function(e){
+            db.ref(currentPath).push({from:currentUser,txt:e.target.result,type:"img",reactions:[]});
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// ✅ ADD REACTION
+function addReaction(msgId,emoji){
+    db.ref(currentPath+"/"+msgId+"/reactions").transaction(arr=>{
+        if(arr){ arr.push(emoji); } else { arr=[emoji]; }
+        return arr;
+    });
+}
+
+// ✅ DELETE MESSAGE
+function deleteMsg(msgId){
+    if(currentUser==="Admin786" || confirm("Delete this message?")){
+        db.ref(currentPath+"/"+msgId).remove();
+    }
+}
+
+// ✅ BAN / FREE USER (ADMIN)
+function hjk(user,freeze){
+    db.ref("users/"+user).update({frozen:freeze});
+}
+
+// ✅ LOGOUT
+function logout(){
+    db.ref("users/"+currentUser).update({online:false}).then(()=>{
+        localStorage.removeItem("lc_u");
+        location.reload();
+    });
+}
+
+// ✅ CREATE GROUP / CLUSTER
+function mkGr(){
+    var n=prompt("Cluster Name:");
+    if(n) db.ref("groups/"+n).set({createdBy:currentUser,time:Date.now()});
+}
+
+// ✅ NUKE SYSTEM (ADMIN)
+function nuke(){
+    if(currentUser==="Admin786" && confirm("NUKE ALL? All data will be deleted!")) db.ref().remove();
+}
+
+// ✅ FILTER ONLINE USERS
+function filterNodes(){
+    var val=document.getElementById("uSearch").value.toLowerCase();
+    document.querySelectorAll(".node-item").forEach(n=>{
+        n.style.display=n.getAttribute("data-name").toLowerCase().includes(val)?"flex":"none";
+    });
+}
 </script>
-</body>
-</html>
