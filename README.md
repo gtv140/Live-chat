@@ -2,62 +2,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Connect | Secure Login</title>
+    <title>Live Connect | Enterprise Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #FFD700; --purple: #8A2BE2; --dark: #0a0a12; --glass: rgba(255, 255, 255, 0.05); }
-        body { margin: 0; background: var(--dark); color: white; font-family: 'Rajdhani', sans-serif; overflow: hidden; }
-        nav { background: rgba(0,0,0,0.8); padding: 15px; display: flex; justify-content: center; gap: 25px; border-bottom: 1px solid var(--purple); }
-        nav a { color: white; text-decoration: none; font-family: 'Orbitron'; font-size: 0.75rem; cursor: pointer; }
-        .page { display: none; height: 85vh; padding: 20px; text-align: center; }
-        .active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .card { background: var(--glass); padding: 40px; border-radius: 25px; border: 1px solid var(--purple); backdrop-filter: blur(15px); }
-        input { padding: 12px 20px; border-radius: 30px; border: 1px solid var(--purple); background: rgba(255,255,255,0.05); color: white; margin-bottom: 10px; width: 280px; text-align: center; outline: none; }
-        button { background: linear-gradient(45deg, var(--purple), #4B0082); border: none; color: white; padding: 12px 40px; border-radius: 30px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; font-size: 0.8rem; margin-top: 10px; }
-        #chat-container { width: 100%; max-width: 700px; height: 75vh; background: var(--glass); border-radius: 20px; display: flex; flex-direction: column; border: 1px solid rgba(255,255,255,0.1); }
-        #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .msg { padding: 10px 18px; border-radius: 20px; max-width: 75%; }
-        .mine { align-self: flex-end; background: var(--purple); border-bottom-right-radius: 2px; }
-        .others { align-self: flex-start; background: rgba(255,255,255,0.1); border-bottom-left-radius: 2px; }
-        .sender { font-size: 0.65rem; color: var(--gold); display: block; font-weight: bold; }
+        :root { --gold: #FFD700; --purple: #8A2BE2; --dark: #05050a; --glass: rgba(255, 255, 255, 0.03); }
+        body { margin: 0; background: var(--dark); color: white; font-family: 'Rajdhani', sans-serif; height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Layout Structure */
+        .app-wrapper { display: flex; flex: 1; overflow: hidden; }
+        
+        /* Sidebar (Slack Style) */
+        .sidebar { width: 260px; background: rgba(0,0,0,0.6); border-right: 1px solid var(--purple); display: flex; flex-direction: column; padding: 20px; }
+        .sidebar h2 { font-family: 'Orbitron'; font-size: 0.9rem; color: var(--gold); margin-bottom: 20px; }
+        .channel-btn { padding: 10px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.3s; color: #ccc; }
+        .channel-btn:hover, .channel-btn.active { background: var(--purple); color: white; }
+        
+        /* Main Chat Area */
+        .main-chat { flex: 1; display: flex; flex-direction: column; background: radial-gradient(circle at top right, #1a1a2e, #05050a); }
+        .chat-header { padding: 15px 25px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+        
+        #messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        
+        /* Message Bubbles */
+        .msg-wrap { display: flex; flex-direction: column; max-width: 70%; }
+        .mine { align-self: flex-end; align-items: flex-end; }
+        .others { align-self: flex-start; }
+        
+        .bubble { padding: 12px 18px; border-radius: 18px; position: relative; font-size: 1rem; line-height: 1.4; }
+        .mine .bubble { background: linear-gradient(135deg, var(--purple), #4B0082); border-bottom-right-radius: 2px; box-shadow: 0 4px 15px rgba(138,43,226,0.2); }
+        .others .bubble { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-bottom-left-radius: 2px; }
+        
+        .meta { font-size: 0.65rem; margin-bottom: 4px; color: var(--gold); font-weight: bold; opacity: 0.8; }
+        .time { font-size: 0.6rem; color: #888; margin-top: 4px; }
+
+        /* Input Bar */
+        .input-container { padding: 20px; background: rgba(0,0,0,0.4); display: flex; gap: 12px; }
+        input { flex: 1; background: var(--glass); border: 1px solid var(--purple); padding: 12px 20px; border-radius: 30px; color: white; outline: none; }
+        button { background: var(--gold); border: none; padding: 0 25px; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        /* Login Overlay */
+        #login-overlay { position: fixed; inset: 0; background: var(--dark); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: var(--glass); padding: 50px; border-radius: 30px; border: 1px solid var(--purple); text-align: center; backdrop-filter: blur(20px); }
     </style>
 </head>
 <body>
 
-    <nav>
-        <a onclick="showPage('home')">HOME</a>
-        <a onclick="showPage('chat')">CHAT ROOM</a>
-        <a onclick="showPage('about')">ABOUT</a>
-    </nav>
-
-    <div id="home" class="page active">
-        <div class="card">
-            <h1 style="font-family: 'Orbitron'; color: var(--gold);">LIVE CONNECT</h1>
-            <p>Login or Create Account</p>
-            <input type="text" id="userInput" placeholder="Username">
-            <input type="password" id="passInput" placeholder="Password">
-            <br>
-            <button onclick="handleAuth()">LOGIN / JOIN</button>
+    <div id="login-overlay">
+        <div class="login-card">
+            <h1 style="font-family: 'Orbitron'; color: var(--gold); margin-bottom: 30px;">LIVE CONNECT</h1>
+            <input type="text" id="userInput" placeholder="Username" style="display: block; width: 100%; margin-bottom: 10px;">
+            <input type="password" id="passInput" placeholder="Password" style="display: block; width: 100%; margin-bottom: 20px;">
+            <button onclick="handleAuth()" style="width: 100%; height: 45px;">SECURE LOGIN</button>
         </div>
     </div>
 
-    <div id="chat" class="page">
-        <div id="chat-container">
+    <div class="app-wrapper">
+        <div class="sidebar">
+            <h2>CHANNELS</h2>
+            <div class="channel-btn active" onclick="switchChannel('general')"># general</div>
+            <div class="channel-btn" onclick="switchChannel('tech-talk')"># tech-talk</div>
+            <div class="channel-btn" onclick="switchChannel('prime-academy')"># prime-academy</div>
+            
+            <h2 style="margin-top: 40px;">DIRECT MESSAGES</h2>
+            <div style="font-size: 0.8rem; color: #666;">No active DM's</div>
+        </div>
+
+        <div class="main-chat">
+            <div class="chat-header">
+                <div id="active-channel-name" style="font-family: 'Orbitron'; font-weight: bold;"># GENERAL</div>
+                <div style="color: #00ff88; font-size: 0.8rem;">● Online</div>
+            </div>
+
             <div id="messages"></div>
-            <div style="padding: 20px; display: flex; gap: 12px; background: rgba(0,0,0,0.3);">
-                <input type="text" id="msgInput" placeholder="Type message..." style="margin:0; flex:1;">
-                <button id="sendBtn" style="padding: 0 25px;">SEND</button>
+
+            <div class="input-container">
+                <input type="text" id="msgInput" placeholder="Write something amazing...">
+                <button id="sendBtn">SEND</button>
             </div>
         </div>
     </div>
 
-    <div id="about" class="page">
-        <div class="card"><h2>Prime Solutions</h2><p>SaaS Chat Architecture</p></div>
-    </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onChildAdded, get, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onChildAdded, get, set, serverTimestamp, query, limitToLast, off } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBv6RM9dPz2sDMtdnizSP3thDcZSmTOvcs",
@@ -73,58 +101,90 @@
         const db = getDatabase(app);
         
         let currentUser = "";
+        let currentChannel = "general";
+        let messageListener = null;
 
-        window.showPage = (id) => {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        };
-
-        // Custom Auth System
+        // Auth Logic
         window.handleAuth = async () => {
             const user = document.getElementById('userInput').value.trim().toLowerCase();
             const pass = document.getElementById('passInput').value.trim();
-
-            if(!user || !pass) return alert("Fill all fields, sweetie!");
+            if(!user || !pass) return alert("Credentials please, sweetie!");
 
             const userRef = ref(db, 'users/' + user);
             const snapshot = await get(userRef);
 
             if(snapshot.exists()) {
                 if(snapshot.val().password === pass) {
-                    currentUser = user;
-                    showPage('chat');
+                    login(user);
                 } else {
-                    alert("Wrong password, sweetie!");
+                    alert("Wrong password!");
                 }
             } else {
-                // Register new user
                 await set(userRef, { password: pass });
-                currentUser = user;
-                alert("Account Created!");
-                showPage('chat');
+                login(user);
             }
         };
 
-        // Chat Logic
-        const chatRef = ref(db, 'global_chat');
-        const msgInp = document.getElementById('msgInput');
-        const msgBox = document.getElementById('messages');
+        function login(user) {
+            currentUser = user;
+            document.getElementById('login-overlay').style.display = 'none';
+            loadMessages();
+        }
 
-        document.getElementById('sendBtn').onclick = () => {
+        // Channel Switching
+        window.switchChannel = (channel) => {
+            currentChannel = channel;
+            document.querySelectorAll('.channel-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.includes(channel)) btn.classList.add('active');
+            });
+            document.getElementById('active-channel-name').innerText = "# " + channel.toUpperCase();
+            document.getElementById('messages').innerHTML = ""; // Clear for new channel
+            loadMessages();
+        };
+
+        function loadMessages() {
+            if(messageListener) off(ref(db, `channels/${currentChannel}`));
+            
+            const chatRef = query(ref(db, `channels/${currentChannel}`), limitToLast(50));
+            onChildAdded(chatRef, (snap) => {
+                const data = snap.val();
+                renderMessage(data);
+            });
+        }
+
+        function renderMessage(data) {
+            const isMe = data.user === currentUser;
+            const timeStr = data.time ? new Date(data.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "just now";
+            
+            const msgHtml = `
+                <div class="msg-wrap ${isMe ? 'mine' : 'others'}">
+                    <span class="meta">${data.user.toUpperCase()}</span>
+                    <div class="bubble">${data.text}</div>
+                    <span class="time">${timeStr}</span>
+                </div>`;
+            
+            const msgBox = document.getElementById('messages');
+            msgBox.insertAdjacentHTML('beforeend', msgHtml);
+            msgBox.scrollTop = msgBox.scrollHeight;
+        }
+
+        // Sending Logic
+        const msgInp = document.getElementById('msgInput');
+        function doSend() {
             if(msgInp.value.trim()){
-                push(chatRef, { user: currentUser, text: msgInp.value, time: serverTimestamp() });
+                push(ref(db, `channels/${currentChannel}`), {
+                    user: currentUser,
+                    text: msgInp.value.trim(),
+                    time: serverTimestamp()
+                });
                 msgInp.value = "";
             }
-        };
+        }
 
-        onChildAdded(chatRef, (snap) => {
-            const data = snap.val();
-            const div = document.createElement('div');
-            div.className = `msg ${data.user === currentUser ? 'mine' : 'others'}`;
-            div.innerHTML = `<span class="sender">${data.user}</span>${data.text}`;
-            msgBox.appendChild(div);
-            msgBox.scrollTop = msgBox.scrollHeight;
-        });
+        document.getElementById('sendBtn').onclick = doSend;
+        msgInp.onkeypress = (e) => { if(e.key === 'Enter') doSend(); };
+
     </script>
 </body>
 </html>
