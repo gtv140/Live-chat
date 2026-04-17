@@ -1,118 +1,160 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect | Prime Solutions Elite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Live Connect App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f0f2f5; --sidebar: #ffffff; --text: #1c1e21;
-            --primary: #6a11cb; --gold: #b8860b; --border: rgba(0,0,0,0.1);
-            --msg-mine: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            --msg-other: #ffffff;
+            --primary: #6a11cb; --accent: #ffd700; --bg: #f8f9fa;
+            --text: #1a1a1a; --card: #ffffff; --nav-bg: #ffffff;
+            --border: #eeeeee;
         }
 
         [data-theme="dark"] {
-            --bg: #080810; --sidebar: #0f0f1e; --text: #e4e6eb;
-            --primary: #8A2BE2; --gold: #FFD700; --border: rgba(255,255,255,0.1);
-            --msg-mine: linear-gradient(135deg, #8A2BE2 0%, #4b0082 100%);
-            --msg-other: #242526;
+            --bg: #0b0b0e; --text: #f5f5f5; --card: #16161d;
+            --nav-bg: #16161d; --border: #25252b; --primary: #8e2de2;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
-        .app-container { display: flex; width: 100%; height: 100%; position: relative; }
-
-        /* Sidebar Responsive */
-        .sidebar { 
-            width: 260px; background: var(--sidebar); border-right: 1px solid var(--border); 
-            display: flex; flex-direction: column; height: 100%; transition: 0.3s ease;
-            position: absolute; left: 0; top: 0; z-index: 2000; transform: translateX(-100%);
-        }
-        .sidebar.open { transform: translateX(0); box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
-
-        .main-chat { flex: 1; display: flex; flex-direction: column; height: 100%; width: 100%; position: relative; overflow: hidden; }
-
-        .header { 
-            height: 60px; background: var(--sidebar); border-bottom: 1px solid var(--border); 
-            display: flex; align-items: center; padding: 0 15px; gap: 10px; flex-shrink: 0; z-index: 10;
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif;
         }
 
-        /* Message Area - SCROLL FIXED */
-        #messages { 
-            flex: 1; overflow-y: scroll; padding: 15px; display: flex; 
-            flex-direction: column; gap: 12px; background: transparent;
-            -webkit-overflow-scrolling: touch; /* Smooth scroll for mobile */
+        /* App Layout Structure */
+        .app-shell {
+            display: flex; flex-direction: column;
+            height: 100vh; width: 100vw;
+            position: relative;
         }
 
-        .msg-wrap { display: flex; flex-direction: column; width: 100%; }
-        .msg { max-width: 80%; padding: 10px 14px; border-radius: 15px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .mine { align-self: flex-end; background: var(--msg-mine); color: white; border-bottom-right-radius: 2px; }
-        .others { align-self: flex-start; background: var(--msg-other); border-bottom-left-radius: 2px; border: 1px solid var(--border); }
+        /* Top Bar */
+        .app-header {
+            height: 60px; background: var(--nav-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; padding: 0 15px;
+            justify-content: space-between; flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .logo { font-family: 'Orbitron'; font-size: 1rem; color: var(--primary); letter-spacing: 1px; }
+
+        /* Main Scrollable Content */
+        .app-content {
+            flex: 1; overflow-y: auto; padding: 15px;
+            display: flex; flex-direction: column; gap: 12px;
+            padding-bottom: 140px; /* Space for input + bottom nav */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Chat Bubbles */
+        .msg-container { display: flex; flex-direction: column; width: 100%; animation: fadeIn 0.3s ease; }
+        .msg-bubble { 
+            max-width: 75%; padding: 10px 14px; border-radius: 18px; 
+            font-size: 0.95rem; line-height: 1.4; position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        .mine { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+        .others { align-self: flex-start; background: var(--card); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
         
-        .user-tag { font-family: 'Orbitron'; font-size: 0.65rem; color: var(--gold); font-weight: bold; margin-bottom: 3px; }
-        .msg-actions { margin-top: 5px; font-size: 0.75rem; display: flex; gap: 10px; opacity: 0.8; }
-        .del-btn { color: #ff4757; cursor: pointer; font-weight: bold; }
+        .user-name { font-size: 0.7rem; font-weight: 600; margin-bottom: 3px; color: var(--primary); }
+        .del-msg { font-size: 0.65rem; margin-top: 5px; opacity: 0.5; cursor: pointer; text-align: right; display: block; }
 
-        /* Input Bar Fix */
-        .input-area { 
-            background: var(--sidebar); padding: 10px 15px; border-top: 1px solid var(--border); 
-            display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+        /* Floating Input System */
+        .input-container {
+            position: fixed; bottom: 70px; left: 0; width: 100%;
+            padding: 10px 15px; background: transparent;
+            display: flex; gap: 8px; align-items: center;
         }
 
-        #msgInput { 
-            flex: 1; border: 1px solid var(--border); background: var(--bg); color: var(--text);
-            padding: 12px 18px; border-radius: 25px; outline: none; font-size: 1rem;
+        .input-bar {
+            flex: 1; background: var(--card); border: 1px solid var(--border);
+            border-radius: 25px; padding: 10px 18px; display: flex; align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
-        .btn-action { font-size: 1.3rem; cursor: pointer; color: var(--gold); border: none; background: none; }
-        .send-btn { background: var(--gold); border: none; width: 45px; height: 45px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        #msgInput { flex: 1; background: none; border: none; color: var(--text); font-size: 0.95rem; }
 
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1500; }
-        .overlay.active { display: block; }
+        .send-btn {
+            background: var(--primary); border: none; width: 45px; height: 45px;
+            border-radius: 50%; color: white; display: flex; 
+            align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(106, 17, 203, 0.3);
+        }
+
+        /* Bottom Navigation Bar (Real App Style) */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 65px;
+            background: var(--nav-bg); border-top: 1px solid var(--border);
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 100;
+        }
+
+        .nav-item { 
+            display: flex; flex-direction: column; align-items: center; 
+            font-size: 0.65rem; color: #888; text-decoration: none; cursor: pointer;
+        }
+        .nav-item.active { color: var(--primary); }
+        .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Modal / Settings Page Overlay */
+        #settings-page {
+            position: fixed; inset: 0; background: var(--bg); z-index: 500;
+            display: none; padding: 20px; flex-direction: column;
+        }
     </style>
 </head>
 <body data-theme="light">
 
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="logo">LIVE CONNECT</div>
+            <div onclick="toggleTheme()" style="font-size: 1.2rem; cursor: pointer;">🌓</div>
+        </header>
 
-    <div class="app-container">
-        <div class="sidebar" id="sidebar">
-            <div style="padding: 20px; border-bottom: 1px solid var(--border);">
-                <h2 style="font-family:'Orbitron'; color:var(--primary); margin:0; font-size:1rem;">PRIME SOLUTIONS</h2>
-            </div>
-            <div style="padding: 15px; flex: 1;">
-                <div style="padding: 12px; font-weight: bold; color: var(--gold); cursor: pointer;">🌐 GLOBAL HUB</div>
-                <div style="padding: 12px; opacity: 0.7; cursor: pointer;">🛡️ SECURITY POLICY</div>
-            </div>
-            <div style="padding: 15px; border-top: 1px solid var(--border);">
-                <button onclick="location.reload()" style="width:100%; padding:10px; border:none; background:#ff4757; color:white; border-radius:8px; cursor:pointer; font-weight:bold;">LOGOUT</button>
-            </div>
-        </div>
+        <main class="app-content" id="messages"></main>
 
-        <div class="main-chat">
-            <header class="header">
-                <button class="btn-action" onclick="toggleMenu()" style="color:var(--primary)">☰</button>
-                <div style="font-family:'Orbitron'; font-size:0.8rem; font-weight:bold; letter-spacing:1px;"># LIVE-CONNECT</div>
-                <button onclick="toggleTheme()" style="margin-left:auto; background:none; border:1px solid var(--border); padding:6px 12px; border-radius:20px; font-size:0.7rem; cursor:pointer; font-weight:bold;">🌓 THEME</button>
-            </header>
-
-            <div id="messages"></div>
-
-            <div class="input-area">
-                <label for="imgInput" class="btn-action">🖼️</label>
+        <div class="input-container">
+            <div class="input-bar">
+                <label for="imgInput" style="margin-right: 10px; cursor: pointer;">🖼️</label>
                 <input type="file" id="imgInput" style="display:none" accept="image/*">
-                <button class="btn-action" id="voice-btn">🎤</button>
-                <input type="text" id="msgInput" placeholder="Write something, sweetie..." autocomplete="off">
-                <button onclick="doSend()" class="send-btn">➔</button>
+                <input type="text" id="msgInput" placeholder="Message..." autocomplete="off">
             </div>
+            <button class="send-btn" onclick="doSend()">➔</button>
         </div>
+
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="closePages()">
+                <span class="nav-icon">💬</span>
+                <span>Chats</span>
+            </div>
+            <div class="nav-item" onclick="openSettings()">
+                <span class="nav-icon">🛡️</span>
+                <span>Security</span>
+            </div>
+            <div class="nav-item" onclick="location.reload()">
+                <span class="nav-icon">👤</span>
+                <span>Logout</span>
+            </div>
+        </nav>
+    </div>
+
+    <div id="settings-page">
+        <h2 style="font-family: 'Orbitron'; color: var(--primary);">PRIME SOLUTIONS</h2>
+        <p><b>Security Level:</b> Encrypted</p>
+        <p><b>Version:</b> 5.0 App Edition</p>
+        <hr style="width:100%; border:0; border-top:1px solid var(--border);">
+        <button onclick="closePages()" style="margin-top:20px; padding:10px; background:var(--primary); color:white; border:none; border-radius:10px;">Back to Chat</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onChildAdded, onChildRemoved, serverTimestamp, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onChildAdded, serverTimestamp, remove, onChildRemoved } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBv6RM9dPz2sDMtdnizSP3thDcZSmTOvcs",
@@ -126,49 +168,40 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const myUser = "User_" + Math.floor(Math.random()*999);
+        const myId = "User_" + Math.floor(Math.random()*999);
 
-        window.toggleMenu = () => {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('active');
-        };
-
+        // UI Logic
         window.toggleTheme = () => {
-            const current = document.body.getAttribute('data-theme');
-            document.body.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+            const body = document.body;
+            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
         };
+
+        window.openSettings = () => document.getElementById('settings-page').style.display = 'flex';
+        window.closePages = () => document.getElementById('settings-page').style.display = 'none';
 
         window.doSend = () => {
             const inp = document.getElementById('msgInput');
-            const val = inp.value.trim();
-            if(!val) return;
-            push(ref(db, 'messages/global'), { user: myUser, text: val, time: serverTimestamp() });
+            if(!inp.value.trim()) return;
+            push(ref(db, 'messages/global'), { user: myId, text: inp.value, time: serverTimestamp() });
             inp.value = "";
         };
 
-        window.deleteMsg = (id) => {
-            if(confirm("Delete this message, sweetie?")) {
-                remove(ref(db, `messages/global/${id}`));
-            }
+        window.deleteMsg = (key) => {
+            if(confirm("Delete message?")) remove(ref(db, `messages/global/${key}`));
         };
 
-        // UI rendering
+        // Firebase Listeners
         onChildAdded(ref(db, 'messages/global'), (snap) => {
             const d = snap.val();
-            if(!d || !d.text && !d.image) return; // Fix for undefined
-            
-            const isMe = d.user === myUser;
+            const isMe = d.user === myId;
             const mBox = document.getElementById('messages');
             
             const html = `
-                <div class="msg-wrap" id="msg-${snap.key}">
-                    <div class="msg ${isMe ? 'mine' : 'others'}">
-                        ${!isMe ? `<span class="user-tag">${d.user}</span>` : ''}
-                        <div>${d.text || ''} ${d.image ? `<img src="${d.image}" style="max-width:100%; border-radius:8px;">` : ''}</div>
-                        <div class="msg-actions">
-                            <span onclick="deleteMsg('${snap.key}')" class="del-btn">🗑️ Delete</span>
-                            <span>❤️</span>
-                        </div>
+                <div class="msg-container" id="msg-${snap.key}">
+                    <div class="msg-bubble ${isMe ? 'mine' : 'others'}">
+                        ${!isMe ? `<div class="user-name">${d.user}</div>` : ''}
+                        <div>${d.text}</div>
+                        ${isMe ? `<span class="del-msg" onclick="deleteMsg('${snap.key}')">Delete</span>` : ''}
                     </div>
                 </div>`;
             mBox.insertAdjacentHTML('beforeend', html);
@@ -180,7 +213,16 @@
             if(el) el.remove();
         });
 
-        document.getElementById('msgInput').onkeypress = (e) => { if(e.key === 'Enter') doSend(); };
+        document.getElementById('msgInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') doSend();
+        });
+
+        document.getElementById('imgInput').onchange = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (ev) => push(ref(db, 'messages/global'), { user: myId, text: `<img src="${ev.target.result}" style="max-width:100%; border-radius:10px;">`, time: serverTimestamp() });
+            reader.readAsDataURL(file);
+        };
     </script>
 </body>
 </html>
