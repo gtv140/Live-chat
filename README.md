@@ -3,104 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect Pro</title>
+    <title>Live Connect Pro | Prime Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #6a11cb; --s: #2575fc; --bg: #0f0c29; --g: rgba(255,255,255,0.1); }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { height: 100vh; background: var(--bg); color: white; overflow: hidden; }
-
-        /* Animated Background */
-        body::before {
-            content: ""; position: fixed; inset: 0;
-            background: linear-gradient(45deg, #0f0c29, #302b63, #6a11cb);
-            background-size: 400% 400%; animation: gradient 10s infinite alternate; z-index: -1;
+        :root { --p: #8e2de2; --s: #4a00e0; --bg: #0f0c29; --glass: rgba(255, 255, 255, 0.1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            height: 100vh; background: var(--bg); color: white; overflow: hidden;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
         }
-        @keyframes gradient { 0% {background-position: 0% 50%;} 100% {background-position: 100% 50%;} }
 
-        /* Auth */
-        #auth { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .box { background: var(--g); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); width: 85%; max-width: 350px; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; outline: none; }
-        button { width: 100%; padding: 12px; background: var(--p); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        /* Fixed Header */
+        .header {
+            position: fixed; top: 0; width: 100%; height: 65px; 
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(15px);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; border-bottom: 1px solid rgba(255,255,255,0.1); z-index: 1000;
+        }
 
-        /* Sidebar/Users */
-        #user-menu { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 900; display: none; padding: 20px; flex-direction: column; }
-        .u-card { padding: 15px; background: var(--g); margin: 5px 0; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        /* Chat Area - Purely Scrollable */
+        #chat-box {
+            position: absolute; top: 65px; bottom: 85px; width: 100%;
+            overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px;
+            scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+        }
 
-        /* Main UI */
-        .header { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--g); }
-        #chat-box { position: absolute; top: 60px; bottom: 80px; left: 0; right: 0; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .bar { position: absolute; bottom: 0; left: 0; right: 0; height: 80px; display: flex; align-items: center; padding: 0 10px; gap: 8px; background: rgba(0,0,0,0.5); border-top: 1px solid var(--g); }
+        /* Input Bar - ALWAYS ON TOP */
+        .input-bar {
+            position: fixed; bottom: 0; width: 100%; height: 85px;
+            background: rgba(15, 12, 41, 0.95); backdrop-filter: blur(20px);
+            display: flex; align-items: center; padding: 0 15px; gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000;
+        }
+
+        .input-box {
+            flex: 1; height: 50px; background: var(--glass); border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px; padding: 0 20px; color: white; outline: none; font-size: 15px;
+        }
+
+        .btn-circle {
+            width: 50px; height: 50px; border-radius: 50%; border: none;
+            background: linear-gradient(to right, var(--p), var(--s));
+            color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(142, 45, 226, 0.4);
+        }
 
         /* Bubbles */
-        .msg { max-width: 80%; padding: 10px 15px; border-radius: 18px; position: relative; font-size: 14px; line-height: 1.4; animation: pop 0.3s ease; }
-        .mine { align-self: flex-end; background: linear-gradient(to right, var(--p), var(--s)); border-bottom-right-radius: 2px; }
-        .others { align-self: flex-start; background: var(--g); border-bottom-left-radius: 2px; }
-        .u-name { font-size: 10px; font-weight: bold; margin-bottom: 3px; display: block; color: #ffcc00; }
-        .msg img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
-        .del-btn { color: #ff4d4d; font-size: 10px; cursor: pointer; margin-top: 5px; display: block; }
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 14px; position: relative; animation: slideIn 0.3s ease; line-height: 1.5; }
+        .mine { align-self: flex-end; background: linear-gradient(135deg, var(--p), var(--s)); border-bottom-right-radius: 5px; }
+        .others { align-self: flex-start; background: var(--glass); border-bottom-left-radius: 5px; border: 1px solid rgba(255,255,255,0.1); }
+        .u-info { font-size: 10px; font-weight: bold; margin-bottom: 4px; display: block; color: #aaa; }
+        .msg img { max-width: 100%; border-radius: 12px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.1); }
 
-        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        /* Auth & Menu */
+        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+        .card { background: var(--glass); padding: 30px; border-radius: 25px; width: 90%; max-width: 380px; text-align: center; border: 1px solid var(--glass); }
+        #user-menu { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1500; display: none; padding: 20px; flex-direction: column; }
+        .u-item { padding: 15px; background: var(--glass); margin: 8px 0; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; }
+
+        @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="auth">
-        <div class="box">
-            <h2>Live Connect</h2>
-            <input type="text" id="u-name" placeholder="Username">
-            <input type="password" id="u-pass" placeholder="Password">
-            <button onclick="login()">Enter Premium Chat</button>
+    <div id="auth-screen">
+        <div class="card">
+            <h2 style="margin-bottom:20px;">Live Connect</h2>
+            <input type="text" id="login-u" placeholder="Username" class="input-box" style="margin-bottom:10px; width:100%;">
+            <input type="password" id="login-p" placeholder="Password" class="input-box" style="margin-bottom:20px; width:100%;">
+            <button onclick="doLogin()" class="btn-circle" style="width:100%; border-radius:12px;">Login Now</button>
         </div>
     </div>
 
     <div id="user-menu">
-        <h3 style="margin-bottom:20px;">Online Operators <span onclick="toggleMenu()" style="float:right">✕</span></h3>
-        <div class="u-card" onclick="setChat('global')">🌍 Global Hub (All Users)</div>
-        <div id="online-list"></div>
+        <h3 style="margin-bottom:20px;">Operators <span onclick="toggleMenu()" style="float:right; cursor:pointer;">✕</span></h3>
+        <div class="u-item" onclick="changeChat('global')">🌍 Global Hub (Talk to Everyone)</div>
+        <div id="online-users"></div>
     </div>
 
     <div class="header">
-        <div onclick="alert('Prime Solutions: Secure & Encrypted')" style="cursor:pointer">💎 Prime Solutions</div>
-        <div style="display:flex; gap:10px; align-items:center">
-            <div id="chat-title" style="font-size:12px; background:var(--p); padding:3px 8px; border-radius:8px;">Global</div>
-            <button onclick="toggleMenu()" style="background:none; border:none; color:white; font-size:20px;">👥</button>
+        <div style="font-weight:600;">💎 PRIME SOLUTIONS</div>
+        <div style="display:flex; gap:12px; align-items:center;">
+            <span id="chat-tag" style="font-size:10px; background:var(--p); padding:2px 8px; border-radius:10px;">Global</span>
+            <button onclick="toggleMenu()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">👥</button>
         </div>
     </div>
 
     <div id="chat-box"></div>
 
-    <div class="bar">
-        <label for="f-inp" style="font-size:24px; cursor:pointer">🖼️</label>
-        <input type="file" id="f-inp" hidden accept="image/*" onchange="upImg(this)">
-        <input type="text" id="m-inp" class="box" style="margin:0; text-align:left;" placeholder="Type here, sweetie...">
-        <button onclick="send()" style="width:50px; border-radius:50%">➔</button>
+    <div class="input-bar">
+        <label for="img-file" style="font-size:24px; cursor:pointer;">🖼️</label>
+        <input type="file" id="img-file" hidden accept="image/*" onchange="uploadPhoto(this)">
+        <input type="text" id="msg-input" class="input-box" placeholder="Write message, sweetie...">
+        <button class="btn-circle" onclick="doSend()">➔</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, onChildAdded, serverTimestamp, set, onValue, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const conf = {
+        const config = {
             apiKey: "AIzaSyBv6RM9dPz2sDMtdnizSP3thDcZSmTOvcs",
             databaseURL: "https://liveconnect-9af37-default-rtdb.firebaseio.com",
             projectId: "liveconnect-9af37",
         };
 
-        const app = initializeApp(conf);
+        const app = initializeApp(config);
         const db = getDatabase(app);
-        let me = "", target = "global", isAdmin = false;
+        let me = "", activeTarget = "global", isAdmin = false;
 
-        window.login = () => {
-            const u = document.getElementById('u-name').value.trim();
-            const p = document.getElementById('u-pass').value.trim();
+        window.doLogin = () => {
+            const u = document.getElementById('login-u').value.trim();
+            const p = document.getElementById('login-p').value.trim();
             if(!u || !p) return;
             me = u;
             if(p === "admin786") isAdmin = true;
-            document.getElementById('auth').style.display = 'none';
+            document.getElementById('auth-screen').style.display = 'none';
             set(ref(db, 'online/' + me), true);
             onDisconnect(ref(db, 'online/' + me)).remove();
-            load();
+            startChat();
         };
 
         window.toggleMenu = () => {
@@ -108,47 +130,50 @@
             m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
         };
 
-        window.setChat = (t) => {
-            target = t;
-            document.getElementById('chat-title').innerText = t === 'global' ? 'Global' : 'Private: ' + t;
+        window.changeChat = (t) => {
+            activeTarget = t;
+            document.getElementById('chat-tag').innerText = t === 'global' ? 'Global' : t;
             document.getElementById('chat-box').innerHTML = "";
             toggleMenu();
-            load();
+            startChat();
         };
 
-        window.send = () => {
-            const val = document.getElementById('m-inp').value.trim();
-            if(!val) return;
-            const path = target === 'global' ? 'msgs/global' : 'msgs/priv/' + getID(me, target);
-            push(ref(db, path), { u: me, t: val, ts: serverTimestamp() });
-            document.getElementById('m-inp').value = "";
+        window.doSend = () => {
+            const inp = document.getElementById('msg-input');
+            if(!inp.value.trim()) return;
+            const path = activeTarget === 'global' ? 'main_chat' : 'p_chat/' + getPath(me, activeTarget);
+            push(ref(db, path), { user: me, msg: inp.value, time: serverTimestamp() });
+            inp.value = "";
         };
 
-        window.upImg = (i) => {
-            const r = new FileReader();
-            r.onload = (e) => {
-                const path = target === 'global' ? 'msgs/global' : 'msgs/priv/' + getID(me, target);
-                push(ref(db, path), { u: me, img: e.target.result, ts: serverTimestamp() });
+        window.uploadPhoto = (el) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const path = activeTarget === 'global' ? 'main_chat' : 'p_chat/' + getPath(me, activeTarget);
+                push(ref(db, path), { user: me, photo: e.target.result, time: serverTimestamp() });
             };
-            r.readAsDataURL(i.files[0]);
+            reader.readAsDataURL(el.files[0]);
         };
 
-        window.delMsg = (id) => {
-            if(confirm("Delete this?")) remove(ref(db, (target === 'global' ? 'msgs/global/' : 'msgs/priv/' + getID(me, target) + '/') + id));
+        window.delMsg = (key) => {
+            if(confirm("Delete this?")) {
+                const path = activeTarget === 'global' ? 'main_chat/' : 'p_chat/' + getPath(me, activeTarget) + '/';
+                remove(ref(db, path + key));
+            }
         };
 
-        function load() {
-            const path = target === 'global' ? 'msgs/global' : 'msgs/priv/' + getID(me, target);
+        function startChat() {
+            const path = activeTarget === 'global' ? 'main_chat' : 'p_chat/' + getPath(me, activeTarget);
             onChildAdded(ref(db, path), (s) => {
                 const d = s.val();
-                const isMe = d.u === me;
+                const isMe = d.user === me;
                 const box = document.getElementById('chat-box');
                 box.innerHTML += `
                     <div class="msg ${isMe ? 'mine' : 'others'}">
-                        <span class="u-name">${isMe ? 'You' : d.u}</span>
-                        ${d.t ? `<div>${d.t}</div>` : ''}
-                        ${d.img ? `<img src="${d.img}">` : ''}
-                        ${(isMe || isAdmin) ? `<span class="del-btn" onclick="delMsg('${s.key}')">Delete</span>` : ''}
+                        <span class="u-info">${isMe ? 'You' : d.user}</span>
+                        ${d.msg ? `<div>${d.msg}</div>` : ''}
+                        ${d.photo ? `<img src="${d.photo}">` : ''}
+                        ${(isMe || isAdmin) ? `<div onclick="delMsg('${s.key}')" style="font-size:9px; cursor:pointer; opacity:0.6; margin-top:5px;">Delete</div>` : ''}
                     </div>
                 `;
                 box.scrollTop = box.scrollHeight;
@@ -156,15 +181,15 @@
         }
 
         onValue(ref(db, 'online'), (s) => {
-            const list = document.getElementById('online-list');
+            const list = document.getElementById('online-users');
             list.innerHTML = "";
             s.forEach(u => {
-                if(u.key !== me) list.innerHTML += `<div class="u-card" onclick="setChat('${u.key}')">👤 ${u.key} <span>Chat</span></div>`;
+                if(u.key !== me) list.innerHTML += `<div class="u-item" onclick="changeChat('${u.key}')">👤 ${u.key} <span style="font-size:11px; color:#4caf50;">Online</span></div>`;
             });
         });
 
-        function getID(a, b) { return a < b ? a + "_" + b : b + "_" + a; }
-        document.getElementById('m-inp').onkeypress = (e) => { if(e.key==='Enter') send(); };
+        function getPath(a, b) { return a < b ? a + "_" + b : b + "_" + a; }
+        document.getElementById('msg-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') doSend(); });
     </script>
 </body>
 </html>
