@@ -2,48 +2,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect Final</title>
+    <title>Live Connect Fix</title>
     <style>
+        /* Screen ko freeze karne ke liye */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body, html { height: 100%; overflow: hidden; font-family: sans-serif; background: #f0f2f5; }
 
-        /* Full Screen Container */
-        .app-wrapper { display: flex; flex-direction: column; height: 100vh; }
-
-        /* 1. Header Fix */
-        .header { height: 60px; background: #6a11cb; color: white; display: flex; align-items: center; padding: 0 15px; flex-shrink: 0; font-weight: bold; }
-
-        /* 2. Proper Scroll Box (The Main Fix) */
-        #chat-box { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 15px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px;
-            -webkit-overflow-scrolling: touch; 
+        /* Main App Container */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Puri mobile screen */
         }
 
-        .bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; position: relative; font-size: 14px; }
-        .mine { align-self: flex-end; background: #6a11cb; color: white; border-bottom-right-radius: 2px; }
-        .others { align-self: flex-start; background: white; border: 1px solid #ddd; border-bottom-left-radius: 2px; }
+        /* 1. Fix Header */
+        .header {
+            height: 60px;
+            background: #6a11cb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            z-index: 10;
+        }
 
-        /* 3. Input Bar Fix */
-        .input-area { height: 70px; background: white; border-top: 1px solid #ddd; display: flex; align-items: center; padding: 0 10px; flex-shrink: 0; }
-        #msgInput { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; margin-right: 8px; }
-        .send-btn { background: #6a11cb; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
+        /* 2. Chat Box (Sirf yeh area scroll hoga) */
+        #chat-screen {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #e5ddd5; /* Classic chat background */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .msg {
+            max-width: 80%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 15px;
+            line-height: 1.4;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .mine { align-self: flex-end; background: #dcf8c6; }
+        .others { align-self: flex-start; background: white; }
+
+        /* 3. Input Area (Nichy Fix rahega) */
+        .input-bar {
+            height: 70px;
+            background: white;
+            border-top: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .send-btn {
+            background: #6a11cb;
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="app-wrapper">
+    <div class="app-container">
         <div class="header">LIVE CONNECT</div>
 
-        <div id="chat-box"></div>
+        <div id="chat-screen">
+            </div>
 
-        <div class="input-area">
-            <input type="text" id="msgInput" placeholder="Write, sweetie...">
-            <button class="send-btn" onclick="sendMessage()">➔</button>
+        <div class="input-bar">
+            <input type="text" id="messageInput" placeholder="Type message, sweetie...">
+            <button class="send-btn" onclick="sendMsg()">➔</button>
         </div>
     </div>
 
@@ -51,35 +106,48 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, onChildAdded, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+        // Aapka Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBv6RM9dPz2sDMtdnizSP3thDcZSmTOvcs",
-            authDomain: "liveconnect-9af37.firebaseapp.com",
             databaseURL: "https://liveconnect-9af37-default-rtdb.firebaseio.com",
             projectId: "liveconnect-9af37",
-            storageBucket: "liveconnect-9af37.firebasestorage.app",
-            messagingSenderId: "665010965194",
-            appId: "1:665010965194:web:5a71a3eb2b0627fed04233"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const user = "User_" + Math.floor(Math.random()*1000);
+        const userId = "User_" + Math.floor(Math.random() * 1000);
 
-        window.sendMessage = () => {
-            const inp = document.getElementById('msgInput');
-            if(!inp.value.trim()) return;
-            push(ref(db, 'messages/global'), { user: user, text: inp.value, time: serverTimestamp() });
-            inp.value = "";
+        // Message bhejne ka function
+        window.sendMsg = () => {
+            const input = document.getElementById('messageInput');
+            if (!input.value.trim()) return;
+            
+            push(ref(db, 'messages/global'), {
+                user: userId,
+                text: input.value,
+                timestamp: serverTimestamp()
+            });
+            input.value = "";
         };
 
-        const box = document.getElementById('chat-box');
-        onChildAdded(ref(db, 'messages/global'), (snap) => {
-            const d = snap.val();
-            const isMe = d.user === user;
-            const html = `<div class="bubble ${isMe ? 'mine' : 'others'}">${d.text}</div>`;
-            box.insertAdjacentHTML('beforeend', html);
-            box.scrollTop = box.scrollHeight; // Auto-scroll to bottom
+        // Messages display karne aur auto-scroll ke liye
+        const chatScreen = document.getElementById('chat-screen');
+        onChildAdded(ref(db, 'messages/global'), (data) => {
+            const msg = data.val();
+            const isMe = msg.user === userId;
+            const div = document.createElement('div');
+            div.className = `msg ${isMe ? 'mine' : 'others'}`;
+            div.innerText = msg.text;
+            chatScreen.appendChild(div);
+            
+            // Auto scroll to bottom
+            chatScreen.scrollTop = chatScreen.scrollHeight;
         });
+
+        // Enter key support
+        document.getElementById('messageInput').onkeypress = (e) => {
+            if (e.key === 'Enter') sendMsg();
+        };
     </script>
 </body>
 </html>
