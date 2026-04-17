@@ -1,227 +1,170 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect | Prime Solutions</title>
+    <title>Live Connect Pro</title>
     <style>
-        :root {
-            --primary: #6a11cb; --secondary: #2575fc; --bg: #0f0c29;
-            --glass: rgba(255, 255, 255, 0.1); --text: #ffffff;
+        :root { --p: #6a11cb; --s: #2575fc; --bg: #0f0c29; --g: rgba(255,255,255,0.1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { height: 100vh; background: var(--bg); color: white; overflow: hidden; }
+
+        /* Animated Background */
+        body::before {
+            content: ""; position: fixed; inset: 0;
+            background: linear-gradient(45deg, #0f0c29, #302b63, #6a11cb);
+            background-size: 400% 400%; animation: gradient 10s infinite alternate; z-index: -1;
         }
+        @keyframes gradient { 0% {background-position: 0% 50%;} 100% {background-position: 100% 50%;} }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body, html { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); }
+        /* Auth */
+        #auth { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .box { background: var(--g); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); width: 85%; max-width: 350px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; outline: none; }
+        button { width: 100%; padding: 12px; background: var(--p); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
 
-        /* Premium Background Animation */
-        body {
-            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #6a11cb);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-        }
-        @keyframes gradient { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+        /* Sidebar/Users */
+        #user-menu { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 900; display: none; padding: 20px; flex-direction: column; }
+        .u-card { padding: 15px; background: var(--g); margin: 5px 0; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-        /* Auth Screen */
-        #auth-screen {
-            position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(15px); background: rgba(0,0,0,0.7);
-        }
-        .auth-card {
-            background: var(--glass); padding: 30px; border-radius: 25px; width: 90%; max-width: 380px;
-            border: 1px solid rgba(255,255,255,0.2); text-align: center; animation: slideUp 0.5s ease;
-        }
-        .auth-card input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 12px; border: none; background: rgba(255,255,255,0.9); outline: none; }
-        .auth-card button { width: 100%; padding: 12px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
-
-        /* Main Shell */
-        .app-shell { position: relative; height: 100vh; display: flex; flex-direction: column; }
-
-        /* Header */
-        .header {
-            height: 65px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; z-index: 500;
-        }
-
-        /* Fixed Message Window */
-        #chat-window {
-            position: absolute; top: 65px; bottom: 75px; left: 0; right: 0;
-            overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Bottom Bar */
-        .bottom-bar {
-            position: absolute; bottom: 0; left: 0; right: 0; height: 75px;
-            background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
-            display: flex; align-items: center; padding: 0 15px; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .input-box { flex: 1; padding: 12px 18px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white; outline: none; }
-        .btn-action { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--primary); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        /* Users Sidebar / Modal */
-        #user-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1500; display: none;
-            padding: 20px; flex-direction: column; animation: fadeIn 0.3s;
-        }
-        .user-item { padding: 15px; background: var(--glass); border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        /* Main UI */
+        .header { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--g); }
+        #chat-box { position: absolute; top: 60px; bottom: 80px; left: 0; right: 0; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .bar { position: absolute; bottom: 0; left: 0; right: 0; height: 80px; display: flex; align-items: center; padding: 0 10px; gap: 8px; background: rgba(0,0,0,0.5); border-top: 1px solid var(--g); }
 
         /* Bubbles */
-        .msg { max-width: 80%; padding: 12px 16px; border-radius: 20px; animation: pop 0.3s ease; position: relative; font-size: 14px; }
-        .mine { align-self: flex-end; background: linear-gradient(135deg, #6a11cb, #2575fc); border-bottom-right-radius: 2px; }
-        .others { align-self: flex-start; background: rgba(255,255,255,0.15); border-bottom-left-radius: 2px; }
-        .msg-meta { font-size: 10px; opacity: 0.7; margin-bottom: 4px; display: block; }
+        .msg { max-width: 80%; padding: 10px 15px; border-radius: 18px; position: relative; font-size: 14px; line-height: 1.4; animation: pop 0.3s ease; }
+        .mine { align-self: flex-end; background: linear-gradient(to right, var(--p), var(--s)); border-bottom-right-radius: 2px; }
+        .others { align-self: flex-start; background: var(--g); border-bottom-left-radius: 2px; }
+        .u-name { font-size: 10px; font-weight: bold; margin-bottom: 3px; display: block; color: #ffcc00; }
+        .msg img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
+        .del-btn { color: #ff4d4d; font-size: 10px; cursor: pointer; margin-top: 5px; display: block; }
 
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes pop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen">
-        <div class="auth-card">
-            <h2 style="margin-bottom:10px;">Live Connect</h2>
-            <p style="font-size:12px; opacity:0.8; margin-bottom:20px;">Premium Access by Prime Solutions</p>
-            <input type="text" id="auth-user" placeholder="Username">
-            <input type="password" id="auth-pass" placeholder="Password">
-            <button onclick="handleAuth()">Enter Live Connect</button>
+    <div id="auth">
+        <div class="box">
+            <h2>Live Connect</h2>
+            <input type="text" id="u-name" placeholder="Username">
+            <input type="password" id="u-pass" placeholder="Password">
+            <button onclick="login()">Enter Premium Chat</button>
         </div>
     </div>
 
-    <div id="user-modal">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-            <h3>Online Users</h3>
-            <button onclick="closeUsers()" style="background:none; border:none; color:white; font-size:20px;">✕</button>
-        </div>
+    <div id="user-menu">
+        <h3 style="margin-bottom:20px;">Online Operators <span onclick="toggleMenu()" style="float:right">✕</span></h3>
+        <div class="u-card" onclick="setChat('global')">🌍 Global Hub (All Users)</div>
         <div id="online-list"></div>
     </div>
 
-    <div class="app-shell">
-        <header class="header">
-            <div onclick="showCompany()" style="cursor:pointer">💎 Prime Solutions</div>
-            <div style="display:flex; gap:10px;">
-                <button onclick="openUsers()" style="background:none; border:none; color:white; cursor:pointer;">👥 Users</button>
-                <div id="chat-type-label" style="background:var(--primary); padding:2px 10px; border-radius:10px; font-size:11px;">Global</div>
-            </div>
-        </header>
-
-        <main id="chat-window"></main>
-
-        <div class="bottom-bar">
-            <label for="imgInp" class="btn-action" style="background:rgba(255,255,255,0.2)">📷</label>
-            <input type="file" id="imgInp" style="display:none" accept="image/*" onchange="sendImage(this)">
-            <input type="text" id="msgInput" class="input-box" placeholder="Write, sweetie...">
-            <button class="btn-action" onclick="sendMessage()">➔</button>
+    <div class="header">
+        <div onclick="alert('Prime Solutions: Secure & Encrypted')" style="cursor:pointer">💎 Prime Solutions</div>
+        <div style="display:flex; gap:10px; align-items:center">
+            <div id="chat-title" style="font-size:12px; background:var(--p); padding:3px 8px; border-radius:8px;">Global</div>
+            <button onclick="toggleMenu()" style="background:none; border:none; color:white; font-size:20px;">👥</button>
         </div>
+    </div>
+
+    <div id="chat-box"></div>
+
+    <div class="bar">
+        <label for="f-inp" style="font-size:24px; cursor:pointer">🖼️</label>
+        <input type="file" id="f-inp" hidden accept="image/*" onchange="upImg(this)">
+        <input type="text" id="m-inp" class="box" style="margin:0; text-align:left;" placeholder="Type here, sweetie...">
+        <button onclick="send()" style="width:50px; border-radius:50%">➔</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, onChildAdded, serverTimestamp, set, onValue, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = {
+        const conf = {
             apiKey: "AIzaSyBv6RM9dPz2sDMtdnizSP3thDcZSmTOvcs",
             databaseURL: "https://liveconnect-9af37-default-rtdb.firebaseio.com",
             projectId: "liveconnect-9af37",
         };
 
-        const app = initializeApp(firebaseConfig);
+        const app = initializeApp(conf);
         const db = getDatabase(app);
-        let user = "";
-        let chatTarget = "global"; // Global or Username
-        let isAdmin = false;
+        let me = "", target = "global", isAdmin = false;
 
-        // AUTH & LOGIN
-        window.handleAuth = () => {
-            const u = document.getElementById('auth-user').value.trim();
-            const p = document.getElementById('auth-pass').value.trim();
-            if(!u || !p) return alert("Fill all details sweetie!");
-            
-            user = u;
+        window.login = () => {
+            const u = document.getElementById('u-name').value.trim();
+            const p = document.getElementById('u-pass').value.trim();
+            if(!u || !p) return;
+            me = u;
             if(p === "admin786") isAdmin = true;
-            
-            document.getElementById('auth-screen').style.display = 'none';
-            const presence = ref(db, 'online/' + user);
-            set(presence, { status: "online", last: serverTimestamp() });
-            onDisconnect(presence).remove();
-            
-            loadMessages();
+            document.getElementById('auth').style.display = 'none';
+            set(ref(db, 'online/' + me), true);
+            onDisconnect(ref(db, 'online/' + me)).remove();
+            load();
         };
 
-        // UI ACTIONS
-        window.openUsers = () => document.getElementById('user-modal').style.display = 'flex';
-        window.closeUsers = () => document.getElementById('user-modal').style.display = 'none';
-        
-        window.startPrivate = (target) => {
-            chatTarget = target;
-            document.getElementById('chat-type-label').innerText = "Private: " + target;
-            document.getElementById('chat-window').innerHTML = "";
-            closeUsers();
-            loadMessages();
+        window.toggleMenu = () => {
+            const m = document.getElementById('user-menu');
+            m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
         };
 
-        // MESSAGE SYSTEM
-        window.sendMessage = () => {
-            const inp = document.getElementById('msgInput');
-            if(!inp.value.trim()) return;
-            
-            const path = chatTarget === "global" ? 'global_chat' : 'private/' + getPrivateID(user, chatTarget);
-            push(ref(db, path), { sender: user, text: inp.value, type: 'text', time: serverTimestamp() });
-            inp.value = "";
+        window.setChat = (t) => {
+            target = t;
+            document.getElementById('chat-title').innerText = t === 'global' ? 'Global' : 'Private: ' + t;
+            document.getElementById('chat-box').innerHTML = "";
+            toggleMenu();
+            load();
         };
 
-        window.sendImage = (input) => {
-            const file = input.files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const path = chatTarget === "global" ? 'global_chat' : 'private/' + getPrivateID(user, chatTarget);
-                push(ref(db, path), { sender: user, img: e.target.result, type: 'image', time: serverTimestamp() });
+        window.send = () => {
+            const val = document.getElementById('m-inp').value.trim();
+            if(!val) return;
+            const path = target === 'global' ? 'msgs/global' : 'msgs/priv/' + getID(me, target);
+            push(ref(db, path), { u: me, t: val, ts: serverTimestamp() });
+            document.getElementById('m-inp').value = "";
+        };
+
+        window.upImg = (i) => {
+            const r = new FileReader();
+            r.onload = (e) => {
+                const path = target === 'global' ? 'msgs/global' : 'msgs/priv/' + getID(me, target);
+                push(ref(db, path), { u: me, img: e.target.result, ts: serverTimestamp() });
             };
-            reader.readAsDataURL(file);
+            r.readAsDataURL(i.files[0]);
         };
 
-        // ADMIN DELETE
-        window.adminDel = (id) => {
-            if(!isAdmin) return;
-            if(confirm("Admin: Delete this?")) remove(ref(db, 'global_chat/' + id));
+        window.delMsg = (id) => {
+            if(confirm("Delete this?")) remove(ref(db, (target === 'global' ? 'msgs/global/' : 'msgs/priv/' + getID(me, target) + '/') + id));
         };
 
-        // LOADERS
-        function loadMessages() {
-            const path = chatTarget === "global" ? 'global_chat' : 'private/' + getPrivateID(user, chatTarget);
-            onChildAdded(ref(db, path), (snap) => {
-                const d = snap.val();
-                const isMe = d.sender === user;
-                const win = document.getElementById('chat-window');
-                
-                const html = `
-                    <div class="msg ${isMe ? 'mine' : 'others'}" ondblclick="${isAdmin ? `adminDel('${snap.key}')` : ''}">
-                        <span class="msg-meta">${d.sender} ${isAdmin ? '(Double tap to delete)' : ''}</span>
-                        ${d.type === 'image' ? `<img src="${d.img}" style="max-width:100%; border-radius:10px;">` : d.text}
+        function load() {
+            const path = target === 'global' ? 'msgs/global' : 'msgs/priv/' + getID(me, target);
+            onChildAdded(ref(db, path), (s) => {
+                const d = s.val();
+                const isMe = d.u === me;
+                const box = document.getElementById('chat-box');
+                box.innerHTML += `
+                    <div class="msg ${isMe ? 'mine' : 'others'}">
+                        <span class="u-name">${isMe ? 'You' : d.u}</span>
+                        ${d.t ? `<div>${d.t}</div>` : ''}
+                        ${d.img ? `<img src="${d.img}">` : ''}
+                        ${(isMe || isAdmin) ? `<span class="del-btn" onclick="delMsg('${s.key}')">Delete</span>` : ''}
                     </div>
                 `;
-                win.insertAdjacentHTML('beforeend', html);
-                win.scrollTop = win.scrollHeight;
+                box.scrollTop = box.scrollHeight;
             });
         }
 
-        // ONLINE LIST
-        onValue(ref(db, 'online'), (snap) => {
+        onValue(ref(db, 'online'), (s) => {
             const list = document.getElementById('online-list');
-            list.innerHTML = `<div class="user-item" onclick="startPrivate('global')"><span>🌍 Global Chat</span></div>`;
-            snap.forEach((u) => {
-                if(u.key !== user) {
-                    list.innerHTML += `
-                        <div class="user-item" onclick="startPrivate('${u.key}')">
-                            <span>👤 ${u.key}</span>
-                            <button style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:5px;">Chat</button>
-                        </div>`;
-                }
+            list.innerHTML = "";
+            s.forEach(u => {
+                if(u.key !== me) list.innerHTML += `<div class="u-card" onclick="setChat('${u.key}')">👤 ${u.key} <span>Chat</span></div>`;
             });
         });
 
-        function getPrivateID(u1, u2) { return u1 < u2 ? u1 + "_" + u2 : u2 + "_" + u1; }
-        document.getElementById('msgInput').onkeypress = (e) => { if(e.key==='Enter') sendMessage(); };
+        function getID(a, b) { return a < b ? a + "_" + b : b + "_" + a; }
+        document.getElementById('m-inp').onkeypress = (e) => { if(e.key==='Enter') send(); };
     </script>
 </body>
 </html>
