@@ -2,78 +2,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect Pro | Prime Solutions</title>
+    <title>Live Connect | Prime Solutions</title>
     <style>
-        html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
-        
+        :root {
+            --primary: #6a11cb; --secondary: #2575fc; --bg: #0f0c29;
+            --glass: rgba(255, 255, 255, 0.1); --text: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body, html { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); }
+
+        /* Premium Background Animation */
+        body {
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #6a11cb);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        @keyframes gradient { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
         /* Auth Screen */
-        #auth-overlay { position: fixed; inset: 0; background: #6a11cb; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-box { background: white; padding: 25px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; }
-        .auth-box input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; outline: none; }
-        .auth-box button { width: 100%; padding: 12px; background: #6a11cb; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        #auth-screen {
+            position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(15px); background: rgba(0,0,0,0.7);
+        }
+        .auth-card {
+            background: var(--glass); padding: 30px; border-radius: 25px; width: 90%; max-width: 380px;
+            border: 1px solid rgba(255,255,255,0.2); text-align: center; animation: slideUp 0.5s ease;
+        }
+        .auth-card input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 12px; border: none; background: rgba(255,255,255,0.9); outline: none; }
+        .auth-card button { width: 100%; padding: 12px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        /* Main App Layout */
-        .app-header { position: absolute; top: 0; left: 0; right: 0; height: 60px; background: #6a11cb; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; font-weight: bold; z-index: 100; }
-        
-        #chat-window { position: absolute; top: 60px; bottom: 75px; left: 0; right: 0; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; background: #e5ddd5; -webkit-overflow-scrolling: touch; }
+        /* Main Shell */
+        .app-shell { position: relative; height: 100vh; display: flex; flex-direction: column; }
 
-        .bottom-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 75px; background: white; border-top: 1px solid #ddd; display: flex; align-items: center; padding: 0 10px; z-index: 100; gap: 8px; }
+        /* Header */
+        .header {
+            height: 65px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; z-index: 500;
+        }
 
-        /* Message Styling */
-        .msg { max-width: 80%; padding: 10px; border-radius: 12px; position: relative; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .mine { align-self: flex-end; background: #dcf8c6; }
-        .others { align-self: flex-start; background: white; }
-        .sender { font-size: 10px; font-weight: bold; color: #6a11cb; display: block; margin-bottom: 2px; }
-        .msg img { max-width: 100%; border-radius: 8px; margin-top: 5px; display: block; }
-        
-        /* Actions */
-        .actions { display: flex; gap: 10px; margin-top: 5px; font-size: 11px; opacity: 0.7; }
-        .action-btn { cursor: pointer; font-weight: bold; color: #555; }
-        .del { color: #ff4757; }
+        /* Fixed Message Window */
+        #chat-window {
+            position: absolute; top: 65px; bottom: 75px; left: 0; right: 0;
+            overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px;
+            -webkit-overflow-scrolling: touch;
+        }
 
-        #msgInp { flex: 1; padding: 12px 15px; border: 1px solid #ccc; border-radius: 25px; outline: none; }
-        .btn-circle { background: #6a11cb; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        
-        /* Company Modal */
-        #company-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; color: white; padding: 40px; text-align: center; }
+        /* Bottom Bar */
+        .bottom-bar {
+            position: absolute; bottom: 0; left: 0; right: 0; height: 75px;
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+            display: flex; align-items: center; padding: 0 15px; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .input-box { flex: 1; padding: 12px 18px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white; outline: none; }
+        .btn-action { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--primary); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        /* Users Sidebar / Modal */
+        #user-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1500; display: none;
+            padding: 20px; flex-direction: column; animation: fadeIn 0.3s;
+        }
+        .user-item { padding: 15px; background: var(--glass); border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* Bubbles */
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 20px; animation: pop 0.3s ease; position: relative; font-size: 14px; }
+        .mine { align-self: flex-end; background: linear-gradient(135deg, #6a11cb, #2575fc); border-bottom-right-radius: 2px; }
+        .others { align-self: flex-start; background: rgba(255,255,255,0.15); border-bottom-left-radius: 2px; }
+        .msg-meta { font-size: 10px; opacity: 0.7; margin-bottom: 4px; display: block; }
+
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes pop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="auth-overlay">
-        <div class="auth-box">
-            <h2 style="color:#6a11cb">Live Connect</h2>
-            <input type="text" id="reg-name" placeholder="Username">
-            <input type="password" id="reg-pass" placeholder="Password">
-            <button onclick="authAction()">Login / Signup</button>
+    <div id="auth-screen">
+        <div class="auth-card">
+            <h2 style="margin-bottom:10px;">Live Connect</h2>
+            <p style="font-size:12px; opacity:0.8; margin-bottom:20px;">Premium Access by Prime Solutions</p>
+            <input type="text" id="auth-user" placeholder="Username">
+            <input type="password" id="auth-pass" placeholder="Password">
+            <button onclick="handleAuth()">Enter Live Connect</button>
         </div>
     </div>
 
-    <div id="company-modal" onclick="this.style.display='none'">
-        <h2>PRIME SOLUTIONS</h2>
-        <p style="margin-top:20px;">We provide high-end real-time communication tools and secure cloud integration.</p>
-        <p><b>Security:</b> 256-bit Encrypted</p>
-        <p><b>Features:</b> Direct Media, Admin Control, Instant Sync.</p>
-        <button style="margin-top:30px; padding:10px 20px;">Close Details</button>
+    <div id="user-modal">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+            <h3>Online Users</h3>
+            <button onclick="closeUsers()" style="background:none; border:none; color:white; font-size:20px;">✕</button>
+        </div>
+        <div id="online-list"></div>
     </div>
 
-    <div class="app-header">
-        <span onclick="document.getElementById('company-modal').style.display='block'" style="cursor:pointer">🏢 PRIME SOLUTIONS</span>
-        <div id="online-count" style="font-size:11px; background:#28a745; padding:3px 8px; border-radius:10px;">Online: 0</div>
-    </div>
+    <div class="app-shell">
+        <header class="header">
+            <div onclick="showCompany()" style="cursor:pointer">💎 Prime Solutions</div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="openUsers()" style="background:none; border:none; color:white; cursor:pointer;">👥 Users</button>
+                <div id="chat-type-label" style="background:var(--primary); padding:2px 10px; border-radius:10px; font-size:11px;">Global</div>
+            </div>
+        </header>
 
-    <div id="chat-window"></div>
+        <main id="chat-window"></main>
 
-    <div class="bottom-bar">
-        <label for="imgInp" class="btn-circle" style="background:#f0f0f0; color:#333;">📷</label>
-        <input type="file" id="imgInp" style="display:none" accept="image/*" onchange="sendPhoto(this)">
-        <input type="text" id="msgInp" placeholder="Type message...">
-        <button class="btn-circle" onclick="sendText()">➔</button>
+        <div class="bottom-bar">
+            <label for="imgInp" class="btn-action" style="background:rgba(255,255,255,0.2)">📷</label>
+            <input type="file" id="imgInp" style="display:none" accept="image/*" onchange="sendImage(this)">
+            <input type="text" id="msgInput" class="input-box" placeholder="Write, sweetie...">
+            <button class="btn-action" onclick="sendMessage()">➔</button>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onChildAdded, serverTimestamp, set, onValue, onDisconnect, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onChildAdded, serverTimestamp, set, onValue, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBv6RM9dPz2sDMtdnizSP3thDcZSmTOvcs",
@@ -83,72 +127,101 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        let currentUser = "";
+        let user = "";
+        let chatTarget = "global"; // Global or Username
+        let isAdmin = false;
 
-        // Login System
-        window.authAction = () => {
-            const n = document.getElementById('reg-name').value.trim();
-            const p = document.getElementById('reg-pass').value.trim();
-            if(n && p) {
-                currentUser = n;
-                document.getElementById('auth-overlay').style.display = 'none';
-                const statusRef = ref(db, 'status/' + n);
-                set(statusRef, true);
-                onDisconnect(statusRef).remove();
-            }
+        // AUTH & LOGIN
+        window.handleAuth = () => {
+            const u = document.getElementById('auth-user').value.trim();
+            const p = document.getElementById('auth-pass').value.trim();
+            if(!u || !p) return alert("Fill all details sweetie!");
+            
+            user = u;
+            if(p === "admin786") isAdmin = true;
+            
+            document.getElementById('auth-screen').style.display = 'none';
+            const presence = ref(db, 'online/' + user);
+            set(presence, { status: "online", last: serverTimestamp() });
+            onDisconnect(presence).remove();
+            
+            loadMessages();
         };
 
-        // Online Count
-        onValue(ref(db, 'status'), (s) => {
-            document.getElementById('online-count').innerText = "Online: " + (s.size || 0);
-        });
+        // UI ACTIONS
+        window.openUsers = () => document.getElementById('user-modal').style.display = 'flex';
+        window.closeUsers = () => document.getElementById('user-modal').style.display = 'none';
+        
+        window.startPrivate = (target) => {
+            chatTarget = target;
+            document.getElementById('chat-type-label').innerText = "Private: " + target;
+            document.getElementById('chat-window').innerHTML = "";
+            closeUsers();
+            loadMessages();
+        };
 
-        // Send Text
-        window.sendText = () => {
-            const inp = document.getElementById('msgInp');
+        // MESSAGE SYSTEM
+        window.sendMessage = () => {
+            const inp = document.getElementById('msgInput');
             if(!inp.value.trim()) return;
-            push(ref(db, 'msgs'), { u: currentUser, t: inp.value, ts: serverTimestamp() });
+            
+            const path = chatTarget === "global" ? 'global_chat' : 'private/' + getPrivateID(user, chatTarget);
+            push(ref(db, path), { sender: user, text: inp.value, type: 'text', time: serverTimestamp() });
             inp.value = "";
         };
 
-        // Send Photo (Base64 Method)
-        window.sendPhoto = (input) => {
+        window.sendImage = (input) => {
             const file = input.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
-                push(ref(db, 'msgs'), { u: currentUser, img: e.target.result, ts: serverTimestamp() });
+                const path = chatTarget === "global" ? 'global_chat' : 'private/' + getPrivateID(user, chatTarget);
+                push(ref(db, path), { sender: user, img: e.target.result, type: 'image', time: serverTimestamp() });
             };
             reader.readAsDataURL(file);
         };
 
-        // Message Actions
-        window.deleteMsg = (id) => { if(confirm("Delete message?")) remove(ref(db, 'msgs/' + id)); };
-        window.react = (id) => { update(ref(db, 'msgs/' + id), { liked: true }); };
+        // ADMIN DELETE
+        window.adminDel = (id) => {
+            if(!isAdmin) return;
+            if(confirm("Admin: Delete this?")) remove(ref(db, 'global_chat/' + id));
+        };
 
-        const win = document.getElementById('chat-window');
-        onChildAdded(ref(db, 'msgs'), (s) => {
-            const d = s.val();
-            const isMe = d.u === currentUser;
-            const div = document.createElement('div');
-            div.className = `msg ${isMe ? 'mine' : 'others'}`;
-            div.id = "msg-"+s.key;
-            div.innerHTML = `
-                <span class="sender">${isMe ? 'You' : d.u}</span>
-                ${d.t ? `<div>${d.t}</div>` : ''}
-                ${d.img ? `<img src="${d.img}">` : ''}
-                ${d.liked ? '<span style="font-size:12px">❤️</span>' : ''}
-                <div class="actions">
-                    <span class="action-btn" onclick="react('${s.key}')">Like</span>
-                    ${isMe ? `<span class="action-btn del" onclick="deleteMsg('${s.key}')">Delete</span>` : ''}
-                </div>
-            `;
-            win.appendChild(div);
-            win.scrollTop = win.scrollHeight;
+        // LOADERS
+        function loadMessages() {
+            const path = chatTarget === "global" ? 'global_chat' : 'private/' + getPrivateID(user, chatTarget);
+            onChildAdded(ref(db, path), (snap) => {
+                const d = snap.val();
+                const isMe = d.sender === user;
+                const win = document.getElementById('chat-window');
+                
+                const html = `
+                    <div class="msg ${isMe ? 'mine' : 'others'}" ondblclick="${isAdmin ? `adminDel('${snap.key}')` : ''}">
+                        <span class="msg-meta">${d.sender} ${isAdmin ? '(Double tap to delete)' : ''}</span>
+                        ${d.type === 'image' ? `<img src="${d.img}" style="max-width:100%; border-radius:10px;">` : d.text}
+                    </div>
+                `;
+                win.insertAdjacentHTML('beforeend', html);
+                win.scrollTop = win.scrollHeight;
+            });
+        }
+
+        // ONLINE LIST
+        onValue(ref(db, 'online'), (snap) => {
+            const list = document.getElementById('online-list');
+            list.innerHTML = `<div class="user-item" onclick="startPrivate('global')"><span>🌍 Global Chat</span></div>`;
+            snap.forEach((u) => {
+                if(u.key !== user) {
+                    list.innerHTML += `
+                        <div class="user-item" onclick="startPrivate('${u.key}')">
+                            <span>👤 ${u.key}</span>
+                            <button style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:5px;">Chat</button>
+                        </div>`;
+                }
+            });
         });
 
-        onValue(ref(db, 'msgs'), () => { /* Handle deletes/updates if needed */ });
-
-        document.getElementById('msgInp').onkeypress = (e) => { if(e.key==='Enter') sendText(); };
+        function getPrivateID(u1, u2) { return u1 < u2 ? u1 + "_" + u2 : u2 + "_" + u1; }
+        document.getElementById('msgInput').onkeypress = (e) => { if(e.key==='Enter') sendMessage(); };
     </script>
 </body>
 </html>
