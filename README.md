@@ -2,8 +2,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Connect | Prime Solutions Elite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>Live Connect | Prime Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #f0f2f5; --sidebar: #ffffff; --text: #1c1e21;
@@ -19,105 +19,98 @@
             --msg-other: #242526;
         }
 
-        * { box-sizing: border-box; transition: 0.2s ease; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); }
         
-        /* App Layout */
-        .app-wrapper { display: flex; flex: 1; height: 100%; overflow: hidden; position: relative; }
+        .app-container { display: flex; width: 100%; height: 100%; position: relative; }
 
+        /* Sidebar - Mobile Friendly */
         .sidebar { 
-            width: 280px; background: var(--sidebar); border-right: 1px solid var(--border); 
-            display: flex; flex-direction: column; padding: 20px; z-index: 1000;
+            width: 260px; background: var(--sidebar); border-right: 1px solid var(--border); 
+            display: flex; flex-direction: column; height: 100%; transition: transform 0.3s ease;
+            position: absolute; left: 0; top: 0; z-index: 2000; transform: translateX(-100%);
+        }
+        .sidebar.open { transform: translateX(0); }
+
+        /* Desktop view for sidebar */
+        @media (min-width: 992px) {
+            .sidebar { position: relative; transform: translateX(0); flex-shrink: 0; }
+            .menu-toggle { display: none !important; }
         }
 
-        .main-container { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; overflow: hidden; }
+        .main-chat { flex: 1; display: flex; flex-direction: column; height: 100%; width: 100%; position: relative; }
 
+        /* Header */
         .header { 
-            padding: 12px 20px; border-bottom: 1px solid var(--border); 
-            display: flex; align-items: center; background: var(--sidebar); gap: 15px; flex-shrink: 0;
+            height: 60px; background: var(--sidebar); border-bottom: 1px solid var(--border); 
+            display: flex; align-items: center; padding: 0 15px; gap: 10px; flex-shrink: 0;
         }
+        .menu-toggle { font-size: 1.5rem; cursor: pointer; background: none; border: none; color: var(--primary); }
 
-        /* Message Area - FIXED & SCROLLABLE */
+        /* Messages Section */
         #messages { 
-            flex: 1; padding: 20px; overflow-y: auto; display: flex; 
-            flex-direction: column; gap: 12px; background: transparent;
+            flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+            scroll-behavior: smooth; padding-bottom: 80px; /* Space for input */
         }
 
-        .msg-card { max-width: 85%; padding: 12px 16px; border-radius: 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; }
-        .mine { align-self: flex-end; background: var(--msg-mine); color: white; border-bottom-right-radius: 4px; }
-        .others { align-self: flex-start; background: var(--msg-other); color: var(--text); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+        .msg { max-width: 85%; padding: 10px 14px; border-radius: 15px; font-size: 0.95rem; line-height: 1.4; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .mine { align-self: flex-end; background: var(--msg-mine); color: white; border-bottom-right-radius: 2px; }
+        .others { align-self: flex-start; background: var(--msg-other); border-bottom-left-radius: 2px; border: 1px solid var(--border); }
+        .user-tag { font-family: 'Orbitron'; font-size: 0.65rem; color: var(--gold); display: block; margin-bottom: 3px; font-weight: bold; }
 
-        .sender-info { font-size: 0.7rem; color: var(--gold); font-weight: bold; margin-bottom: 4px; font-family: 'Orbitron'; display: block; }
-
-        /* Input Bar - ALWAYS AT BOTTOM */
-        .input-box { 
-            padding: 15px; background: var(--sidebar); display: flex; gap: 10px; 
-            align-items: center; border-top: 1px solid var(--border); flex-shrink: 0;
+        /* Input Area - Fixed at Bottom */
+        .input-area { 
+            position: absolute; bottom: 0; left: 0; width: 100%; background: var(--sidebar);
+            padding: 10px 15px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px;
+            padding-bottom: env(safe-area-inset-bottom); /* For modern phones */
         }
 
         #msgInput { 
-            flex: 1; background: var(--bg); border: 1px solid var(--border); 
-            padding: 12px 20px; border-radius: 25px; color: var(--text); outline: none; 
+            flex: 1; border: 1px solid var(--border); background: var(--bg); color: var(--text);
+            padding: 10px 15px; border-radius: 25px; outline: none; font-size: 1rem;
         }
 
-        .action-btn { font-size: 1.4rem; cursor: pointer; color: var(--gold); display: flex; align-items: center; }
-        .send-btn { 
-            background: var(--gold); border: none; width: 42px; height: 42px; 
-            border-radius: 50%; color: white; cursor: pointer; display: flex; 
-            align-items: center; justify-content: center; font-size: 1.2rem;
-        }
+        .btn-icon { font-size: 1.3rem; cursor: pointer; color: var(--gold); }
+        .send-btn { background: var(--gold); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* Responsive Fix */
-        @media (max-width: 768px) {
-            .sidebar { position: absolute; left: -280px; height: 100%; transition: 0.3s; }
-            .sidebar.open { left: 0; box-shadow: 10px 0 20px rgba(0,0,0,0.2); }
-            .msg-card { max-width: 90%; }
-        }
-
-        .page { display: none; height: 100%; width: 100%; }
-        .active-page { display: flex; flex-direction: column; }
+        /* Overlay when sidebar open on mobile */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1500; }
+        .overlay.active { display: block; }
     </style>
 </head>
 <body data-theme="light">
 
-    <div id="login-overlay" style="position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center;">
-        <div style="background:var(--sidebar); padding:40px; border-radius:20px; border:1px solid var(--gold); text-align:center; width:90%; max-width:350px;">
-            <h1 style="font-family:'Orbitron'; color:var(--primary);">PRIME CONNECT</h1>
-            <input type="text" id="userInput" placeholder="Username" style="width:100%; padding:12px; margin: 10px 0; border-radius:10px; border:1px solid var(--border);">
-            <button onclick="handleAuth()" style="width:100%; padding:12px; background:var(--gold); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">START CHATTING</button>
-        </div>
-    </div>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-    <div class="app-wrapper">
+    <div class="app-container">
         <div class="sidebar" id="sidebar">
-            <h2 style="font-family:'Orbitron'; color:var(--primary); font-size:1rem;">PRIME SOLUTIONS</h2>
-            <div onclick="showPage('chat-page')" style="cursor:pointer; padding:12px; font-weight:bold;">🌐 GLOBAL HUB</div>
-            <div onclick="showPage('about-page')" style="cursor:pointer; padding:12px;">🏢 ABOUT COMPANY</div>
-            <div onclick="location.reload()" style="cursor:pointer; padding:12px; color:red; margin-top:auto;">🚪 LOGOUT</div>
+            <div style="padding: 20px; border-bottom: 1px solid var(--border);">
+                <h2 style="font-family:'Orbitron'; color:var(--primary); margin:0; font-size:1.1rem;">PRIME SOLUTIONS</h2>
+            </div>
+            <div style="padding: 15px; flex: 1;">
+                <div style="padding: 10px; font-weight: bold; color: var(--gold);">🌐 GLOBAL HUB</div>
+                <div style="padding: 10px; opacity: 0.7;">🏢 ABOUT</div>
+            </div>
+            <div style="padding: 15px; border-top: 1px solid var(--border);">
+                <button onclick="location.reload()" style="width:100%; padding:10px; border:none; background:#ff4757; color:white; border-radius:5px; cursor:pointer;">LOGOUT</button>
+            </div>
         </div>
 
-        <div class="main-container">
-            <div class="header">
-                <button onclick="document.getElementById('sidebar').classList.toggle('open')" style="background:none; border:1px solid var(--primary); border-radius:5px; padding:5px 10px;">☰</button>
-                <div style="font-weight:bold; color:var(--gold); font-family:'Orbitron'; font-size:0.8rem;"># LIVE-CONNECT</div>
-                <button onclick="toggleTheme()" style="margin-left:auto; cursor:pointer; background:none; border:1px solid var(--border); padding:5px 10px; border-radius:15px;">🌓 THEME</button>
-            </div>
+        <div class="main-chat">
+            <header class="header">
+                <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+                <div style="font-family:'Orbitron'; font-size:0.8rem; font-weight:bold;"># LIVE-CONNECT</div>
+                <button onclick="toggleTheme()" style="margin-left:auto; background:none; border:1px solid var(--border); padding:5px 10px; border-radius:20px; font-size:0.7rem; cursor:pointer;">🌓 THEME</button>
+            </header>
 
-            <div id="chat-page" class="page active-page">
-                <div id="messages"></div>
-                
-                <div class="input-box">
-                    <label for="imgInput" class="action-btn">🖼️</label>
-                    <input type="file" id="imgInput" style="display:none" accept="image/*">
-                    <span class="action-btn" onclick="toggleRecord()" id="voice-btn">🎤</span>
-                    <input type="text" id="msgInput" placeholder="Write something, sweetie...">
-                    <button onclick="doSend()" class="send-btn">➔</button>
-                </div>
-            </div>
+            <div id="messages"></div>
 
-            <div id="about-page" class="page" style="padding:20px;">
-                <h1 style="color:var(--gold)">PRIME SOLUTIONS</h1>
-                <p>Advanced Real-time Communication Engine. Built for speed and security.</p>
+            <div class="input-area">
+                <label for="imgInput" class="btn-icon">🖼️</label>
+                <input type="file" id="imgInput" style="display:none" accept="image/*">
+                <span class="btn-icon" onclick="alert('Recording...')">🎤</span>
+                <input type="text" id="msgInput" placeholder="Message, sweetie...">
+                <button onclick="doSend()" class="send-btn">➔</button>
             </div>
         </div>
     </div>
@@ -138,58 +131,41 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        let currentUser = "";
+        const myName = "User_" + Math.floor(Math.random()*999);
+
+        window.toggleMenu = () => {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        };
 
         window.toggleTheme = () => {
             const current = document.body.getAttribute('data-theme');
             document.body.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
         };
 
-        window.handleAuth = () => {
-            const u = document.getElementById('userInput').value.trim();
-            if(!u) return;
-            currentUser = u;
-            document.getElementById('login-overlay').style.display='none';
-            initApp();
-        };
-
-        function initApp() {
-            onChildAdded(ref(db, 'messages/global'), (snap) => {
-                const d = snap.val(); const isMe = d.user === currentUser;
-                const mBox = document.getElementById('messages');
-                
-                let content = d.text || "";
-                if(d.image) content = `<img src="${d.image}" style="max-width:100%; border-radius:10px;">`;
-                
-                const html = `<div class="msg-card ${isMe ? 'mine' : 'others'}">
-                    ${!isMe ? `<span class="sender-info">${d.user.toUpperCase()}</span>` : ""}
-                    ${content}
-                    <div style="margin-top:5px; font-size:0.7rem; opacity:0.6;">
-                        <span>❤️</span> <span>🔥</span> <span>↩️ Reply</span>
-                    </div>
-                </div>`;
-                mBox.insertAdjacentHTML('beforeend', html);
-                mBox.scrollTop = mBox.scrollHeight;
-            });
-        }
-
-        window.showPage = (id) => {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById(id).classList.add('active-page');
-            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
-        };
-
         window.doSend = () => {
-            const inp = document.getElementById('msgInput'); if(!inp.value.trim()) return;
-            push(ref(db, 'messages/global'), { user: currentUser, text: inp.value, time: serverTimestamp() });
+            const inp = document.getElementById('msgInput');
+            if(!inp.value.trim()) return;
+            push(ref(db, 'messages/global'), { user: myName, text: inp.value, time: serverTimestamp() });
             inp.value = "";
         };
 
-        document.getElementById('imgInput').onchange = (e) => {
-            const file = e.target.files[0]; if(!file) return;
-            const r = new FileReader(); r.onload = (ev) => push(ref(db, 'messages/global'), { user: currentUser, image: ev.target.result, time: serverTimestamp() });
-            r.readAsDataURL(file);
-        };
+        onChildAdded(ref(db, 'messages/global'), (snap) => {
+            const d = snap.val();
+            const isMe = d.user === myName;
+            const mBox = document.getElementById('messages');
+            const html = `<div class="msg ${isMe ? 'mine' : 'others'}">
+                ${!isMe ? `<span class="user-tag">${d.user}</span>` : ''}
+                ${d.text}
+            </div>`;
+            mBox.insertAdjacentHTML('beforeend', html);
+            mBox.scrollTop = mBox.scrollHeight;
+        });
+
+        // Close keyboard fix for mobile
+        document.getElementById('msgInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') doSend();
+        });
     </script>
 </body>
 </html>
